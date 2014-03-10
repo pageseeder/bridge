@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+  Ivy configuration for the Berlioz BAse application.
+-->
+<ivy-module version="2.0">
+  <info organisation="weborganic" module="ps-bridge">
+    <license name="Artistic Licence" url="http://www.opensource.org/licenses/artistic-license-2.0.php"/>
+    <description homepage="http://www.weborganic.org/code/berlioz/"/>
+  </info>
+  <configurations defaultconfmapping="core->default;runtime->runtime(default)">
+     <conf name="core" transitive="false" visibility="private" description="Always required"/>
+     <conf name="default" extends="core" transitive="false" description="Needed for compilation only"/>
+     <conf name="runtime" extends="core" transitive="true" description="Everything needed to run this module" />
+  </configurations>
+  <dependencies>
+
+    <!-- core -->
+    <dependency org="weborganic" name="wo-diffx"             rev="latest.milestone"   conf="core"/>
+    <dependency org="slf4j"      name="slf4j-api"            rev="latest.milestone"   conf="core"/>
+
+    <!-- TODO: Removed eventually -->
+    <dependency org="ehcache"    name="ehcache-core"    rev="2.5+"   conf="core"/>
+    <dependency org="weborganic" name="wo-berlioz"      rev="0.9+"   conf="core"/>
+
+  </dependencies>
+</ivy-module>
