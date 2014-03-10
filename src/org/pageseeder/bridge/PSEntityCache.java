@@ -47,7 +47,8 @@ public interface PSEntityCache<T extends PSEntity> {
   /**
    * Retrieve the object in the cache for the specified key.
    *
-   * @param key The key
+   * @param attribute An attribute that can be sufficient to identify the entity.
+   * @param value     The value the value
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
@@ -56,7 +57,8 @@ public interface PSEntityCache<T extends PSEntity> {
   /**
    * Retrieve the object in the cache for the specified key.
    *
-   * @param key The key
+   * @param attribute An attribute for that entity.
+   * @param value     The value the value
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */

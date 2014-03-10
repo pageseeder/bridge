@@ -10,38 +10,11 @@ package org.pageseeder.bridge;
 import java.util.Properties;
 
 /**
- *
  * Configuration of the PageSeeder server that the API should use to connect.
  *
- * <p>Bastille can be configured to connect to a PageSeeder service using the properties are defined
- * in the <code>config-[mode].xml</code> for the key {@value BASTILLE_PAGESEEDER}.
- *
- * <p>To retrieve the PageSeeder server properties, use the {@link #getProperties()}.
- *
- * <p>The properties can contain the following keys:
- * <ul>
- *   <li><code>scheme</code>: the scheme of the PageSeeder server (for example "http")</li>
- *   <li><code>host</code>: the host of the PageSeeder server (for example "localhost")</li>
- *   <li><code>port</code>: the port of the PageSeeder server (for example "8080")</li>
- *   <li><code>siteprefix</code>: the site prefix for PageSeeder server (for example "/ps")</li>
- *   <li><code>servletprefix</code>: the servlet prefix for  the PageSeeder server (for example "/ps/servlet")</li>
- * </ul>
- *
- * <p>For example:
- * <pre>
- *   Properties pageseeder = PSConfiguration.getProperties();
- *   String host = pageseeder.getProperty("host");
- *   String port = pageseeder.getProperty("port", 8080);
- *   ...
- * </pre>
- *
- * <p>The Bastille-PageSeeder properties can also be accessed directly using the Berlioz global
- * settings.
- *
- * <p>For example: <code>GlobalSettings.get("bastille.pageseeder.host")</code>
- *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.1.1
+ * @since 0.1.0
  */
 public class PSConfig {
 
@@ -134,8 +107,12 @@ public class PSConfig {
     return buildHostURL().toString();
   }
 
+  public static void configure(Properties p) {
+    if (singleton == null) singleton = new PSConfig(p);
+  }
+
   public static PSConfig singleton() {
-// FIXME    if (singleton == null) singleton = new PSConfig(PSConfiguration.getProperties());
+    if (singleton == null) throw new IllegalStateException("PSConfig is not configured");
     return singleton;
   }
 

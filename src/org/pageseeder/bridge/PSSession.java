@@ -13,7 +13,8 @@ import java.io.Serializable;
  * A simple object to represent a PageSeeder session.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.1.1
+ * @since 0.1.0
  */
 public final class PSSession implements Serializable {
 
@@ -32,7 +33,7 @@ public final class PSSession implements Serializable {
    *
    * <p>This time stamp is used to determine whether the session is still likely to be valid.
    */
-  private long timestamp;
+  private long _timestamp;
 
   /**
    * Create a new session with the specified ID.
@@ -41,7 +42,18 @@ public final class PSSession implements Serializable {
    */
   public PSSession(String session) {
     this._jsessionid = session;
-    this.timestamp = System.currentTimeMillis();
+    this._timestamp = System.currentTimeMillis();
+  }
+
+  /**
+   * Create a new session with the specified ID.
+   *
+   * @param session   The session ID.
+   * @param timestamp When the session was initially created.
+   */
+  public PSSession(String session, long timestamp) {
+    this._jsessionid = session;
+    this._timestamp = timestamp;
   }
 
   /**
@@ -55,7 +67,7 @@ public final class PSSession implements Serializable {
    * Update the timestamp for this session.
    */
   public void update() {
-    this.timestamp = System.currentTimeMillis();
+    this._timestamp = System.currentTimeMillis();
   }
 
   /**
@@ -64,7 +76,7 @@ public final class PSSession implements Serializable {
    * @return The current time minus the timestamp.
    */
   public long age() {
-    return System.currentTimeMillis() - this.timestamp;
+    return System.currentTimeMillis() - this._timestamp;
   }
 
   @Override

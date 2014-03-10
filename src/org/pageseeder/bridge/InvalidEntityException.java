@@ -39,7 +39,8 @@ public class InvalidEntityException extends APIException {
   /**
    * Create a new exception.
    *
-   * @param message A message explaining what's wrong with the entity.
+   * @param entity   The entity that is invalid.
+   * @param validity The entity validity status.
    */
   public InvalidEntityException(Class<? extends PSEntity> entity, EntityValidity validity) {
     super(entity.getSimpleName());
