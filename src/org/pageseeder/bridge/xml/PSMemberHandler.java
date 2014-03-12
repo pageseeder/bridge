@@ -10,7 +10,7 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pageseeder.bridge.core.PSMember;
+import org.pageseeder.bridge.model.PSMember;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

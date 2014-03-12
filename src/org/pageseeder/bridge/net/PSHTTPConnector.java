@@ -1,0 +1,440 @@
+/*
+ * This file is part of the PageSeeder Bridge API.
+ *
+ * For licensing information please see the file license.txt included in the release.
+ * A copy of this licence can also be found at
+ *   http://www.opensource.org/licenses/artistic-license-2.0.php
+ */
+package org.pageseeder.bridge.net;
+
+import java.io.IOException;
+import java.util.Map;
+
+import javax.xml.transform.Templates;
+
+import org.pageseeder.bridge.APIException;
+import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.net.PSHTTPConnection.Method;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.helpers.DefaultHandler;
+
+import com.topologi.diffx.xml.XMLWriter;
+
+/**
+ * Represents a request made to the PageSeeder Server.
+ *
+ * <p>By default the request is made anonymously. In order to make a request on behalf of a
+ * PageSeeder user, use the {@link #setUser(PSSession)} method - this is required for any page
+ * that needs login access.
+ *
+ * <p>For simple PageSeeder connections via GET or POST, this class provides convenience methods
+ * which will open and close the connections and capture any error in XML.
+ *
+ * <p>For example:</p>
+ * <pre>
+ * PSConnector connector = new PSConnector(PSResourceType.SERVICE, "/groups/123/members");
+ * connector.setUser(user);
+ * boolean ok = connector.get(xml);
+ * </pre>
+ *
+ * <p>For more complex connections, involving multipart queries or if any of the default properties
+ * of the connection need to be changed, this class can be used to create the connection to
+ * PageSeeder, for example:</p>
+ * <pre>
+ * PSConnector connector = new PSConnector(PSResourceType.SERVICE, "/groups/123/upload");
+ * connector.setUser(user);
+ *
+ * PSConnection connection = connector.connect(Type.MULTIPART);
+ * connection.addXMLPart(xml1);
+ * connection.addXMLPart(xml2);
+ * connection.addXMLPart(xml3);
+ * connection.disconnect();
+ * </pre>
+ *
+ * <p>Note: This class was forked from Bastille 0.8.29
+ *
+ * @author Christophe Lauret
+ * @version 0.1.0
+ */
+public final class PSHTTPConnector {
+
+  /** Logger for this class */
+  private static final Logger LOGGER = LoggerFactory.getLogger(PSHTTPConnector.class);
+
+  /**
+   * The type of resource accessed.
+   */
+  private final PSHTTPResource.Builder _resource;
+
+  /**
+   * If specified, the request will be made on behalf of that user.
+   */
+  private PSSession _user = null;
+
+  /**
+   * Creates a new connection to the specified resource.
+   *
+   * @param type     The type of resource.
+   * @param resource The
+   */
+  public PSHTTPConnector(PSHTTPResourceType type, String resource) {
+    this._resource = new PSHTTPResource.Builder(type, resource);
+  }
+
+  /**
+   * Sets the user for this request.
+   * @param user the user for this request.
+   */
+  public void setUser(PSSession user) {
+    this._user = user;
+  }
+
+  /**
+   * Add a parameter to this request.
+   *
+   * @param name  The name of the parameter
+   * @param value The value of the parameter
+   */
+  public void addParameter(String name, String value) {
+    this._resource.addParameter(name, value);
+  }
+
+  /**
+   * Sets whether this resource should include the error content.
+   *
+   * @param include <code>true</code> to include the content of response even when the response code
+   *                is greater than 400 (included);
+   *                <code>false</code> to only include the response when the response code is
+   *                between 200 and 299.
+   */
+  public void includeErrorContent(boolean include) {
+    this._resource.includeErrorContent(include);
+  }
+
+  // Connection
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Connect to PageSeeder using the specified method.
+   *
+   * @param type  The connection type using the specified method
+   *
+   * @return The PS connection created as a result.
+   * @throws IOException If thrown while trying to open the connection or if the URL for the
+   *                     underlying resource is malformed.
+   */
+  public PSHTTPConnection connect(Method type) throws IOException {
+    PSHTTPResource r = this._resource.build();
+    return PSHTTPConnection.connect(r, type, this._user);
+  }
+
+  // Shorthand requests
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Connect to PageSeeder via GET and discard the output.
+   *
+   * <p>Error messages will be captured.
+   *
+   * @throws APIException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  public PSHTTPResponseInfo get() throws APIException {
+    return handle(Method.POST, (DefaultHandler)null);
+  }
+
+  /**
+   * Connect to PageSeeder via GET.
+   *
+   * @param xml the XML to copy from PageSeeder
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  public PSHTTPResponseInfo get(XMLWriter xml) throws APIException {
+    return copy(Method.GET, xml);
+  }
+
+  /**
+   * Connect to PageSeeder and fetch the XML using the GET method.
+   *
+   * <p>If the handler is not specified, the xml writer receives a copy of the PageSeeder XML.
+   *
+   * @param xml     the XML to copy from PageSeeder
+   * @param handler the handler for the XML (can be used to rewrite the XML)
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  public PSHTTPResponseInfo get(DefaultHandler handler) throws APIException {
+    return handle(Method.GET, handler);
+  }
+
+  /**
+   * Connect to PageSeeder and fetch the XML using the GET method.
+   *
+   * <p>Templates can be specified to transform the XML.
+   *
+   * @param xml       The XML to copy from PageSeeder
+   * @param templates A set of templates to process the XML (optional)
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  public PSHTTPResponseInfo get(XMLWriter xml, Templates templates) throws APIException {
+    return transform(Method.GET, xml, templates, null);
+  }
+
+  /**
+   * Connect to PageSeeder and fetch the XML using the GET method.
+   *
+   * <p>Templates can be specified to transform the XML.
+   *
+   * @param xml       The XML to copy from PageSeeder
+   * @param templates A set of templates to process the XML (optional)
+   * @param parameters Parameters to send to the XSLT transformer (optional)
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  public PSHTTPResponseInfo get(XMLWriter xml, Templates templates, Map<String, String> parameters) throws APIException {
+    return transform(Method.GET, xml, templates, parameters);
+  }
+
+  /**
+   * Connect to PageSeeder via POST and discard the output.
+   *
+   * <p>Error messages will be captured.
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  public PSHTTPResponseInfo post() throws APIException {
+    return handle(Method.POST, (DefaultHandler)null);
+  }
+
+  /**
+   * Connect to PageSeeder via POST.
+   *
+   * @param xml the XML to copy from PageSeeder
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  public PSHTTPResponseInfo post(DefaultHandler handler) throws APIException {
+    return handle(Method.POST, handler);
+  }
+
+  /**
+   * Connect to PageSeeder via POST.
+   *
+   * @param xml the XML to copy from PageSeeder
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  public PSHTTPResponseInfo post(XMLWriter xml) throws APIException {
+    return copy(Method.POST, xml);
+  }
+
+  /**
+   * Connect to PageSeeder and fetch the XML using the POST method.
+   *
+   * <p>Templates can be specified to transform the XML.
+   *
+   * @param xml       The XML output after transformation
+   * @param templates A set of templates to process the XML
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  public PSHTTPResponseInfo post(XMLWriter xml, Templates templates) throws APIException {
+    return transform(Method.POST, xml, templates, null);
+  }
+
+  /**
+   * Connect to PageSeeder and fetch the XML using the POST method.
+   *
+   * <p>Templates can be specified to transform the XML.
+   *
+   * @param xml        The XML output after transformation
+   * @param templates  A set of templates to process the XML
+   * @param parameters Parameters to send to the XSLT transformer
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  public PSHTTPResponseInfo post(XMLWriter xml, Templates templates, Map<String, String> parameters) throws APIException {
+    return transform(Method.POST, xml, templates, parameters);
+  }
+
+  /**
+   * Connect to PageSeeder via POST.
+   *
+   * @param xml the XML to copy from PageSeeder
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  public PSHTTPResponseInfo put(DefaultHandler handler) throws APIException {
+    return handle(Method.PUT, handler);
+  }
+
+  /**
+   * Connect to PageSeeder via POST.
+   *
+   * @param xml the XML to copy from PageSeeder
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  public PSHTTPResponseInfo put(XMLWriter xml) throws APIException {
+    return copy(Method.PUT, xml);
+  }
+
+
+  /**
+   * Connect to PageSeeder via POST.
+   *
+   * @param xml the XML to copy from PageSeeder
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  public PSHTTPResponseInfo delete(DefaultHandler handler) throws APIException {
+    return handle(Method.DELETE, handler);
+  }
+
+  /**
+   * Connect to PageSeeder via POST.
+   *
+   * @param xml the XML to copy from PageSeeder
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  public PSHTTPResponseInfo delete(XMLWriter xml) throws APIException {
+    return copy(Method.DELETE, xml);
+  }
+
+  // Private helpers
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Connect to PageSeeder and handle the XML response using the specified handler.
+   *
+   * @param method    The HTTP Method to use
+   * @param handler   The content handler to parse the XML
+   *
+   * @throws APIException Will wrap any I/O error thrown by the underlying connection.
+   *
+   * @return The response info object.
+   */
+  private PSHTTPResponseInfo handle(Method method, DefaultHandler handler) throws APIException {
+    PSHTTPResource resource = this._resource.build();
+    PSHTTPResponseInfo response = new PSHTTPResponseInfo();
+    try {
+      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this._user);
+      connection.process(response, handler);
+    } catch (IOException ex) {
+      throw new APIException(ex);
+    } finally {
+      LOGGER.info("{} [{}] -> {}", resource, method, response);
+    }
+    return response;
+  }
+
+  /**
+   * Connect to PageSeeder and fetch the XML using the GET method.
+   *
+   * <p>If the handler is not specified, the xml writer receives a copy of the PageSeeder XML.
+   *
+   * <p>If templates are specified they take precedence over the handler.
+   *
+   * @param xml       The XML to copy from PageSeeder
+   * @param type      The type of connection
+   * @param handler   The handler for the XML (can be used to rewrite the XML)
+   * @param templates A set of templates to process the XML (optional)
+   * @param parameters Parameters to send to the XSLT transformer (optional)
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  private PSHTTPResponseInfo copy(Method method, XMLWriter xml) throws APIException {
+    PSHTTPResource resource = this._resource.build();
+    PSHTTPResponseInfo response = new PSHTTPResponseInfo();
+    try {
+      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this._user);
+      connection.process(response, xml);
+    } catch (IOException ex) {
+      throw new APIException(ex);
+    } finally {
+      LOGGER.info("{} [{}] -> {}", resource, method, response);
+    }
+    return response;
+  }
+
+  /**
+   * Connect to PageSeeder and fetch the XML using the GET method.
+   *
+   * <p>If the handler is not specified, the xml writer receives a copy of the PageSeeder XML.
+   *
+   * <p>If templates are specified they take precedence over the handler.
+   *
+   * @param xml       The XML to copy from PageSeeder
+   * @param type      The type of connection
+   * @param handler   The handler for the XML (can be used to rewrite the XML)
+   * @param templates A set of templates to process the XML (optional)
+   * @param parameters Parameters to send to the XSLT transformer (optional)
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   *
+   * @return <code>true</code> if the request was processed without errors;
+   *         <code>false</code> otherwise.
+   */
+  private PSHTTPResponseInfo transform(Method method, XMLWriter xml, Templates templates, Map<String, String> parameters) throws APIException {
+    PSHTTPResource resource = this._resource.build();
+    PSHTTPResponseInfo response = new PSHTTPResponseInfo();
+    try {
+      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this._user);
+      connection.process(response, xml, templates, parameters);
+    } catch (IOException ex) {
+      throw new APIException(ex);
+    } finally {
+      LOGGER.info("{} [{}] -> {}", resource, method, response);
+    }
+    return response;
+  }
+
+}

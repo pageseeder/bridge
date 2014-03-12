@@ -8,19 +8,19 @@
 package org.pageseeder.bridge.xml;
 
 import org.pageseeder.bridge.PSEntityCache;
-import org.pageseeder.bridge.core.PSDocument;
-import org.pageseeder.bridge.core.PSFolder;
-import org.pageseeder.bridge.core.PSGroup;
-import org.pageseeder.bridge.core.PSGroupFolder;
-import org.pageseeder.bridge.core.PSMember;
-import org.pageseeder.bridge.core.PSMembership;
-import org.pageseeder.bridge.core.PSNotification;
-import org.pageseeder.bridge.core.PSProject;
-import org.pageseeder.bridge.core.PSRole;
-import org.pageseeder.bridge.spi.DocumentManager;
-import org.pageseeder.bridge.spi.GroupManager;
-import org.pageseeder.bridge.spi.MemberManager;
-import org.pageseeder.bridge.spi.MembershipManager;
+import org.pageseeder.bridge.control.DocumentManager;
+import org.pageseeder.bridge.control.GroupManager;
+import org.pageseeder.bridge.control.MemberManager;
+import org.pageseeder.bridge.control.MembershipManager;
+import org.pageseeder.bridge.model.PSDocument;
+import org.pageseeder.bridge.model.PSFolder;
+import org.pageseeder.bridge.model.PSGroup;
+import org.pageseeder.bridge.model.PSGroupFolder;
+import org.pageseeder.bridge.model.PSMember;
+import org.pageseeder.bridge.model.PSMembership;
+import org.pageseeder.bridge.model.PSNotification;
+import org.pageseeder.bridge.model.PSProject;
+import org.pageseeder.bridge.model.PSRole;
 import org.xml.sax.Attributes;
 
 /**

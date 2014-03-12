@@ -10,8 +10,8 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pageseeder.bridge.core.PSDocument;
-import org.pageseeder.bridge.core.PSFolder;
+import org.pageseeder.bridge.model.PSDocument;
+import org.pageseeder.bridge.model.PSFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;

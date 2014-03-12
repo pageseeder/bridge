@@ -7,8 +7,8 @@
  */
 package org.pageseeder.bridge.xml;
 
-import org.pageseeder.bridge.core.PSNotification;
-import org.pageseeder.bridge.core.PSRole;
+import org.pageseeder.bridge.model.PSNotification;
+import org.pageseeder.bridge.model.PSRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
