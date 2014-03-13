@@ -8,8 +8,8 @@
 package org.pageseeder.bridge.control;
 
 import org.pageseeder.bridge.APIException;
-import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.PSEntityCache;
+import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
@@ -19,9 +19,10 @@ import org.pageseeder.bridge.xml.PSMemberHandler;
  * A manager for groups and projects (based on PageSeeder Groups)
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.0
+ * @since 0.2.0
  */
-public final class MemberManager extends PSManager {
+public final class MemberManager extends Sessionful {
 
   /**
    * Where the users are cached.
@@ -47,9 +48,8 @@ public final class MemberManager extends PSManager {
   public PSMember getByUsername(String username) throws APIException {
     PSMember member = cache.get(username);
     if (member == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getMember(username);
+      PSHTTPConnector connector = PSHTTPConnectors.getMember(username).using(this.session);
       PSMemberHandler handler = new PSMemberHandler();
-      connector.setUser(this.user);
       connector.get(handler);
       member = handler.getMember();
       if (member != null)
@@ -70,9 +70,8 @@ public final class MemberManager extends PSManager {
   public void save(PSMember member) throws APIException {
     // TODO Verify
     // XXX Force email change set to true (requires Admin)
-    PSHTTPConnector connector = PSHTTPConnectors.editMember(member, true);
+    PSHTTPConnector connector = PSHTTPConnectors.editMember(member, true).using(this.session);
     PSMemberHandler handler = new PSMemberHandler(member);
-    connector.setUser(this.user);
     connector.post(handler);
     member = handler.getMember();
     if (member != null)
@@ -88,8 +87,7 @@ public final class MemberManager extends PSManager {
    * @throws APIException
    */
   public void resetSession() throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.resetSession();
-    connector.setUser(this.user);
+    PSHTTPConnector connector = PSHTTPConnectors.resetSession().using(this.session);
     connector.post();
   }
 

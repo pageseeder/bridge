@@ -31,7 +31,8 @@ import org.slf4j.LoggerFactory;
  * A cache for a PageSeeder entity backed by EHCache.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.0
+ * @since 0.2.0
  */
 public final class EHEntityCache<T extends PSEntity> implements PSEntityCache<T> {
 
@@ -84,7 +85,7 @@ public final class EHEntityCache<T extends PSEntity> implements PSEntityCache<T>
   /**
    * Retrieve the object in the cache for the specified key.
    *
-   * @param key The key
+   * @param id The ID of the PageSeeder entity in the PageSeeder database.
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
@@ -179,7 +180,6 @@ public final class EHEntityCache<T extends PSEntity> implements PSEntityCache<T>
   /**
    * Put a new element in the underlying cache.
    *
-   * @param key   The key
    * @param value The corresponding element.
    */
   @Override

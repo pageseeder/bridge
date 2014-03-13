@@ -50,11 +50,12 @@ import com.topologi.diffx.xml.XMLWriter;
 /**
  * Wraps an HTTP connection to PageSeeder.
  *
- * <p>Note: This class was forked from Bastille 0.8.29
+ * <p>Note: This class was initially forked from Bastille 0.8.29
  *
  * @author Christophe Lauret
  *
- * @version 0.1.0
+ * @version 0.2.0
+ * @since 0.2.0
  */
 public final class PSHTTPConnection {
 
@@ -176,7 +177,7 @@ public final class PSHTTPConnection {
         throw new IOException("Cannot add XML part unless connection type is set to Multipart");
 
       // Start with boundary
-      write(this._boundary+"\r\n", this.out);
+      write(this._boundary + "\r\n", this.out);
       // Headers if specified
       if (headers != null) {
         for (Entry<String, String> h : headers.entrySet()) {
@@ -319,7 +320,7 @@ public final class PSHTTPConnection {
     } catch (ConnectException ex) {
       String message = ex.getMessage();
       LOGGER.warn("Unable to connect to PageSeeder: {}", message);
-      response.setStatus(Status.CONNECTION_ERROR, message != null? message : "Unable to connect");
+      response.setStatus(Status.CONNECTION_ERROR, message != null ? message : "Unable to connect");
       throw ex;
     }
   }
@@ -368,7 +369,7 @@ public final class PSHTTPConnection {
     } catch (ConnectException ex) {
       String message = ex.getMessage();
       LOGGER.warn("Unable to connect to PageSeeder: {}", message);
-      response.setStatus(Status.CONNECTION_ERROR, message != null? message : "Unable to connect");
+      response.setStatus(Status.CONNECTION_ERROR, message != null ? message : "Unable to connect");
       throw ex;
     }
   }
@@ -434,7 +435,7 @@ public final class PSHTTPConnection {
     } catch (ConnectException ex) {
       String message = ex.getMessage();
       LOGGER.warn("Unable to connect to PageSeeder: {}", message);
-      response.setStatus(Status.CONNECTION_ERROR, message != null? message : "Unable to connect");
+      response.setStatus(Status.CONNECTION_ERROR, message != null ? message : "Unable to connect");
       throw ex;
     }
 
@@ -463,7 +464,7 @@ public final class PSHTTPConnection {
    * Updates the user session ID and last connection time from the HTTP response headers.
    *
    * @param connection the HTTP connection
-   * @param user The current user.
+   * @param session The current user.
    */
   private static void updateUser(HttpURLConnection connection, PSSession session) {
     // Updating the session of the PageSeeder user
@@ -471,8 +472,8 @@ public final class PSHTTPConnection {
       session.update();
     } else {
       PSSession tmp = Sessions.getAnonymous();
-      if (Sessions.isValid(session)) {
-        session.update();
+      if (Sessions.isValid(tmp)) {
+        tmp.update();
       } else {
         LOGGER.info("Setting anonymous PageSeeder session");
         Sessions.setAnonymous(new PSSession(getJSessionIDfromCookie(connection)));
@@ -510,11 +511,11 @@ public final class PSHTTPConnection {
    * @throws IOException Should an exception be returns while opening the connection
    */
   protected static PSHTTPConnection connect(PSHTTPResource resource, Method type, PSSession user) throws IOException {
-    URL url = resource.toURL(user, type == Method.POST? false : true);
+    URL url = resource.toURL(user, type == Method.POST ? false : true);
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setDoOutput(true);
     connection.setInstanceFollowRedirects(true);
-    connection.setRequestMethod(type == Method.MULTIPART? "POST" : type.name());
+    connection.setRequestMethod(type == Method.MULTIPART ? "POST" : type.name());
     connection.setDefaultUseCaches(false);
     connection.setRequestProperty("X-Requester", "PSAPI-"+API_VERSION);
     String boundary = null;
@@ -578,7 +579,7 @@ public final class PSHTTPConnection {
     InputStream in = null;
     try {
       // Get the source as input stream
-      in = isOK(connection.getResponseCode())? connection.getInputStream() : connection.getErrorStream();
+      in = isOK(connection.getResponseCode()) ? connection.getInputStream() : connection.getErrorStream();
       InputSource source = new InputSource(in);
       source.setSystemId(connection.getURL().toString());
 
@@ -631,7 +632,7 @@ public final class PSHTTPConnection {
 
     InputStream in = null;
     try {
-      in = isOK(connection.getResponseCode())? connection.getInputStream() : connection.getErrorStream();
+      in = isOK(connection.getResponseCode()) ? connection.getInputStream() : connection.getErrorStream();
 
       // Setup the source
       StreamSource source = new StreamSource(in);
@@ -860,7 +861,7 @@ public final class PSHTTPConnection {
      */
     public HandlerDispatcher(XMLReader reader, PSHTTPResponseInfo response, DefaultHandler handler) {
       this.reader = reader;
-      this.handler = handler != null? handler : new DefaultHandler();
+      this.handler = handler != null ? handler : new DefaultHandler();
       this.response = response;
     }
 

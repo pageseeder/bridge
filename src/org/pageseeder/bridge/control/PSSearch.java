@@ -25,27 +25,16 @@ import org.pageseeder.bridge.xml.PSResultHandler;
  * PageSeeder and results the index results as fields.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.0
+ * @since 0.2.0
  */
-public final class PSSearch {
-
-  /**
-   * The user connecting to the server.
-   */
-  private final PSSession user;
+public final class PSSearch extends Sessionful {
 
   /**
    * Sole constructor;
    */
   public PSSearch(PSSession user) {
-    this.user = user;
-  }
-
-  /**
-   * @return the user
-   */
-  public PSSession user() {
-    return this.user;
+    super(user);
   }
 
   /**
@@ -59,29 +48,27 @@ public final class PSSearch {
    * @throws APIException
    */
   public List<PSResult> find(PSPredicate predicate, PSGroup group) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, group);
+    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, group).using(this.session);
     PSResultHandler handler = new PSResultHandler();
-    connector.setUser(this.user);
     connector.get(handler);
     return handler.listResults();
   }
 
   /**
-  *
-  *
-  * @param predicate The search predicate
-  * @param group     The group within which the search is conducted
-  *
-  * @return The search ressults.
-  *
-  * @throws APIException
-  */
- public List<PSResult> find(PSPredicate predicate, List<PSGroup> groups) throws APIException {
-   PSHTTPConnector connector = PSHTTPConnectors.find(predicate, groups);
-   PSResultHandler handler = new PSResultHandler();
-   connector.setUser(this.user);
-   connector.get(handler);
-   return handler.listResults();
- }
+   *
+   *
+   * @param predicate The search predicate
+   * @param groups    The list of groups within which the search is conducted
+   *
+   * @return The search ressults.
+   *
+   * @throws APIException
+   */
+  public List<PSResult> find(PSPredicate predicate, List<PSGroup> groups) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, groups).using(this.session);
+    PSResultHandler handler = new PSResultHandler();
+    connector.get(handler);
+    return handler.listResults();
+  }
 
 }

@@ -55,7 +55,8 @@ import com.topologi.diffx.xml.XMLWriter;
  * <p>Note: This class was forked from Bastille 0.8.29
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.0
+ * @since 0.2.0
  */
 public final class PSHTTPConnector {
 
@@ -70,7 +71,7 @@ public final class PSHTTPConnector {
   /**
    * If specified, the request will be made on behalf of that user.
    */
-  private PSSession _user = null;
+  private PSSession session = null;
 
   /**
    * Creates a new connection to the specified resource.
@@ -83,11 +84,22 @@ public final class PSHTTPConnector {
   }
 
   /**
+   * Sets the user for this request as a chainable method.
+   *
+   * @param user the user for this request.
+   * @return this connector
+   */
+  public PSHTTPConnector using(PSSession user) {
+    this.session = user;
+    return this;
+  }
+
+  /**
    * Sets the user for this request.
    * @param user the user for this request.
    */
   public void setUser(PSSession user) {
-    this._user = user;
+    this.session = user;
   }
 
   /**
@@ -126,7 +138,7 @@ public final class PSHTTPConnector {
    */
   public PSHTTPConnection connect(Method type) throws IOException {
     PSHTTPResource r = this._resource.build();
-    return PSHTTPConnection.connect(r, type, this._user);
+    return PSHTTPConnection.connect(r, type, this.session);
   }
 
   // Shorthand requests
@@ -363,7 +375,7 @@ public final class PSHTTPConnector {
     PSHTTPResource resource = this._resource.build();
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     try {
-      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this._user);
+      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.session);
       connection.process(response, handler);
     } catch (IOException ex) {
       throw new APIException(ex);
@@ -395,7 +407,7 @@ public final class PSHTTPConnector {
     PSHTTPResource resource = this._resource.build();
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     try {
-      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this._user);
+      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.session);
       connection.process(response, xml);
     } catch (IOException ex) {
       throw new APIException(ex);
@@ -427,7 +439,7 @@ public final class PSHTTPConnector {
     PSHTTPResource resource = this._resource.build();
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     try {
-      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this._user);
+      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.session);
       connection.process(response, xml, templates, parameters);
     } catch (IOException ex) {
       throw new APIException(ex);

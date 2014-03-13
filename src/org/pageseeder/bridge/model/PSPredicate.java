@@ -91,8 +91,8 @@ public final class PSPredicate implements Serializable {
   /**
    * Add a facet for the specified index field.
    *
-   * @param property The name of the index field
-   * @param value    The value it should match (for that facet)
+   * @param field The name of the index field
+   * @param value The value it should match (for that facet)
    */
   public void addFacet(String field, String value) {
     this.facets.put(field, value);

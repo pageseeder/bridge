@@ -11,8 +11,8 @@ import java.util.List;
 
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.InvalidEntityException;
-import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.PSEntityCache;
+import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSMembership;
@@ -24,9 +24,10 @@ import org.pageseeder.bridge.xml.PSMembershipHandler;
  * A manager for memberships (based on PageSeeder MemberForGroups and Details)
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.0
+ * @since 0.2.0
  */
-public final class MembershipManager extends PSManager {
+public final class MembershipManager extends Sessionful {
 
   /**
    * Internal cache for memberships
@@ -44,9 +45,8 @@ public final class MembershipManager extends PSManager {
    */
   public void create(PSMembership membership) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, null, true);
+    PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, null, true).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.setUser(this.user);
     connector.post(handler);
   }
 
@@ -58,9 +58,8 @@ public final class MembershipManager extends PSManager {
    */
   public void create(PSMembership membership, String password) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, password, true);
+    PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, password, true).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.setUser(this.user);
     connector.post(handler);
   }
 
@@ -71,9 +70,8 @@ public final class MembershipManager extends PSManager {
    */
   public void invite(PSMembership membership) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, true);
+    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, true).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.setUser(this.user);
     connector.post(handler);
   }
 
@@ -84,9 +82,8 @@ public final class MembershipManager extends PSManager {
    */
   public void inviteSelf(PSMembership membership) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.inviteSelf(membership, true);
+    PSHTTPConnector connector = PSHTTPConnectors.inviteSelf(membership, true).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.setUser(this.user);
     connector.post(handler);
   }
 
@@ -97,9 +94,8 @@ public final class MembershipManager extends PSManager {
    */
   public void register(PSMembership membership) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.registerMembership(membership);
+    PSHTTPConnector connector = PSHTTPConnectors.registerMembership(membership).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.setUser(this.user);
     connector.post(handler);
   }
 
@@ -115,9 +111,8 @@ public final class MembershipManager extends PSManager {
    * @throws APIException
    */
   public PSMembership get(String group, String member) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(group, member);
+    PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(group, member).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler();
-    connector.setUser(this.user);
     connector.get(handler);
     return handler.getMembership();
   }
@@ -134,9 +129,8 @@ public final class MembershipManager extends PSManager {
   public PSMembership get(PSGroup group, PSMember member) throws APIException {
     if (!group.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
     if (!member.isValid()) throw new InvalidEntityException(PSMember.class, member.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(group.getName(), member.getUsername());
+    PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(group.getName(), member.getUsername()).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler(group);
-    connector.setUser(this.user);
     connector.get(handler);
     return handler.getMembership();
   }
@@ -148,9 +142,8 @@ public final class MembershipManager extends PSManager {
    * @param member The username of the member
    */
   public void remove(String group, String member) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.deleteMembership(group, member);
+    PSHTTPConnector connector = PSHTTPConnectors.deleteMembership(group, member).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler();
-    connector.setUser(this.user);
     connector.post(handler);
   }
 
@@ -172,9 +165,8 @@ public final class MembershipManager extends PSManager {
    */
   public void save(PSMembership membership, boolean forceEmail) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.editMembership(membership, forceEmail);
+    PSHTTPConnector connector = PSHTTPConnectors.editMembership(membership, forceEmail).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.setUser(this.user);
     connector.post(handler);
   }
 
@@ -183,22 +175,17 @@ public final class MembershipManager extends PSManager {
    * Updates the password of the member.
    */
   public void updatePassword(PSMembership membership, String password) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.updatePassword(membership, password);
-    connector.setUser(this.user);
+    PSHTTPConnector connector = PSHTTPConnectors.updatePassword(membership, password).using(this.session);
     connector.post();
   }
 
   /**
-   * Returns the list of memberships for the specified member.
-   *
-   * @param member
-   * @return
+   * @return the list of memberships for the specified member.
    */
   public List<PSMembership> listForMember(PSMember member) throws APIException {
     if (!member.isValid()) throw new InvalidEntityException(PSMember.class, member.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(member.getUsername());
+    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(member.getUsername()).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler(member);
-    connector.setUser(this.user);
     connector.get(handler);
     return handler.listMemberships();
   }
@@ -207,13 +194,10 @@ public final class MembershipManager extends PSManager {
    * Returns the list of membership for specific user.
    *
    * @param username the member username
-   * @return
-   * @throws APIException
    */
   public List<PSMembership> listForMember(String username) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(username);
+    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(username).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler();
-    connector.setUser(this.user);
     connector.get(handler);
     return handler.listMemberships();
   }
@@ -222,29 +206,19 @@ public final class MembershipManager extends PSManager {
    * Returns the list of memberships for specific group.
    *
    * @param group the name of the group.
-   * @return
-   * @throws APIException
    */
   public List<PSMembership> listForGroup(PSGroup group) throws APIException {
     if (!group.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForGroup(group.getName());
+    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForGroup(group.getName()).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler(group);
-    connector.setUser(this.user);
     connector.get(handler);
     return handler.listMemberships();
   }
 
-  /**
-   *
-   * @param membership
-   *
-   * @return
-   * @throws APIException
-   */
+
   public List<PSMembership> find(PSMembership membership, boolean isManager) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.findMembershipsForGroup(membership, isManager);
+    PSHTTPConnector connector = PSHTTPConnectors.findMembershipsForGroup(membership, isManager).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler(membership.getGroup());
-    connector.setUser(this.user);
     connector.get(handler);
     return handler.listMemberships();
   }

@@ -22,10 +22,11 @@ import org.pageseeder.bridge.PSSession;
 /**
  * Defines a resource to retrieve from PageSeeder.
  *
- * <p>Note: This class was forked from Bastille 0.8.29
+ * <p>Note: This class was initially forked from Bastille 0.8.29
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.0
+ * @since 0.2.0
  */
 public final class PSHTTPResource {
 
@@ -317,17 +318,17 @@ public final class PSHTTPResource {
   public static final class Builder {
 
     /** The type of resource accessed. */
-    private PSHTTPResourceType _type;
+    private PSHTTPResourceType type;
 
     /**
      * The name of the resource to access.
      */
-    private String _name;
+    private String name;
 
     /**
      * Whether to include errors
      */
-    private boolean _includeError = false;
+    private boolean includeError = false;
 
     /**
      * The parameters to send.
@@ -347,10 +348,10 @@ public final class PSHTTPResource {
      * @param name The name of the resource to access (depends on the type of resource)
      */
     public Builder(PSHTTPResourceType type, String name) {
-      this._type = type;
-      this._name = name;
+      this.type = type;
+      this.name = name;
       // Only include the error if we are connecting to a service as we can get some useful info from the XML
-      this._includeError = type == PSHTTPResourceType.SERVICE;
+      this.includeError = type == PSHTTPResourceType.SERVICE;
     }
 
     /**
@@ -359,7 +360,7 @@ public final class PSHTTPResource {
      * @return this builder
      */
     public Builder type(PSHTTPResourceType type) {
-      this._type = type;
+      this.type = type;
       return this;
     }
 
@@ -369,7 +370,7 @@ public final class PSHTTPResource {
      * @return this builder
      */
     public Builder name(String name) {
-      this._name = name;
+      this.name = name;
       return this;
     }
 
@@ -380,7 +381,7 @@ public final class PSHTTPResource {
      *                <code>false</code> to only include the response when the response code is between 200 and 299.
      */
     protected void includeErrorContent(boolean include) {
-      this._includeError = include;
+      this.includeError = include;
     }
 
     /**
@@ -400,15 +401,15 @@ public final class PSHTTPResource {
      * @return The corresponding resource.
      */
     public PSHTTPResource build() {
-      if (this._type == null) throw new IllegalStateException("Unable to build PSResource, type is not set.");
-      if (this._name == null) throw new IllegalStateException("Unable to build PSResource, name is not set.");
+      if (this.type == null) throw new IllegalStateException("Unable to build PSResource, type is not set.");
+      if (this.name == null) throw new IllegalStateException("Unable to build PSResource, name is not set.");
       Map<String, String> parameters = null;
       if (this._parameters.isEmpty()) {
         parameters = Collections.<String, String>emptyMap();
       } else {
         parameters = new HashMap<String, String>(this._parameters);
       }
-      return new PSHTTPResource(this._type, this._name, parameters, this._includeError);
+      return new PSHTTPResource(this.type, this.name, parameters, this.includeError);
     }
 
   }

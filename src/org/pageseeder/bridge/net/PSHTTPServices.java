@@ -13,7 +13,8 @@ package org.pageseeder.bridge.net;
  * <p>Provides useful constants for Services used in this project.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.0
+ * @since 0.2.0
  */
 final class PSHTTPServices {
 

@@ -15,29 +15,30 @@ import org.pageseeder.bridge.PSSession;
  * <p>All managers should specify a user to connect to PageSeeder.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.0
+ * @since 0.2.0
  */
-abstract class PSManager {
+abstract class Sessionful {
 
   /**
    * The user connecting to the server.
    */
-  protected final PSSession user;
+  protected final PSSession session;
 
   /**
    * Create a new manager using the specified user.
    *
    * @param user the using making the connections.
    */
-  public PSManager(PSSession user) {
-    this.user = user;
+  public Sessionful(PSSession user) {
+    this.session = user;
   }
 
   /**
-   * @return the user
+   * @return the session used by the class.
    */
-  public PSSession user() {
-    return this.user;
+  public PSSession session() {
+    return this.session;
   }
 
 }

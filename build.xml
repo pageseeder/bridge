@@ -13,7 +13,6 @@
   <property name="name.short"     value="ps-bridge"/>
   <property name="name.display"   value="PageSeeder Bridge"/>
   <property name="package.names"  value="org.pageseeder.bridge.*"/>
-  <property name="package.main"   value="org.pageseeder.bridge.Main"/>
 
   <!-- set global properties for this build -->
   <property name="dir.src"     value="src"/>

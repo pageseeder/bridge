@@ -32,7 +32,8 @@ import org.pageseeder.bridge.psml.PSMLFragment;
  * A utility class to provide predefined PageSeeder connectors.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.0
+ * @since 0.2.0
  */
 public final class PSHTTPConnectors {
 
@@ -48,7 +49,7 @@ public final class PSHTTPConnectors {
   /**
    * Reset the session for the current user.
    *
-   * @see https://dev.pageseeder.com/api/web/services/reset-session-POST.html
+   * @see <a href="https://dev.pageseeder.com/api/web/services/reset-session-POST.html">Reset Session (POST)</a>
    *
    * @return the corresponding connector
    */

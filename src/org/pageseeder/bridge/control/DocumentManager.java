@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.pageseeder.bridge.APIException;
-import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.PSEntityCache;
+import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSFolder;
 import org.pageseeder.bridge.model.PSGroup;
@@ -35,9 +35,10 @@ import com.topologi.diffx.xml.XMLWriter;
  * A manager for documents and folders (based on PageSeeder URIs)
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.0
+ * @since 0.2.0
  */
-public class DocumentManager extends PSManager {
+public class DocumentManager extends Sessionful {
 
   /**
    * Where the documents are cached.
@@ -73,7 +74,7 @@ public class DocumentManager extends PSManager {
       connector = PSHTTPConnectors.createDocument(document, group, creator, null);
     }
     PSDocumentHandler handler = new PSDocumentHandler(document);
-    connector.setUser(this.user);
+    connector.setUser(this.session);
     connector.post(handler);
   }
 
@@ -93,7 +94,7 @@ public class DocumentManager extends PSManager {
       connector = PSHTTPConnectors.createDocument(document, group, creator, parameters);
     }
     PSDocumentHandler handler = new PSDocumentHandler(document);
-    connector.setUser(this.user);
+    connector.setUser(this.session);
     PSHTTPResponseInfo info = connector.post(handler);
     return info.getStatus() == Status.OK;
   }
@@ -105,9 +106,8 @@ public class DocumentManager extends PSManager {
    * @param creator  The member creating the document
    */
   public boolean create(PSDocument document, PSGroup group, PSGroupFolder folder, PSMember creator) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, null);
+    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, null).using(this.session);
     PSDocumentHandler handler = new PSDocumentHandler(document);
-    connector.setUser(this.user);
     PSHTTPResponseInfo info = connector.post(handler);
     return info.getStatus() == Status.OK;
   }
@@ -119,9 +119,8 @@ public class DocumentManager extends PSManager {
    * @param creator  The member creating the document
    */
   public boolean create(PSDocument document, PSGroup group, PSGroupFolder folder, PSMember creator, Map<String, String> parameters) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, parameters);
+    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, parameters).using(this.session);
     PSDocumentHandler handler = new PSDocumentHandler(document);
-    connector.setUser(this.user);
     PSHTTPResponseInfo info = connector.post(handler);
     return info.getStatus() == Status.OK;
   }
@@ -132,9 +131,8 @@ public class DocumentManager extends PSManager {
   public PSDocument getDocument(long id, PSGroup group) throws APIException {
     PSDocument document = cache.get(Long.valueOf(id));
     if (document == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getURI(id, group);
+      PSHTTPConnector connector = PSHTTPConnectors.getURI(id, group).using(this.session);
       PSDocumentHandler handler = new PSDocumentHandler();
-      connector.setUser(this.user);
       connector.get(handler);
       document = handler.getDocument();
       if (document != null)
@@ -148,14 +146,13 @@ public class DocumentManager extends PSManager {
    *
    * @param url The URL
    *
-   * @return
+   * @return the corresponding document
    */
   public PSDocument getDocument(String url, PSGroup group) throws APIException {
     PSDocument document = cache.get(url);
     if (document == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group);
+      PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group).using(this.session);
       PSDocumentHandler handler = new PSDocumentHandler();
-      connector.setUser(this.user);
       connector.get(handler);
       document = handler.getDocument();
       if (document != null)
@@ -169,14 +166,13 @@ public class DocumentManager extends PSManager {
    *
    * @param url The URL
    *
-   * @return
+   * @return the corresponding folder
    */
   public PSFolder getFolder(String url, PSGroup group) throws APIException {
     PSFolder folder = folders.get(url);
     if (folder == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group);
+      PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group).using(this.session);
       PSDocumentHandler handler = new PSDocumentHandler();
-      connector.setUser(this.user);
       connector.get(handler);
       folder = handler.getFolder();
       if (folder != null)
@@ -188,47 +184,26 @@ public class DocumentManager extends PSManager {
   /**
    * Creates the group the specified group in PageSeeder.
    *
-   * @param name The name of the group.
+   * @param group The group instance.
    * @return The corresponding instance.
    */
   public List<PSDocument> listDocuments(PSGroup group) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.listDocumentsInGroup(group);
+    PSHTTPConnector connector = PSHTTPConnectors.listDocumentsInGroup(group).using(this.session);
     PSDocumentBrowseHandler handler = new PSDocumentBrowseHandler();
-    connector.setUser(this.user);
     connector.get(handler);
     return handler.listDocuments();
   }
 
-  /**
-   *
-   * @param document
-   * @param group
-   * @param editor
-   * @param fragment
-   *
-   * @throws APIException
-   */
   public PSMLFragment getFragment(PSDocument document, PSGroup group, PSMember editor, String fragment) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.getFragment(document, group, editor, fragment);
+    PSHTTPConnector connector = PSHTTPConnectors.getFragment(document, group, editor, fragment).using(this.session);
     PSFragmentHandler handler = new PSFragmentHandler();
-    connector.setUser(this.user);
     connector.get(handler);
     return handler.getFragment();
   }
 
-  /**
-   *
-   * @param document
-   * @param group
-   * @param editor
-   * @param fragment
-   *
-   * @throws APIException
-   */
   public PSMLFragment putFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.putFragment(document, group, editor, fragment);
+    PSHTTPConnector connector = PSHTTPConnectors.putFragment(document, group, editor, fragment).using(this.session);
     PSFragmentHandler handler = new PSFragmentHandler();
-    connector.setUser(this.user);
     connector.post(handler);
     return handler.getFragment();
   }
@@ -237,8 +212,7 @@ public class DocumentManager extends PSManager {
    * Create the specified document in PageSeeder.
    */
   public void getContent(Long uri, XMLWriter xml) throws APIException {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/uri/"+uri);
-    connector.setUser(this.user);
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/uri/"+uri).using(this.session);
     connector.get(xml);
   }
 
@@ -249,8 +223,7 @@ public class DocumentManager extends PSManager {
    * @param xml   The XML to write the content
    */
   public void getContent(String docid, XMLWriter xml) throws APIException {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/docid/"+docid);
-    connector.setUser(this.user);
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/docid/"+docid).using(this.session);
     connector.get(xml);
   }
 
@@ -261,24 +234,19 @@ public class DocumentManager extends PSManager {
    * @param handler The handler to handle the content
    */
   public void getContent(String docid, DefaultHandler handler) throws APIException {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/docid/"+docid);
-    connector.setUser(this.user);
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/docid/"+docid).using(this.session);
     connector.get(handler);
   }
 
   /**
-   * Returns the internal cache used for the groups.
-   *
-   * @return
+   * @return the internal cache used for the groups.
    */
   public static PSEntityCache<PSDocument> getCache() {
     return cache;
   }
 
   /**
-   * Returns the internal cache used for the groups.
-   *
-   * @return
+   * @return the internal cache used for the group folders.
    */
   public static PSEntityCache<PSFolder> getFoldersCache() {
     return folders;

@@ -12,8 +12,6 @@ import java.util.List;
 
 import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSFolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -25,8 +23,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * @version 0.1.0
  */
 public class PSDocumentHandler extends DefaultHandler {
-
-  private final static Logger LOGGER = LoggerFactory.getLogger(PSDocumentBrowseHandler.class);
 
   /**
    * The current document being processed.

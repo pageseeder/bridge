@@ -14,8 +14,6 @@ import org.pageseeder.bridge.psml.Fragment;
 import org.pageseeder.bridge.psml.PSMLFragment;
 import org.pageseeder.bridge.psml.PropertiesFragment;
 import org.pageseeder.bridge.psml.Property;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -27,8 +25,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * @version 0.1.0
  */
 public final class PSFragmentHandler extends DefaultHandler {
-
-  private final static Logger LOGGER = LoggerFactory.getLogger(PSFragmentHandler.class);
 
   /**
    * The current document being processed.

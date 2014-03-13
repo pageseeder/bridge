@@ -28,9 +28,10 @@ import org.pageseeder.bridge.xml.PSGroupHandler;
  * A manager for groups and projects (based on PageSeeder Groups)
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.0
+ * @since 0.2.0
  */
-public class GroupManager extends PSManager {
+public class GroupManager extends Sessionful {
 
   /**
    * Where the groups (and projects) are cached.
@@ -52,27 +53,26 @@ public class GroupManager extends PSManager {
   }
 
   /**
-   * Creates the group the specified group in PageSeeder using default options and
+   * Creates the group the specified group in PageSeeder using default options.
    *
-   * @param group The group to create
-   * @return The corresponding instance.
+   * @param group  The group to create
+   * @param creator The member making the request
    */
-  public void createGroup(PSGroup group, PSMember member) throws APIException {
-    createGroup(group, null, member);
+  public void createGroup(PSGroup group, PSMember creator) throws APIException {
+    createGroup(group, null, creator);
   }
 
   /**
    * Creates the group the specified group in PageSeeder.
    *
-   * @param group      The group to create
-   * @param properties The group properties
-   * @return The corresponding instance.
+   * @param group   The group to create
+   * @param options The group creation options (including group properties)
+   * @param creator The member making the request
    */
-  public void createGroup(PSGroup group, GroupOptions options, PSMember member) throws APIException {
+  public void createGroup(PSGroup group, GroupOptions options, PSMember creator) throws APIException {
     if (group == null) throw new NullPointerException("group");
-    PSHTTPConnector connector = PSHTTPConnectors.createGroup(group, options, member.getUsername());
+    PSHTTPConnector connector = PSHTTPConnectors.createGroup(group, options, creator.getUsername()).using(this.session);
     PSGroupHandler handler = new PSGroupHandler(group);
-    connector.setUser(this.user);
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getCode() >= 400)
       throw new APIException("Unable to create group '"+group.getName()+"': "+info.getMessage());
@@ -83,10 +83,10 @@ public class GroupManager extends PSManager {
    * Creates the group the specified group in PageSeeder.
    *
    * @param project The project to create
-   * @return The corresponding instance.
+   * @param creator The member creating the project
    */
-  public void createProject(PSProject project, PSMember member) throws APIException {
-    createProject(project, null, member);
+  public void createProject(PSProject project, PSMember creator) throws APIException {
+    createProject(project, null, creator);
   }
 
   /**
@@ -95,12 +95,11 @@ public class GroupManager extends PSManager {
    * @param project The project to create
    * @return The corresponding instance.
    */
-  public void createProject(PSProject project, GroupOptions options, PSMember member) throws APIException {
+  public void createProject(PSProject project, GroupOptions options, PSMember creator) throws APIException {
     if (project == null) throw new NullPointerException("project");
     if (!project.isValid()) throw new InvalidEntityException(PSProject.class, project.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.createProject(project, options, member.getUsername());
+    PSHTTPConnector connector = PSHTTPConnectors.createProject(project, options, creator.getUsername()).using(this.session);
     PSGroupHandler handler = new PSGroupHandler(project);
-    connector.setUser(this.user);
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getCode() >= 400)
       throw new APIException("Unable to create project '"+project.getName()+"': "+info.getMessage());
@@ -115,9 +114,8 @@ public class GroupManager extends PSManager {
    */
   public void createGroupFolder(PSGroup group, String url, boolean isPublic) throws APIException {
     if (!group.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.createGroupFolder(group, url, isPublic);
+    PSHTTPConnector connector = PSHTTPConnectors.createGroupFolder(group, url, isPublic).using(this.session);
     PSGroupFolderHandler handler = new PSGroupFolderHandler();
-    connector.setUser(this.user);
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getCode() >= 400)
       throw new APIException("Unable to create group folder '"+url+"': "+info.getMessage());
@@ -136,9 +134,8 @@ public class GroupManager extends PSManager {
     if (name == null) throw new NullPointerException("name");
     PSGroup group = cache.get(name);
     if (group == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getGroup(name, member.getUsername());
+      PSHTTPConnector connector = PSHTTPConnectors.getGroup(name, member.getUsername()).using(this.session);
       PSGroupHandler handler = new PSGroupHandler();
-      connector.setUser(this.user);
       connector.get(handler);
       group = handler.getGroup();
       if (group != null)
@@ -173,9 +170,8 @@ public class GroupManager extends PSManager {
   public PSGroupFolder getGroupFolder(PSGroup group, String url) throws APIException {
     PSGroupFolder folder = folders.get(url);
     if (folder == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getGroupFolder(group, url);
+      PSHTTPConnector connector = PSHTTPConnectors.getGroupFolder(group, url).using(this.session);
       PSGroupFolderHandler handler = new PSGroupFolderHandler();
-      connector.setUser(this.user);
       PSHTTPResponseInfo info = connector.get(handler);
       if (info.getCode() >= 400)
         throw new APIException("Unable to find group folder '"+url+"': "+info.getMessage());
@@ -195,9 +191,8 @@ public class GroupManager extends PSManager {
    * @throws APIException
    */
   public void addSubGroup(PSGroup group, PSGroup subgroup) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.addSubGroup(group, subgroup);
+    PSHTTPConnector connector = PSHTTPConnectors.addSubGroup(group, subgroup).using(this.session);
     if (!group.isValid() && !subgroup.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
-    connector.setUser(this.user);
     PSHTTPResponseInfo info = connector.post();
     if (info.getCode() >= 400)
       throw new APIException("Unable to add subgroup '"+subgroup.getName()+"' to '"+group.getName()+"': "+info.getMessage());
@@ -217,8 +212,7 @@ public class GroupManager extends PSManager {
   public void addSubGroup(PSGroup group, PSGroup subgroup, PSNotification notification, PSRole role, boolean listed)
       throws APIException {
     if (!group.isValid() || !subgroup.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.addSubGroup(group, subgroup, notification, role, listed);
-    connector.setUser(this.user);
+    PSHTTPConnector connector = PSHTTPConnectors.addSubGroup(group, subgroup, notification, role, listed).using(this.session);
     PSHTTPResponseInfo info = connector.post();
     if (info.getCode() >= 400)
       throw new APIException("Unable to add subgroup '"+subgroup.getName()+"' to '"+group.getName()+"': "+info.getMessage());
@@ -234,8 +228,7 @@ public class GroupManager extends PSManager {
    */
   public void putResource(PSProject project, PSResource resource, boolean overwrite) throws APIException {
     if (!project.isValid()) throw new InvalidEntityException(PSProject.class, project.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.putResource(project.getName(), resource, overwrite);
-    connector.setUser(this.user);
+    PSHTTPConnector connector = PSHTTPConnectors.putResource(project.getName(), resource, overwrite).using(this.session);
     PSHTTPResponseInfo info = connector.post();
     if (info.getCode() >= 400)
       throw new APIException("Unable to put project resource on '"+project.getName()+"': "+info.getMessage());

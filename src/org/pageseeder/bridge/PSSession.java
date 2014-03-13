@@ -13,7 +13,7 @@ import java.io.Serializable;
  * A simple object to represent a PageSeeder session.
  *
  * @author Christophe Lauret
- * @version 0.1.1
+ * @version 0.2.0
  * @since 0.1.0
  */
 public final class PSSession implements Serializable {
@@ -24,16 +24,16 @@ public final class PSSession implements Serializable {
   private static final long serialVersionUID = 1L;
 
   /**
-   * The Member's jsession id.
+   * The session ID in PageSeeder.
    */
-  private String _jsessionid = null;
+  private final String _jsessionid;
 
   /**
    * Indicates when the user was last successfully connected to PageSeeder.
    *
    * <p>This time stamp is used to determine whether the session is still likely to be valid.
    */
-  private long _timestamp;
+  private long timestamp;
 
   /**
    * Create a new session with the specified ID.
@@ -42,7 +42,7 @@ public final class PSSession implements Serializable {
    */
   public PSSession(String session) {
     this._jsessionid = session;
-    this._timestamp = System.currentTimeMillis();
+    this.timestamp = System.currentTimeMillis();
   }
 
   /**
@@ -53,7 +53,7 @@ public final class PSSession implements Serializable {
    */
   public PSSession(String session, long timestamp) {
     this._jsessionid = session;
-    this._timestamp = timestamp;
+    this.timestamp = timestamp;
   }
 
   /**
@@ -67,7 +67,7 @@ public final class PSSession implements Serializable {
    * Update the timestamp for this session.
    */
   public void update() {
-    this._timestamp = System.currentTimeMillis();
+    this.timestamp = System.currentTimeMillis();
   }
 
   /**
@@ -76,7 +76,16 @@ public final class PSSession implements Serializable {
    * @return The current time minus the timestamp.
    */
   public long age() {
-    return System.currentTimeMillis() - this._timestamp;
+    return System.currentTimeMillis() - this.timestamp;
+  }
+
+  /**
+   * Returns the age of this session.
+   *
+   * @return The current time minus the timestamp.
+   */
+  public long timestamp() {
+    return this.timestamp;
   }
 
   @Override

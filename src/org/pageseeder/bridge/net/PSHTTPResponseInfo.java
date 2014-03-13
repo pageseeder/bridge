@@ -15,6 +15,8 @@ import java.net.HttpURLConnection;
  * <p>When possible, instances contain details such as the error ID and message when errors occur.
  *
  * @author Christophe Lauret
+ * @version 0.2.0
+ * @since 0.2.0
  */
 public final class PSHTTPResponseInfo {
 

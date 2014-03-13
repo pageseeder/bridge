@@ -58,8 +58,9 @@ public final class PSEntityFactory {
     String listed = atts.getValue("email-listed");
     PSNotification notification = PSHandlers.notification(atts.getValue("notification"));
     PSRole role = PSHandlers.role(atts.getValue("role"));
-    String flags = atts.getValue("flags");
-    String status = atts.getValue("status");
+    // XXX: Unused attributes
+//    String flags = atts.getValue("flags");
+//    String status = atts.getValue("status");
 
     PSMembership m = membership;
     if (m == null) {
@@ -171,7 +172,7 @@ public final class PSEntityFactory {
    *   <li><b>defaultnotify</b> - default notification of members (if available)
    * </ul>
    *
-   * @param atts  the attributes of the "member" element.
+   * @param atts  the attributes of the "group" or "project" element.
    * @param group an existing group instance to reuse (should be and instance of <code>PSProject</code>)
    *
    * @return The project instance.
@@ -216,9 +217,10 @@ public final class PSEntityFactory {
    * mediatype="folder"
    * created="2014-01-31T16:19:12+11:00"
    *
-   * @param atts
-   * @param document
-   * @return
+   * @param atts     The attributes the "uri" element
+   * @param document The PSDocument instance (may be <code>null</code>).
+   *
+   * @return The corresponding PSDocument.
    */
   public static PSDocument toDocument(Attributes atts, PSDocument document) {
     String id = atts.getValue("id");
@@ -266,9 +268,10 @@ public final class PSEntityFactory {
    * mediatype="folder"
    * created="2014-01-31T16:19:12+11:00"
    *
-   * @param atts
-   * @param document
-   * @return
+   * @param atts   The attributes of the "uri" element
+   * @param folder The folder instance (may be <code>null</code>).
+   *
+   * @return the corresponding folder instance.
    */
   public static PSFolder toFolder(Attributes atts, PSFolder folder) {
     String id = atts.getValue("id");
@@ -299,7 +302,7 @@ public final class PSEntityFactory {
    * Generates the group folder object from the attributes of a "groupfolder" element.
    *
    *
-   * @param atts   the attributes of the "member" element.
+   * @param atts   the attributes of the "groupfolder" element.
    * @param folder an existing group folder instance to reuse.
    *
    * @return The group folder instance.
