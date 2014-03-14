@@ -21,20 +21,20 @@ package org.pageseeder.bridge;
  *
  * @author Christophe Lauret
  */
-public class InvalidEntityException extends APIException {
+public final class InvalidEntityException extends APIException {
 
   /** As per requirement */
-  private static final long serialVersionUID = -521141112817296283L;
+  private static final long serialVersionUID = 1L;
 
   /**
    * The type of entity.
    */
-  private final Class<? extends PSEntity> entityType;
+  private final Class<? extends PSEntity> _entityType;
 
   /**
    * The type of entity.
    */
-  private final EntityValidity validity;
+  private final EntityValidity _validity;
 
   /**
    * Create a new exception.
@@ -44,22 +44,22 @@ public class InvalidEntityException extends APIException {
    */
   public InvalidEntityException(Class<? extends PSEntity> entity, EntityValidity validity) {
     super(entity.getSimpleName());
-    this.entityType = entity;
-    this.validity = validity;
+    this._entityType = entity;
+    this._validity = validity;
   }
 
   /**
    * @return the kind of entity
    */
   public Class<? extends PSEntity> getEntityType() {
-    return this.entityType;
+    return this._entityType;
   }
 
   /**
    * @return the validity
    */
   public EntityValidity getValidity() {
-    return this.validity;
+    return this._validity;
   }
 
 }

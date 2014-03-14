@@ -63,7 +63,7 @@ public final class PSHTTPConnection {
   private static final Logger LOGGER = LoggerFactory.getLogger(PSHTTPConnection.class);
 
   /**
-   * Not strictly method as
+   * Not strictly HTTP method as multipart request use a separate method.
    */
   public enum Method {
 
@@ -76,7 +76,7 @@ public final class PSHTTPConnection {
     /** For request using the HTTP PUT method. */
     PUT,
 
-    /** For request using the HTTP DELET method. */
+    /** For request using the HTTP DELETE method. */
     DELETE,
 
     /** A Form-Multipart request via POST. */
@@ -84,7 +84,7 @@ public final class PSHTTPConnection {
 
   };
 
-  /** Bastille version */
+  /** Version of the API */
   private static final String API_VERSION;
   static {
     Package p = Package.getPackage("org.pageseeder.api");
@@ -121,7 +121,7 @@ public final class PSHTTPConnection {
    *
    * A <code>null</code> value indicates an anonymous connection.
    */
-  private final PSSession _user;
+  private final PSSession _session;
 
   /**
    * The part boundary.
@@ -139,14 +139,14 @@ public final class PSHTTPConnection {
    * @param connection The wrapped HTTP Connection.
    * @param resource   The underlying resource to access.
    * @param method     The method of connection.
-   * @param user       The user who initiated the connection (may be <code>null</code>)
-   * @param boundary   The boundary to use for multipart (may be <code>null</code>)
+   * @param session    The user who initiated the connection (may be <code>null</code>)
+   * @param boundary   The boundary to use for multipart only (may be <code>null</code>)
    */
-  private PSHTTPConnection(HttpURLConnection connection, PSHTTPResource resource, Method method, PSSession user, String boundary) {
+  private PSHTTPConnection(HttpURLConnection connection, PSHTTPResource resource, Method method, PSSession session, String boundary) {
     this._connection = connection;
     this._resource = resource;
     this._method = method;
-    this._user = user;
+    this._session = session;
     this._boundary = boundary;
   }
 
@@ -163,7 +163,7 @@ public final class PSHTTPConnection {
   /**
    * Add a part to the request (write the contents directly to the stream).
    *
-   * @param part     The encoding to specify in the Part's header
+   * @param part    The encoding to specify in the Part's header
    * @param headers A list of headers added to this XML Part ('content-type' header is ignored)
    *
    * @throws IOException Should any error occur while writing
@@ -306,7 +306,7 @@ public final class PSHTTPConnection {
         }
 
         // Ensure the session is updated for that user
-        updateUser(this._connection, this._user);
+        updateUser(this._connection, this._session);
 
       } else {
         LOGGER.info("PageSeeder returned {}: {}", status, this._connection.getResponseMessage());
@@ -353,7 +353,7 @@ public final class PSHTTPConnection {
         }
 
         // Ensure the session is updated for that user
-        updateUser(this._connection, this._user);
+        updateUser(this._connection, this._session);
 
       } else {
         LOGGER.info("PageSeeder returned {}: {}", status, this._connection.getResponseMessage());
@@ -374,15 +374,16 @@ public final class PSHTTPConnection {
    *
    * <p>Templates can be specified to transform the XML.
    *
+   * @param response  The PageSeeder response metadata to update
    * @param xml       The XML to copy from PageSeeder
    * @param templates A set of templates to process the XML (optional)
    *
    * @throws IOException If an error occurs when trying to write the XML.
    *
-   * @return <code>true</code> if the request was processed without errors;
-   *         <code>false</code> otherwise.
+   * @return The updated response metadata.
    */
-  public PSHTTPResponseInfo process(PSHTTPResponseInfo response, XMLWriter xml, Templates templates) throws IOException {
+  public PSHTTPResponseInfo process(PSHTTPResponseInfo response, XMLWriter xml, Templates templates)
+      throws IOException {
     return process(response, xml, templates, null);
   }
 
@@ -391,16 +392,17 @@ public final class PSHTTPConnection {
    *
    * <p>Templates can be specified to transform the XML.
    *
+   * @param response  The PageSeeder response metadata to update
    * @param xml        The XML to copy from PageSeeder
    * @param templates  A set of templates to process the XML (optional)
    * @param parameters Parameters to send to the XSLT transformer (optional)
    *
    * @throws IOException If an error occurs when trying to write the XML.
    *
-   * @return <code>true</code> if the request was processed without errors;
-   *         <code>false</code> otherwise.
+   * @return The updated response metadata.
    */
-  public PSHTTPResponseInfo process(PSHTTPResponseInfo response, XMLWriter xml, Templates templates, Map<String, String> parameters) throws IOException {
+  public PSHTTPResponseInfo process(PSHTTPResponseInfo response, XMLWriter xml, Templates templates, Map<String, String> parameters)
+      throws IOException {
     try {
       // Retrieve the content of the response
       int status = this._connection.getResponseCode();
@@ -419,7 +421,7 @@ public final class PSHTTPConnection {
         }
 
         // Ensure the session is updated for that user
-        updateUser(this._connection, this._user);
+        updateUser(this._connection, this._session);
 
       } else {
         LOGGER.info("PageSeeder returned {}: {}", status, this._connection.getResponseMessage());
@@ -512,7 +514,7 @@ public final class PSHTTPConnection {
     connection.setInstanceFollowRedirects(true);
     connection.setRequestMethod(type == Method.MULTIPART ? "POST" : type.name());
     connection.setDefaultUseCaches(false);
-    connection.setRequestProperty("X-Requester", "PSAPI-"+API_VERSION);
+    connection.setRequestProperty("X-Requester", "PS-Bridge-"+API_VERSION);
     String boundary = null;
 
     // POST using "application/x-www-form-urlencoded"
@@ -525,7 +527,7 @@ public final class PSHTTPConnection {
 
     // POST using "multipart/form-data"
     } else if (type == Method.MULTIPART) {
-      boundary = "-----------" + random.nextLong();
+      boundary = "-----------" + Long.toString(Math.abs(random.nextLong()), 36);
       connection.setDoInput(true);
       connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
     }
@@ -560,8 +562,9 @@ public final class PSHTTPConnection {
    * Parse the response as XML.
    *
    * @param connection The HTTP URL connection.
-   * @param response   Stores metadata about the response inlcuding error details.
+   * @param response   Stores metadata about the response including error details.
    * @param handler    Handles the XML.
+   * @param duplex     Whether to use duplex mode
    *
    * @throws IOException If an error occurs while writing the XML.
    */
@@ -606,9 +609,10 @@ public final class PSHTTPConnection {
   }
 
   /**
-   * Parse the Response as XML.
+   * Parse the response as XML and transform the output.
    *
    * @param connection The HTTP URL connection.
+   * @param response   Stores metadata about the response including error details.
    * @param xml        Where the final XML goes.
    * @param templates  To transform the XML.
    * @param parameters Parameters to send to the transformer (optional).

@@ -27,7 +27,7 @@ public enum PSHTTPResourceType {
   SERVICE,
 
   /**
-   * Any resource on PageSeeder.
+   * Any other resource on PageSeeder.
    */
   RESOURCE
 

@@ -24,7 +24,7 @@ public interface PSEntityCache<T extends PSEntity> {
    *
    * @param item The item to cache.
    */
-  public abstract void put(T item);
+  void put(T item);
 
   /**
    * Retrieve the object in the cache for the specified ID.
@@ -33,7 +33,7 @@ public interface PSEntityCache<T extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the ID or element is <code>null</code>
    */
-  public abstract T get(Long id);
+  T get(Long id);
 
   /**
    * Retrieve the object in the cache for the specified key.
@@ -42,7 +42,7 @@ public interface PSEntityCache<T extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  public abstract T get(String key);
+  T get(String key);
 
   /**
    * Retrieve the object in the cache for the specified key.
@@ -52,7 +52,7 @@ public interface PSEntityCache<T extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  public abstract T get(String attribute, String value);
+  T get(String attribute, String value);
 
   /**
    * Retrieve the object in the cache for the specified key.
@@ -62,7 +62,7 @@ public interface PSEntityCache<T extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  public abstract List<T> list(String attribute, String value);
+  List<T> list(String attribute, String value);
 
   /**
    * Return the version of the element for the specified key.
@@ -71,18 +71,18 @@ public interface PSEntityCache<T extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  public abstract Long getVersion(String key);
+  Long getVersion(String key);
 
   /**
    * Removes the element.
    *
    * @param key the key of the element to remove.
    */
-  public abstract void remove(String key);
+  void remove(String key);
 
   /**
    * Remove all cache entries.
    */
-  public abstract void removeAll();
+  void removeAll();
 
 }

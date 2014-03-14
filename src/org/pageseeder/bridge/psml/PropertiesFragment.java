@@ -19,6 +19,7 @@ import com.topologi.diffx.xml.XMLWriter;
  * <p>Warning: this version only supports single value properties.
  *
  * @author Christophe Lauret
+ * @version 0.1.0
  */
 public class PropertiesFragment extends FragmentBase implements PSMLFragment {
 

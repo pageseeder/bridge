@@ -13,9 +13,12 @@ import com.topologi.diffx.xml.XMLWritable;
 import com.topologi.diffx.xml.XMLWriter;
 
 /**
- * A single PSML property
+ * A single PSML property.
+ *
+ * <p>Implementation note: this version only support simple single value properties.
  *
  * @author Christophe Lauret
+ * @version 0.1.0
  */
 public class Property implements XMLWritable {
 

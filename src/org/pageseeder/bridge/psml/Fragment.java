@@ -14,7 +14,7 @@ import com.topologi.diffx.xml.XMLWriter;
 /**
  * A simple PSML fragment.
  *
- * DO NOT USE THIS CLASS IS INCOMPLETE
+ * <p>IMPORTANT: DO NOT USE THIS CLASS IS INCOMPLETE
  *
  * @author Christophe Lauret
  */

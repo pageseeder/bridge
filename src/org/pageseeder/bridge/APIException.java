@@ -31,14 +31,30 @@ public class APIException extends Exception {
     super();
   }
 
+  /**
+   * Creates a new exception with the specified message.
+   *
+   * @param message the explanation for the error.
+   */
   public APIException(String message) {
     super(message);
   }
 
+  /**
+   * Create a new exception from a different error.
+   *
+   * @param cause the cause of the error.
+   */
   public APIException(Throwable cause) {
     super(cause);
   }
 
+  /**
+   * Create a new exception from a different error and an explanation.
+   *
+   * @param message the explanation for the error.
+   * @param cause   the cause of the error.
+   */
   public APIException(String message, Throwable cause) {
     super(message, cause);
   }

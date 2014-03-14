@@ -14,7 +14,10 @@ import com.topologi.diffx.xml.XMLStringWriter;
 /**
  * Base class for PSML fragments providing common logic for the id and type.
  *
+ * <p>This class is designed to be extend to create custom fragment types.
+ *
  * @author Christophe Lauret
+ * @version 0.1.0
  */
 public abstract class FragmentBase implements PSMLFragment {
 
@@ -29,7 +32,7 @@ public abstract class FragmentBase implements PSMLFragment {
   private String type;
 
   /**
-   * Creates a new fragment with the specified ID.
+   * Creates a new untyped fragment with the specified ID.
    *
    * @param id The fragment ID.
    */

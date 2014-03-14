@@ -12,7 +12,10 @@ import com.topologi.diffx.xml.XMLWritable;
 /**
  * General interface for all PSML fragments.
  *
+ * <p>This interface is used for methods and classes dealing with generic fragments.
+ *
  * @author Christophe Lauret
+ * @version 0.1.0
  */
 public interface PSMLFragment extends XMLWritable {
 

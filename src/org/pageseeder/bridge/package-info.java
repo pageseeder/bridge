@@ -6,7 +6,7 @@
  *   http://www.opensource.org/licenses/artistic-license-2.0.php
  */
 /**
- * PageSeeder API
+ * PageSeeder core classes for the API.
  *
  * @author Christophe Lauret
  */
