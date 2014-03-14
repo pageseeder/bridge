@@ -7,80 +7,35 @@
  */
 package org.pageseeder.bridge.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import org.pageseeder.bridge.model.PSMember;
 
 /**
  * A simple class to generate sample data.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.2
+ * @since 0.1.0
  */
 public final class Sampler {
-
-  // TODO Store names in text file
 
   /**
    * A list of first names to use.
    */
-  private static final String[] FIRST_NAMES = new String[]{
-    "Aada", "Abigail", "Ahmed", "Aino", "Alessandro", "Alex", "Alexa", "Alexander", "Ali", "Amanda",
-    "Amelia", "Amelie", "Ana", "Anastasia", "Anders", "Anna", "Annie", "Aria", "Ariana", "Aubree",
-    "Austin", "Ava", "Baptiste", "Ben", "Benjamin", "Beshoi", "Bilal", "Bill", "Caleb", "Camden",
-    "Cameron", "Caroline", "Carter", "Charles", "Charlie", "Charlotte", "Chloe", "Chris", "Clara", "Clark",
-    "Cooper", "Danica", "Daniel", "David", "Diego", "Dmitry", "Dora", "Drake", "Dylan", "Edith",
-    "Edward", "Eli", "Elia", "Elijah", "Elin", "Elisabeth", "Elise", "Elizabeth", "Ella", "Ellen",
-    "Elsa", "Ema", "Emerson", "Emilia", "Emily", "Emma", "Emmett", "Erin", "Eva", "Evan",
-    "Fadi", "Farah", "Fatima", "Felicia", "Felicity", "Felix", "Finn", "Freja", "Frida", "Gabriel",
-    "Gavin", "George", "Grace", "Griffin", "Gus", "Habib", "Habiba", "Hamza", "Hana", "Hanna",
-    "Hannah", "Harper", "Harrison", "Harry", "Hassan", "Helmi", "Henry", "Hudson", "Hugo", "Hussein",
-    "Ibrahim", "Ida", "Ines", "Irene", "Isaac", "Isabella", "Isaiah", "Isla", "Jace", "Jack",
-    "Jackson", "Jacob", "Jade", "James", "Jase", "Jax", "Jean", "Jessica", "Joel", "Johannes",
-    "John", "Jonah", "Jordyn", "Josefine", "Joseph", "Josh", "Juan", "Julia", "Julie", "Kai",
-    "Kaiden", "Karim", "Keira", "Khaled", "Kingston", "Kinsley", "Kirollos", "Lachlan", "Lana", "Lara",
-    "Laura", "Laurin", "Layla", "Lea", "Leandro", "Lena", "Leon", "Leonie", "Levi", "Lexi",
-    "Lily", "Lina", "Lincoln", "Linnea", "Lola", "Loris", "Louise", "Lucas", "Lucie", "Lucija",
-    "Madelyn", "Mahmoud", "Maja", "Malak", "Malcolm", "Mamadou", "Manon", "Manuel", "Marc", "Marco",
-    "Marcus", "Mareva", "Maria", "Mariam", "Marie", "Marina", "Mark", "Markus", "Martina", "Marwa",
-    "Mary", "Mason", "Matilda", "Matteo", "Mia", "Michael", "Mila", "Mina", "Minea", "Mohamed",
-    "Molly", "Mustafa", "Mya", "Nada", "Nash", "Nathan", "Nathaniel", "Nick", "Niclas", "Nika",
-    "Nikita", "Noah", "Noel", "Oliver", "Olivia", "Omar", "Paisley", "Parker", "Peter", "Petra",
-    "Peyton", "Pierre", "Piper", "Quinn", "Rawiri", "Riley", "Robert", "Rodrigo", "Roland", "Ronja",
-    "Ruby", "Ryan", "Ryder", "Sadie", "Saga", "Salma", "Samuel", "Sara", "Sarah", "Sawyer",
-    "Scarlett", "Seth", "Siiri", "Simon", "Sofia", "Sophie", "Stella", "Summer", "Taha", "Tareq",
-    "Tessa", "Teva", "Thomas", "Tilde", "Tim", "Tristan", "Venla", "Victoria", "Violet", "William",
-    "Wilma", "Wyatt", "Xavier", "Yassin", "Youssef", "Zofia"
-  };
+  private static String[] firstNames = null;
 
   /**
    * A list of last names to use.
    */
-  private static final String[] LAST_NAMES = new String[]{
-    "Adams", "Agarwal", "Ahmed", "Al-Rawy", "Alawneh", "Ali", "Allen", "Anderson", "Andrews", "Arabiyat",
-    "Armstrong", "Atkinson", "Bailey", "Baker", "Barker", "Barnes", "Bates", "Bawab", "Bell", "Bennett",
-    "Bernard", "Berry", "Booth", "Borg", "Bradley", "Brooks", "Brown", "Butler", "Byrne", "Campbell",
-    "Carr", "Carter", "Chambers", "Chapman", "Chen", "Choi", "Clark", "Clarke", "Cole", "Collins",
-    "Cook", "Cooper", "Cox", "Cruz", "Cunningham", "Davies", "Davis", "Dawson", "Dean", "Diaz",
-    "Dijkstra", "Dixon", "Dubois", "Dupont", "Edwards", "Ellis", "Evans", "Faizan", "Fakhouri", "Ferrari",
-    "Fischer", "Fisher", "Foster", "Fournier", "Fox", "Fujiwara", "Garcia", "Gardner", "George", "Gibson",
-    "Gill", "Gonzalez", "Gopal", "Gordon", "Graham", "Grant", "Gray", "Greco", "Green", "Griffiths",
-    "Hall", "Hamilton", "Harper", "Harris", "Harrison", "Hart", "Harvey", "Hassan", "Hill", "Hoffmann",
-    "Holmes", "Hong", "Horvat", "Hudson", "Hughes", "Hunt", "Hunter", "Hussein", "Ivanov", "Jackson",
-    "James", "Jansen", "Jawaldeh", "Jbarat", "Jenkins", "Jensen", "Jeon", "Johansson", "Johnson", "Johnston",
-    "Jones", "Kaur", "Kelly", "Kennedy", "Khan", "Kim", "King", "Klein", "Knight", "Ko",
-    "Lambert", "Lane", "Lawrence", "Lawson", "Le", "Lee", "Leroy", "Lewis", "Li", "Liu",
-    "Lloyd", "Lopez", "Macdonald", "Majali", "Malkawi", "Marshall", "Martin", "Mason", "Masuda", "Matthews",
-    "Mcdonald", "Mehta", "Meyer", "Miller", "Mills", "Min", "Mishra", "Mitchell", "Moore", "Morales",
-    "Moran", "Morgan", "Morris", "Mulder", "Muller", "Murphy", "Murray", "Nguyen", "Owen", "Palmer",
-    "Parker", "Patel", "Pearce", "Pearson", "Perera", "Perez", "Peterson", "Petit", "Phillips", "Poole",
-    "Powell", "Price", "Qatanani", "Ramirez", "Reid", "Reynolds", "Richards", "Richardson", "Roberts", "Robertson",
-    "Robinson", "Rogers", "Romano", "Rose", "Ross", "Rossi", "Roy", "Russell", "Ryan", "Salem",
-    "Sanchez", "Santos", "Saunders", "Schmidt", "Schneider", "Schulz", "Scott", "Shaaban", "Shahin", "Shaw",
-    "Shimizu", "Shin", "Simpson", "Singhal", "Sloan", "Smirnov", "Smith", "Song", "Spencer", "Stevens",
-    "Stewart", "Stone", "Suzuki", "Takahashi", "Tamm", "Tanaka", "Taylor", "Thomas", "Thompson", "Thomson",
-    "Turner", "Walker", "Walsh", "Wang", "Ward", "Watson", "Watts", "Webb", "Weber", "Wells",
-    "West", "White", "Wilkinson", "Williams", "Williamson", "Wilson", "Wood", "Wright", "Wu", "Yamada",
-    "Yamamoto", "Yang", "Young", "Zahran", "Zhang"
-  };
+  private static String[] lastNames = null;
 
   /**
    * Random
@@ -92,8 +47,9 @@ public final class Sampler {
    *
    * @return A random first name.
    */
-  public String getRandomFirstName() {
-    return FIRST_NAMES[this.random.nextInt(FIRST_NAMES.length)];
+  public String nextFirstName() {
+    if (firstNames == null) firstNames = load("firstnames.txt");
+    return firstNames[this.random.nextInt(firstNames.length)];
   }
 
   /**
@@ -101,8 +57,9 @@ public final class Sampler {
    *
    * @return A random last name.
    */
-  public String getRandomLastName() {
-    return LAST_NAMES[this.random.nextInt(LAST_NAMES.length)];
+  public String nextLastName() {
+    if (lastNames == null) lastNames = load("lastnames.txt");
+    return lastNames[this.random.nextInt(lastNames.length)];
   }
 
   /**
@@ -113,7 +70,7 @@ public final class Sampler {
    *
    * @return the random long between min (included) and max (excluded)
    */
-  public int getRandomInt(int min, int max) {
+  public int nextInt(int min, int max) {
     return min + this.random.nextInt(max-min);
   }
 
@@ -125,11 +82,63 @@ public final class Sampler {
    *
    * @return the random long between min (included) and max (excluded)
    */
-  public long getRandomLong(long min, long max) {
+  public long nextLong(long min, long max) {
     return min + Math.round(Math.random()*(max-min));
   }
 
+  /**
+   * Generate a new PageSeeder member with random names and email.
+   *
+   * @return a random PageSeeder member.
+   */
+  public PSMember nextMember() {
+    PSMember member = new PSMember();
+    String firstname = nextFirstName();
+    String lastname = nextLastName();
+    int no = nextInt(0, 10000);
+    String email = (firstname+lastname+no).toLowerCase()+"@sampler.local";
+    member.setFirstname(nextFirstName());
+    member.setSurname(nextLastName());
+    member.setEmail(email);
+    member.setUsername((firstname+lastname+no).toLowerCase());
+    return member;
+  }
+
+  // private helpers
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Loads the specified file from a resource in this package as a string array.
+   *
+   * @param filename the name of the resource load
+   * @return each line of the filename as a string in an array
+   *
+   * @throws IllegalArgumentException If any error occurs.
+   */
+  private static String[] load(String filename) {
+    URL url = Sampler.class.getResource(filename);
+    if (url == null)
+      throw new IllegalArgumentException(filename);
+    InputStream in = null;
+    try {
+      in = url.openStream();
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in, "utf-8"));
+      String name = reader.readLine();
+      List<String> names = new ArrayList<String>();
+      while (name != null) {
+        names.add(name);
+        name = reader.readLine();
+      }
+      return names.toArray(new String[]{});
+    } catch (IOException ex) {
+      throw new IllegalStateException(ex);
+    } finally {
+      try {
+        in.close();
+      } catch (IOException ex) {
+        throw new IllegalArgumentException(filename);
+      }
+    }
+  }
+
 }
-
-
-
