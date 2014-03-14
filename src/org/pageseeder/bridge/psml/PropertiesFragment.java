@@ -27,6 +27,11 @@ public class PropertiesFragment extends FragmentBase implements PSMLFragment {
    */
   private final List<Property> properties = new ArrayList<Property>();
 
+  /**
+   * Creates a new properties fragment with the specified ID.
+   *
+   * @param id The fragment ID.
+   */
   public PropertiesFragment(String id) {
     super(id);
   }

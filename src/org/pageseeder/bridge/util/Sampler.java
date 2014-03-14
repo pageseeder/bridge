@@ -15,7 +15,9 @@ import java.util.Random;
  * @author Christophe Lauret
  * @version 0.1.0
  */
-public class Sampler {
+public final class Sampler {
+
+  // TODO Store names in text file
 
   /**
    * A list of first names to use.
@@ -86,6 +88,8 @@ public class Sampler {
   private final Random random = new Random();
 
   /**
+   * Returns a random first name from the internal list.
+   *
    * @return A random first name.
    */
   public String getRandomFirstName() {
@@ -93,16 +97,34 @@ public class Sampler {
   }
 
   /**
+   * Returns a random last name from the internal list.
+   *
    * @return A random last name.
    */
   public String getRandomLastName() {
     return LAST_NAMES[this.random.nextInt(LAST_NAMES.length)];
   }
 
+  /**
+   * Return an integer value between min and max.
+   *
+   * @param min The minimum value (inclusive)
+   * @param max The max value (exclusive)
+   *
+   * @return the random long between min (included) and max (excluded)
+   */
   public int getRandomInt(int min, int max) {
     return min + this.random.nextInt(max-min);
   }
 
+  /**
+   * Return a long value between min and max.
+   *
+   * @param min The minimum value (inclusive)
+   * @param max The max value (exclusive)
+   *
+   * @return the random long between min (included) and max (excluded)
+   */
   public long getRandomLong(long min, long max) {
     return min + Math.round(Math.random()*(max-min));
   }

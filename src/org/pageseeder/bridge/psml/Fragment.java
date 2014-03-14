@@ -20,10 +20,21 @@ import com.topologi.diffx.xml.XMLWriter;
  */
 public class Fragment extends FragmentBase implements PSMLFragment {
 
+  /**
+   * Creates a new fragment with the specified ID.
+   *
+   * @param id The fragment ID.
+   */
   public Fragment(String id) {
     super(id);
   }
 
+  /**
+   * Creates a new fragment with the specified ID.
+   *
+   * @param id   The fragment ID.
+   * @param type The fragment type.
+   */
   public Fragment(String id, String type) {
     super(id, type);
   }

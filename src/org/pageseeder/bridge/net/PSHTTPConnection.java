@@ -283,13 +283,10 @@ public final class PSHTTPConnection {
    *
    * <p>If the handler is not specified, the xml writer receives a copy of the PageSeeder XML.
    *
-   * @param xml     the XML to copy from PageSeeder
-   * @param handler the handler for the XML (can be used to rewrite the XML)
+   * @param response the response info
+   * @param handler  the handler for the XML (can be used to rewrite the XML)
    *
    * @throws IOException If an error occurs when trying to write the XML.
-   *
-   * @return <code>true</code> if the request was processed without errors;
-   *         <code>false</code> otherwise.
    */
   public void process(PSHTTPResponseInfo response, DefaultHandler handler) throws IOException {
     try {
@@ -328,14 +325,12 @@ public final class PSHTTPConnection {
   /**
    * Process the specified PageSeeder connection.
    *
-   * <p>If the handler is not specified, the xml writer receives a copy of the PageSeeder XML.
+   * <p>The xml writer receives a copy of the PageSeeder XML.
    *
-   * @param xml The XML to copy from PageSeeder
+   * @param response The response object.
+   * @param xml      The XML to copy from PageSeeder
    *
    * @throws IOException If an error occurs when trying to write the XML.
-   *
-   * @return <code>true</code> if the request was processed without errors;
-   *         <code>false</code> otherwise.
    */
   public void process(PSHTTPResponseInfo response, XMLWriter xml) throws IOException {
     try {
@@ -734,9 +729,8 @@ public final class PSHTTPConnection {
   /**
    * Adds the attributes for when error occurs
    *
-   * @param xml        The XML output.
-   * @param error      The error code.
    * @param connection The PS Connection.
+   * @param info       The response info.
    *
    * @throws IOException If thrown while writing the XML.
    */
@@ -809,6 +803,11 @@ public final class PSHTTPConnection {
     return null;
   }
 
+  /**
+   * Close and catch any exception (reported in logs instead)
+   *
+   * @param closeable The object to close.
+   */
   private static void closeQuietly(Closeable closeable) {
     try {
       if (closeable != null)
@@ -818,11 +817,27 @@ public final class PSHTTPConnection {
     }
   }
 
+  /**
+   * If data is <code>null</code> the string content is copied to the output stream as UTF-8.
+   *
+   * @param data   The data to write
+   * @param output The output
+   *
+   * @throws IOException Any error reported while writing on the output
+   */
   private static void write(String data, OutputStream output) throws IOException {
     if (data != null)
       output.write(data.getBytes(UTF8));
   }
 
+  /**
+   * Copy the input stream to the output stream as UTF-8 using a buffer of 4096 bytes.
+   *
+   * @param input  The data to copy
+   * @param output The output
+   *
+   * @throws IOException Any error reported while writing on the output
+   */
   private static void copy(InputStream input, OutputStream output) throws IOException {
     byte[] buffer = new byte[4096];
     int n = 0;

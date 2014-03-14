@@ -18,15 +18,32 @@ import com.topologi.diffx.xml.XMLStringWriter;
  */
 public abstract class FragmentBase implements PSMLFragment {
 
+  /**
+   * The fragment ID.
+   */
   private String id;
 
+  /**
+   * The fragment type.
+   */
   private String type;
 
+  /**
+   * Creates a new fragment with the specified ID.
+   *
+   * @param id The fragment ID.
+   */
   public FragmentBase(String id) {
     this.id = id;
     this.type = null;
   }
 
+  /**
+   * Creates a new fragment with the specified ID.
+   *
+   * @param id   The fragment ID.
+   * @param type The fragment type.
+   */
   public FragmentBase(String id, String type) {
     this.id = id;
     this.type = type;
