@@ -34,14 +34,14 @@ public enum PSNotification {
   private final String parameter;
 
   /**
-   * Pricate constructor.
+   * Private constructor.
    */
   private PSNotification(String p) {
     this.parameter = p;
   }
 
   /**
-   * @return the parameter
+   * @return the parameter to use when communicating with PageSeder
    */
   public String parameter() {
     return this.parameter;

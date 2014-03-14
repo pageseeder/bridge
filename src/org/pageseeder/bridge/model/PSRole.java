@@ -15,12 +15,25 @@ package org.pageseeder.bridge.model;
  */
 public enum PSRole {
 
+  /** 'Guest' role PageSeeder. */
   guest("Guest"),
+
+  /** 'Reviewer' role PageSeeder. */
   reviewer("Reviewer"),
+
+  /** 'Contributor' role PageSeeder. */
   contributor("Contributor"),
+
+  /** 'Manager' role PageSeeder. */
   manager("Manager"),
+
+  /** 'Moderator' role PageSeeder. */
   moderator("Moderator"),
+
+  /** 'Approver' role PageSeeder. */
   approver("Approver"),
+
+  /** 'Mod & App' role PageSeeder. */
   moderator_and_approver("Mod & App");
 
   /**
@@ -36,7 +49,7 @@ public enum PSRole {
   }
 
   /**
-   * @return the parameter
+   * @return the parameter to use when communicating with PageSeder
    */
   public String parameter() {
     return this.parameter;

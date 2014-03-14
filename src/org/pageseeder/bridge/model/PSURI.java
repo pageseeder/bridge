@@ -16,12 +16,13 @@ import org.pageseeder.bridge.EntityValidity;
  * The common base class for folders and documents.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.1
+ * @since 0.2.0
  */
 public abstract class PSURI extends PSAddressable {
 
   /** As per recommendation */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   /** The URI ID of the document */
   private Long id;
@@ -63,6 +64,16 @@ public abstract class PSURI extends PSAddressable {
   @Override
   public final String getKey() {
     return this.getURL();
+  }
+
+  @Override
+  public boolean isIdentifiable() {
+    return this.id != null || this.getURL() != null;
+  }
+
+  @Override
+  public String getIdentifier() {
+    return this.id != null? this.id.toString() : this.getURL();
   }
 
   /**
@@ -167,8 +178,6 @@ public abstract class PSURI extends PSAddressable {
       this.labels.add(label);
     }
   }
-
-
 
   public EntityValidity checkURIValid() {
     if (this.docid     != null && this.docid.length()       > 100)

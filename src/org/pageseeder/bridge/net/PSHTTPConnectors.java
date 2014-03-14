@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 
 import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.PSConfig;
+import org.pageseeder.bridge.Requires;
 import org.pageseeder.bridge.control.GroupManager.GroupOptions;
 import org.pageseeder.bridge.model.PSDetails;
 import org.pageseeder.bridge.model.PSDocument;
@@ -32,7 +33,7 @@ import org.pageseeder.bridge.psml.PSMLFragment;
  * A utility class to provide predefined PageSeeder connectors.
  *
  * @author Christophe Lauret
- * @version 0.2.0
+ * @version 0.2.1
  * @since 0.2.0
  */
 public final class PSHTTPConnectors {
@@ -65,24 +66,23 @@ public final class PSHTTPConnectors {
    * The group name must include '-'.
    *
    * @param group      The group to create.
-   * @param options    The additional group options.
-   * @param properties The group properties.
    * @param creator    The user creating the group.
+   * @param options    The additional group options.
    *
    * @return the corresponding connector
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector createGroup(PSGroup group, GroupOptions options, String creator) throws FailedPrecondition {
+  public static PSHTTPConnector createGroup(PSGroup group, PSMember creator, GroupOptions options) throws FailedPrecondition {
     Preconditions.isNotEmpty(group.getName(), "group name");
     Preconditions.includesDash(group.getName(), "group name");
     Preconditions.isNotNull(group.getDescription(), "group description");
-    Preconditions.isNotEmpty(creator, "creator");
+    Preconditions.isIdentifiable(creator, "creator");
     String name = group.getName();
     int dash = name.lastIndexOf('-');
     String project = name.substring(0, dash);
     String shortname = name.substring(dash+1);
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/members/"+creator+"/groups/create");
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/members/"+creator.getIdentifier()+"/groups/create");
     connector.addParameter("projectname", project);
     connector.addParameter("shortname",   shortname);
     connector.addParameter("description", group.getDescription());
@@ -129,11 +129,12 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector createProject(PSProject project, GroupOptions options, String creator) throws FailedPrecondition {
+  public static PSHTTPConnector createProject(PSProject project, PSMember creator, GroupOptions options) throws FailedPrecondition {
     Preconditions.isNotEmpty(project.getName(), "project name");
     Preconditions.isNotNull(project.getDescription(), "project description");
-    Preconditions.isNotEmpty(project.getDescription(), "creator");
-    String url = "/members/"+creator+"/projects/create";
+    Preconditions.isNotEmpty(project.getDescription(), "project description");
+    Preconditions.isIdentifiable(creator, "creator");
+    String url = "/members/"+creator.getIdentifier()+"/projects/create";
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, url);
     String name = project.getName();
     int dash = name.lastIndexOf('-');
@@ -179,52 +180,87 @@ public final class PSHTTPConnectors {
   /**
    * A connector to get the details of a group.
    *
-   * @param group  The name of the group
-   * @param member The member that will access the group
+   * @param identifier The name or id of the group
+   * @param member     The member that will access the group
    *
    * @return The corresponding connector
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector getGroup(String group, String member) throws FailedPrecondition {
-    Preconditions.isNotEmpty(member, "member");
-    Preconditions.isNotEmpty(group, "group");
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/members/"+member+"/groups/"+group);
+  public static PSHTTPConnector getGroup(String identifier, PSMember member) throws FailedPrecondition {
+    Preconditions.isIdentifiable(member, "member");
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/members/"+member.getIdentifier()+"/groups/"+identifier);
     return connector;
   }
 
   /**
+   * A connector to get the details of a group.
+   *
+   * @param group  The group to retrieve from PageSeeder.
    *
    * @return The corresponding connector
    *
-   * @throws FailedPrecondition Should any precondition fail.
+   * @throws If the group is not identifiable
+   */
+  @Requires(minVersion=56000)
+  public static PSHTTPConnector getGroup(PSGroup group) throws FailedPrecondition {
+    Preconditions.isIdentifiable(group, "group");
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/groups/"+group.getIdentifier());
+    return connector;
+  }
+
+  /**
+   * A connector to get the details of a group.
+   *
+   * @param identifier The name or id of the group
+   *
+   * @return The corresponding connector
+   *
+   * @throws If the group is not identifiable
+   */
+  @Requires(minVersion=56000)
+  public static PSHTTPConnector getGroup(String identifier) throws FailedPrecondition {
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/groups/"+identifier);
+    return connector;
+  }
+
+  /**
+   * Adds a group as a subgroup of another using the default options defined by the target group.
+   *
+   * @param group    The target group
+   * @param subgroup The group to add as a subgroup of the target group.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition If either the group or subgroup is not identifiable.
    */
   public static PSHTTPConnector addSubGroup(PSGroup group, PSGroup subgroup) throws FailedPrecondition {
-    Preconditions.isNotNull(group, "group");
-    Preconditions.isNotNull(subgroup, "subgroup");
-    Preconditions.isNotEmpty(group.getName(), "group name");
-    Preconditions.isNotEmpty(subgroup.getName(), "subgroup name");
-    // TODO: In reality, we should be able to accept either the id or the name
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/groups/"+group.getName()+"/subgroups/add");
-    connector.addParameter("subgroup", subgroup.getName());
+    Preconditions.isIdentifiable(group, "group");
+    Preconditions.isIdentifiable(subgroup, "subgroup");
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/groups/"+group.getIdentifier()+"/subgroups/add");
+    connector.addParameter("subgroup", subgroup.getIdentifier());
     return connector;
   }
 
   /**
+   * Adds a group as a subgroup of another with additional options.
+   *
+   * @param group        The target group
+   * @param subgroup     The group to add as a subgroup of the target group.
+   * @param notification The notification setting for the members of the subgroup
+   * @param role         The role for members of the subgroup
+   * @param listed       Whether the email address should be listed
    *
    * @return The corresponding connector
    *
-   * @throws FailedPrecondition Should any precondition fail.
+   * @throws FailedPrecondition If either the group or subgroup is not identifiable.
    */
   public static PSHTTPConnector addSubGroup(PSGroup group, PSGroup subgroup, PSNotification notification, PSRole role, boolean listed)
       throws FailedPrecondition {
-    Preconditions.isNotNull(group, "group");
-    Preconditions.isNotNull(subgroup, "subgroup");
-    Preconditions.isNotEmpty(group.getName(), "group name");
-    Preconditions.isNotEmpty(subgroup.getName(), "subgroup name");
-    // TODO: In reality, we should be able to accept either the id or the name
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/groups/"+group.getName()+"/subgroups/add");
-    connector.addParameter("subgroup", subgroup.getName());
+    Preconditions.isIdentifiable(group, "group");
+    Preconditions.isIdentifiable(subgroup, "subgroup");
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/groups/"+group.getIdentifier()+"/subgroups/add");
+    connector.addParameter("subgroup", subgroup.getIdentifier());
     if (notification != null)
       connector.addParameter("notification", notification.parameter());
     if (role != null)
@@ -234,26 +270,26 @@ public final class PSHTTPConnectors {
   }
 
   /**
-  *
-  * @param project
-  * @param resource
-  * @param overwrite
-  *
-  * @return The corresponding connector
-  *
-  * @throws FailedPrecondition Should any precondition fail.
-  */
- public static PSHTTPConnector putResource(String project, PSResource resource, boolean overwrite) throws FailedPrecondition {
-   Preconditions.isNotEmpty(project, "project");
-   Preconditions.isNotEmpty(resource.getLocation(), "location");
-   Preconditions.isNotEmpty(resource.getContent(), "content");
-   PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/groups/"+project+"/resources/put");
-   connector.addParameter("location", resource.getLocation());
-   connector.addParameter("content", resource.getContent());
-   connector.addParameter("overwrite", Boolean.toString(overwrite));
-   return connector;
- }
-
+   * Puts a resource on the project.
+   *
+   * @param project   The project receiving the resource
+   * @param resource  The resource to put
+   * @param overwrite Whether to overwrite the resource
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition Should any precondition fail.
+   */
+  public static PSHTTPConnector putResource(PSProject project, PSResource resource, boolean overwrite) throws FailedPrecondition {
+    Preconditions.isNotEmpty(resource.getLocation(), "location");
+    Preconditions.isIdentifiable(project, "project");
+    if (resource.isBinary()) throw new FailedPrecondition("Only text content resource can be put on the project");
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/groups/"+project+"/resources/put");
+    connector.addParameter("location", resource.getLocation());
+    connector.addParameter("content", resource.getContent());
+    connector.addParameter("overwrite", Boolean.toString(overwrite));
+    return connector;
+  }
 
   // Membership
   // ----------------------------------------------------------------------------------------------

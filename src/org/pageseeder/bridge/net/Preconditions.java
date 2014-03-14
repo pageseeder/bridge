@@ -8,6 +8,7 @@
 package org.pageseeder.bridge.net;
 
 import org.pageseeder.bridge.FailedPrecondition;
+import org.pageseeder.bridge.PSEntity;
 
 /**
  * A utility class to check the preconditions.
@@ -15,8 +16,21 @@ import org.pageseeder.bridge.FailedPrecondition;
  * <p>Preconditions are used to ensure that no connections are made to PageSeeder needlessly
  *
  * @author Christophe Lauret
+ * @version 0.2.1
+ * @since 0.1.0
  */
 public final class Preconditions {
+
+  /**
+   * Precondition requiring the specified entity to be identifiable.
+   *
+   * @param entity The entity to check
+   *
+   * @throws FailedPrecondition If the the {@link PSEntity#isIdentifiable()} method returns <code>false</code>.
+   */
+  static void isIdentifiable(PSEntity entity, String name) throws FailedPrecondition {
+    if (!entity.isIdentifiable()) throw new FailedPrecondition(name+" must be identifiable");
+  }
 
   /**
    * Precondition requiring the specified string to be non-null and at least 1 character long.

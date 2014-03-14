@@ -15,11 +15,13 @@ import org.pageseeder.bridge.PSEntity;
  * A group folder (as opposed to simple folder).
  *
  * @author Christophe Lauret
+ * @version 0.2.1
+ * @since 0.2.0
  */
 public class PSGroupFolder extends PSAddressable implements PSEntity {
 
   /** As per recommendation */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   /** ID of the Group URI in PageSeeder */
   private Long id;
@@ -45,6 +47,16 @@ public class PSGroupFolder extends PSAddressable implements PSEntity {
   @Override
   public String getKey() {
     return this.getURL();
+  }
+
+  @Override
+  public boolean isIdentifiable() {
+    return this.id != null || this.getURL() != null;
+  }
+
+  @Override
+  public String getIdentifier() {
+    return this.id != null? this.id.toString() : this.getURL();
   }
 
   /**

@@ -13,23 +13,33 @@ import org.pageseeder.bridge.PSEntity;
 /**
  * A PageSeeder member.
  *
+ * <p>The public identifier for a member is the username.
+ *
  * @author Christophe Lauret
+ * @version 0.2.1
+ * @since 0.2.0
  */
 public final class PSMember implements PSEntity {
 
   /** As per recommendation */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
+  /** The PageSeeder database ID. */
   private Long id;
 
-  private String firstname;
-
-  private String surname;
-
+  /** The username of the member. */
   private String username;
 
+  /** The first name of the member. */
+  private String firstname;
+
+  /** The last name of the member. */
+  private String surname;
+
+  /** The email address of the member. */
   private String email;
 
+  /** Whether the member has been activated. */
   private boolean activated;
 
   @Override
@@ -40,6 +50,16 @@ public final class PSMember implements PSEntity {
   @Override
   public String getKey() {
     return this.username;
+  }
+
+  @Override
+  public boolean isIdentifiable() {
+    return this.id != null || this.username != null;
+  }
+
+  @Override
+  public String getIdentifier() {
+    return this.id != null ? this.id.toString() : this.username;
   }
 
   /**
@@ -85,6 +105,13 @@ public final class PSMember implements PSEntity {
   }
 
   /**
+   * @param username the username to set
+   */
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  /**
    * @param firstname the firstname to set
    */
   public void setFirstname(String firstname) {
@@ -96,13 +123,6 @@ public final class PSMember implements PSEntity {
    */
   public void setSurname(String surname) {
     this.surname = surname;
-  }
-
-  /**
-   * @param username the username to set
-   */
-  public void setUsername(String username) {
-    this.username = username;
   }
 
   /**

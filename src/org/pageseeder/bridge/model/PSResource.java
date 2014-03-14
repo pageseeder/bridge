@@ -26,6 +26,11 @@ public class PSResource {
    */
   private String content;
 
+  /**
+   * The content of the resource.
+   */
+  private byte[] bytes;
+
   public PSResource() {
   }
 
@@ -54,6 +59,20 @@ public class PSResource {
   }
 
   /**
+   * @return the content
+   */
+  public byte[] getBytes() {
+    return this.bytes;
+  }
+
+  /**
+   * @return
+   */
+  public boolean isBinary() {
+    return this.bytes != null;
+  }
+
+  /**
    * @param location the location to set
    */
   public void setLocation(String location) {
@@ -64,8 +83,15 @@ public class PSResource {
    * @param content the content to set
    */
   public void setContent(String content) {
+    if (this.bytes != null) throw new IllegalStateException("Binary content already set");
     this.content = content;
   }
 
-
+  /**
+   * @param bytes the bytes to set
+   */
+  public void setBytes(byte[] bytes) {
+    if (this.content != null) throw new IllegalStateException("Text content already set");
+    this.bytes = bytes;
+  }
 }

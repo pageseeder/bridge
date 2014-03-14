@@ -7,10 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.pageseeder.bridge.APIException;
+import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.InvalidEntityException;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSEntityCache;
 import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.Requires;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSGroupFolder;
 import org.pageseeder.bridge.model.PSMember;
@@ -25,13 +27,13 @@ import org.pageseeder.bridge.xml.PSGroupFolderHandler;
 import org.pageseeder.bridge.xml.PSGroupHandler;
 
 /**
- * A manager for groups and projects (based on PageSeeder Groups)
+ * A manager for groups, projects and group folders.
  *
  * @author Christophe Lauret
- * @version 0.2.0
+ * @version 0.2.1
  * @since 0.2.0
  */
-public class GroupManager extends Sessionful {
+public final class GroupManager extends Sessionful {
 
   /**
    * Where the groups (and projects) are cached.
@@ -46,32 +48,47 @@ public class GroupManager extends Sessionful {
   /**
    * Creates a new manager for PageSeeder groups.
    *
-   * @param user The user that can connect to PageSeeder.
+   * @param session A valid session to connect to PageSeeder.
    */
-  public GroupManager(PSSession user) {
-    super(user);
+  public GroupManager(PSSession session) {
+    super(session);
   }
 
   /**
-   * Creates the group the specified group in PageSeeder using default options.
+   * Creates the specified group in PageSeeder using default PageSeeder options.
    *
-   * @param group  The group to create
-   * @param creator The member making the request
-   */
-  public void createGroup(PSGroup group, PSMember creator) throws APIException {
-    createGroup(group, null, creator);
-  }
-
-  /**
-   * Creates the group the specified group in PageSeeder.
+   * <p>The member creating the group will automatically be made a member of the group.
    *
    * @param group   The group to create
-   * @param options The group creation options (including group properties)
-   * @param creator The member making the request
+   * @param creator The member creating the request
+   *
+   * @throws FailedPrecondition   Should a precondition fail to create a group
+   * @throws APIException         If an error occurs while communicating with PageSeeder.
+   * @throws NullPointerException If either the group or member is <code>null</code>.
    */
-  public void createGroup(PSGroup group, GroupOptions options, PSMember creator) throws APIException {
+  public void createGroup(PSGroup group, PSMember creator) throws APIException {
+    createGroup(group, creator, null);
+  }
+
+  /**
+   * Creates the specified group in PageSeeder.
+   *
+   * <p>The optional group options parameters can be used to specify additional option to create the group
+   * or set some group properties.
+   *
+   * @param group   The group to create
+   * @param creator The member making the request
+   * @param options The group creation options (including group properties)
+   *
+   * @throws FailedPrecondition   Should a precondition fail to create a group
+   * @throws APIException         If an error occurs while communicating with PageSeeder.
+   * @throws NullPointerException If either the group or member is <code>null</code>.
+   */
+  public void createGroup(PSGroup group, PSMember creator, GroupOptions options) throws APIException {
     if (group == null) throw new NullPointerException("group");
-    PSHTTPConnector connector = PSHTTPConnectors.createGroup(group, options, creator.getUsername()).using(this.session);
+    if (creator == null) throw new NullPointerException("member");
+    if (!group.isValid()) throw new InvalidEntityException(PSProject.class, group.checkValid());
+    PSHTTPConnector connector = PSHTTPConnectors.createGroup(group, creator, options).using(this.session);
     PSGroupHandler handler = new PSGroupHandler(group);
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getCode() >= 400)
@@ -82,11 +99,59 @@ public class GroupManager extends Sessionful {
   /**
    * Creates the group the specified group in PageSeeder.
    *
+   * @deprecated Use {@link #createGroup(PSGroup, PSMember, GroupOptions)} instead
+   *
+   * @param group   The group to create
+   * @param creator The member making the request
+   * @param options The group creation options (including group properties)
+   *
+   * @throws FailedPrecondition   Should a precondition fail to create a group
+   * @throws APIException         If an error occurs while communicating with PageSeeder.
+   * @throws NullPointerException If either the group or member is <code>null</code>.
+   */
+  @Deprecated
+  public void createGroup(PSGroup group, GroupOptions options, PSMember creator) throws APIException {
+    createGroup(group, creator, options);
+  }
+
+  /**
+   * Creates the specified project in PageSeeder.
+   *
    * @param project The project to create
-   * @param creator The member creating the project
+   * @param creator The member making the request
+   *
+   * @throws FailedPrecondition   Should a precondition fail to create a project
+   * @throws APIException         If an error occurs while communicating with PageSeeder.
+   * @throws NullPointerException If either the project or member is <code>null</code>.
    */
   public void createProject(PSProject project, PSMember creator) throws APIException {
-    createProject(project, null, creator);
+    createProject(project, creator, null);
+  }
+
+  /**
+   * Creates the specified project in PageSeeder.
+   *
+   * <p>The optional project options parameters can be used to specify additional option to create the project
+   * or set some group properties.
+   *
+   * @param project The project to create
+   * @param creator The member making the request
+   * @param options The group creation options (including group properties)
+   *
+   * @throws FailedPrecondition   Should a precondition fail to create a project
+   * @throws APIException         If an error occurs while communicating with PageSeeder.
+   * @throws NullPointerException If either the project or member is <code>null</code>.
+   */
+  public void createProject(PSProject project, PSMember creator, GroupOptions options) throws APIException {
+    if (project == null) throw new NullPointerException("project");
+    if (creator == null) throw new NullPointerException("creator");
+    if (!project.isValid()) throw new InvalidEntityException(PSProject.class, project.checkValid());
+    PSHTTPConnector connector = PSHTTPConnectors.createProject(project, creator, options).using(this.session);
+    PSGroupHandler handler = new PSGroupHandler(project);
+    PSHTTPResponseInfo info = connector.post(handler);
+    if (info.getCode() >= 400)
+      throw new APIException("Unable to create project '"+project.getName()+"': "+info.getMessage());
+    cache.put(project);
   }
 
   /**
@@ -95,15 +160,9 @@ public class GroupManager extends Sessionful {
    * @param project The project to create
    * @return The corresponding instance.
    */
+  @Deprecated
   public void createProject(PSProject project, GroupOptions options, PSMember creator) throws APIException {
-    if (project == null) throw new NullPointerException("project");
-    if (!project.isValid()) throw new InvalidEntityException(PSProject.class, project.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.createProject(project, options, creator.getUsername()).using(this.session);
-    PSGroupHandler handler = new PSGroupHandler(project);
-    PSHTTPResponseInfo info = connector.post(handler);
-    if (info.getCode() >= 400)
-      throw new APIException("Unable to create project '"+project.getName()+"': "+info.getMessage());
-    cache.put(project);
+    createProject(project, creator, options);
   }
 
   /**
@@ -129,12 +188,41 @@ public class GroupManager extends Sessionful {
    *
    * @param name The name of the group.
    * @return The corresponding instance.
+   *
+   * @throws APIException         If an error occurs while communicating with PageSeeder.
+   * @throws NullPointerException If either the name of the group is <code>null</code>.
    */
-  public PSGroup get(String name, PSMember member) throws APIException {
+  @Requires(minVersion=56000)
+  public PSGroup get(String name) throws APIException {
     if (name == null) throw new NullPointerException("name");
     PSGroup group = cache.get(name);
     if (group == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getGroup(name, member.getUsername()).using(this.session);
+      PSHTTPConnector connector = PSHTTPConnectors.getGroup(name).using(this.session);
+      PSGroupHandler handler = new PSGroupHandler();
+      connector.get(handler);
+      group = handler.getGroup();
+      if (group != null)
+        cache.put(group);
+    }
+    return group;
+  }
+
+  /**
+   * Returns the group for the specified name
+   *
+   * @param name The name of the group.
+   * @return The corresponding instance.
+   *
+   * @throws FailedPrecondition   If the member is not identifiable
+   * @throws APIException         If an error occurs while communicating with PageSeeder.
+   * @throws NullPointerException If either the name of the group or member is <code>null</code>.
+   */
+  public PSGroup get(String name, PSMember member) throws APIException {
+    if (name == null) throw new NullPointerException("name");
+    if (member == null) throw new NullPointerException("member");
+    PSGroup group = cache.get(name);
+    if (group == null) {
+      PSHTTPConnector connector = PSHTTPConnectors.getGroup(name, member).using(this.session);
       PSGroupHandler handler = new PSGroupHandler();
       connector.get(handler);
       group = handler.getGroup();
@@ -149,6 +237,28 @@ public class GroupManager extends Sessionful {
    *
    * @param name The name of the project.
    * @return The corresponding instance or <code>null</code>.
+   *
+   * @throws APIException         If an error occurs while communicating with PageSeeder.
+   * @throws NullPointerException If either the name of the group is <code>null</code>.
+   */
+  public PSProject getProject(String name) throws APIException {
+    PSGroup group = get(name);
+    if (group == null)
+      return null;
+    else if (group instanceof PSProject)
+      return (PSProject)group;
+    else
+      throw new APIException("Not a project");
+  }
+
+  /**
+   * Returns the project for the specified name
+   *
+   * @param name The name of the project.
+   * @return The corresponding instance or <code>null</code>.
+   *
+   * @throws APIException         If an error occurs while communicating with PageSeeder.
+   * @throws NullPointerException If either the name of the group is <code>null</code>.
    */
   public PSProject getProject(String name, PSMember member) throws APIException {
     PSGroup group = get(name, member);
@@ -161,18 +271,22 @@ public class GroupManager extends Sessionful {
   }
 
   /**
-   * gets the group folder.
+   * Returns the  group folder for the specified URL.
    *
    * @param group The group the group folder belongs to
+   * @param url   The URL of the group folder
    *
-   * @return The corresponding instance.
+   * @return The corresponding instance or <code>null</code>.
    */
   public PSGroupFolder getGroupFolder(PSGroup group, String url) throws APIException {
+    if (group == null) throw new NullPointerException("group");
+    if (url == null) throw new NullPointerException("url");
     PSGroupFolder folder = folders.get(url);
     if (folder == null) {
       PSHTTPConnector connector = PSHTTPConnectors.getGroupFolder(group, url).using(this.session);
       PSGroupFolderHandler handler = new PSGroupFolderHandler();
       PSHTTPResponseInfo info = connector.get(handler);
+      // TODO We should simply return null
       if (info.getCode() >= 400)
         throw new APIException("Unable to find group folder '"+url+"': "+info.getMessage());
       folder = handler.getGroupFolder();
@@ -192,7 +306,6 @@ public class GroupManager extends Sessionful {
    */
   public void addSubGroup(PSGroup group, PSGroup subgroup) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.addSubGroup(group, subgroup).using(this.session);
-    if (!group.isValid() && !subgroup.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
     PSHTTPResponseInfo info = connector.post();
     if (info.getCode() >= 400)
       throw new APIException("Unable to add subgroup '"+subgroup.getName()+"' to '"+group.getName()+"': "+info.getMessage());
@@ -211,7 +324,6 @@ public class GroupManager extends Sessionful {
    */
   public void addSubGroup(PSGroup group, PSGroup subgroup, PSNotification notification, PSRole role, boolean listed)
       throws APIException {
-    if (!group.isValid() || !subgroup.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
     PSHTTPConnector connector = PSHTTPConnectors.addSubGroup(group, subgroup, notification, role, listed).using(this.session);
     PSHTTPResponseInfo info = connector.post();
     if (info.getCode() >= 400)
@@ -227,8 +339,7 @@ public class GroupManager extends Sessionful {
    * @throws APIException
    */
   public void putResource(PSProject project, PSResource resource, boolean overwrite) throws APIException {
-    if (!project.isValid()) throw new InvalidEntityException(PSProject.class, project.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.putResource(project.getName(), resource, overwrite).using(this.session);
+    PSHTTPConnector connector = PSHTTPConnectors.putResource(project, resource, overwrite).using(this.session);
     PSHTTPResponseInfo info = connector.post();
     if (info.getCode() >= 400)
       throw new APIException("Unable to put project resource on '"+project.getName()+"': "+info.getMessage());

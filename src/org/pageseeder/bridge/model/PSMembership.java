@@ -14,12 +14,13 @@ import org.pageseeder.bridge.PSEntity;
  *
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.1
+ * @since 0.2.0
  */
 public final class PSMembership implements PSEntity  {
 
   /** As per recommendation */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   private Long id;
 
@@ -65,6 +66,32 @@ public final class PSMembership implements PSEntity  {
       this.key = this.group.getKey()+'/'+this.member.getKey();
     }
     return this.key;
+  }
+
+  /**
+   * Indicates whether the membership is identifiable.
+   *
+   * <p>To be identifiable, the membership must have either PageSeeder database ID
+   * or it must have both a group and member defined and they both must be identifiable.
+   *
+   * @return <code>true</code> if ID is specified or both group and member are identifiable;
+   *         <code>false</code> otherwise.
+   */
+  @Override
+  public boolean isIdentifiable() {
+    if (this.id != null) return true;
+    if (this.group == null || this.member == null) return false;
+    return this.group.isIdentifiable() && this.member.isIdentifiable();
+  }
+
+  /**
+   * Returns the private ID only.
+   *
+   * @return The membership ID only if not <code>null</code>.
+   */
+  @Override
+  public String getIdentifier() {
+    return this.id != null? this.id.toString() : null;
   }
 
   /**

@@ -7,8 +7,9 @@
  */
 package org.pageseeder.bridge.model;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.PSEntity;
@@ -16,12 +17,16 @@ import org.pageseeder.bridge.PSEntity;
 /**
  * A PageSeeder group.
  *
+ * <p>The public ID of a group is its name.
+ *
  * @author Christophe Lauret
+ * @version 0.2.1
+ * @since 0.2.0
  */
 public class PSGroup implements PSEntity {
 
   /** As per recommendation */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   /**
    * Regular expression that group names must match.
@@ -53,9 +58,15 @@ public class PSGroup implements PSEntity {
   /** The type of details */
   private String detailsType;
 
+  /**
+   * Create a new group without any identifier.
+   */
   public PSGroup() {
   }
 
+  /**
+   * Create a new group with a public identifier.
+   */
   public PSGroup(String name) {
     this.name = name;
   }
@@ -68,6 +79,16 @@ public class PSGroup implements PSEntity {
   @Override
   public String getKey() {
     return this.name;
+  }
+
+  @Override
+  public boolean isIdentifiable() {
+    return this.id != null || this.name != null;
+  }
+
+  @Override
+  public String getIdentifier() {
+    return this.id != null? this.id.toString() : this.name;
   }
 
   /**
@@ -191,29 +212,15 @@ public class PSGroup implements PSEntity {
   // ---------------------------------------------------------------------------------------------
 
   /**
-   * List of names which cannot be used as group names.
+   * An unmodifiable list of names which cannot be used as group names.
    */
-  public static final Collection<String> RESERVED_GROUP_NAMES = new ArrayList<String>();
+  public static final Collection<String> RESERVED_GROUP_NAMES;
   static {
-    RESERVED_GROUP_NAMES.add("page");
-    RESERVED_GROUP_NAMES.add("block");
-    RESERVED_GROUP_NAMES.add("tree");
-    RESERVED_GROUP_NAMES.add("uri");
-    RESERVED_GROUP_NAMES.add("fullpage");
-    RESERVED_GROUP_NAMES.add("embed");
-    RESERVED_GROUP_NAMES.add("psadmin");
-    RESERVED_GROUP_NAMES.add("bundle");
-    RESERVED_GROUP_NAMES.add("service");
-    RESERVED_GROUP_NAMES.add("error");
-    RESERVED_GROUP_NAMES.add("weborganic");
-    RESERVED_GROUP_NAMES.add("woconfig");
-    RESERVED_GROUP_NAMES.add("servlet");
-    RESERVED_GROUP_NAMES.add("psdoc");
-    RESERVED_GROUP_NAMES.add("filter");
-    RESERVED_GROUP_NAMES.add("group");
-    RESERVED_GROUP_NAMES.add("home");
-    RESERVED_GROUP_NAMES.add("member");
-    RESERVED_GROUP_NAMES.add("project");
+    String[] reserved = new String[]{
+      "page", "block", "tree", "uri", "fullpage", "embed", "psadmin", "bundle", "service", "error",
+      "weborganic","woconfig", "servlet", "psdoc", "filter","group","home","member","project"
+    };
+    RESERVED_GROUP_NAMES = Collections.unmodifiableList(Arrays.asList(reserved));
   }
 
   /**
