@@ -89,8 +89,8 @@ public final class PSEntityFactory {
    *   <li><b>email</b> - email address if available only
    * </ul>
    *
-   * @param atts       the attributes of the "member" element.
-   * @param membership an existing member instance to reuse.
+   * @param atts   the attributes of the "member" element.
+   * @param member an existing member instance to reuse.
    *
    * @return The member instance.
    */

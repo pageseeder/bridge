@@ -22,7 +22,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Christophe Lauret
  * @version 0.1.0
  */
-public class PSDocumentHandler extends DefaultHandler {
+public final class PSDocumentHandler extends DefaultHandler {
 
   /**
    * The current document being processed.
@@ -45,9 +45,7 @@ public class PSDocumentHandler extends DefaultHandler {
   List<PSFolder> folders = new ArrayList<PSFolder>();
 
   /**
-   * Create a new handler for document belong to a specific group.
-   *
-   * @param group The group the documents belong to.
+   * Create a new handler for documents.
    */
   public PSDocumentHandler() {
   }
@@ -55,7 +53,7 @@ public class PSDocumentHandler extends DefaultHandler {
   /**
    * Create a new handler for document belong to a specific group.
    *
-   * @param group The group the documents belong to.
+   * @param document A document to update.
    */
   public PSDocumentHandler(PSDocument document) {
     this.document = document;

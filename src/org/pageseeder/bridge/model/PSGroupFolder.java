@@ -32,6 +32,11 @@ public class PSGroupFolder extends PSAddressable implements PSEntity {
   /** Whether it is public */
   private boolean isPublic = false;
 
+  /**
+   * Creates a new group folder from the specified URL.
+   *
+   * @param url The URL for this group folder.
+   */
   public PSGroupFolder(String url) {
     super(url);
   }

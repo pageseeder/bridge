@@ -7,31 +7,21 @@
  */
 package org.pageseeder.bridge.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.pageseeder.bridge.model.PSMember;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.2
+ * @since 0.1.0
  */
-public class PSMemberHandler extends DefaultHandler {
+public final class PSMemberHandler extends PSEntityHandler<PSMember> {
 
   /**
-   * Member being processed.
+   * A new handler to extract new members only.
    */
-  private PSMember member = null;
-
-  /**
-   * The list of members found during last parse.
-   */
-  private List<PSMember> members = new ArrayList<PSMember>();
-
   public PSMemberHandler() {
   }
 
@@ -41,37 +31,27 @@ public class PSMemberHandler extends DefaultHandler {
    * @param member the member to update
    */
   public PSMemberHandler(PSMember member) {
-    this.member = member;
+    super(member);
   }
 
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
     if ("member".equals(localName)) {
-      this.member = PSEntityFactory.toMember(atts, this.member);
+      this.current = make(atts, this.current);
     }
   }
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
-    if ("member".equals(localName) && this.member != null) {
-      this.members.add(this.member);
-      this.member = null;
+    if ("member".equals(localName) && this.current != null) {
+      this._items.add(this.current);
+      this.current = null;
     }
   }
 
-  /**
-   * @return the memberships
-   */
-  public List<PSMember> listMembers() {
-    return this.members;
-  }
-
-  /**
-   * @return the memberships
-   */
-  public PSMember getMember() {
-    int count = this.members.size();
-    return count > 0 ? this.members.get(count-1) : null;
+  @Override
+  public PSMember make(Attributes atts, PSMember entity) {
+    return PSEntityFactory.toMember(atts, entity);
   }
 
 }

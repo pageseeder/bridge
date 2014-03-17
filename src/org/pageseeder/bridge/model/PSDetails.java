@@ -58,6 +58,11 @@ public final class PSDetails implements Serializable {
     this.fields[i-1] = value;
   }
 
+  /**
+   * Check that the membership details are valid.
+   *
+   * @return the validitity of the entity
+   */
   public EntityValidity checkValid() {
     for (String f : this.fields) {
       if (f != null && f.length() > 100) return EntityValidity.DETAIL_FIELD_VALUE_IS_TOO_LONG;

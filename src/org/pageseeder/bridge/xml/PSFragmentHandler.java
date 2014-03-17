@@ -43,8 +43,6 @@ public final class PSFragmentHandler extends DefaultHandler {
 
   /**
    * Create a new handler for document belong to a specific group.
-   *
-   * @param group The group the documents belong to.
    */
   public PSFragmentHandler() {
   }

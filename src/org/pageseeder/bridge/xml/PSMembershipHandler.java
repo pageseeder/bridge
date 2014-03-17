@@ -7,31 +7,24 @@
  */
 package org.pageseeder.bridge.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.pageseeder.bridge.model.PSDetails;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSMembership;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.2
+ * @since 0.1.0
  */
-public class PSMembershipHandler extends DefaultHandler {
-
-  private PSMembership membership = null;
+public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
 
   private PSMember member = null;
 
   private PSGroup group = null;
-
-  private List<PSMembership> memberships = new ArrayList<PSMembership>();
 
   private StringBuilder buffer = new StringBuilder();
 
@@ -44,7 +37,7 @@ public class PSMembershipHandler extends DefaultHandler {
   }
 
   public PSMembershipHandler(PSMembership membership) {
-    this.membership = membership;
+    super(membership);
     this.member = membership.getMember();
     this.group = membership.getGroup();
   }
@@ -60,19 +53,19 @@ public class PSMembershipHandler extends DefaultHandler {
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
     if ("membership".equals(localName)) {
-      this.membership = PSEntityFactory.toMembership(atts, this.membership);
+      this.current = PSEntityFactory.toMembership(atts, this.current);
 
     } else if ("member".equals(localName)) {
       PSMember member = PSEntityFactory.toMember(atts, this.member);
-      this.membership.setMember(member);
+      this.current.setMember(member);
 
     } else if ("group".equals(localName)) {
       PSGroup group = PSEntityFactory.toGroup(atts, this.group);
-      this.membership.setGroup(group);
+      this.current.setGroup(group);
 
     } else if ("details".equals(localName)) {
       PSDetails details = new PSDetails();
-      this.membership.setDetails(details);
+      this.current.setDetails(details);
 
     } else if ("field".equals(localName)) {
       this.field = PSHandlers.integer(atts.getValue("position"));
@@ -90,14 +83,14 @@ public class PSMembershipHandler extends DefaultHandler {
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if ("membership".equals(localName)) {
       // Ensure that the group/member is added
-      if (this.membership.getGroup() == null)
-        this.membership.setGroup(this.group);
-      if (this.membership.getMember() == null)
-        this.membership.setMember(this.member);
-      this.memberships.add(this.membership);
-      this.membership = null;
+      if (this.current.getGroup() == null)
+        this.current.setGroup(this.group);
+      if (this.current.getMember() == null)
+        this.current.setMember(this.member);
+      this._items.add(this.current);
+      this.current = null;
     } else if ("field".equals(localName)) {
-      PSDetails details = this.membership.getDetails();
+      PSDetails details = this.current.getDetails();
       if (details != null && this.field > 0) {
         details.setField(this.field, this.buffer.toString());
         this.buffer.setLength(0);
@@ -106,19 +99,8 @@ public class PSMembershipHandler extends DefaultHandler {
     }
   }
 
-  /**
-   * @return the memberships
-   */
-  public List<PSMembership> listMemberships() {
-    return this.memberships;
+  @Override
+  public PSMembership make(Attributes atts, PSMembership entity) {
+    return PSEntityFactory.toMembership(atts, entity);
   }
-
-  /**
-   * @return the memberships
-   */
-  public PSMembership getMembership() {
-    int count = this.memberships.size();
-    return count > 0 ? this.memberships.get(count-1) : null;
-  }
-
 }

@@ -7,32 +7,22 @@
  */
 package org.pageseeder.bridge.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.pageseeder.bridge.model.PSGroup;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Handler for PageSeeder groups and projects.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.2
+ * @since 0.1.0
  */
-public class PSGroupHandler extends DefaultHandler {
+public final class PSGroupHandler extends PSEntityHandler<PSGroup> {
 
   /**
-   * The current group being processed.
+   * A new handler to fill up the values of an incomplete group (or project).
    */
-  PSGroup group = null;
-
-  /**
-   * The list of groups found during last parsing (may include projects)
-   */
-  List<PSGroup> groups = new ArrayList<PSGroup>();
-
   public PSGroupHandler() {
   }
 
@@ -42,39 +32,28 @@ public class PSGroupHandler extends DefaultHandler {
    * @param group the group or project to update
    */
   public PSGroupHandler(PSGroup group) {
-    this.group = group;
+    super(group);
   }
 
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
     if ("group".equals(localName)) {
-      PSGroup group = PSEntityFactory.toGroup(atts, this.group);
-      this.group = group;
+      this.current = make(atts, this.current);
     } else if ("project".equals(localName)) {
-      PSGroup group = PSEntityFactory.toProject(atts, this.group);
-      this.group = group;
+      PSGroup group = PSEntityFactory.toProject(atts, this.current);
+      this.current = group;
     }
   }
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
-    if ("group".equals(localName)) {
-      this.groups.add(this.group);
+    if ("group".equals(localName) || "project".equals(localName)) {
+      this._items.add(this.current);
     }
   }
 
-  /**
-   * @return the list of groups
-   */
-  public List<PSGroup> listGroups() {
-    return this.groups;
+  @Override
+  public PSGroup make(Attributes atts, PSGroup entity) {
+    return PSEntityFactory.toGroup(atts, entity);
   }
-
-  /**
-   * @return the last group that was processed
-   */
-  public PSGroup getGroup() {
-    return this.group;
-  }
-
 }

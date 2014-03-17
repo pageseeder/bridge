@@ -66,6 +66,10 @@ public class PSGroup implements PSEntity {
 
   /**
    * Create a new group with a public identifier.
+   *
+   * <p>Note: the constructor does not check that the name is valid.
+   *
+   * @param name The name of the group.
    */
   public PSGroup(String name) {
     this.name = name;

@@ -965,7 +965,6 @@ public final class PSHTTPConnection {
      * Returns the error message found in the specified XML Input Source.
      *
      * @param source the XML input source to parse.
-     * @return the error message found in the specified XML Input Source.
      *
      * @throws IOException If unable to parse response due to IO error.
      */

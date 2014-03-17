@@ -114,7 +114,7 @@ public final class MembershipManager extends Sessionful {
     PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(group, member).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler();
     connector.get(handler);
-    return handler.getMembership();
+    return handler.get();
   }
 
   /**
@@ -132,7 +132,7 @@ public final class MembershipManager extends Sessionful {
     PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(group.getName(), member.getUsername()).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler(group);
     connector.get(handler);
-    return handler.getMembership();
+    return handler.get();
   }
 
   /**
@@ -151,7 +151,6 @@ public final class MembershipManager extends Sessionful {
    * Saves the specified membership in PageSeeder.
    *
    * @param membership The Membership to create.
-   * @param password   The password for the user (must be strong enough)
    */
   public void save(PSMembership membership) throws APIException {
     save(membership, false);
@@ -161,7 +160,7 @@ public final class MembershipManager extends Sessionful {
    * Saves the specified membership in PageSeeder.
    *
    * @param membership The Membership to create.
-   * @param password   The password for the user (must be strong enough)
+   * @param forceEmail A boolean to force emeil change
    */
   public void save(PSMembership membership, boolean forceEmail) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
@@ -187,7 +186,7 @@ public final class MembershipManager extends Sessionful {
     PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(member.getUsername()).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler(member);
     connector.get(handler);
-    return handler.listMemberships();
+    return handler.list();
   }
 
   /**
@@ -199,7 +198,7 @@ public final class MembershipManager extends Sessionful {
     PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(username).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler();
     connector.get(handler);
-    return handler.listMemberships();
+    return handler.list();
   }
 
   /**
@@ -212,7 +211,7 @@ public final class MembershipManager extends Sessionful {
     PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForGroup(group.getName()).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler(group);
     connector.get(handler);
-    return handler.listMemberships();
+    return handler.list();
   }
 
 
@@ -220,9 +219,8 @@ public final class MembershipManager extends Sessionful {
     PSHTTPConnector connector = PSHTTPConnectors.findMembershipsForGroup(membership, isManager).using(this.session);
     PSMembershipHandler handler = new PSMembershipHandler(membership.getGroup());
     connector.get(handler);
-    return handler.listMemberships();
+    return handler.list();
   }
-
 
   /**
    * @return the internal cache for memberships.

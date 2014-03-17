@@ -64,9 +64,12 @@ public final class Rules {
   }
 
   /**
-   * Indicates whether it is a valid email.
+   * Indicates whether it is a valid email address by looking at its syntax.
    *
-   * @param email
+   * @param email The email to validate
+   *
+   * @return <code>true</code> if the email is considered valid from its syntax;
+   *         <code>false</code> otherwise.
    */
   public static boolean isEmail(String email) {
     if (email == null || email.isEmpty()) return false;

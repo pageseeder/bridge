@@ -178,7 +178,7 @@ public final class GroupManager extends Sessionful {
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getCode() >= 400)
       throw new APIException("Unable to create group folder '"+url+"': "+info.getMessage());
-    PSGroupFolder folder = handler.getGroupFolder();
+    PSGroupFolder folder = handler.get();
     if (folder != null)
       folders.put(folder);
   }
@@ -192,7 +192,7 @@ public final class GroupManager extends Sessionful {
    * @throws APIException         If an error occurs while communicating with PageSeeder.
    * @throws NullPointerException If either the name of the group is <code>null</code>.
    */
-  @Requires(minVersion=56000)
+  @Requires(minVersion = 56000)
   public PSGroup get(String name) throws APIException {
     if (name == null) throw new NullPointerException("name");
     PSGroup group = cache.get(name);
@@ -200,7 +200,7 @@ public final class GroupManager extends Sessionful {
       PSHTTPConnector connector = PSHTTPConnectors.getGroup(name).using(this.session);
       PSGroupHandler handler = new PSGroupHandler();
       connector.get(handler);
-      group = handler.getGroup();
+      group = handler.get();
       if (group != null)
         cache.put(group);
     }
@@ -225,7 +225,7 @@ public final class GroupManager extends Sessionful {
       PSHTTPConnector connector = PSHTTPConnectors.getGroup(name, member).using(this.session);
       PSGroupHandler handler = new PSGroupHandler();
       connector.get(handler);
-      group = handler.getGroup();
+      group = handler.get();
       if (group != null)
         cache.put(group);
     }
@@ -289,7 +289,7 @@ public final class GroupManager extends Sessionful {
       // TODO We should simply return null
       if (info.getCode() >= 400)
         throw new APIException("Unable to find group folder '"+url+"': "+info.getMessage());
-      folder = handler.getGroupFolder();
+      folder = handler.get();
       if (folder != null)
         folders.put(folder);
     }

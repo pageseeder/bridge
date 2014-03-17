@@ -42,8 +42,8 @@ public final class Sessions {
    */
   public static boolean isValid(PSSession session) {
     if (session == null) return false;
-    final int minutes = 60;
-    long maxSessionAge = minutes * ONE_MINUTE_IN_MS;
+    final int _minutes = 60;
+    long maxSessionAge = _minutes * ONE_MINUTE_IN_MS;
     return session.age() < maxSessionAge;
   }
 

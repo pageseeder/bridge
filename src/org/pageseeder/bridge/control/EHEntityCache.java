@@ -220,6 +220,7 @@ public final class EHEntityCache<T extends PSEntity> implements PSEntityCache<T>
    * Returns a new cache instance.
    *
    * @param name the name of the cache
+   * @param keys the keys to use for this entity
    *
    * @param <E> The type of element to store
    *

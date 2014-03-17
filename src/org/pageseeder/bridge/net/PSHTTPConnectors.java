@@ -122,8 +122,8 @@ public final class PSHTTPConnectors {
 
   /**
    *
-   * @param project
-   * @param creator
+   * @param project The project to create in PageSeeder
+   * @param creator The member creating the project.
    *
    * @return the corresponding connector
    *

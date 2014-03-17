@@ -21,10 +21,14 @@ import org.pageseeder.bridge.PSEntity;
  */
 public final class Preconditions {
 
+  /** Utility class. */
+  private Preconditions(){}
+
   /**
    * Precondition requiring the specified entity to be identifiable.
    *
    * @param entity The entity to check
+   * @param name   The name of the entity
    *
    * @throws FailedPrecondition If the the {@link PSEntity#isIdentifiable()} method returns <code>false</code>.
    */
@@ -47,7 +51,7 @@ public final class Preconditions {
   /**
    * Precondition requiring the specified object to be non-null.
    *
-   * @param s    The string to check
+   * @param o    The object to check for <code>null</code>
    * @param name The name of the object to generate the message.
    *
    * @throws FailedPrecondition If the pre-condition failed.

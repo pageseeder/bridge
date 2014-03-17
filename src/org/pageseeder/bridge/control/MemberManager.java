@@ -51,7 +51,7 @@ public final class MemberManager extends Sessionful {
       PSHTTPConnector connector = PSHTTPConnectors.getMember(username).using(this.session);
       PSMemberHandler handler = new PSMemberHandler();
       connector.get(handler);
-      member = handler.getMember();
+      member = handler.get();
       if (member != null)
         cache.put(member);
     }
@@ -73,7 +73,7 @@ public final class MemberManager extends Sessionful {
     PSHTTPConnector connector = PSHTTPConnectors.editMember(member, true).using(this.session);
     PSMemberHandler handler = new PSMemberHandler(member);
     connector.post(handler);
-    member = handler.getMember();
+    member = handler.get();
     if (member != null)
       cache.put(member);
   }
