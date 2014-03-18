@@ -16,7 +16,7 @@ import org.pageseeder.bridge.net.PSHTTPConnectors;
 import org.pageseeder.bridge.xml.PSMemberHandler;
 
 /**
- * A manager for groups and projects (based on PageSeeder Groups)
+ * A manager for groups and projects (based on PageSeeder Groups).
  *
  * @author Christophe Lauret
  * @version 0.2.0
@@ -30,14 +30,16 @@ public final class MemberManager extends Sessionful {
   private static volatile PSEntityCache<PSMember> cache = EHEntityCache.newInstance("psmembers", "email");
 
   /**
+   * Creates a new member manager using the specified session.
    *
+   * @param session The session used to connect to PageSeeder.
    */
-  public MemberManager(PSSession user) {
-    super(user);
+  public MemberManager(PSSession session) {
+    super(session);
   }
 
   /**
-   * Returns the member for the specified username
+   * Returns the member for the specified username.
    *
    * @param username The username of that member
    *
@@ -48,7 +50,7 @@ public final class MemberManager extends Sessionful {
   public PSMember getByUsername(String username) throws APIException {
     PSMember member = cache.get(username);
     if (member == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getMember(username).using(this.session);
+      PSHTTPConnector connector = PSHTTPConnectors.getMember(username).using(this._session);
       PSMemberHandler handler = new PSMemberHandler();
       connector.get(handler);
       member = handler.get();
@@ -59,18 +61,16 @@ public final class MemberManager extends Sessionful {
   }
 
   /**
-   * Returns the member for the specified username
+   * Saves the details of the specified member.
    *
-   * @param username The username of that member
-   *
-   * @return
+   * @param member The username of that member
    *
    * @throws APIException
    */
   public void save(PSMember member) throws APIException {
     // TODO Verify
     // XXX Force email change set to true (requires Admin)
-    PSHTTPConnector connector = PSHTTPConnectors.editMember(member, true).using(this.session);
+    PSHTTPConnector connector = PSHTTPConnectors.editMember(member, true).using(this._session);
     PSMemberHandler handler = new PSMemberHandler(member);
     connector.post(handler);
     member = handler.get();
@@ -87,10 +87,15 @@ public final class MemberManager extends Sessionful {
    * @throws APIException
    */
   public void resetSession() throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.resetSession().using(this.session);
+    PSHTTPConnector connector = PSHTTPConnectors.resetSession().using(this._session);
     connector.post();
   }
 
+  /**
+   * Returns the member cache.
+   *
+   * @return the member cache.
+   */
   public static PSEntityCache<PSMember> getCache() {
     return cache;
   }

@@ -27,7 +27,16 @@ public final class PSDocument extends PSURI implements PSEntity {
   private String type = "default";
 
   /**
-   * Default constructor.
+   * Construct a new document from the specified URL.
+   *
+   * <p>The URL may omit the scheme or authority part, it which case it will default
+   * on the default values from the configuration.
+   *
+   * <p>Implementation note: this constructor will decompose the URL into its components.
+   *
+   * @param url The URL to the document.
+   *
+   * @throws IllegalArgumentException If the specified URL is invalid
    */
   public PSDocument(String url) {
     super(url);
@@ -35,36 +44,41 @@ public final class PSDocument extends PSURI implements PSEntity {
 
   /**
    * Default constructor.
+   *
+   * @param scheme The scheme "http" or "https"
+   * @param host   Where the resource is hosted.
+   * @param port   The port (or negative to use the default port).
+   * @param path   The path to the resource.
    */
-  public PSDocument(String scheme, String host, int port, String url) {
-    super(scheme, host, port, url);
+  public PSDocument(String scheme, String host, int port, String path) {
+    super(scheme, host, port, path);
   }
 
   /**
    * @return the filename
    */
-  public final String getFilename() {
+  public String getFilename() {
     return getFilename(getPath());
   }
 
   /**
    * @return the filename
    */
-  public final String getFolderURL() {
+  public String getFolderURL() {
     return getFolder(getURL());
   }
 
   /**
    * @return the type
    */
-  public final String getType() {
+  public String getType() {
     return this.type;
   }
 
   /**
    * @param filename the filename to set
    */
-  public final void setFilename(String filename) {
+  public void setFilename(String filename) {
     String path = getPath();
     if (path != null) {
       setPath(getFolder(path)+'/'+filename);
@@ -76,7 +90,7 @@ public final class PSDocument extends PSURI implements PSEntity {
   /**
    * @param type the type to set
    */
-  public final void setType(String type) {
+  public void setType(String type) {
     this.type = type;
   }
 
@@ -98,10 +112,12 @@ public final class PSDocument extends PSURI implements PSEntity {
    *  Status VARCHAR(40) NULL,
    *  Labels VARCHAR(250) NULL,
    * </pre>
+   *
+   * {@inheritDoc}
    */
   @Override
   public EntityValidity checkValid() {
-    EntityValidity validity = checkURIValid();
+    EntityValidity validity = super.checkURIValid();
     if ("folder".equals(this.getMediaType()))
       validity = EntityValidity.DOCUMENT_IS_A_FOLDER;
     return validity;

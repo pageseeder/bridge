@@ -158,10 +158,16 @@ public class PSGroup implements PSEntity {
     this.defaultNotification = defaultNotification;
   }
 
+  /**
+   * @return the type of membership details for this group.
+   */
   public String getDetailsType() {
     return this.detailsType;
   }
 
+  /**
+   * @param detailsType the type of membership details for this group.
+   */
   public void setDetailsType(String detailsType) {
     this.detailsType = detailsType;
   }
@@ -189,6 +195,8 @@ public class PSGroup implements PSEntity {
    *  DetailsForm VARCHAR(150) NULL
    *  Owner VARCHAR(100) NULL
    * </pre>
+   *
+   * {@inheritDoc}
    */
   @Override
   public EntityValidity checkValid() {
@@ -222,7 +230,7 @@ public class PSGroup implements PSEntity {
   static {
     String[] reserved = new String[]{
       "page", "block", "tree", "uri", "fullpage", "embed", "psadmin", "bundle", "service", "error",
-      "weborganic","woconfig", "servlet", "psdoc", "filter","group","home","member","project"
+      "weborganic", "woconfig", "servlet", "psdoc", "filter","group","home","member","project"
     };
     RESERVED_GROUP_NAMES = Collections.unmodifiableList(Arrays.asList(reserved));
   }

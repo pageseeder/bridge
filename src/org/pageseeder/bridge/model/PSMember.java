@@ -148,6 +148,8 @@ public final class PSMember implements PSEntity {
    *   Email VARCHAR(100) NULL
    *   Username VARCHAR(100) NULL
    * </pre>
+   *
+   * {@inheritDoc}
    */
   @Override
   public EntityValidity checkValid() {

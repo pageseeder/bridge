@@ -108,6 +108,8 @@ public class PSGroupFolder extends PSAddressable implements PSEntity {
    *  DetailsForm VARCHAR(150) NULL
    *  Owner VARCHAR(100) NULL
    * </pre>
+   *
+   * {@inheritDoc}
    */
   @Override
   public EntityValidity checkValid() {

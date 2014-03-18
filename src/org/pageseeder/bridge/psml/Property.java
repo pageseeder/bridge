@@ -22,12 +22,24 @@ import com.topologi.diffx.xml.XMLWriter;
  */
 public class Property implements XMLWritable {
 
+  /**
+   * The name of the property.
+   */
   private String name;
 
+  /**
+   * The type of property.
+   */
   private String type;
 
+  /**
+   * The title of the property
+   */
   private String title;
 
+  /**
+   * The value of the property
+   */
   private String value;
 
   public Property(String name) {

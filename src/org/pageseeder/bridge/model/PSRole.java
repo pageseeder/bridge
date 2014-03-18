@@ -39,20 +39,22 @@ public enum PSRole {
   /**
    * Parameter that can be sent to the service.
    */
-  private final String parameter;
+  private final String _parameter;
 
   /**
    * Sole constructor.
+   *
+   * @param p The name of the parameter for the PageSeeder services.
    */
   private PSRole(String p) {
-    this.parameter = p;
+    this._parameter = p;
   }
 
   /**
    * @return the parameter to use when communicating with PageSeder
    */
   public String parameter() {
-    return this.parameter;
+    return this._parameter;
   }
 
 }

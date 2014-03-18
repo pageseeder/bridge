@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 /**
  * A cache for a PageSeeder entity backed by EHCache.
  *
+ * @param <T> The type of entity
+ *
  * @author Christophe Lauret
  * @version 0.2.0
  * @since 0.2.0

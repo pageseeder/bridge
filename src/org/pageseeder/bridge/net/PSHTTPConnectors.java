@@ -200,7 +200,7 @@ public final class PSHTTPConnectors {
    *
    * @return The corresponding connector
    *
-   * @throws If the group is not identifiable
+   * @throws FailedPrecondition If the group is not identifiable
    */
   @Requires(minVersion=56000)
   public static PSHTTPConnector getGroup(PSGroup group) throws FailedPrecondition {
@@ -216,7 +216,7 @@ public final class PSHTTPConnectors {
    *
    * @return The corresponding connector
    *
-   * @throws If the group is not identifiable
+   * @throws FailedPrecondition If the group is not identifiable
    */
   @Requires(minVersion=56000)
   public static PSHTTPConnector getGroup(String identifier) throws FailedPrecondition {

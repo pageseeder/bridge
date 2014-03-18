@@ -53,7 +53,7 @@ public class PSResult implements Serializable {
     try {
       id = Long.valueOf(psid);
     } catch (NumberFormatException ex) {
-      // Unable to parse ID
+      // Unable to parse ID, shuld never happen by specification
     }
     return id;
   }
@@ -69,7 +69,7 @@ public class PSResult implements Serializable {
    */
   public String getValue(String name){
     for (Field f : this.fields) {
-      if (f.name.equals(name)) return f.value;
+      if (f._name.equals(name)) return f._value;
     }
     return null;
   }
@@ -86,7 +86,7 @@ public class PSResult implements Serializable {
   public String getValueOfProperty(String name){
     String fieldname = "psproperty-"+name;
     for (Field f : this.fields) {
-      if (f.name.equals(fieldname)) return f.value;
+      if (f._name.equals(fieldname)) return f._value;
     }
     return null;
   }
@@ -103,8 +103,8 @@ public class PSResult implements Serializable {
   public List<String> getValues(String name){
     List<String> values = new ArrayList<String>();
     for (Field f : this.fields) {
-      if (f.name.equals(name)) {
-        values.add(f.value);
+      if (f._name.equals(name)) {
+        values.add(f._value);
       }
     }
     return values;
@@ -128,41 +128,45 @@ public class PSResult implements Serializable {
     /**
      * The name of the index field.
      */
-    private final String name;
+    private final String _name;
 
     /**
      * The value of the index field.
      */
-    private final String value;
+    private final String _value;
 
     /**
-     * Sole constructor
+     * Sole constructor.
      *
      * @param name  the name of the index field.
      * @param value the value of the index field.
      */
     public Field(String name, String value) {
-      this.name = name;
-      this.value= value;
+      this._name = name;
+      this._value= value;
     }
 
     /**
      * The name of the index field.
+     *
+     * @return the name of the index field.
      */
     public String name() {
-      return this.name;
+      return this._name;
     }
 
     /**
      * The value of the index field.
+     *
+     * @return the value of the index field.
      */
     public String value() {
-      return this.value;
+      return this._value;
     }
 
     @Override
     public String toString() {
-      return "f:"+this.name+"="+this.value;
+      return "f:"+this._name+"="+this._value;
     }
 
   }

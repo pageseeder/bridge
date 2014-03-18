@@ -22,30 +22,57 @@ public final class PSMembership implements PSEntity  {
   /** As per recommendation */
   private static final long serialVersionUID = 2L;
 
+  /**
+   * The PageSeeder id of the member.
+   */
   private Long id;
 
+  /**
+   * The PageSeeder group the member belongs to
+   */
   private PSGroup group;
 
+  /**
+   * The member instance
+   */
   private PSMember member;
 
+  /**
+   * Indicates whether the email address is visible to others in the group
+   */
   private boolean listed = true;
 
+  /**
+   * Notification setting of the member for the group.
+   */
   private PSNotification notification;
 
+  /**
+   * Role of the member in the group.
+   */
   private PSRole role;
 
+  /**
+   * Membership detail fields if any
+   */
   private PSDetails details = null;
 
+  /**
+   * Generated key
+   */
   private transient String key = null;
 
   /**
-   *
+   * Create a new membership without setting the group of member.
    */
   public PSMembership() {
   }
 
   /**
+   * Create a new membership.
    *
+   * @param group  the PageSeeder group the member belongs to
+   * @param member the member instance
    */
   public PSMembership(PSGroup group, PSMember member) {
     this.group = group;
@@ -53,10 +80,10 @@ public final class PSMembership implements PSEntity  {
   }
 
   /**
-   * @return the id
+   * @return the PageSeeder id of the member.
    */
   @Override
-  public final Long getId() {
+  public Long getId() {
     return this.id;
   }
 
@@ -97,49 +124,56 @@ public final class PSMembership implements PSEntity  {
   /**
    * @return the group
    */
-  public final PSGroup getGroup() {
+  public PSGroup getGroup() {
     return this.group;
   }
 
   /**
    * @return the member
    */
-  public final PSMember getMember() {
+  public PSMember getMember() {
     return this.member;
   }
 
   /**
    * @return the listed
    */
-  public final boolean isListed() {
+  public boolean isListed() {
     return this.listed;
   }
 
   /**
    * @return the notification
    */
-  public final PSNotification getNotification() {
+  public PSNotification getNotification() {
     return this.notification;
   }
 
   /**
    * @return the role
    */
-  public final PSRole getRole() {
+  public PSRole getRole() {
     return this.role;
+  }
+
+  /**
+   * @return Membership detail fields if any
+   */
+  public PSDetails getDetails() {
+    return this.details;
   }
 
   /**
    * @param id the id to set
    */
-  public final void setId(Long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
   /**
    * @param group the group to set
    */
-  public final void setGroup(PSGroup group) {
+  public void setGroup(PSGroup group) {
     this.group = group;
     this.key = null;
   }
@@ -147,7 +181,7 @@ public final class PSMembership implements PSEntity  {
   /**
    * @param member the member to set
    */
-  public final void setMember(PSMember member) {
+  public void setMember(PSMember member) {
     this.member = member;
     this.key = null;
   }
@@ -155,28 +189,27 @@ public final class PSMembership implements PSEntity  {
   /**
    * @param listed the listed to set
    */
-  public final void setListed(boolean listed) {
+  public void setListed(boolean listed) {
     this.listed = listed;
   }
 
   /**
    * @param notification the notification to set
    */
-  public final void setNotification(PSNotification notification) {
+  public void setNotification(PSNotification notification) {
     this.notification = notification;
   }
 
   /**
    * @param role the role to set
    */
-  public final void setRole(PSRole role) {
+  public void setRole(PSRole role) {
     this.role = role;
   }
 
-  public PSDetails getDetails() {
-    return this.details;
-  }
-
+  /**
+   * @param details Membership detail fields if any
+   */
   public void setDetails(PSDetails details) {
     this.details = details;
   }

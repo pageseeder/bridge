@@ -31,13 +31,17 @@ public class PSResource {
    */
   private byte[] bytes;
 
+  /**
+   * Default constructor.
+   */
   public PSResource() {
   }
 
   /**
+   * Creates a new resource at the specified location and content.
    *
-   * @param location
-   * @param content
+   * @param location the location of the resource
+   * @param content  its textual content.
    */
   public PSResource(String location, String content) {
     this.location = location;
@@ -66,7 +70,7 @@ public class PSResource {
   }
 
   /**
-   * @return
+   * @return <code>true</code> if the resource is represented as a bytes rather then text.
    */
   public boolean isBinary() {
     return this.bytes != null;

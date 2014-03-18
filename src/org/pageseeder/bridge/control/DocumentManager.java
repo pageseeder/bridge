@@ -74,7 +74,7 @@ public class DocumentManager extends Sessionful {
       connector = PSHTTPConnectors.createDocument(document, group, creator, null);
     }
     PSDocumentHandler handler = new PSDocumentHandler(document);
-    connector.setUser(this.session);
+    connector.setUser(this._session);
     connector.post(handler);
   }
 
@@ -94,7 +94,7 @@ public class DocumentManager extends Sessionful {
       connector = PSHTTPConnectors.createDocument(document, group, creator, parameters);
     }
     PSDocumentHandler handler = new PSDocumentHandler(document);
-    connector.setUser(this.session);
+    connector.setUser(this._session);
     PSHTTPResponseInfo info = connector.post(handler);
     return info.getStatus() == Status.OK;
   }
@@ -106,7 +106,7 @@ public class DocumentManager extends Sessionful {
    * @param creator  The member creating the document
    */
   public boolean create(PSDocument document, PSGroup group, PSGroupFolder folder, PSMember creator) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, null).using(this.session);
+    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, null).using(this._session);
     PSDocumentHandler handler = new PSDocumentHandler(document);
     PSHTTPResponseInfo info = connector.post(handler);
     return info.getStatus() == Status.OK;
@@ -119,7 +119,7 @@ public class DocumentManager extends Sessionful {
    * @param creator  The member creating the document
    */
   public boolean create(PSDocument document, PSGroup group, PSGroupFolder folder, PSMember creator, Map<String, String> parameters) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, parameters).using(this.session);
+    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, parameters).using(this._session);
     PSDocumentHandler handler = new PSDocumentHandler(document);
     PSHTTPResponseInfo info = connector.post(handler);
     return info.getStatus() == Status.OK;
@@ -131,7 +131,7 @@ public class DocumentManager extends Sessionful {
   public PSDocument getDocument(long id, PSGroup group) throws APIException {
     PSDocument document = cache.get(Long.valueOf(id));
     if (document == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getURI(id, group).using(this.session);
+      PSHTTPConnector connector = PSHTTPConnectors.getURI(id, group).using(this._session);
       PSDocumentHandler handler = new PSDocumentHandler();
       connector.get(handler);
       document = handler.getDocument();
@@ -151,7 +151,7 @@ public class DocumentManager extends Sessionful {
   public PSDocument getDocument(String url, PSGroup group) throws APIException {
     PSDocument document = cache.get(url);
     if (document == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group).using(this.session);
+      PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group).using(this._session);
       PSDocumentHandler handler = new PSDocumentHandler();
       connector.get(handler);
       document = handler.getDocument();
@@ -171,7 +171,7 @@ public class DocumentManager extends Sessionful {
   public PSFolder getFolder(String url, PSGroup group) throws APIException {
     PSFolder folder = folders.get(url);
     if (folder == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group).using(this.session);
+      PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group).using(this._session);
       PSDocumentHandler handler = new PSDocumentHandler();
       connector.get(handler);
       folder = handler.getFolder();
@@ -188,21 +188,21 @@ public class DocumentManager extends Sessionful {
    * @return The corresponding instance.
    */
   public List<PSDocument> listDocuments(PSGroup group) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.listDocumentsInGroup(group).using(this.session);
+    PSHTTPConnector connector = PSHTTPConnectors.listDocumentsInGroup(group).using(this._session);
     PSDocumentBrowseHandler handler = new PSDocumentBrowseHandler();
     connector.get(handler);
     return handler.listDocuments();
   }
 
   public PSMLFragment getFragment(PSDocument document, PSGroup group, PSMember editor, String fragment) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.getFragment(document, group, editor, fragment).using(this.session);
+    PSHTTPConnector connector = PSHTTPConnectors.getFragment(document, group, editor, fragment).using(this._session);
     PSFragmentHandler handler = new PSFragmentHandler();
     connector.get(handler);
     return handler.getFragment();
   }
 
   public PSMLFragment putFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.putFragment(document, group, editor, fragment).using(this.session);
+    PSHTTPConnector connector = PSHTTPConnectors.putFragment(document, group, editor, fragment).using(this._session);
     PSFragmentHandler handler = new PSFragmentHandler();
     connector.post(handler);
     return handler.getFragment();
@@ -212,7 +212,7 @@ public class DocumentManager extends Sessionful {
    * Create the specified document in PageSeeder.
    */
   public void getContent(Long uri, XMLWriter xml) throws APIException {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/uri/"+uri).using(this.session);
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/uri/"+uri).using(this._session);
     connector.get(xml);
   }
 
@@ -223,7 +223,7 @@ public class DocumentManager extends Sessionful {
    * @param xml   The XML to write the content
    */
   public void getContent(String docid, XMLWriter xml) throws APIException {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/docid/"+docid).using(this.session);
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/docid/"+docid).using(this._session);
     connector.get(xml);
   }
 
@@ -234,7 +234,7 @@ public class DocumentManager extends Sessionful {
    * @param handler The handler to handle the content
    */
   public void getContent(String docid, DefaultHandler handler) throws APIException {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/docid/"+docid).using(this.session);
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/docid/"+docid).using(this._session);
     connector.get(handler);
   }
 

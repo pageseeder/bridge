@@ -44,16 +44,30 @@ public abstract class PSURI extends PSAddressable {
 
   /**
    * Default constructor.
-   */
-  public PSURI(String url) {
-    super(url);
-  }
-
-  /**
-   * Default constructor.
+   *
+   * @param scheme The scheme "http" or "https"
+   * @param host   Where the resource is hosted.
+   * @param port   The port (or negative to use the default port).
+   * @param path   The path to the resource.
    */
   public PSURI(String scheme, String host, int port, String path) {
     super(scheme, host, port, path);
+  }
+
+  /**
+   * Construct a new URI from the specified URL.
+   *
+   * <p>The URL may omit the scheme or authority part, it which case it will default
+   * on the default values from the configuration.
+   *
+   * <p>Implementation note: this constructor will decompose the URL into its components.
+   *
+   * @param url The url.
+   *
+   * @throws IllegalArgumentException If the specified URL is invalid
+   */
+  public PSURI(String url) {
+    super(url);
   }
 
   @Override
@@ -179,6 +193,11 @@ public abstract class PSURI extends PSAddressable {
     }
   }
 
+  /**
+   * Check whether this URI is valid.
+   *
+   * @return the validity of the URI.
+   */
   public EntityValidity checkURIValid() {
     if (this.docid     != null && this.docid.length()       > 100)
       return EntityValidity.DOCUMENT_DOCID_IS_TOO_LONG;

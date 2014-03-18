@@ -56,12 +56,12 @@ public abstract class PSAddressable implements Addressable, PSEntity {
   /**
    * Instantiate a new addressable object from the specified url.
    *
-   * <p>The URL may omit the scheme or authority part, it which case it will default,
+   * <p>The URL may omit the scheme or authority part, it which case it will default
    * on the default values from the configuration.
    *
    * @param url The url.
    *
-   * @throws IllegalArgumentException If the specified url is invalid
+   * @throws IllegalArgumentException If the specified URL is invalid
    */
   protected PSAddressable(String url) {
     Matcher m = URL_DECOMPOSER.matcher(url);

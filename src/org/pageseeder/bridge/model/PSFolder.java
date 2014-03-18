@@ -23,6 +23,18 @@ public final class PSFolder extends PSURI implements PSEntity {
   /** As per recommendation */
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Construct a new folder from the specified URL.
+   *
+   * <p>The URL may omit the scheme or authority part, it which case it will default
+   * on the default values from the configuration.
+   *
+   * <p>Implementation note: this constructor will decompose the URL into its components.
+   *
+   * @param url The URL of the folder.
+   *
+   * @throws IllegalArgumentException If the specified URL is invalid
+   */
   public PSFolder(String url) {
     super(url);
   }
@@ -45,6 +57,8 @@ public final class PSFolder extends PSURI implements PSEntity {
    *  Status VARCHAR(40) NULL,
    *  Labels VARCHAR(250) NULL,
    * </pre>
+   *
+   * {@inheritDoc}
    */
   @Override
   public EntityValidity checkValid() {

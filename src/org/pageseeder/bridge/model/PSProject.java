@@ -27,6 +27,10 @@ public final class PSProject extends PSGroup {
 
   /**
    * Create a new project with a public identifier.
+   *
+   * <p>Not: this constructor does not check whether the name is valid.
+   *
+   * @param name The name of the project.
    */
   public PSProject(String name) {
     super(name);

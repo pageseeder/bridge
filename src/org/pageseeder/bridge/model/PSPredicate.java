@@ -117,7 +117,7 @@ public final class PSPredicate implements Serializable {
    * @return This predicate a as valid parameter for the Generic Search Servlet in PageSeeder.
    */
   public Map<String, String> toParameters() {
-    HashMap<String, String> parameters = new HashMap<String, String>();
+    Map<String, String> parameters = new HashMap<String, String>();
     if (this.type != null) parameters.put("types", this.type);
     if (!this.facets.isEmpty()) {
       StringBuilder select = new StringBuilder();

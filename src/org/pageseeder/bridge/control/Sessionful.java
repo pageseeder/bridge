@@ -23,7 +23,7 @@ abstract class Sessionful {
   /**
    * The user connecting to the server.
    */
-  protected final PSSession session;
+  protected final PSSession _session;
 
   /**
    * Create a new manager using the specified user.
@@ -31,14 +31,14 @@ abstract class Sessionful {
    * @param user the using making the connections.
    */
   public Sessionful(PSSession user) {
-    this.session = user;
+    this._session = user;
   }
 
   /**
    * @return the session used by the class.
    */
   public PSSession session() {
-    return this.session;
+    return this._session;
   }
 
 }

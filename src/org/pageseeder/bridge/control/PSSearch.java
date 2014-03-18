@@ -31,41 +31,40 @@ import org.pageseeder.bridge.xml.PSResultHandler;
 public final class PSSearch extends Sessionful {
 
   /**
-   * Sole constructor;
+   * Creates a new member manager using the specified session.
+   *
+   * @param session The session used to connect to PageSeeder.
    */
-  public PSSearch(PSSession user) {
-    super(user);
+  public PSSearch(PSSession session) {
+    super(session);
   }
 
   /**
-   * Makes
+   * Returns the results of a search on the specified group on PageSeeder.
    *
    * @param predicate The search predicate
    * @param group     The group within which the search is conducted
    *
-   * @return The search ressults.
-   *
-   * @throws APIException
+   * @return The search results.
    */
   public List<PSResult> find(PSPredicate predicate, PSGroup group) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, group).using(this.session);
+    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, group).using(this._session);
     PSResultHandler handler = new PSResultHandler();
     connector.get(handler);
     return handler.listResults();
   }
 
   /**
-   *
+   * Returns the results of a search on the specified groups on PageSeeder.
    *
    * @param predicate The search predicate
    * @param groups    The list of groups within which the search is conducted
    *
-   * @return The search ressults.
-   *
-   * @throws APIException
+   * @return The search results.
+
    */
   public List<PSResult> find(PSPredicate predicate, List<PSGroup> groups) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, groups).using(this.session);
+    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, groups).using(this._session);
     PSResultHandler handler = new PSResultHandler();
     connector.get(handler);
     return handler.listResults();
