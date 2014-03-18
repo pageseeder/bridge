@@ -20,22 +20,52 @@ import java.net.HttpURLConnection;
  */
 public final class PSHTTPResponseInfo {
 
+  /**
+   * Status of an HTTP response.
+   */
   public enum Status {
 
+    /**
+     * An I/O error was reported while trying to read the returned data from PageSeeder.
+     */
     IO_ERROR,
 
+    /**
+     * The bridge API was unable to connect to PageSeeder.
+     */
     CONNECTION_ERROR,
 
+    /**
+     * The returned data could not be processed successfully.
+     *
+     * <p>For example, when attempting to parse a non-XML stream.
+     */
     PROCESS_ERROR,
 
+    /**
+     * The request has succeeded and the HTTP response code was 2xx.
+     */
     OK,
 
+    /**
+     * The response indicated that further action may be needed; the HTTP response code was 3xx.
+     */
     REDIRECT,
 
+    /**
+     * The request failed because of the client seems to have erred (bad parameter, not found);
+     * the HTTP response code was 4xx.
+     */
     CLIENT_ERROR,
 
+    /**
+     * The request failed because of an error was reported by the server; the HTTP response code was 5xx.
+     */
     SERVER_ERROR,
 
+    /**
+     * When unable to determine the determine the status or before the request was made.
+     */
     UNKNOWN
 
   }

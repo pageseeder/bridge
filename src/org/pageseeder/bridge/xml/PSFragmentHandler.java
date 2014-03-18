@@ -34,7 +34,7 @@ public final class PSFragmentHandler extends DefaultHandler {
   /**
    * The list of documents returned by the servlet.
    */
-  List<PSMLFragment> fragments = new ArrayList<PSMLFragment>();
+  private List<PSMLFragment> fragments = new ArrayList<PSMLFragment>();
 
   /**
    * A buffer for the characters in text nodes.

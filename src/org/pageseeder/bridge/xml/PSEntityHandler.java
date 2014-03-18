@@ -23,7 +23,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @version 0.2.2
  * @since 0.2.2
  */
-public abstract class PSEntityHandler<E extends PSEntity> extends DefaultHandler {
+abstract class PSEntityHandler<E extends PSEntity> extends DefaultHandler {
 
   /**
    * The list of entities processed by this handler.

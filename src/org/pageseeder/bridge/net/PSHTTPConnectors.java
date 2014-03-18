@@ -96,9 +96,9 @@ public final class PSHTTPConnectors {
       connector.addParameter("defaultnotification", group.getDefaultNotification().toString());
     // Group options
     if (options != null) {
-      connector.addParameter("addmember",  Boolean.toString(options.isAddmember()));
+      connector.addParameter("addmember",  Boolean.toString(options.doAddCreatorAsMember()));
       connector.addParameter("common",  Boolean.toString(options.isCommon()));
-      connector.addParameter("createdocuments",  Boolean.toString(options.isCreatedocuments()));
+      connector.addParameter("createdocuments",  Boolean.toString(options.doCreateDocuments()));
       if (options.getAccess() != null)
         connector.addParameter("access",  options.getAccess());
       if (options.getCommenting() != null)
@@ -155,7 +155,7 @@ public final class PSHTTPConnectors {
       connector.addParameter("detailstype",  project.getDetailsType());
     // Group options
     if (options != null) {
-      connector.addParameter("addmember",  Boolean.toString(options.isAddmember()));
+      connector.addParameter("addmember",  Boolean.toString(options.doAddCreatorAsMember()));
       connector.addParameter("common",  Boolean.toString(options.isCommon()));
       if (options.getAccess() != null)
         connector.addParameter("access",  options.getAccess());

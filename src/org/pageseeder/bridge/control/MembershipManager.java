@@ -34,8 +34,13 @@ public final class MembershipManager extends Sessionful {
    */
   private static volatile PSEntityCache<PSMembership> cache = EHEntityCache.newInstance("psmemberships");
 
-  public MembershipManager(PSSession user) {
-    super(user);
+  /**
+   * Creates a new manager for membership using the specified session.
+   *
+   * @param session The session used to connect to PageSeeder.
+   */
+  public MembershipManager(PSSession session) {
+    super(session);
   }
 
   /**

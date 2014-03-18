@@ -20,12 +20,21 @@ import org.slf4j.LoggerFactory;
  */
 public final class PSHandlers {
 
-  private final static Logger LOGGER = LoggerFactory.getLogger(PSHandlers.class);
+  /**
+   * To report suspicious values.
+   */
+  private static final Logger LOGGER = LoggerFactory.getLogger(PSHandlers.class);
 
   /** Utility class. */
   private PSHandlers() {
   }
 
+  /**
+   * Parse the id and return the corresponding <code>Long</code>.
+   *
+   * @param id the ID
+   * @return the corresponding Long value or <code>null</code>
+   */
   public static Long id(String id) {
     if (id == null) return null;
     try {
@@ -36,6 +45,12 @@ public final class PSHandlers {
     }
   }
 
+  /**
+   * Parse the number and return the corresponding <code>Integer</code>.
+   *
+   * @param i the integer to parse
+   * @return the corresponding Integer value or <code>null</code>
+   */
   public static int integer(String i) {
     if (i == null) return -1;
     try {
@@ -46,6 +61,12 @@ public final class PSHandlers {
     }
   }
 
+  /**
+   * Parse the notification and return the corresponding <code>PSNotification</code> instance.
+   *
+   * @param notification the notification to parse
+   * @return the corresponding notification value or <code>null</code>
+   */
   public static PSNotification notification(String notification) {
     if (notification == null) return null;
     try {
@@ -56,6 +77,12 @@ public final class PSHandlers {
     }
   }
 
+  /**
+   * Parse the role and return the corresponding <code>PSRole</code> instance.
+   *
+   * @param role the role to parse
+   * @return the corresponding role value or <code>null</code>
+   */
   public static PSRole role(String role) {
     if (role == null) return null;
     try {

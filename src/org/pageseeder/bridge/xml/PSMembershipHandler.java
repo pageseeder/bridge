@@ -15,6 +15,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
+ * Handler for PageSeeder memberships.
  *
  * @author Christophe Lauret
  * @version 0.2.2

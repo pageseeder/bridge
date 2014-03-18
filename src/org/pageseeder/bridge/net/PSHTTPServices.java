@@ -8,7 +8,7 @@
 package org.pageseeder.bridge.net;
 
 /**
- * A utility class for PageSeeder Services.
+ * A utility class to generate the URL for services in PageSeeder.
  *
  * <p>Provides useful constants for Services used in this project.
  *
@@ -21,7 +21,8 @@ final class PSHTTPServices {
   /**
    * Utility class.
    */
-  private PSHTTPServices() {}
+  private PSHTTPServices() {
+  }
 
   // Public service URLs (referenced directly somewhere)
   // ---------------------------------------------------------------------------------------------
@@ -29,29 +30,33 @@ final class PSHTTPServices {
   /**
    * Returns the URL to invoke the group member edit service.
    *
-   * @param username the user name
+   * @param group  the group name or id
+   * @param member the member username or id
    *
-   * @return <code>/groups/[groupname]/members/[username]/edit</code>.
+   * @return <code>/groups/[group]/members/[member]/edit</code>.
    */
-  public static String toEditMembership(String group, String username) {
-    return "/groups/" + group + "/members/" + username + "/edit";
+  public static String toEditMembership(String group, String member) {
+    return "/groups/" + group + "/members/" + member + "/edit";
   }
 
   /**
    * Returns the URL to invoke the group member registration service.
    *
-   * @param username the user name
+   * @param group  the group name or id
+   * @param member the member username or id
    *
-   * @return <code>/groups/[groupname]/members/[username]/manage</code>.
+   * @return <code>/groups/[group]/members/[member]/manage</code>.
    */
-  public static String toGroupMemberManage(String group, String username) {
-    return "/groups/" + group + "/members/" + username + "/manage";
+  public static String toGroupMemberManage(String group, String member) {
+    return "/groups/" + group + "/members/" + member + "/manage";
   }
 
   /**
    * Returns the URL to invoke the group member search service.
    *
-   * @return <code>/groups/[groupname]/members/find</code>.
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/members/find</code>.
    */
   public static String toFindGroupMember(String group) {
     return "/groups/" + group + "/members/find";
@@ -60,7 +65,9 @@ final class PSHTTPServices {
   /**
    * Returns the URL to force the password to be reset.
    *
-   * @return <code>/groups/[groupname]/members/forceresetpassword</code>.
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/members/forceresetpassword</code>.
    */
   public static String toForceResetPassword(String group) {
     return "/groups/" + group + "/members/forceresetpassword";
@@ -72,7 +79,9 @@ final class PSHTTPServices {
   /**
    * Returns the URL to invoke the group member creation service.
    *
-   * @return <code>/groups/[groupname]/members/create</code>.
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/members/create</code>.
    */
   protected static String toCreateMembership(String group) {
     return "/groups/" + group + "/members/create";
@@ -81,7 +90,9 @@ final class PSHTTPServices {
   /**
    * Returns the URL to invoke the group member invitation service.
    *
-   * @return <code>/groups/[groupname]/members/invite</code>.
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/members/invite</code>.
    */
   protected static String toInviteMember(String group) {
     return "/groups/" + group + "/members/invite";
@@ -90,7 +101,10 @@ final class PSHTTPServices {
   /**
    * Returns the URL to invoke the group member invitation service.
    *
-   * @return <code>/groups/[groupname]/members/invite</code>.
+   * @param group  the group name or id
+   * @param member the member username or id
+   *
+   * @return <code>/groups/[group]/members/invite</code>.
    */
   protected static String toInviteSelf(String group, String member) {
     return "/groups/" + group + "/members/"+member+"/inviteself";
@@ -99,34 +113,35 @@ final class PSHTTPServices {
   /**
    * Returns the URL to invoke the group member activation service.
    *
-   * @param username the user name
+   * @param member the member username or id
    *
-   * @return <code>/members/[username]/activate</code>.
+   * @return <code>/members/[member]/activate</code>.
    */
-  protected static String toActivateMember(String username) {
-    return "/members/" + username + "/activate";
+  protected static String toActivateMember(String member) {
+    return "/members/" + member + "/activate";
   }
 
   /**
    * Returns the URL to list the memberships of a user.
    *
-   * @param username the user name
+   * @param member the member username or id
    *
-   * @return <code>/members/[username]/memberships</code>.
+   * @return <code>/members/[member]/memberships</code>.
    */
-  protected static String toListMemberships(String username) {
-    return "/members/" + username + "/memberships";
+  protected static String toListMemberships(String member) {
+    return "/members/" + member + "/memberships";
   }
 
   /**
    * Returns the URL to invoke the group member details service.
    *
-   * @param username the user name
+   * @param group  the group name or id
+   * @param member the member username or id
    *
    * @return <code>/groups/[groupname]/members/[username]/details</code>.
    */
-  protected static String toMembershipDetails(String group, String username) {
-    return "/groups/" + group + "/members/" + username + "/details";
+  protected static String toMembershipDetails(String group, String member) {
+    return "/groups/" + group + "/members/" + member + "/details";
   }
 
   /**

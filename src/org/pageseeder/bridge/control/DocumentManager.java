@@ -32,13 +32,13 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.topologi.diffx.xml.XMLWriter;
 
 /**
- * A manager for documents and folders (based on PageSeeder URIs)
+ * A manager for documents and folders (based on PageSeeder URIs).
  *
  * @author Christophe Lauret
  * @version 0.2.0
  * @since 0.2.0
  */
-public class DocumentManager extends Sessionful {
+public final class DocumentManager extends Sessionful {
 
   /**
    * Where the documents are cached.
@@ -63,7 +63,10 @@ public class DocumentManager extends Sessionful {
    * Create the specified document in PageSeeder.
    *
    * @param document The document to create
+   * @param group    The group the document is part of
    * @param creator  The member creating the document
+   *
+   * @return <code>true</code> if the document was created.
    */
   public void create(PSDocument document, PSGroup group, PSMember creator) throws APIException {
     PSFolder folder = getFolder(document.getFolderURL(), group);
@@ -82,8 +85,11 @@ public class DocumentManager extends Sessionful {
    * Create the specified document in PageSeeder passing the specified template parameters.
    *
    * @param document   The document to create
+   * @param group    The group the document is part of
    * @param creator    The member creating the document
    * @param parameters The parameters for the PSML template
+   *
+   * @return <code>true</code> if the document was created.
    */
   public boolean create(PSDocument document, PSGroup group, PSMember creator, Map<String, String> parameters) throws APIException {
     PSFolder folder = getFolder(document.getFolderURL(), group);
@@ -103,7 +109,11 @@ public class DocumentManager extends Sessionful {
    * Create the specified document in PageSeeder.
    *
    * @param document The document to create
+   * @param group    The group the document is part of
+   * @param folder   Where the document should be created.
    * @param creator  The member creating the document
+   *
+   * @return <code>true</code> if the document was created.
    */
   public boolean create(PSDocument document, PSGroup group, PSGroupFolder folder, PSMember creator) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, null).using(this._session);
@@ -116,7 +126,12 @@ public class DocumentManager extends Sessionful {
    * Create the specified document in PageSeeder.
    *
    * @param document The document to create
+   * @param group    The group the document is part of
+   * @param folder   Where the document should be created.
    * @param creator  The member creating the document
+   * @param parameters Set of parameters for the document template
+   *
+   * @return <code>true</code> if the document was created.
    */
   public boolean create(PSDocument document, PSGroup group, PSGroupFolder folder, PSMember creator, Map<String, String> parameters) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, parameters).using(this._session);
@@ -127,6 +142,9 @@ public class DocumentManager extends Sessionful {
 
   /**
    * Identify a document from a specific URI ID.
+   *
+   * @param id    The URI ID of the document.
+   * @param group The group the document is accessible from.
    */
   public PSDocument getDocument(long id, PSGroup group) throws APIException {
     PSDocument document = cache.get(Long.valueOf(id));
@@ -144,7 +162,8 @@ public class DocumentManager extends Sessionful {
   /**
    * Identify a document from a specified URL.
    *
-   * @param url The URL
+   * @param url   The URL
+   * @param group The group the document is accessible from.
    *
    * @return the corresponding document
    */
@@ -164,7 +183,8 @@ public class DocumentManager extends Sessionful {
   /**
    * Identify a document from a specified URL.
    *
-   * @param url The URL
+   * @param url   The URL
+   * @param group The group the folder is part of
    *
    * @return the corresponding folder
    */
@@ -182,7 +202,7 @@ public class DocumentManager extends Sessionful {
   }
 
   /**
-   * Creates the group the specified group in PageSeeder.
+   * List the documents in the specified group in PageSeeder.
    *
    * @param group The group instance.
    * @return The corresponding instance.
@@ -194,14 +214,36 @@ public class DocumentManager extends Sessionful {
     return handler.listDocuments();
   }
 
-  public PSMLFragment getFragment(PSDocument document, PSGroup group, PSMember editor, String fragment) throws APIException {
+  /**
+   * Create the specified document in PageSeeder.
+   *
+   * @param document The document to create
+   * @param group    The group the document is part of
+   * @param editor   The member editing the document
+   * @param fragment The fragment ID
+   *
+   * @return the corresponding fragment.
+   */
+  public PSMLFragment getFragment(PSDocument document, PSGroup group, PSMember editor, String fragment)
+      throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.getFragment(document, group, editor, fragment).using(this._session);
     PSFragmentHandler handler = new PSFragmentHandler();
     connector.get(handler);
     return handler.getFragment();
   }
 
-  public PSMLFragment putFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment) throws APIException {
+  /**
+   * Create the specified document in PageSeeder.
+   *
+   * @param document The document to create
+   * @param group    The group the document is part of
+   * @param editor   The member editing the document
+   * @param fragment The fragment to edit
+   *
+   * @return the updated fragment.
+   */
+  public PSMLFragment putFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment)
+      throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.putFragment(document, group, editor, fragment).using(this._session);
     PSFragmentHandler handler = new PSFragmentHandler();
     connector.post(handler);
@@ -209,7 +251,10 @@ public class DocumentManager extends Sessionful {
   }
 
   /**
-   * Create the specified document in PageSeeder.
+   * Write the content of the specified document onto the XML writer.
+   *
+   * @param uri The URI ID of the document.
+   * @param xml The XML to write the content
    */
   public void getContent(Long uri, XMLWriter xml) throws APIException {
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/uri/"+uri).using(this._session);
@@ -217,7 +262,7 @@ public class DocumentManager extends Sessionful {
   }
 
   /**
-   * Create the specified document in PageSeeder.
+   * Write the content of the specified document onto the XML writer.
    *
    * @param docid The document ID to find
    * @param xml   The XML to write the content
@@ -228,7 +273,7 @@ public class DocumentManager extends Sessionful {
   }
 
   /**
-   * Create the specified document in PageSeeder.
+   * Write the content of the specified document onto the XML writer.
    *
    * @param docid   The document ID to find
    * @param handler The handler to handle the content

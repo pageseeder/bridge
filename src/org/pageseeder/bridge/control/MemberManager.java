@@ -43,7 +43,7 @@ public final class MemberManager extends Sessionful {
    *
    * @param username The username of that member
    *
-   * @return
+   * @return the corresponding member
    *
    * @throws APIException
    */
@@ -64,8 +64,6 @@ public final class MemberManager extends Sessionful {
    * Saves the details of the specified member.
    *
    * @param member The username of that member
-   *
-   * @throws APIException
    */
   public void save(PSMember member) throws APIException {
     // TODO Verify
@@ -73,9 +71,9 @@ public final class MemberManager extends Sessionful {
     PSHTTPConnector connector = PSHTTPConnectors.editMember(member, true).using(this._session);
     PSMemberHandler handler = new PSMemberHandler(member);
     connector.post(handler);
-    member = handler.get();
-    if (member != null)
-      cache.put(member);
+    PSMember m = handler.get();
+    if (m != null)
+      cache.put(m);
   }
 
   /**
@@ -84,7 +82,7 @@ public final class MemberManager extends Sessionful {
    *
    * <p>This is required after a member has been joined to a group.
    *
-   * @throws APIException
+   * @throws APIException If an error occurs while connecting.
    */
   public void resetSession() throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.resetSession().using(this._session);
