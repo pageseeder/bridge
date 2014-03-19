@@ -33,10 +33,10 @@ import org.slf4j.LoggerFactory;
  * @param <T> The type of entity
  *
  * @author Christophe Lauret
- * @version 0.2.0
+ * @version 0.2.4
  * @since 0.2.0
  */
-public final class EHEntityCache<T extends PSEntity> implements PSEntityCache<T> {
+final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
 
   /** Logger */
   private static final Logger LOGGER = LoggerFactory.getLogger(EHEntityCache.class);
@@ -69,19 +69,25 @@ public final class EHEntityCache<T extends PSEntity> implements PSEntityCache<T>
    */
   @Override
   @SuppressWarnings("unchecked")
-  public synchronized T get(String key) {
+  public synchronized E get(String key) {
     if (key == null)
       return null;
-    T o = null;
+    E o = null;
     Element element = this._cache.get(key);
     if (element != null && !element.isExpired()) {
       try {
-        o = (T)element.getValue();
+        o = (E)element.getValue();
       } catch (ClassCastException ex) {
         LOGGER.warn("Element of type {} found in cache {}", element.getValue().getClass().getName(), this._cache.getName());
       }
     }
     return o;
+  }
+
+  @Override
+  public E get(E entity) {
+    if (!entity.isIdentifiable()) return null;
+    return entity.getKey() != null ? get(entity.getKey()) : get(entity.getId());
   }
 
   /**
@@ -93,10 +99,10 @@ public final class EHEntityCache<T extends PSEntity> implements PSEntityCache<T>
    */
   @Override
   @SuppressWarnings("unchecked")
-  public synchronized T get(Long id) {
+  public synchronized E get(Long id) {
     if (id == null)
       return null;
-    T o = null;
+    E o = null;
     Query query =  this._cache.createQuery();
     Attribute<Long> byId = this._cache.getSearchAttribute("id");
     query.includeValues().addCriteria(byId.eq(id));
@@ -104,7 +110,7 @@ public final class EHEntityCache<T extends PSEntity> implements PSEntityCache<T>
     List<Result> all = results.all();
     if (all.size() > 0) {
       Result r = all.get(0);
-      o = (T)r.getValue();
+      o = (E)r.getValue();
     }
     return o;
   }
@@ -119,10 +125,10 @@ public final class EHEntityCache<T extends PSEntity> implements PSEntityCache<T>
    */
   @Override
   @SuppressWarnings("unchecked")
-  public T get(String attribute, String value) {
+  public E get(String attribute, String value) {
     if (value == null)
       return null;
-    T o = null;
+    E o = null;
     Query query =  this._cache.createQuery();
     Attribute<String> byId = this._cache.getSearchAttribute(attribute);
     query.includeValues().addCriteria(byId.eq(value));
@@ -130,7 +136,7 @@ public final class EHEntityCache<T extends PSEntity> implements PSEntityCache<T>
     List<Result> all = results.all();
     if (all.size() > 0) {
       Result r = all.get(0);
-      o = (T)r.getValue();
+      o = (E)r.getValue();
     }
     return o;
   }
@@ -145,7 +151,7 @@ public final class EHEntityCache<T extends PSEntity> implements PSEntityCache<T>
    */
   @Override
   @SuppressWarnings("unchecked")
-  public List<T> list(String attribute, String value) {
+  public List<E> list(String attribute, String value) {
     if (value == null)
       return null;
     Query query =  this._cache.createQuery();
@@ -153,9 +159,9 @@ public final class EHEntityCache<T extends PSEntity> implements PSEntityCache<T>
     query.addCriteria(byId.eq(value));
     Results results = query.execute();
     List<Result> all = results.all();
-    List<T> entities = new ArrayList<T>();
+    List<E> entities = new ArrayList<E>();
     for (Result r : all) {
-      entities.add((T)r.getValue());
+      entities.add((E)r.getValue());
     }
     return entities;
   }
@@ -185,7 +191,7 @@ public final class EHEntityCache<T extends PSEntity> implements PSEntityCache<T>
    * @param value The corresponding element.
    */
   @Override
-  public synchronized void put(final T value) {
+  public synchronized void put(final E value) {
     if (value == null)
       throw new NullPointerException("value");
     String key = value.getKey();

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.pageseeder.bridge.FailedPrecondition;
+import org.pageseeder.bridge.InvalidEntityException;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.Requires;
 import org.pageseeder.bridge.control.GroupManager.GroupOptions;
@@ -28,10 +29,42 @@ import org.pageseeder.bridge.model.PSRole;
 import org.pageseeder.bridge.psml.PSMLFragment;
 
 /**
- * A utility class to provide predefined PageSeeder connectors.
+ * A utility class to provide predefined connectors to PageSeeder via HTTP.
+ *
+ * <p>This is a low-level class which role is to find the appropriate service to handle an entity and
+ * return the corresponding connector. It also sets up the connector to include the necessary parameters.
+ *
+ * <p>This class does not specify which session should be used to connect to PageSeeder or the
+ * HTTP method to use to connect to PageSeeder. This is left to higher level classes.
+ *
+ * <p>There is generally no reason to invoke this class directly. It is preferable to use the corresponding
+ * entity manager which will handle the response, update the internal cache and handle error more consistently.
+ *
+ * <h3>Exceptions</h3>
+ *
+ * <p>Methods in this class will try to return a connector only if there is a reasonable chance that
+ * the call to PageSeeder will succeed. In cases, it can be known that the call to the underlying service
+ * will methods will throw an exception.
+ *
+ * <p>Unless specified otherwise, most methods will throw a {@link NullPointerException} if the
+ * supplied entity is <code>null</code>. Higher-level classes should ensure that no <code>null</code>
+ * parameters are passed.
+ *
+ * <p>Some methods will throw a {@link FailedPrecondition} if a precondition on the entity
+ * fails. For example, if a particular entity attribute is required or if a parameter must validate
+ * specific criteria.
+ *
+ * <p>They may also throw an {@link InvalidEntityException} if the supplied entity is not valid. This
+ * exception is more likely to be thrown when an entity needs to be created or its details amended in
+ * PageSeeder.
+ *
+ * <h3>PageSeeder compatibility</h3>
+ *
+ * <p>The {@link Requires} annotation is used to indicate whether a particular version of PageSeeder is
+ * required to support that method.
  *
  * @author Christophe Lauret
- * @version 0.2.1
+ * @version 0.2.4
  * @since 0.2.0
  */
 public final class PSHTTPConnectors {
@@ -53,7 +86,58 @@ public final class PSHTTPConnectors {
    * @return the corresponding connector
    */
   public static PSHTTPConnector resetSession() {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/resetsession");
+    String service = Services.toResetSession();
+    return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+  }
+
+  /**
+   * Returns the connector to retrieve a member from PageSeeder.
+   *
+   * @param member The member instance to use.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition If the member is not identifiable.
+   */
+  public static PSHTTPConnector getMember(PSMember member) throws FailedPrecondition {
+    Preconditions.isIdentifiable(member, "member");
+    return getMember(member.getIdentifier());
+  }
+
+  /**
+   * Returns the connector to retrieve a member from PageSeeder.
+   *
+   * @param member The username or ID of the member to retrieve.
+   *
+   * @return The corresponding connector
+   */
+  public static PSHTTPConnector getMember(String member) {
+    String service = Services.toMemberDetails(member);
+    return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+  }
+
+  /**
+   * Returns the connector to edit the details of a member.
+   *
+   * @param member     The member instance containing the new details.
+   * @param forceEmail <code>true</code> to force the email address to be changed;
+   *                   <code>false</code> to use default behaviour.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition If the member is not ientifiable.
+   */
+  public static PSHTTPConnector editMember(PSMember member, boolean forceEmail)
+      throws FailedPrecondition, InvalidEntityException {
+    Preconditions.isIdentifiable(member, "member");
+    Preconditions.isValid(member, "member");
+    String service = Services.toMemberEdit(member.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    connector.addParameter("member-username", member.getUsername());
+    connector.addParameter("firstname", member.getFirstname());
+    connector.addParameter("surname", member.getSurname());
+    connector.addParameter("email", member.getEmail());
+    connector.addParameter("force-email-change", Boolean.toString(forceEmail));
     return connector;
   }
 
@@ -63,24 +147,26 @@ public final class PSHTTPConnectors {
   /**
    * The group name must include '-'.
    *
-   * @param group      The group to create.
-   * @param creator    The user creating the group.
-   * @param options    The additional group options.
+   * @param group    The group to create.
+   * @param creator  The user creating the group.
+   * @param options  The additional group options.
    *
    * @return the corresponding connector
    *
-   * @throws FailedPrecondition Should any precondition fail.
+   * @throws FailedPrecondition If the creator is not identifiable;
+   *                            or the group name does not include a dash;
+   *                            or the description is <code>null</code>.
+   * @throws InvalidEntityException if the group is not valid.
    */
-  public static PSHTTPConnector createGroup(PSGroup group, PSMember creator, GroupOptions options) throws FailedPrecondition {
-    Preconditions.isNotEmpty(group.getName(), "group name");
-    Preconditions.includesDash(group.getName(), "group name");
-    Preconditions.isNotNull(group.getDescription(), "group description");
+  public static PSHTTPConnector createGroup(PSGroup group, PSMember creator, GroupOptions options)
+      throws FailedPrecondition, InvalidEntityException {
     Preconditions.isIdentifiable(creator, "creator");
-    String name = group.getName();
-    int dash = name.lastIndexOf('-');
-    String project = name.substring(0, dash);
-    String shortname = name.substring(dash+1);
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/members/"+creator.getIdentifier()+"/groups/create");
+    Preconditions.isValid(group, "group");
+    Preconditions.includesDash(group.getName(), "group name");
+    String project = group.getParentName();
+    String shortname = group.getShortName();
+    String service = Services.toCreateGroup(creator.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("projectname", project);
     connector.addParameter("shortname",   shortname);
     connector.addParameter("description", group.getDescription());
@@ -127,13 +213,16 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector createProject(PSProject project, PSMember creator, GroupOptions options) throws FailedPrecondition {
+  public static PSHTTPConnector createProject(PSProject project, PSMember creator, GroupOptions options)
+      throws FailedPrecondition, InvalidEntityException {
+    Preconditions.isIdentifiable(creator, "creator");
+    Preconditions.isValid(project, "project");
+    // TODO Check whether these preconditions are redundant
     Preconditions.isNotEmpty(project.getName(), "project name");
     Preconditions.isNotNull(project.getDescription(), "project description");
     Preconditions.isNotEmpty(project.getDescription(), "project description");
-    Preconditions.isIdentifiable(creator, "creator");
-    String url = "/members/"+creator.getIdentifier()+"/projects/create";
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, url);
+    String service = Services.toCreateProject(creator.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     String name = project.getName();
     int dash = name.lastIndexOf('-');
     String parent = dash >= 0? name.substring(0, dash) : null;
@@ -172,22 +261,6 @@ public final class PSHTTPConnectors {
         connector.addParameter("property."+property.getKey(), property.getValue().toString());
       }
     }
-    return connector;
-  }
-
-  /**
-   * A connector to get the details of a group.
-   *
-   * @param identifier The name or id of the group
-   * @param member     The member that will access the group
-   *
-   * @return The corresponding connector
-   *
-   * @throws FailedPrecondition Should any precondition fail.
-   */
-  public static PSHTTPConnector getGroup(String identifier, PSMember member) throws FailedPrecondition {
-    Preconditions.isIdentifiable(member, "member");
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/members/"+member.getIdentifier()+"/groups/"+identifier);
     return connector;
   }
 
@@ -282,7 +355,8 @@ public final class PSHTTPConnectors {
     Preconditions.isNotEmpty(resource.getLocation(), "location");
     Preconditions.isIdentifiable(project, "project");
     if (resource.isBinary()) throw new FailedPrecondition("Only text content resource can be put on the project");
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/groups/"+project+"/resources/put");
+    if (resource.getContent() == null) throw new FailedPrecondition("Resource has no content");
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/groups/"+project.getIdentifier()+"/resources/put");
     connector.addParameter("location", resource.getLocation());
     connector.addParameter("content", resource.getContent());
     connector.addParameter("overwrite", Boolean.toString(overwrite));
@@ -311,7 +385,7 @@ public final class PSHTTPConnectors {
     Preconditions.isNotEmpty(member.getFirstname(), "firstname");
     Preconditions.isNotEmpty(member.getSurname(), "surname");
     Preconditions.isNotEmpty(member.getEmail(), "email");
-    String url = PSHTTPServices.toCreateMembership(group.getName());
+    String url = Services.toCreateMembership(group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, url);
     // Member details
     connector.addParameter("firstname", member.getFirstname());
@@ -366,7 +440,7 @@ public final class PSHTTPConnectors {
     Preconditions.isNotEmpty(member.getSurname(), "surname");
     Preconditions.isNotEmpty(member.getUsername(), "email");
 
-    String url = PSHTTPServices.toEditMembership(group.getName(), member.getUsername());
+    String url = Services.toEditMembership(group.getIdentifier(), member.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, url);
     // Member details
     connector.addParameter("firstname", member.getFirstname());
@@ -411,7 +485,7 @@ public final class PSHTTPConnectors {
     PSMember member = membership.getMember();
     Preconditions.isNotNull(membership.getGroup(), "group");
     Preconditions.isNotNull(membership.getMember(), "member");
-    String url = PSHTTPServices.toEditMembership(group.getName(), member.getUsername());
+    String url = Services.toEditMembership(group.getIdentifier(), member.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, url);
     connector.addParameter("member-password", password);
     return connector;
@@ -435,7 +509,7 @@ public final class PSHTTPConnectors {
     Preconditions.isNotNull(membership.getGroup(), "group");
     Preconditions.isNotNull(membership.getMember(), "member");
     Preconditions.isNotEmpty(member.getEmail(), "email");
-    String url = PSHTTPServices.toInviteMember(group.getName());
+    String url = Services.toInviteMember(group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, url);
     // Member details
     connector.addParameter("email", member.getEmail());
@@ -471,7 +545,7 @@ public final class PSHTTPConnectors {
     Preconditions.isNotNull(membership.getGroup(), "group");
     Preconditions.isNotNull(membership.getMember(), "member");
     Preconditions.isNotEmpty(member.getEmail(), "email");
-    String url = "/groups/"+group.getName()+"/members/"+member.getUsername()+"/manage";
+    String url = "/groups/"+group.getIdentifier()+"/members/"+member.getIdentifier()+"/manage";
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, url);
     // Member details
     connector.addParameter("email", member.getEmail());
@@ -514,7 +588,7 @@ public final class PSHTTPConnectors {
     Preconditions.isNotNull(membership.getGroup(), "group");
     Preconditions.isNotNull(membership.getMember(), "member");
     Preconditions.isNotEmpty(member.getUsername(), "username");
-    String url = PSHTTPServices.toInviteSelf(group.getName(), member.getUsername());
+    String url = Services.toInviteSelf(group.getIdentifier(), member.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, url);
     // Member details
     connector.addParameter("listed", Boolean.toString(membership.isListed()));
@@ -536,61 +610,25 @@ public final class PSHTTPConnectors {
   }
 
   /**
-   * Returns the connector to activate a member using an activation key.
+   * Returns the connector to get the membership details of a member.
    *
-   * @param username The username of the user details to retrieve.
-   * @param user     The PS user making the request
-   *
-   * @return The corresponding connector
-   *
-   * @throws FailedPrecondition Should any precondition fail.
-   */
-  public static PSHTTPConnector getMember(String username) throws FailedPrecondition {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/members/" + username + "/details");
-    return connector;
-  }
-
-
-  /**
-   * Returns the connector to activate a member using an activation key.
-   *
-   * @param username The username of the user details to retrieve.
-   * @param user     The PS user making the request
-   *
-   * @return The corresponding connector
-   *
-   * @throws FailedPrecondition Should any precondition fail.
-   */
-  public static PSHTTPConnector editMember(PSMember member, boolean forceEmail) throws FailedPrecondition {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/members/" + member.getUsername() + "/edit");
-    connector.addParameter("member-username", member.getUsername());
-    connector.addParameter("firstname", member.getFirstname());
-    connector.addParameter("surname", member.getSurname());
-    connector.addParameter("email", member.getEmail());
-    connector.addParameter("force-email-change", Boolean.toString(forceEmail));
-    return connector;
-  }
-
-  /**
-   * Returns the connector to activate a member using an activation key.
-   *
-   * @param username The username of the user details to retrieve.
-   * @param user     The PS user making the request
+   * @param group  The group name or id.
+   * @param member The member name or id.
    *
    * @return The corresponding connector
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
   public static PSHTTPConnector getMembershipDetails(String group, String username) throws FailedPrecondition {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, PSHTTPServices.toMembershipDetails(group, username));
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, Services.toMembershipDetails(group, username));
     return connector;
   }
 
   /**
-   * Returns the connector to activate a member using an activation key.
+   * Returns the connector to remove a member from a group.
    *
-   * @param username The username of the user details to retrieve.
-   * @param user     The PS user making the request
+   * @param group  The group name or id.
+   * @param member The member name or id.
    *
    * @return The corresponding connector
    *
@@ -611,7 +649,7 @@ public final class PSHTTPConnectors {
    * @throws FailedPrecondition Should any precondition fail.
    */
   public static PSHTTPConnector listMembershipsForMember(String username) throws FailedPrecondition {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, PSHTTPServices.toListMemberships(username));
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, Services.toListMemberships(username));
     return connector;
   }
 
@@ -683,7 +721,7 @@ public final class PSHTTPConnectors {
   public static PSHTTPConnector getActivateByKey(String username, String key) throws FailedPrecondition {
     Preconditions.isNotEmpty(username, "username");
     Preconditions.isNotEmpty(key, "key");
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, PSHTTPServices.toActivateMember(username));
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, Services.toActivateMember(username));
     connector.addParameter("key", key);
     return connector;
   }
@@ -701,7 +739,7 @@ public final class PSHTTPConnectors {
   public static PSHTTPConnector getForceResetPassword(String group, String email) throws FailedPrecondition {
     Preconditions.isNotEmpty(group, "group");
     Preconditions.isNotEmpty(email, "email");
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, PSHTTPServices.toForceResetPassword(group));
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, Services.toForceResetPassword(group));
     connector.addParameter("email", email);
     return connector;
   }
@@ -906,30 +944,30 @@ public final class PSHTTPConnectors {
   }
 
   /**
-  *
-  * @param url
-  * @param group
-  *
-  * @return The corresponding connector
-  *
-  * @throws FailedPrecondition Should any precondition fail.
-  */
- public static PSHTTPConnector find(PSPredicate predicate, List<PSGroup> groups) throws FailedPrecondition {
-   PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, "com.pageseeder.search.GenericSearch");
-   if (predicate != null) {
-     Map<String, String> parameters = predicate.toParameters();
-     for (Entry<String, String> p : parameters.entrySet()) {
-       connector.addParameter(p.getKey(), p.getValue());
-     }
-   }
-   // Construct the list of groups
-   StringBuilder parameter = new StringBuilder();
-   for (PSGroup group : groups) {
-     if (parameter.length() > 0) parameter.append(',');
-     parameter.append(group.getName());
-   }
-   connector.addParameter("groups", parameter.toString());
-   connector.addParameter("xformat", "xml");
-   return connector;
- }
+   *
+   * @param url
+   * @param group
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition Should any precondition fail.
+   */
+  public static PSHTTPConnector find(PSPredicate predicate, List<PSGroup> groups) throws FailedPrecondition {
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, "com.pageseeder.search.GenericSearch");
+    if (predicate != null) {
+      Map<String, String> parameters = predicate.toParameters();
+      for (Entry<String, String> p : parameters.entrySet()) {
+        connector.addParameter(p.getKey(), p.getValue());
+      }
+    }
+    // Construct the list of groups
+    StringBuilder parameter = new StringBuilder();
+    for (PSGroup group : groups) {
+      if (parameter.length() > 0) parameter.append(',');
+      parameter.append(group.getName());
+    }
+    connector.addParameter("groups", parameter.toString());
+    connector.addParameter("xformat", "xml");
+    return connector;
+  }
 }

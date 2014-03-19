@@ -30,7 +30,7 @@ import org.pageseeder.bridge.xml.PSGroupHandler;
  * A manager for groups, projects and group folders.
  *
  * @author Christophe Lauret
- * @version 0.2.1
+ * @version 0.2.4
  * @since 0.2.0
  */
 public final class GroupManager extends Sessionful {
@@ -88,7 +88,6 @@ public final class GroupManager extends Sessionful {
       throws FailedPrecondition, APIException {
     if (group == null) throw new NullPointerException("group");
     if (creator == null) throw new NullPointerException("member");
-    if (!group.isValid()) throw new InvalidEntityException(PSProject.class, group.checkValid());
     PSHTTPConnector connector = PSHTTPConnectors.createGroup(group, creator, options).using(this._session);
     PSGroupHandler handler = new PSGroupHandler(group);
     PSHTTPResponseInfo info = connector.post(handler);
@@ -129,7 +128,6 @@ public final class GroupManager extends Sessionful {
      throws FailedPrecondition, APIException {
     if (project == null) throw new NullPointerException("project");
     if (creator == null) throw new NullPointerException("creator");
-    if (!project.isValid()) throw new InvalidEntityException(PSProject.class, project.checkValid());
     PSHTTPConnector connector = PSHTTPConnectors.createProject(project, creator, options).using(this._session);
     PSGroupHandler handler = new PSGroupHandler(project);
     PSHTTPResponseInfo info = connector.post(handler);
@@ -262,12 +260,20 @@ public final class GroupManager extends Sessionful {
   /**
    * Put a resource on the project.
    *
-   * @param project  The project the resource is associated with.
-   * @param resource The actual resource
-   * @param overwrite
-   * @throws APIException
+   * <p>Implementation note: this method only supports text resources, not binary resources.
+   *
+   * @param project   The project the resource is associated with.
+   * @param resource  The actual resource
+   * @param overwrite <code>true</code> to overwrite the resource; <code>false</code> otherwise.
+   *
+   * @throws FailedPrecondition If the location is empty;
+   *                            or the project is not identifiable;
+   *                            or the content is binary;
+   *                            or the content is empty.
+   * @throws APIException For any other error communicating with PageSeeder.
    */
-  public void putResource(PSProject project, PSResource resource, boolean overwrite) throws APIException {
+  public void putResource(PSProject project, PSResource resource, boolean overwrite)
+      throws FailedPrecondition, APIException {
     PSHTTPConnector connector = PSHTTPConnectors.putResource(project, resource, overwrite).using(this._session);
     PSHTTPResponseInfo info = connector.post();
     if (info.getCode() >= 400)

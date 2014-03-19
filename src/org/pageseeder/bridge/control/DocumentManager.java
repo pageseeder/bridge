@@ -96,41 +96,6 @@ public final class DocumentManager extends Sessionful {
   }
 
   /**
-   * Create the specified document in PageSeeder.
-   *
-   * @param document The document to create
-   * @param group    The group the document is part of
-   * @param folder   Where the document should be created.
-   * @param creator  The member creating the document
-   *
-   * @return <code>true</code> if the document was created.
-   */
-//  public boolean create(PSDocument document, PSGroup group, PSGroupFolder folder, PSMember creator) throws APIException {
-//    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, null).using(this._session);
-//    PSDocumentHandler handler = new PSDocumentHandler(document);
-//    PSHTTPResponseInfo info = connector.post(handler);
-//    return info.getStatus() == Status.OK;
-//  }
-
-  /**
-   * Create the specified document in PageSeeder.
-   *
-   * @param document The document to create
-   * @param group    The group the document is part of
-   * @param folder   Where the document should be created.
-   * @param creator  The member creating the document
-   * @param parameters Set of parameters for the document template
-   *
-   * @return <code>true</code> if the document was created.
-   */
-//  public boolean create(PSDocument document, PSGroup group, PSGroupFolder folder, PSMember creator, Map<String, String> parameters) throws APIException {
-//    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, parameters).using(this._session);
-//    PSDocumentHandler handler = new PSDocumentHandler(document);
-//    PSHTTPResponseInfo info = connector.post(handler);
-//    return info.getStatus() == Status.OK;
-//  }
-
-  /**
    * Identify a document from a specific URI ID.
    *
    * @param id    The URI ID of the document.

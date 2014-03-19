@@ -19,7 +19,7 @@ import org.pageseeder.bridge.xml.PSMemberHandler;
  * A manager for groups and projects (based on PageSeeder Groups).
  *
  * @author Christophe Lauret
- * @version 0.2.0
+ * @version 0.2.4
  * @since 0.2.0
  */
 public final class MemberManager extends Sessionful {
@@ -48,6 +48,7 @@ public final class MemberManager extends Sessionful {
    * @throws APIException
    */
   public PSMember getByUsername(String username) throws APIException {
+    if (username == null) throw new NullPointerException("username");
     PSMember member = cache.get(username);
     if (member == null) {
       PSHTTPConnector connector = PSHTTPConnectors.getMember(username).using(this._session);
@@ -58,6 +59,29 @@ public final class MemberManager extends Sessionful {
         cache.put(member);
     }
     return member;
+  }
+
+  /**
+   * Returns the member for the specified username.
+   *
+   * @param username The username of that member
+   *
+   * @return the corresponding member
+   *
+   * @throws APIException
+   */
+  public PSMember get(PSMember member) throws APIException {
+    if (member == null) throw new NullPointerException("member");
+    PSMember m = cache.get(member);
+    if (m == null) {
+      PSHTTPConnector connector = PSHTTPConnectors.getMember(member).using(this._session);
+      PSMemberHandler handler = new PSMemberHandler(member);
+      connector.get(handler);
+      m = handler.get();
+      if (member != null)
+        cache.put(m);
+    }
+    return m;
   }
 
   /**

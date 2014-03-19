@@ -8,6 +8,7 @@
 package org.pageseeder.bridge.net;
 
 import org.pageseeder.bridge.FailedPrecondition;
+import org.pageseeder.bridge.InvalidEntityException;
 import org.pageseeder.bridge.PSEntity;
 
 /**
@@ -30,10 +31,24 @@ public final class Preconditions {
    * @param entity The entity to check
    * @param name   The name of the entity
    *
+   * @throws NullPointerException If the entity is <code>null</code>
    * @throws FailedPrecondition If the the {@link PSEntity#isIdentifiable()} method returns <code>false</code>.
    */
   static void isIdentifiable(PSEntity entity, String name) throws FailedPrecondition {
     if (!entity.isIdentifiable()) throw new FailedPrecondition(name+" must be identifiable");
+  }
+
+  /**
+   * Precondition requiring the specified entity to be valid.
+   *
+   * @param entity The entity to check
+   * @param name   The name of the entity
+   *
+   * @throws NullPointerException If the entity is <code>null</code>
+   * @throws InvalidEntityException If the the {@link PSEntity#isValid()} method returns <code>false</code>.
+   */
+  static void isValid(PSEntity entity, String name) throws InvalidEntityException {
+    if (!entity.isValid()) throw new InvalidEntityException(entity.getClass(), entity.checkValid());
   }
 
   /**
@@ -66,6 +81,7 @@ public final class Preconditions {
    * @param s    The string to check
    * @param name The name of the object to generate the message.
    *
+   * @throws NullPointerException If the specified string is <code>null</code>
    * @throws FailedPrecondition If the pre-condition failed.
    */
   static void includesDash(String s, String name) throws FailedPrecondition {

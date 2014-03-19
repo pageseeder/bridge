@@ -13,18 +13,19 @@ import java.util.List;
  * Interface for all entity caches.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.2.4
+ * @since 0.1.0
  *
- * @param <T> The type of objects to cache.
+ * @param <E> The type of entity to cache.
  */
-public interface PSEntityCache<T extends PSEntity> {
+public interface PSEntityCache<E extends PSEntity> {
 
   /**
    * Put a new element in the underlying cache.
    *
-   * @param item The item to cache.
+   * @param entity The entity to cache.
    */
-  void put(T item);
+  void put(E entity);
 
   /**
    * Retrieve the object in the cache for the specified ID.
@@ -33,7 +34,7 @@ public interface PSEntityCache<T extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the ID or element is <code>null</code>
    */
-  T get(Long id);
+  E get(Long id);
 
   /**
    * Retrieve the object in the cache for the specified key.
@@ -42,7 +43,16 @@ public interface PSEntityCache<T extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  T get(String key);
+  E get(String key);
+
+  /**
+   * Retrieve the object in the cache from an instance.
+   *
+   * @param entity The entity
+   *
+   * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
+   */
+  E get(E entity);
 
   /**
    * Retrieve the object in the cache for the specified key.
@@ -52,7 +62,7 @@ public interface PSEntityCache<T extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  T get(String attribute, String value);
+  E get(String attribute, String value);
 
   /**
    * Retrieve the object in the cache for the specified key.
@@ -62,7 +72,7 @@ public interface PSEntityCache<T extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  List<T> list(String attribute, String value);
+  List<E> list(String attribute, String value);
 
   /**
    * Return the version of the element for the specified key.

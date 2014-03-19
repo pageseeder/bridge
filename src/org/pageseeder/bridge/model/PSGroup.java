@@ -96,13 +96,43 @@ public class PSGroup implements PSEntity {
   }
 
   /**
-   * @return the name
+   * Returns the full name of the group.
+   *
+   * @return the name of the group.
    */
   public String getName() {
     return this.name;
   }
 
   /**
+   * Returns the name of the parent project based on the name of this group.
+   *
+   * <p>The name of the parent is the part of the name that is before the last dash.
+   *
+   * @return the name of the parent or <code>null</code> if the name is <code>null</code> or does not include a dash.
+   */
+  public String getParentName() {
+    if (this.name == null) return null;
+    int dash = this.name.lastIndexOf('-');
+    return dash > 0 ? this.name.substring(0, dash) : null;
+  }
+
+  /**
+   * Returns the short name of this group.
+   *
+   * <p>The short name is the part of the name that is after the last dash.
+   *
+   * @return the short name or <code>null</code> if the name is <code>null</code>.
+   */
+  public String getShortName() {
+    if (this.name == null) return null;
+    int dash = this.name.lastIndexOf('-');
+    return dash > 0 ? this.name.substring(dash+1) : this.name;
+  }
+
+  /**
+   * Sets the PageSeeder ID of this group.
+   *
    * @param id the id to set
    */
   public void setId(Long id) {
@@ -110,6 +140,8 @@ public class PSGroup implements PSEntity {
   }
 
   /**
+   * Sets the full name of this group.
+   *
    * @param name the name to set
    */
   public void setName(String name) {
@@ -117,6 +149,8 @@ public class PSGroup implements PSEntity {
   }
 
   /**
+   * Returns the description of this group.
+   *
    * @return the description
    */
   public final String getDescription() {
@@ -124,6 +158,8 @@ public class PSGroup implements PSEntity {
   }
 
   /**
+   * Sets the descriptions of this group.
+   *
    * @param description the description to set
    */
   public final void setDescription(String description) {
@@ -131,34 +167,44 @@ public class PSGroup implements PSEntity {
   }
 
   /**
-   * @return the defaultRole
+   * Returns the default role assigned to members when they join the group.
+   *
+   * @return the default role assigned to members when they join the group.
    */
   public final PSRole getDefaultRole() {
     return this.defaultRole;
   }
 
   /**
-   * @return the defaultNotification
+   * Returns the default notification assigned to members when they join the group.
+   *
+   * @return the default notification assigned to members when they join the group.
    */
   public final PSNotification getDefaultNotification() {
     return this.defaultNotification;
   }
 
   /**
-   * @param defaultRole the defaultRole to set
+   * Set the default role assigned to members when they join the group.
+   *
+   * @param role the default role assigned to members when they join the group.
    */
-  public final void setDefaultRole(PSRole defaultRole) {
-    this.defaultRole = defaultRole;
+  public final void setDefaultRole(PSRole role) {
+    this.defaultRole = role;
   }
 
   /**
-   * @param defaultNotification the defaultNotification to set
+   * Returns the default notification assigned to members when they join the group.
+   *
+   * @param notification the default notification assigned to members when they join the group.
    */
-  public final void setDefaultNotification(PSNotification defaultNotification) {
-    this.defaultNotification = defaultNotification;
+  public final void setDefaultNotification(PSNotification notification) {
+    this.defaultNotification = notification;
   }
 
   /**
+   * Returns the type of membership details for this group.
+   *
    * @return the type of membership details for this group.
    */
   public String getDetailsType() {
@@ -166,20 +212,29 @@ public class PSGroup implements PSEntity {
   }
 
   /**
-   * @param detailsType the type of membership details for this group.
+   * Sets type of membership details for this group.
+   *
+   * <p>The details type is the name of the configuration file defining the details to
+   * use in the group. For example, <code>account.xml</code>.
+   *
+   * @param type the type of membership details for this group.
    */
-  public void setDetailsType(String detailsType) {
-    this.detailsType = detailsType;
+  public void setDetailsType(String type) {
+    this.detailsType = type;
   }
 
   /**
-   * @return the owner
+   * Returns the owner of the group.
+   *
+   * @return the owner of the group.
    */
   public String getOwner() {
     return this.owner;
   }
 
   /**
+   * Sets the owner of the group.
+   *
    * @param owner the owner to set
    */
   public void setOwner(String owner) {
@@ -247,7 +302,7 @@ public class PSGroup implements PSEntity {
    *         <code>false</code> otherwise.
    */
   public static boolean isValidGroupName(String name) {
-    if (name == null) return false;
+    if (name == null || name.length() == 0) return false;
     String pjname = name;
     int dash = name.indexOf('-');
     if (dash  != -1) pjname = name.substring(0, dash);

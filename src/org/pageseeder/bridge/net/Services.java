@@ -8,24 +8,59 @@
 package org.pageseeder.bridge.net;
 
 /**
- * A utility class to generate the URL for services in PageSeeder.
+ * A low-level utility class to generate the URL for PageSeeder services.
  *
- * <p>Provides useful constants for Services used in this project.
+ * <p>Provides useful constants for PageSeeder services.
+ *
+ * <p>As a convention, most parameters in this class are string that corresponding to the
+ * identifier for the entity been searched, for example:
+ * <ul>
+ *   <li><b>group</b> - group name of ID
+ *   <li><b>member</b> - member username or ID
+ * </ul>
  *
  * @author Christophe Lauret
- * @version 0.2.0
+ * @version 0.2.4
  * @since 0.2.0
  */
-final class PSHTTPServices {
+public final class Services {
 
   /**
    * Utility class.
    */
-  private PSHTTPServices() {
+  private Services() {
   }
 
-  // Public service URLs (referenced directly somewhere)
-  // ---------------------------------------------------------------------------------------------
+  /**
+   * Returns the URL to reset the current session.
+   *
+   * @return <code>/resetsession</code>.
+   */
+  public static String toResetSession() {
+    return "/resetsession";
+  }
+
+  /**
+   * Returns the URL to create a group.
+   *
+   * @param member the member username or id
+   *
+   * @return <code>/members/[member]/groups/create</code>.
+   */
+  public static String toCreateGroup(String member) {
+    return "/members/"+member+"/groups/create";
+  }
+
+  /**
+   * Returns the URL to create a project.
+   *
+   * @param member the member username or id
+   *
+   * @return <code>/members/[member]/projects/create</code>.
+   */
+  public static String toCreateProject(String member) {
+    return "/members/"+member+"/projects/create";
+  }
 
   /**
    * Returns the URL to invoke the group member edit service.
@@ -73,9 +108,6 @@ final class PSHTTPServices {
     return "/groups/" + group + "/members/forceresetpassword";
   }
 
-  // Protected service URLs (referenced by the PSConnectors helper class)
-  // ---------------------------------------------------------------------------------------------
-
   /**
    * Returns the URL to invoke the group member creation service.
    *
@@ -83,7 +115,7 @@ final class PSHTTPServices {
    *
    * @return <code>/groups/[group]/members/create</code>.
    */
-  protected static String toCreateMembership(String group) {
+  public static String toCreateMembership(String group) {
     return "/groups/" + group + "/members/create";
   }
 
@@ -94,7 +126,7 @@ final class PSHTTPServices {
    *
    * @return <code>/groups/[group]/members/invite</code>.
    */
-  protected static String toInviteMember(String group) {
+  public static String toInviteMember(String group) {
     return "/groups/" + group + "/members/invite";
   }
 
@@ -106,8 +138,30 @@ final class PSHTTPServices {
    *
    * @return <code>/groups/[group]/members/invite</code>.
    */
-  protected static String toInviteSelf(String group, String member) {
+  public static String toInviteSelf(String group, String member) {
     return "/groups/" + group + "/members/"+member+"/inviteself";
+  }
+
+  /**
+   * Returns the URL to return the details of a member.
+   *
+   * @param member the member username or id
+   *
+   * @return <code>/members/[member]/details</code>.
+   */
+  public static String toMemberDetails(String member) {
+    return "/members/" + member + "/details";
+  }
+
+  /**
+   * Returns the URL to edit the details of a member.
+   *
+   * @param member the member username or id
+   *
+   * @return <code>/members/[member]/edit</code>.
+   */
+  protected static String toMemberEdit(String member) {
+    return "/members/" + member + "/edit";
   }
 
   /**
