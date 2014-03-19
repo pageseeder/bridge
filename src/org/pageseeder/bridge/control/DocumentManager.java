@@ -16,7 +16,6 @@ import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSFolder;
 import org.pageseeder.bridge.model.PSGroup;
-import org.pageseeder.bridge.model.PSGroupFolder;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
@@ -35,7 +34,7 @@ import com.topologi.diffx.xml.XMLWriter;
  * A manager for documents and folders (based on PageSeeder URIs).
  *
  * @author Christophe Lauret
- * @version 0.2.0
+ * @version 0.2.3
  * @since 0.2.0
  */
 public final class DocumentManager extends Sessionful {
@@ -68,17 +67,13 @@ public final class DocumentManager extends Sessionful {
    *
    * @return <code>true</code> if the document was created.
    */
-  public void create(PSDocument document, PSGroup group, PSMember creator) throws APIException {
-    PSFolder folder = getFolder(document.getFolderURL(), group);
-    PSHTTPConnector connector;
-    if (folder != null) {
-      connector = PSHTTPConnectors.createDocument(document, group, folder, creator, null);
-    } else {
-      connector = PSHTTPConnectors.createDocument(document, group, creator, null);
-    }
+  public boolean create(PSDocument document, PSGroup group, PSMember creator)
+      throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, creator, null);
     PSDocumentHandler handler = new PSDocumentHandler(document);
     connector.setUser(this._session);
-    connector.post(handler);
+    PSHTTPResponseInfo info = connector.post(handler);
+    return info.getStatus() == Status.OK;
   }
 
   /**
@@ -91,14 +86,9 @@ public final class DocumentManager extends Sessionful {
    *
    * @return <code>true</code> if the document was created.
    */
-  public boolean create(PSDocument document, PSGroup group, PSMember creator, Map<String, String> parameters) throws APIException {
-    PSFolder folder = getFolder(document.getFolderURL(), group);
-    PSHTTPConnector connector;
-    if (folder != null) {
-      connector = PSHTTPConnectors.createDocument(document, group, folder, creator, parameters);
-    } else {
-      connector = PSHTTPConnectors.createDocument(document, group, creator, parameters);
-    }
+  public boolean create(PSDocument document, PSGroup group, PSMember creator, Map<String, String> parameters)
+      throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, creator, parameters);
     PSDocumentHandler handler = new PSDocumentHandler(document);
     connector.setUser(this._session);
     PSHTTPResponseInfo info = connector.post(handler);
@@ -115,12 +105,12 @@ public final class DocumentManager extends Sessionful {
    *
    * @return <code>true</code> if the document was created.
    */
-  public boolean create(PSDocument document, PSGroup group, PSGroupFolder folder, PSMember creator) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, null).using(this._session);
-    PSDocumentHandler handler = new PSDocumentHandler(document);
-    PSHTTPResponseInfo info = connector.post(handler);
-    return info.getStatus() == Status.OK;
-  }
+//  public boolean create(PSDocument document, PSGroup group, PSGroupFolder folder, PSMember creator) throws APIException {
+//    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, null).using(this._session);
+//    PSDocumentHandler handler = new PSDocumentHandler(document);
+//    PSHTTPResponseInfo info = connector.post(handler);
+//    return info.getStatus() == Status.OK;
+//  }
 
   /**
    * Create the specified document in PageSeeder.
@@ -133,12 +123,12 @@ public final class DocumentManager extends Sessionful {
    *
    * @return <code>true</code> if the document was created.
    */
-  public boolean create(PSDocument document, PSGroup group, PSGroupFolder folder, PSMember creator, Map<String, String> parameters) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, parameters).using(this._session);
-    PSDocumentHandler handler = new PSDocumentHandler(document);
-    PSHTTPResponseInfo info = connector.post(handler);
-    return info.getStatus() == Status.OK;
-  }
+//  public boolean create(PSDocument document, PSGroup group, PSGroupFolder folder, PSMember creator, Map<String, String> parameters) throws APIException {
+//    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, folder, creator, parameters).using(this._session);
+//    PSDocumentHandler handler = new PSDocumentHandler(document);
+//    PSHTTPResponseInfo info = connector.post(handler);
+//    return info.getStatus() == Status.OK;
+//  }
 
   /**
    * Identify a document from a specific URI ID.

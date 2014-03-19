@@ -17,9 +17,7 @@ import org.pageseeder.bridge.Requires;
 import org.pageseeder.bridge.control.GroupManager.GroupOptions;
 import org.pageseeder.bridge.model.PSDetails;
 import org.pageseeder.bridge.model.PSDocument;
-import org.pageseeder.bridge.model.PSFolder;
 import org.pageseeder.bridge.model.PSGroup;
-import org.pageseeder.bridge.model.PSGroupFolder;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSMembership;
 import org.pageseeder.bridge.model.PSNotification;
@@ -716,9 +714,10 @@ public final class PSHTTPConnectors {
    *
    * <p>PageSeeder will return an error if the document config does not create the folder.
    *
-   * @param document the document to create
-   * @param group    the group where the document should be created
-   * @param creator  the member who creates the document.
+   * @param document   the document to create
+   * @param group      the group where the document should be created
+   * @param creator    the member who creates the document.
+   * @param parameters the template parameters to supply
    *
    * @return The corresponding connector
    *
@@ -729,18 +728,19 @@ public final class PSHTTPConnectors {
     Preconditions.isNotNull(document, "document");
     Preconditions.isNotEmpty(document.getFilename(), "filename");
     Preconditions.isNotEmpty(document.getTitle(), "title");
-    Preconditions.isNotNull(group, "group");
-    Preconditions.isNotEmpty(group.getName(), "group name");
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/members/"+creator.getId()+"/groups/"+group.getId()+"/uris");
+    Preconditions.isIdentifiable(group, "group");
+    Preconditions.isIdentifiable(creator, "member");
+    String service = "/members/"+creator.getIdentifier()+"/groups/"+group.getIdentifier()+"/documents/forurl";
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
 
     // document properties
-    connector.addParameter("filename", document.getFilename());
+    String url = document.getURL();
+    connector.addParameter("url", url);
     connector.addParameter("title", document.getTitle());
-    connector.addParameter("groups", group.getName());
     connector.addParameter("type", document.getType());
     connector.addParameter("labels", document.getLabelsAsString());
     if (document.getDocid() != null)
-      connector.addParameter("documentid", document.getDocid());
+      connector.addParameter("docid", document.getDocid());
     if (document.getDescription() != null)
       connector.addParameter("description", document.getDescription());
 
@@ -754,44 +754,6 @@ public final class PSHTTPConnectors {
         }
       }
     }
-    return connector;
-  }
-
-  /**
-   *
-   * @param document the document to create
-   * @param group    the group where the document should be created
-   * @param creator  the member who creates the document.
-   *
-   * @return The corresponding connector
-   *
-   * @throws FailedPrecondition Should any precondition fail.
-   */
-  public static PSHTTPConnector createDocument(PSDocument document, PSGroup group, PSGroupFolder folder, PSMember creator, Map<String, String> parameters)
-      throws FailedPrecondition {
-    Preconditions.isNotNull(group, "folder");
-    Preconditions.isNotNull(folder.getId(), "folder");
-    PSHTTPConnector connector = createDocument(document, group, creator, parameters);
-    connector.addParameter("guri", folder.getId().toString());
-    return connector;
-  }
-
-  /**
-   *
-   * @param document the document to create
-   * @param group    the group where the document should be created
-   * @param creator  the member who creates the document.
-   *
-   * @return The corresponding connector
-   *
-   * @throws FailedPrecondition Should any precondition fail.
-   */
-  public static PSHTTPConnector createDocument(PSDocument document, PSGroup group, PSFolder folder, PSMember creator, Map<String, String> parameters)
-      throws FailedPrecondition {
-    Preconditions.isNotNull(folder, "folder");
-    Preconditions.isNotNull(folder.getId(), "folder");
-    PSHTTPConnector connector = createDocument(document, group, creator, parameters);
-    connector.addParameter("uri", folder.getId().toString());
     return connector;
   }
 
