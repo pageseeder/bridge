@@ -336,9 +336,21 @@ public final class Services {
    * @param uri      the uri ID of the document
    * @param fragment the fragment ID to retrieve
    *
-   * @return <code>"/members/[member]/groups/[group]/uris/[uri]/fragments/[fragment]</code>
+   * @return <code>/members/[member]/groups/[group]/uris/[uri]/fragments/[fragment]</code>
    */
   public static String toGetFragment(String member, String group, String uri, String fragment) {
     return "/members/"+member+"/groups/"+group+"/uris/"+uri+"/fragments/"+fragment;
+  }
+
+  /**
+   * Returns the URL to send an email
+   *
+   * @param member the username or id of the member on behalf of whom the mail is sent
+   * @param group  the group name or id, the member belongs to.
+   *
+   * @return <code>/members/[member]/groups/[group]/mail/send</code>
+   */
+  public static String toSendMail(String member, String group) {
+    return "/members/"+member+"/groups/"+group+"/mail/send";
   }
 }

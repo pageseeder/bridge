@@ -15,7 +15,8 @@ import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.InvalidEntityException;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.Requires;
-import org.pageseeder.bridge.control.GroupManager.GroupOptions;
+import org.pageseeder.bridge.model.GroupOptions;
+import org.pageseeder.bridge.model.MailOptions;
 import org.pageseeder.bridge.model.PSDetails;
 import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSGroup;
@@ -1009,6 +1010,35 @@ public final class PSHTTPConnectors {
     }
     connector.addParameter("groups", parameter.toString());
     connector.addParameter("xformat", "xml");
+    return connector;
+  }
+
+  /**
+   * Returns the connector to send an email.
+   *
+   * @param member  The member on behalf of which the email is sent
+   * @param group   The groups to search.
+   * @param options The email options.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition If the group or member is not identifiable;
+   *                            or if the email options do not include any content.
+   */
+  public static PSHTTPConnector sendMail(PSMember member, PSGroup group, MailOptions options) throws FailedPrecondition {
+    Preconditions.isIdentifiable(member, "member");
+    Preconditions.isIdentifiable(group, "group");
+    Preconditions.isNotEmpty(options.getContent(), "mail content");
+    String service = Services.toSendMail(member.getIdentifier(), group.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    connector.addParameter("content", options.getContent());
+    connector.addParameter("notify", options.getNotify().toString());
+    if (options.hasTemplate())
+      connector.addParameter("template", options.getTemplate());
+    if (options.hasRecipients())
+      connector.addParameter("recipients", options.getRecipientsAsString());
+    if (options.hasAttachments())
+      connector.addParameter("attachments", options.getAttachmentsAsString());
     return connector;
   }
 }
