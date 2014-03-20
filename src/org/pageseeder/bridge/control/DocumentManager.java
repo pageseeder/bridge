@@ -201,7 +201,7 @@ public final class DocumentManager extends Sessionful {
       throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.putFragment(document, group, editor, fragment).using(this._session);
     PSFragmentHandler handler = new PSFragmentHandler();
-    connector.post(handler);
+    connector.put(handler);
     return handler.getFragment();
   }
 

@@ -12,12 +12,17 @@ package org.pageseeder.bridge.net;
  *
  * <p>Provides useful constants for PageSeeder services.
  *
- * <p>As a convention, most parameters in this class are string that corresponding to the
+ * <p>As a convention, most parameters in this class are strings that correspond to the
  * identifier for the entity been searched, for example:
  * <ul>
  *   <li><b>group</b> - group name of ID
  *   <li><b>member</b> - member username or ID
  * </ul>
+ *
+ * <p>The order of the parameters is generally the order in which they appear in the URL
+ * of the underlying service.
+ *
+ * <p>There is generally no reason to access this class directly, higher-level class should be accessed instead.
  *
  * @author Christophe Lauret
  * @version 0.2.4
@@ -38,6 +43,39 @@ public final class Services {
    */
   public static String toResetSession() {
     return "/resetsession";
+  }
+
+  /**
+   * Returns the URL to get a group.
+   *
+   * @param group the group name or id
+   *
+   * @return <code>/groups/[group]</code>.
+   */
+  public static String toGetGroup(String group) {
+    return "/groups/"+group;
+  }
+
+  /**
+   * Returns the URL to add a subgroup.
+   *
+   * @param group the group name or id the subgroup is added to.
+   *
+   * @return <code>/groups/[group]/subgroups/add</code>.
+   */
+  public static String toAddSubGroup(String group) {
+    return "/groups/"+group+"/subgroups/add";
+  }
+
+  /**
+   * Returns the URL to put a resource
+   *
+   * @param project the project name or id where the resource should be put.
+   *
+   * @return <code>/groups/[project]/resources/put</code>.
+   */
+  public static String toPutResource(String project) {
+    return "/groups/"+project+"/resources/put";
   }
 
   /**
@@ -63,6 +101,17 @@ public final class Services {
   }
 
   /**
+   * Returns the URL to list the members of a group
+   *
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/members</code>.
+   */
+  public static String toListMembers(String group) {
+    return "/groups/" + group + "/members";
+  }
+
+  /**
    * Returns the URL to invoke the group member edit service.
    *
    * @param group  the group name or id
@@ -72,6 +121,18 @@ public final class Services {
    */
   public static String toEditMembership(String group, String member) {
     return "/groups/" + group + "/members/" + member + "/edit";
+  }
+
+  /**
+   * Returns the URL to remove a member from a group.
+   *
+   * @param group  the group name or id
+   * @param member the member username or id
+   *
+   * @return <code>/groups/[group]/members/[member]/delete</code>.
+   */
+  public static String toDeleteMembership(String group, String member) {
+    return "/groups/" + group + "/members/" + member + "/delete";
   }
 
   /**
@@ -208,5 +269,76 @@ public final class Services {
    */
   protected static String toReplyComment(String xlinkId, long userId) {
     return "/members/" + userId + "/comments/" + xlinkId + "/reply";
+  }
+
+  /**
+   * Returns the URL to get a document for a given URL.
+   *
+   * @param member the member username or id
+   * @param group  the group name or id
+   *
+   * @return <code>/members/[member]/groups/[group]/documents/forurl</code>.
+   */
+  public static String toGetDocumentForURL(String member, String group) {
+    return "/members/"+member+"/groups/"+group+"/documents/forurl";
+  }
+
+  /**
+   * Returns the URL to get a URI for a given URL.
+   *
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/uris/forurl</code>.
+   */
+  public static String toGetURIForURL(String group) {
+    return "/groups/"+group+"/uris/forurl";
+  }
+
+  /**
+   * Returns the URL to get a URI for a given ID.
+   *
+   * @param group  the group name or id
+   * @param uri    the URI id.
+   *
+   * @return <code>/groups/[group]/uris/[uri]</code>.
+   */
+  public static String toGetURIForID(String group, String uri) {
+    return "/groups/"+group+"/uris/"+uri;
+  }
+
+  /**
+   * Returns the URL to create a group folder.
+   *
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/folders/create</code>.
+   */
+  public static String toCreateGroupFolder(String group) {
+    return "/groups/"+group+"/folders/create";
+  }
+
+  /**
+   * Returns the URL to get a group folder for a given url.
+   *
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/folders/forurl</code>.
+   */
+  public static String toGetGroupFolderForURL(String group) {
+    return "/groups/"+group+"/folders/forurl";
+  }
+
+  /**
+   * Returns the URL to get/put a fragment from a document.
+   *
+   * @param member   the username or id of the editor
+   * @param group    the group name or id, the document belongs to.
+   * @param uri      the uri ID of the document
+   * @param fragment the fragment ID to retrieve
+   *
+   * @return <code>"/members/[member]/groups/[group]/uris/[uri]/fragments/[fragment]</code>
+   */
+  public static String toGetFragment(String member, String group, String uri, String fragment) {
+    return "/members/"+member+"/groups/"+group+"/uris/"+uri+"/fragments/"+fragment;
   }
 }

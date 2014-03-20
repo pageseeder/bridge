@@ -62,7 +62,6 @@ public final class MembershipManager extends Sessionful {
    * @param password   The password for the user (must be strong enough)
    */
   public void create(PSMembership membership, String password) throws APIException {
-    if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
     PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, password, true).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     connector.post(handler);
