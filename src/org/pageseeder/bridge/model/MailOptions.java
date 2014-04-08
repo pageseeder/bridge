@@ -139,7 +139,7 @@ public final class MailOptions {
    * @param template the template to set
    */
   public boolean hasAttachments() {
-    return this.recipients != null && this.attachments.size() > 0;
+    return this.attachments != null && this.attachments.size() > 0;
   }
 
   /**
