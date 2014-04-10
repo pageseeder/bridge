@@ -39,16 +39,78 @@ public final class MailOptions {
 
   }
 
-  private String template = null;
+  /**
+   * The email template to use.
+   */
+  public enum Template {
 
+    auto_responder,
+    change_password,
+    change_email_confirm,
+    accept_comment,
+    new_member,
+    new_url,
+    new_comment,
+    new_version,
+    out_of_office_change,
+    out_of_office_warning,
+    reject_comment,
+    reset_password_confirm,
+    reset_password_complete,
+    membership_accept,
+    membership_confirm,
+    membership_new_member,
+    membership_complete,
+    daily_digest,
+    external;
+
+    private final String _template;
+
+    /**
+     *
+     */
+    private Template() {
+      this._template = name().toLowerCase().replace('_', '-');
+    }
+
+    /**
+     * @return the _template
+     */
+    public String template() {
+      return this._template;
+    }
+
+  }
+
+
+  /**
+   * The email template.
+   */
+  private Template template = Template.external;
+
+  /**
+   * The content to be send.
+   */
   private String content = null;
 
+  /**
+   * The Email notify
+   */
   private Notify notify = Notify.normal;
 
+  /**
+   * The list of recipients.
+   */
   private List<String> recipients = null;
 
+  /**
+   * The list of attachments
+   */
   private List<String> attachments = null;
 
+  /**
+   * Creates a new set of mail options.
+   */
   public MailOptions() {
   }
 
@@ -69,21 +131,22 @@ public final class MailOptions {
   /**
    * @return the template
    */
-  public String getTemplate() {
+  public Template getTemplate() {
     return this.template;
   }
 
   /**
    * @param template the template to set
    */
-  public boolean hasTemplate() {
-    return this.template != null;
+  public void setTemplate(String template) {
+    this.template = Template.valueOf(template.toLowerCase().replace('-', '_'));
   }
 
   /**
    * @param template the template to set
    */
-  public void setTemplate(String template) {
+  public void setTemplate(Template template) {
+    if (template == null) throw new NullPointerException("Template must be specified");
     this.template = template;
   }
 
@@ -102,7 +165,10 @@ public final class MailOptions {
   }
 
   /**
-   * @param template the template to set
+   * Indicate whether the recipients have been specified.
+   *
+   * @return <code>true</code> if there is at least one recipient;
+   *         <code>false</code> otherwise.
    */
   public boolean hasRecipients() {
     return this.recipients != null && this.recipients.size() > 0;
@@ -136,7 +202,10 @@ public final class MailOptions {
   }
 
   /**
-   * @param template the template to set
+   * Indicate whether the attachments have been specified.
+   *
+   * @return <code>true</code> if there is at least one attachment;
+   *         <code>false</code> otherwise.
    */
   public boolean hasAttachments() {
     return this.attachments != null && this.attachments.size() > 0;

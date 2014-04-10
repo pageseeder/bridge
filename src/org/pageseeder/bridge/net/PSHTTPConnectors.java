@@ -1033,8 +1033,10 @@ public final class PSHTTPConnectors {
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("content", options.getContent());
     connector.addParameter("notify", options.getNotify().toString());
-    if (options.hasTemplate())
-      connector.addParameter("template", options.getTemplate());
+    String template = options.getTemplate().template();
+    // The service is mapped to 'name' but the generator uses 'template'
+    connector.addParameter("template", template);
+    connector.addParameter("name", template);
     if (options.hasRecipients())
       connector.addParameter("recipients", options.getRecipientsAsString());
     if (options.hasAttachments())
