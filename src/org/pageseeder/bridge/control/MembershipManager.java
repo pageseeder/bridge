@@ -82,9 +82,27 @@ public final class MembershipManager extends Sessionful {
   /**
    * Create a membership by letting the member inviting herself to the group.
    *
+   * <p>A welcome email will be sent to the user.
+   *
    * @param membership The membership to create.
    */
   public void inviteSelf(PSMembership membership) throws APIException {
+    if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
+    PSHTTPConnector connector = PSHTTPConnectors.inviteSelf(membership, true).using(this._session);
+    PSMembershipHandler handler = new PSMembershipHandler(membership);
+    connector.post(handler);
+  }
+
+  /**
+   * Create a membership by letting the member inviting herself to the group.
+   *
+   * To work the group owner must be the same as another group the member
+   *
+   * @param membership The membership to create.
+   * @param email      <code>true</code> to send the welcome email;
+   *                   <code>false</code> otherwise (the member is added silently)
+   */
+  public void inviteSelf(PSMembership membership, boolean email) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
     PSHTTPConnector connector = PSHTTPConnectors.inviteSelf(membership, true).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
@@ -172,7 +190,6 @@ public final class MembershipManager extends Sessionful {
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     connector.post(handler);
   }
-
 
   /**
    * Updates the password of the member.

@@ -585,16 +585,14 @@ public final class PSHTTPConnectors {
   /**
    * Returns the connector to create a member.
    *
-   * @param user      The user to create.
-   * @param password  The user's password.
-   * @param delegated Whether the account is created by the user himself or an admin.
-   * @param admin     A PageSeeder admin to invoke the service.
+   * @param membership The membership being created from that invitation.
+   * @param email      Whether to send an email of not
    *
    * @return The corresponding connector
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector inviteSelf(PSMembership membership, boolean delegated) throws FailedPrecondition {
+  public static PSHTTPConnector inviteSelf(PSMembership membership, boolean email) throws FailedPrecondition {
     PSGroup group = membership.getGroup();
     PSMember member = membership.getMember();
     Preconditions.isNotNull(membership.getGroup(), "group");
@@ -608,7 +606,7 @@ public final class PSHTTPConnectors {
     connector.addParameter("listed", Boolean.toString(membership.isListed()));
     if (membership.getNotification() != null)
       connector.addParameter("notification", membership.getNotification().parameter());
-    connector.addParameter("welcome-email", delegated ? "false": "true");
+    connector.addParameter("welcome-email", Boolean.toString(email));
     // Membership details
     PSDetails details = membership.getDetails();
     if (details != null) {
