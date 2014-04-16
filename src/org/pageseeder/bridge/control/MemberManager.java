@@ -10,6 +10,7 @@ package org.pageseeder.bridge.control;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSEntityCache;
 import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.model.MemberOptions;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
@@ -59,6 +60,21 @@ public final class MemberManager extends Sessionful {
         cache.put(member);
     }
     return member;
+  }
+
+  /**
+   * Saves the details of the specified member.
+   *
+   * @param member  The username of that member
+   * @param options The options to create the member.
+   */
+  public void create(PSMember member, MemberOptions options) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.createMember(member, options).using(this._session);
+    PSMemberHandler handler = new PSMemberHandler(member);
+    connector.post(handler);
+    PSMember m = handler.get();
+    if (m != null)
+      cache.put(m);
   }
 
   /**

@@ -17,6 +17,7 @@ import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.Requires;
 import org.pageseeder.bridge.model.GroupOptions;
 import org.pageseeder.bridge.model.MailOptions;
+import org.pageseeder.bridge.model.MemberOptions;
 import org.pageseeder.bridge.model.PSDetails;
 import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSGroup;
@@ -139,6 +140,33 @@ public final class PSHTTPConnectors {
     connector.addParameter("surname", member.getSurname());
     connector.addParameter("email", member.getEmail());
     connector.addParameter("force-email-change", Boolean.toString(forceEmail));
+    return connector;
+  }
+
+  /**
+   * Returns the connector to edit the details of a member.
+   *
+   * @param member  The member instance containing the new details.
+   * @param options The member options
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition If the member is not ientifiable.
+   */
+  public static PSHTTPConnector createMember(PSMember member, MemberOptions options)
+      throws FailedPrecondition, InvalidEntityException {
+    Preconditions.isIdentifiable(member, "member");
+    Preconditions.isValid(member, "member");
+    String service = Services.toMemberCreate(member.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    connector.addParameter("member-username", member.getUsername());
+    connector.addParameter("firstname", member.getFirstname());
+    connector.addParameter("surname", member.getSurname());
+    connector.addParameter("email", member.getEmail());
+    // Member options
+    connector.addParameter("welcome-email",  Boolean.toString(options.hasWelcomeEmail()));
+    connector.addParameter("personal-group", Boolean.toString(options.hasPersonalGroup()));
+    connector.addParameter("auto-activate",  Boolean.toString(options.isAutoActivate()));
     return connector;
   }
 
@@ -394,7 +422,6 @@ public final class PSHTTPConnectors {
     Preconditions.isValid(member, "member");
     Preconditions.isNotEmpty(member.getFirstname(), "firstname");
     Preconditions.isNotEmpty(member.getSurname(), "surname");
-    Preconditions.isNotEmpty(member.getEmail(), "email");
     String service = Services.toCreateMembership(group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     // Member details
@@ -420,7 +447,7 @@ public final class PSHTTPConnectors {
     // Membership details
     PSDetails details = membership.getDetails();
     if (details != null) {
-      for (int i=1; i <= PSDetails.MAX_SIZE; i++) {
+      for (int i = 1; i <= PSDetails.MAX_SIZE; i++) {
         // Fields are 1-based
         String field = details.getField(i);
         if (field != null)

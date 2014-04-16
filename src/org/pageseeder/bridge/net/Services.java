@@ -215,6 +215,17 @@ public final class Services {
   }
 
   /**
+   * Returns the URL to create a member.
+   *
+   * @param member the member username or id
+   *
+   * @return <code>/members/[member]/edit</code>.
+   */
+  protected static String toMemberCreate(String member) {
+    return "/members/" + member + "/create";
+  }
+
+  /**
    * Returns the URL to edit the details of a member.
    *
    * @param member the member username or id
