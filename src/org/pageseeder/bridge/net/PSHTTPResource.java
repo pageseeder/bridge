@@ -251,13 +251,11 @@ public final class PSHTTPResource {
 
     // XFormat (for servlets / resources only)
     if (this._type != PSHTTPResourceType.SERVICE) {
-      if (!this._parameters.containsKey("xformat")) {
-        this._parameters.put("xformat", "xml");
-      }
+      url.append(query != null? '&' : '?').append("xformat=xml");
     }
 
-    // When including the parameters on the request
-    boolean firstParameter = query == null;
+    // When not using the "application/x-www-form-urlencoded"
+    boolean firstParameter = query == null && this._type == PSHTTPResourceType.SERVICE;
     if (includeParameters) {
       try {
         for (Entry<String, String> p : this._parameters.entrySet()) {
