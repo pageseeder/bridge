@@ -11,6 +11,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,6 +20,7 @@ import java.io.StringWriter;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -97,6 +100,11 @@ public final class PSHTTPConnection {
   private static final Charset UTF8 = Charset.forName("utf-8");
 
   /**
+   * Byte for carriage return + line feed.
+   */
+  private static final byte[] CRLF = "\r\n".getBytes(UTF8);
+
+  /**
    * Used to generate boundary parts.
    */
   private static Random random = new Random();
@@ -151,6 +159,20 @@ public final class PSHTTPConnection {
   }
 
   /**
+   * Close the multipart boundary.
+   *
+   * @throws IOException
+   */
+  private void endMultipart() throws IOException {
+    if (this.out != null) {
+      write(this._boundary, this.out);
+      write("--", this.out);
+      writeCRLF(this.out);
+      this.out.flush();
+    }
+  }
+
+  /**
    * Add a part to the request (write the contents directly to the stream).
    *
    * @param part The encoding to specify in the Part's header
@@ -177,20 +199,110 @@ public final class PSHTTPConnection {
         throw new IOException("Cannot add XML part unless connection type is set to Multipart");
 
       // Start with boundary
-      write(this._boundary + "\r\n", this.out);
+      write(this._boundary, this.out);
+      writeCRLF(this.out);
+
       // Headers if specified
       if (headers != null) {
         for (Entry<String, String> h : headers.entrySet()) {
           String name = h.getKey();
           if (!"content-type".equalsIgnoreCase(name)) {
-            write(name + ": " + headers.get(h.getValue()) + "\r\n", this.out);
+            write(name + ": " + headers.get(h.getValue()), this.out);
+            writeCRLF(this.out);
           }
         }
       }
+
       // Write content type
-      write("Content-Type: text/xml; charset=\"utf-8\"\r\n\r\n", this.out);
+      write("Content-Type: text/xml; charset=\"utf-8\"", this.out);
+      writeCRLF(this.out);
+      writeCRLF(this.out);
       write(part, this.out);
-      write("\r\n", this.out);
+      writeCRLF(this.out);
+      this.out.flush();
+
+    } catch (IOException ex) {
+      closeQuietly(this.out);
+      this.out = null;
+      throw ex;
+    }
+  }
+
+  /**
+   * Add a part to the request from a file(write the contents directly to the stream).
+   *
+   * @param part    The encoding to specify in the Part's header
+   *
+   * @throws IOException Should any error occur while writing
+   */
+  public void addPart(File part) throws IOException {
+    if (this.out == null) {
+      this.out = new DataOutputStream(this._connection.getOutputStream());
+    }
+    try {
+      if (this._method != Method.MULTIPART)
+        throw new IOException("Cannot add file part unless connection type is set to Multipart");
+
+      // Start with boundary
+      write(this._boundary, this.out);
+      writeCRLF(this.out);
+
+      // Write headers
+      write("Content-Disposition: form-data; name=\"file-1\"; filename=\"" + part.getName() + "\"", this.out);
+      writeCRLF(this.out);
+      write("Content-Type: " + URLConnection.guessContentTypeFromName(part.getName()), this.out);
+      writeCRLF(this.out);
+      write("Content-Transfer-Encoding: binary", this.out);
+      writeCRLF(this.out);
+      writeCRLF(this.out);
+      this.out.flush();
+
+      // Copy binary file content
+      FileInputStream fis = null;
+      try {
+        fis = new FileInputStream(part);
+        copy(fis, this.out);
+      } finally {
+        closeQuietly(fis);
+      }
+
+      writeCRLF(this.out);
+      this.out.flush();
+
+    } catch (IOException ex) {
+      closeQuietly(this.out);
+      this.out = null;
+      throw ex;
+    }
+  }
+
+  /**
+   * Add a parameter as part of a multipart request.
+   *
+   * @param name  the name of the parameter
+   * @param value the value of the parameter
+   *
+   * @throws IOException Should any error occur while writing
+   */
+  public void addParameterPart(String name, String value) throws IOException {
+    if (this.out == null) {
+      this.out = new DataOutputStream(this._connection.getOutputStream());
+    }
+    try {
+      if (this._method != Method.MULTIPART)
+        throw new IOException("Cannot add parameter connection type is set to Multipart");
+
+      // Start with boundary
+      write(this._boundary, this.out);
+      writeCRLF(this.out);
+
+      // Write Parameter
+      write("Content-Disposition: form-data; name=\""+name+"\"", this.out);
+      writeCRLF(this.out);
+      writeCRLF(this.out);
+      write(value, this.out);
+      writeCRLF(this.out);
+      this.out.flush();
 
     } catch (IOException ex) {
       closeQuietly(this.out);
@@ -289,6 +401,8 @@ public final class PSHTTPConnection {
    * @throws IOException If an error occurs when trying to write the XML.
    */
   public void process(PSHTTPResponseInfo response, DefaultHandler handler) throws IOException {
+    if (this._method == Method.MULTIPART)
+      endMultipart();
     try {
       // Retrieve the content of the response
       int status = this._connection.getResponseCode();
@@ -333,6 +447,8 @@ public final class PSHTTPConnection {
    * @throws IOException If an error occurs when trying to write the XML.
    */
   public void process(PSHTTPResponseInfo response, XMLWriter xml) throws IOException {
+    if (this._method == Method.MULTIPART)
+      endMultipart();
     try {
       // Retrieve the content of the response
       int status = this._connection.getResponseCode();
@@ -403,6 +519,8 @@ public final class PSHTTPConnection {
    */
   public PSHTTPResponseInfo process(PSHTTPResponseInfo response, XMLWriter xml, Templates templates, Map<String, String> parameters)
       throws IOException {
+    if (this._method == Method.MULTIPART)
+      endMultipart();
     try {
       // Retrieve the content of the response
       int status = this._connection.getResponseCode();
@@ -527,11 +645,21 @@ public final class PSHTTPConnection {
 
     // POST using "multipart/form-data"
     } else if (type == Method.MULTIPART) {
-      boundary = "-----------" + Long.toString(Math.abs(random.nextLong()), 36);
-      connection.setDoInput(true);
+      boundary = "--------------------" + Long.toString(Math.abs(random.nextLong()), 36);
       connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+      connection.setDoInput(true);
     }
-    return new PSHTTPConnection(connection, resource, type, user, boundary);
+    PSHTTPConnection instance = new PSHTTPConnection(connection, resource, type, user, "--"+boundary);
+
+    // Add the parameters for a multipart request
+    Map<String, String> parameters = resource.parameters();
+    if (type == Method.MULTIPART && !parameters.isEmpty()) {
+      for (Entry<String, String> p : parameters.entrySet()) {
+        instance.addParameterPart(p.getKey(), p.getValue());
+      }
+    }
+
+    return instance;
   }
 
   /**
@@ -832,6 +960,17 @@ public final class PSHTTPConnection {
   private static void write(String data, OutputStream output) throws IOException {
     if (data != null)
       output.write(data.getBytes(UTF8));
+  }
+
+  /**
+   * Write the CR LF bytes to the output.
+   *
+   * @param output The output
+   *
+   * @throws IOException Any error reported while writing on the output
+   */
+  private static void writeCRLF(OutputStream output) throws IOException {
+    output.write(CRLF);
   }
 
   /**

@@ -409,7 +409,7 @@ public final class PSHTTPConnector {
   /**
    * Connect to PageSeeder and fetch the XML using the GET method.
    *
-   * <p>If the handler is not specified, the xml writer receives a copy of the PageSeeder XML.
+   * <p>If the handler is not specified, the XML writer receives a copy of the PageSeeder XML.
    *
    * <p>If templates are specified they take precedence over the handler.
    *

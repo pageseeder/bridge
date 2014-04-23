@@ -142,6 +142,14 @@ public final class PSHTTPResource {
     return toURL(session, true);
   }
 
+  @Override
+  public String toString() {
+    return toURLString(null, false);
+  }
+
+  // Protected helpers
+  // ----------------------------------------------------------------------------------------------
+
   /**
    * Returns the URL to access this resource.
    *
@@ -158,9 +166,6 @@ public final class PSHTTPResource {
   protected URL toURL(PSSession session, boolean includePOSTParameters) throws MalformedURLException {
     return new URL(toURLString(session, includePOSTParameters));
   }
-
-  // Private helpers
-  // ----------------------------------------------------------------------------------------------
 
   /**
    * Returns the string to write the parameters sent via POST as <code>application/x-www-form-urlencoded</code>.
@@ -182,9 +187,11 @@ public final class PSHTTPResource {
     return q.toString();
   }
 
-  @Override
-  public String toString() {
-    return toURLString(null, false);
+  /**
+   * @return the parameters used in this connector
+   */
+  protected Map<String, String> parameters() {
+    return this._parameters;
   }
 
   // Private helpers
@@ -196,12 +203,12 @@ public final class PSHTTPResource {
    * <p>If the user is specified, its details will be included in the URL so that the resource can
    * be accessed on his behalf.
    *
-   * @param session               A PageSeeder session to access this resource.
-   * @param includePOSTParameters Whether to include the parameters for POST requests.
+   * @param session           A PageSeeder session to access this resource.
+   * @param includeParameters Whether to include the parameters for POST requests.
    *
    * @return the URL to access this resource.
    */
-  private String toURLString(PSSession session, boolean includePOSTParameters) {
+  private String toURLString(PSSession session, boolean includeParameters) {
     PSConfig pageseeder = PSConfig.singleton();
 
     // Start building the URL
@@ -244,12 +251,14 @@ public final class PSHTTPResource {
 
     // XFormat (for servlets / resources only)
     if (this._type != PSHTTPResourceType.SERVICE) {
-      url.append(query != null? '&' : '?').append("xformat=xml");
+      if (!this._parameters.containsKey("xformat")) {
+        this._parameters.put("xformat", "xml");
+      }
     }
 
-    // When not using the "application/x-www-form-urlencoded"
-    boolean firstParameter = query == null && this._type == PSHTTPResourceType.SERVICE;
-    if (includePOSTParameters) {
+    // When including the parameters on the request
+    boolean firstParameter = query == null;
+    if (includeParameters) {
       try {
         for (Entry<String, String> p : this._parameters.entrySet()) {
           url.append(firstParameter? '?' : '&').append(URLEncoder.encode(p.getKey(), "utf-8"));
