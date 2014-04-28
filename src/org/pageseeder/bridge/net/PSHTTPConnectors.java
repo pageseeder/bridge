@@ -534,9 +534,9 @@ public final class PSHTTPConnectors {
   /**
    * Returns the connector to create a member.
    *
-   * @param user      The user to create.
-   * @param password  The user's password.
-   * @param delegated Whether the account is created by the user himself or an admin.
+   * @param membership The membership to create.
+   * @param password   The user's password.
+   * @param delegated  Whether the account is created by the user himself or an admin.
    *
    * @return The corresponding connector
    *
@@ -662,10 +662,8 @@ public final class PSHTTPConnectors {
   /**
    * Returns the connector to create a member.
    *
-   * @param user      The user to create.
-   * @param password  The user's password.
-   * @param delegated Whether the account is created by the user himself or an admin.
-   * @param admin     A PageSeeder admin to invoke the service.
+   * @param membership The user to create.
+   * @param delegated  Whether the account is created by the user himself or an admin.
    *
    * @return The corresponding connector
    *
@@ -768,7 +766,7 @@ public final class PSHTTPConnectors {
     // Membership details
     PSDetails details = membership.getDetails();
     if (details != null) {
-      for (int i=1; i <= PSDetails.MAX_SIZE; i++) {
+      for (int i = 1; i <= PSDetails.MAX_SIZE; i++) {
         // Fields are 1-based
         String field = details.getField(i);
         if (field != null)
@@ -786,8 +784,6 @@ public final class PSHTTPConnectors {
    * @param member The member name or id.
    *
    * @return The corresponding connector
-   *
-   * @throws FailedPrecondition Should any precondition fail.
    */
   public static PSHTTPConnector getMembershipDetails(String group, String member) {
     String service = Services.toMembershipDetails(group, member);
