@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.InvalidEntityException;
 import org.pageseeder.bridge.PSConfig;
@@ -18,18 +19,25 @@ import org.pageseeder.bridge.Requires;
 import org.pageseeder.bridge.model.GroupOptions;
 import org.pageseeder.bridge.model.MailOptions;
 import org.pageseeder.bridge.model.MemberOptions;
+import org.pageseeder.bridge.model.PSComment;
+import org.pageseeder.bridge.model.PSComment.Attachment;
+import org.pageseeder.bridge.model.PSComment.Author;
+import org.pageseeder.bridge.model.PSComment.Context;
 import org.pageseeder.bridge.model.PSDetails;
 import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSMembership;
 import org.pageseeder.bridge.model.PSNotification;
+import org.pageseeder.bridge.model.PSNotify;
 import org.pageseeder.bridge.model.PSPredicate;
 import org.pageseeder.bridge.model.PSProject;
 import org.pageseeder.bridge.model.PSResource;
 import org.pageseeder.bridge.model.PSRole;
+import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.model.PasswordResetOptions;
 import org.pageseeder.bridge.psml.PSMLFragment;
+import org.weborganic.berlioz.util.ISO8601;
 
 /**
  * A utility class to provide predefined connectors to PageSeeder via HTTP.
@@ -911,6 +919,101 @@ public final class PSHTTPConnectors {
     String service = Services.toForceResetPassword(group);
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("email", email);
+    return connector;
+  }
+
+  // Comments
+  // ----------------------------------------------------------------------------------------------
+
+  public static PSHTTPConnector createComment(PSComment comment, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
+    // The author and context determine the service
+    Author author = comment.getAuthor();
+    Context context = comment.getContext();
+
+    // Basic preconditions to create a comment
+    Preconditions.isNotEmpty(comment.getTitle(),   "title");
+    Preconditions.isNotEmpty(comment.getContent(), "content");
+    Preconditions.isNotNull(author,   "author");
+    Preconditions.isNotNull(context,  "context");
+    if (context.group() != null)
+      Preconditions.isNotEmpty(context.group().getName(),  "group");
+    if (context.uri() != null) {
+      Preconditions.isIdentifiable(context.uri(), "uri");
+      Preconditions.isNotNull(group, "group");
+      Preconditions.isNotEmpty(group.getName(), "group name");
+    }
+
+    String service = Services.toCreateCommentService(author, context);
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+
+    // Core parameters
+    connector.addParameter("title",       comment.getTitle());
+    connector.addParameter("content",     comment.getContent());
+    connector.addParameter("contenttype", comment.getMediaType());
+
+    // Optional parameters
+    if (comment.hasLabels())
+      connector.addParameter("labels",    comment.getLabelsAsString());
+    if (comment.hasProperties())
+      connector.addParameter("properties", comment.getPropertiesAsString());
+    if (comment.getStatus() != null)
+      connector.addParameter("status", comment.getStatus());
+    if (comment.getPriority() != null)
+      connector.addParameter("priority", comment.getPriority());
+    if (comment.getAssignedTo() != null)
+      connector.addParameter("assignedto", comment.getAssignedTo().getId().toString());
+    if (comment.getDue() != null)
+      connector.addParameter("due", ISO8601.CALENDAR_DATE.format(comment.getDue().getTime()));
+    if (comment.getType() != null)
+      connector.addParameter("type", comment.getType());
+
+    // URL must be specified if the context is a URI but we don't know the ID
+    if (context.uri() != null && context.uri().getId() == null) {
+      connector.addParameter("url", context.uri().getURL());
+    }
+
+    // If context is not group
+    if (group != null && group.getName() != null)
+      connector.addParameter("groups", group.getName());
+
+    // Author is not a PageSeeder member
+    if (author.member() == null) {
+      connector.addParameter("authorname", author.name());
+      if (author.email() != null)
+        connector.addParameter("authoremail", author.email());
+    }
+
+    // Attachments
+    if (comment.hasAttachments()) {
+      StringBuilder uris = new StringBuilder();
+      StringBuilder urls = new StringBuilder();
+      for (Attachment attachment : comment.getAttachments()) {
+        PSURI uri = attachment.uri();
+        Preconditions.isIdentifiable(uri, "uri");
+        if (uri.getId() != null) {
+          if (uris.length() > 0) uris.append(',');
+          uris.append(uri.getId());
+          if (attachment.fragment() != null) {
+            uris.append('!').append(attachment.fragment());
+          }
+        } else {
+          if (urls.length() > 0) uris.append(',');
+          urls.append(uri.getURL());
+          if (attachment.fragment() != null) {
+            uris.append('#').append(attachment.fragment());
+          }
+        }
+      }
+      // Add the parameters
+      if (uris.length() > 0) connector.addParameter("uris", uris.toString());
+      if (urls.length() > 0) connector.addParameter("urls", urls.toString());
+    }
+
+    // Notification
+    if (notify != null) {
+      connector.addParameter("notify", notify.parameter());
+    }
+
     return connector;
   }
 

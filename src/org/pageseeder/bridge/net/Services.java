@@ -7,6 +7,10 @@
  */
 package org.pageseeder.bridge.net;
 
+import org.pageseeder.bridge.model.PSComment.Author;
+import org.pageseeder.bridge.model.PSComment.Context;
+import org.pageseeder.bridge.model.PSURI;
+
 /**
  * A low-level utility class to generate the URL for PageSeeder services.
  *
@@ -364,4 +368,37 @@ public final class Services {
   public static String toSendMail(String member, String group) {
     return "/members/"+member+"/groups/"+group+"/mail/send";
   }
+
+  /**
+   * Return the service to use to create a comment.
+   *
+   * @param author  The author of the comment.
+   * @param context The context of the comment.
+   *
+   * @return The corresponding service path.
+   */
+  public static String toCreateCommentService(Author author, Context context) {
+    // If the author is a member it is prefixed by '/members/[id]'
+    StringBuilder service = new StringBuilder();
+    if (author.member() != null) {
+      service.append("/members/").append(author.member().getIdentifier());
+    }
+    // The context determines the rest of the URL
+    if (context.group() != null) {
+      service.append("/groups/").append(context.group().getIdentifier()).append("/comments");
+    } else {
+      PSURI uri = context.uri();
+      if (uri != null && uri.getId() != null) {
+        service.append("/uris/").append(uri.getId());
+        if (context.fragment() != null) {
+          service.append("/fragments/").append(context.fragment());
+        }
+        service.append("/comments");
+      } else {
+        service.append("/comments/forurl");
+      }
+    }
+    return service.toString();
+  }
+
 }
