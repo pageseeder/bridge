@@ -7,6 +7,8 @@
  */
 package org.pageseeder.bridge.control;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -17,15 +19,19 @@ import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSFolder;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
+import org.pageseeder.bridge.net.PSHTTPConnection;
+import org.pageseeder.bridge.net.PSHTTPConnection.Method;
 import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
 import org.pageseeder.bridge.net.PSHTTPResourceType;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
+import org.pageseeder.bridge.net.Servlets;
 import org.pageseeder.bridge.psml.PSMLFragment;
 import org.pageseeder.bridge.xml.PSDocumentBrowseHandler;
 import org.pageseeder.bridge.xml.PSDocumentHandler;
 import org.pageseeder.bridge.xml.PSFragmentHandler;
+import org.pageseeder.bridge.xml.UploadHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.topologi.diffx.xml.XMLWriter;
@@ -34,7 +40,7 @@ import com.topologi.diffx.xml.XMLWriter;
  * A manager for documents and folders (based on PageSeeder URIs).
  *
  * @author Christophe Lauret
- * @version 0.2.3
+ * @version 0.3.0
  * @since 0.2.0
  */
 public final class DocumentManager extends Sessionful {
@@ -73,7 +79,7 @@ public final class DocumentManager extends Sessionful {
     PSDocumentHandler handler = new PSDocumentHandler(document);
     connector.setUser(this._session);
     PSHTTPResponseInfo info = connector.post(handler);
-    return info.getStatus() == Status.OK;
+    return info.getStatus() == Status.SUCCESSFUL;
   }
 
   /**
@@ -92,7 +98,7 @@ public final class DocumentManager extends Sessionful {
     PSDocumentHandler handler = new PSDocumentHandler(document);
     connector.setUser(this._session);
     PSHTTPResponseInfo info = connector.post(handler);
-    return info.getStatus() == Status.OK;
+    return info.getStatus() == Status.SUCCESSFUL;
   }
 
   /**
@@ -167,6 +173,40 @@ public final class DocumentManager extends Sessionful {
     PSDocumentBrowseHandler handler = new PSDocumentBrowseHandler();
     connector.get(handler);
     return handler.listDocuments();
+  }
+
+
+  /**
+   * Uploads a file on the server at the specified URL.
+   *
+   * @param group The group the file should be uploaded to
+   * @param url   The URL of the folder receiving the file
+   * @param file  The file to upload
+   *
+   * @return The uploaded document.
+   *
+   * @throws APIException
+   */
+  public PSDocument upload(PSGroup group, String url, File file) throws APIException {
+    PSHTTPResponseInfo response = new PSHTTPResponseInfo();
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, Servlets.UPLOAD_SERVLET).using(this._session);
+    UploadHandler handler = new UploadHandler();
+    try {
+      connector.addParameter("autoload", "true");
+      connector.addParameter("group", group.getName());
+      connector.addParameter("url", url);
+
+      // Attach part
+      PSHTTPConnection connection = connector.connect(Method.MULTIPART);
+      connection.addPart(file);
+
+      // Process
+      connection.process(response, handler);
+
+    } catch (IOException ex) {
+      throw new APIException(ex);
+    }
+    return handler.getDocument();
   }
 
   /**
