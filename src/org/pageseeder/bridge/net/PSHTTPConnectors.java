@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.InvalidEntityException;
 import org.pageseeder.bridge.PSConfig;
@@ -925,7 +924,7 @@ public final class PSHTTPConnectors {
   // Comments
   // ----------------------------------------------------------------------------------------------
 
-  public static PSHTTPConnector createComment(PSComment comment, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
+  public static PSHTTPConnector createComment(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition {
     // The author and context determine the service
     Author author = comment.getAuthor();
     Context context = comment.getContext();
@@ -939,8 +938,9 @@ public final class PSHTTPConnectors {
       Preconditions.isNotEmpty(context.group().getName(),  "group");
     if (context.uri() != null) {
       Preconditions.isIdentifiable(context.uri(), "uri");
-      Preconditions.isNotNull(group, "group");
-      Preconditions.isNotEmpty(group.getName(), "group name");
+      Preconditions.isNotNull(groups, "group");
+      if (groups.isEmpty())
+        throw new FailedPrecondition("At least one group must be specified when attaching a comment to a URI");
     }
 
     String service = Services.toCreateCommentService(author, context);
@@ -973,8 +973,15 @@ public final class PSHTTPConnectors {
     }
 
     // If context is not group
-    if (group != null && group.getName() != null)
-      connector.addParameter("groups", group.getName());
+    if (groups != null) {
+      StringBuilder p = new StringBuilder();
+      for (PSGroup group : groups) {
+        if (p.length() > 0) p.append(',');
+        Preconditions.isNotEmpty(group.getName(), "group name");
+        p.append(group.getName());
+      }
+      connector.addParameter("groups", p.toString());
+    }
 
     // Author is not a PageSeeder member
     if (author.member() == null) {
@@ -1014,6 +1021,14 @@ public final class PSHTTPConnectors {
       connector.addParameter("notify", notify.parameter());
     }
 
+    return connector;
+  }
+
+  public static PSHTTPConnector archiveComment(PSComment comment, PSMember member) throws FailedPrecondition {
+    Preconditions.isIdentifiable(member, "member");
+    Preconditions.isIdentifiable(comment, "comment");
+    String service = "/members/"+member+"/comments/"+comment+"/archive";
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     return connector;
   }
 

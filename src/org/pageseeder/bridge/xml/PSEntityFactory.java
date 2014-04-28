@@ -8,10 +8,12 @@
 package org.pageseeder.bridge.xml;
 
 import org.pageseeder.bridge.PSEntityCache;
+import org.pageseeder.bridge.control.CommentManager;
 import org.pageseeder.bridge.control.DocumentManager;
 import org.pageseeder.bridge.control.GroupManager;
 import org.pageseeder.bridge.control.MemberManager;
 import org.pageseeder.bridge.control.MembershipManager;
+import org.pageseeder.bridge.model.PSComment;
 import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSFolder;
 import org.pageseeder.bridge.model.PSGroup;
@@ -254,6 +256,37 @@ public final class PSEntityFactory {
     return d;
   }
 
+
+  /**
+   *
+   * @param atts    The attributes the "comment" element
+   * @param comment The PSComment instance (may be <code>null</code>).
+   *
+   * @return The corresponding PSComment
+   */
+  public static PSComment toComment(Attributes atts, PSComment comment) {
+    String id = atts.getValue("id");
+    String status = atts.getValue("status");
+    String priority = atts.getValue("priority");
+    // TODO Due date
+    String due = atts.getValue("due");
+    String labels = atts.getValue("labels");
+    String type = atts.getValue("type");
+
+    PSComment c = comment;
+    if (c == null) {
+      PSEntityCache<PSComment> cache = CommentManager.getCache();
+      c = cache.get(id);
+      if (c == null)
+        c = new PSComment();
+    }
+    c.setId(PSHandlers.id(id));
+    c.setLabels(labels);
+    c.setStatus(status);
+    c.setPriority(priority);
+    c.setType(type);
+    return c;
+  }
 
   /**
    *
