@@ -11,16 +11,20 @@ import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSEntityCache;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.model.MemberOptions;
+import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
+import org.pageseeder.bridge.model.PasswordResetOptions;
 import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
+import org.pageseeder.bridge.net.PSHTTPResponseInfo;
+import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
 import org.pageseeder.bridge.xml.PSMemberHandler;
 
 /**
  * A manager for groups and projects (based on PageSeeder Groups).
  *
  * @author Christophe Lauret
- * @version 0.2.4
+ * @version 0.3.0
  * @since 0.2.0
  */
 public final class MemberManager extends Sessionful {
@@ -122,11 +126,118 @@ public final class MemberManager extends Sessionful {
    *
    * <p>This is required after a member has been joined to a group.
    *
+   * @return <code>true</code> if the request was successful; <code>false</code> otherwise.
+   *
    * @throws APIException If an error occurs while connecting.
    */
-  public void resetSession() throws APIException {
+  public boolean resetSession() throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.resetSession().using(this._session);
-    connector.post();
+    PSHTTPResponseInfo info = connector.post();
+    return info.getStatus() == Status.SUCCESSFUL;
+  }
+
+  /**
+   * Force the password of a user to be reset (administrators only).
+   *
+   * @param member The username or email of the member.
+   *
+   * @return <code>true</code> if the request was successful; <code>false</code> otherwise.
+   *
+   * @throws APIException If an error occurs while connecting.
+   */
+  public boolean forceResetPassword(String member) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.forceResetPassword(member);
+    PSHTTPResponseInfo info = connector.post();
+    return info.getStatus() == Status.SUCCESSFUL;
+  }
+
+  /**
+   * Force the password of a user to be reset (administrators only)
+   *
+   * <p>This method is useful to use the email templates for the group; the member does not
+   * have to be a member of that group if using the session of a member of the group.
+   *
+   * @param group  The group to use for the email templates.
+   * @param member The username or email of the member.
+   *
+   * @return <code>true</code> if the request was successful; <code>false</code> otherwise.
+   *
+   * @throws APIException If an error occurs while connecting or the group is not identifiable
+   */
+  public boolean forceResetPassword(PSGroup group, String member) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.forceResetPassword(group, member);
+    PSHTTPResponseInfo info = connector.post();
+    return info.getStatus() == Status.SUCCESSFUL;
+  }
+
+  /**
+   * Request that the password for the user be reset.
+   *
+   * @param member The username or email of the member.
+   *
+   * @return <code>true</code> if the request was successful; <code>false</code> otherwise.
+   *
+   * @throws APIException If an error occurs while connecting.
+   */
+  public boolean resetPassword(String member) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.resetPassword(member);
+    PSHTTPResponseInfo info = connector.post();
+    return info.getStatus() == Status.SUCCESSFUL;
+  }
+
+  /**
+   * Request that the password for the user be reset.
+   *
+   * <p>This method is useful to use the email templates for the group; the member does not
+   * have to be a member of that group if using the session of a member of the group.
+   *
+   * @param group  The group to use for the email templates.
+   * @param member The username or email of the member.
+   *
+   * @return <code>true</code> if the request was successful; <code>false</code> otherwise.
+   *
+   * @throws APIException If an error occurs while connecting or the group is not identifiable
+   */
+  public boolean resetPassword(PSGroup group, String member) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.resetPassword(group, member);
+    PSHTTPResponseInfo info = connector.post();
+    return info.getStatus() == Status.SUCCESSFUL;
+  }
+
+  /**
+   * Confirm a password reset for the specified user with a key.
+   *
+   * @param member  The username or email of the member.
+   * @param options The password reset options, must include the key
+   *
+   * @return <code>true</code> if the request was successful; <code>false</code> otherwise.
+   *
+   * @throws APIException If an error occurs while connecting or the key is missing.
+   */
+  public boolean resetPassword(String member, PasswordResetOptions options) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.resetPassword(member, options);
+    PSHTTPResponseInfo info = connector.post();
+    return info.getStatus() == Status.SUCCESSFUL;
+  }
+
+  /**
+   * Confirm a password reset for the specified user with a key.
+   *
+   * <p>This method is useful to use the email templates for the group; the member does not
+   * have to be a member of that group if using the session of a member of the group.
+   *
+   * @param group  The group to use for the email templates
+   * @param member The username or email of the member.
+   * @param options The password reset options, must include the key
+   *
+   * @return <code>true</code> if the request was successful; <code>false</code> otherwise.
+   *
+   * @throws APIException If an error occurs while connecting or the group is not identifiable or key is missing
+   */
+  public boolean resetPassword(PSGroup group, String member, PasswordResetOptions options) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.resetPassword(group, member, options);
+    PSHTTPResponseInfo info = connector.post();
+    return info.getStatus() == Status.SUCCESSFUL;
   }
 
   /**

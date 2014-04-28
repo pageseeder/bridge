@@ -28,6 +28,7 @@ import org.pageseeder.bridge.model.PSPredicate;
 import org.pageseeder.bridge.model.PSProject;
 import org.pageseeder.bridge.model.PSResource;
 import org.pageseeder.bridge.model.PSRole;
+import org.pageseeder.bridge.model.PasswordResetOptions;
 import org.pageseeder.bridge.psml.PSMLFragment;
 
 /**
@@ -66,7 +67,7 @@ import org.pageseeder.bridge.psml.PSMLFragment;
  * required to support that method.
  *
  * @author Christophe Lauret
- * @version 0.2.4
+ * @version 0.3.0
  * @since 0.2.0
  */
 public final class PSHTTPConnectors {
@@ -168,6 +169,136 @@ public final class PSHTTPConnectors {
     connector.addParameter("personal-group", Boolean.toString(options.hasPersonalGroup()));
     connector.addParameter("auto-activate",  Boolean.toString(options.isAutoActivate()));
     return connector;
+  }
+
+
+  /**
+   * Returns the connector to force the password of a user to be reset (administrators only).
+   *
+   * @param member The member instance containing the new details.
+   *
+   * @return the corresponding connector
+   */
+  public static PSHTTPConnector forceResetPassword(String member) {
+    String service = "/members/forceresetpassword";
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    addMemberParameter(connector, member);
+    return connector;
+  }
+
+  /**
+   * Returns the connector to force the password of a user to be reset (administrators only).
+   *
+   * @param group  The group to use for the email templates.
+   * @param member The member instance containing the new details.
+   *
+   * @return the corresponding connector
+   *
+   * @throws FailedPrecondition If the group is note identifiable.
+   */
+  public static PSHTTPConnector forceResetPassword(PSGroup group, String member) throws FailedPrecondition {
+    Preconditions.isIdentifiable(group, "group");
+    String service = "/groups/"+group.getKey()+"/members/forceresetpassword";
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    addMemberParameter(connector, member);
+    return connector;
+  }
+
+  /**
+   * Returns the connector to reset the password of a user.
+   *
+   * @param member The member instance containing the new details.
+   *
+   * @return the corresponding connector
+   */
+  public static PSHTTPConnector resetPassword(String member) {
+    String service = "/members/resetpassword";
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    addMemberParameter(connector, member);
+    return connector;
+  }
+
+  /**
+   * Returns the connector to reset the password of a user.
+   *
+   * @param group  The group to use for the email templates.
+   * @param member The member instance containing the new details.
+   *
+   * @return the corresponding connector
+   *
+   * @throws FailedPrecondition If the group is note identifiable.
+   */
+  public static PSHTTPConnector resetPassword(PSGroup group, String member) throws FailedPrecondition {
+    Preconditions.isIdentifiable(group, "group");
+    String service = "/groups/"+group.getKey()+"/members/resetpassword";
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    addMemberParameter(connector, member);
+    return connector;
+  }
+
+
+  /**
+   * Returns the connector to confirm a password reset for the specified user with a key.
+   *
+   * @param member  The username or email of the member.
+   * @param options The password reset options, must include the key
+   *
+   * @return <code>true</code> if the request was successful; <code>false</code> otherwise.
+   *
+   * @throws FailedPrecondition If the key is not specified.
+   */
+  public static PSHTTPConnector resetPassword(String member, PasswordResetOptions options) throws FailedPrecondition {
+    PSHTTPConnector connector = PSHTTPConnectors.resetPassword(member);
+    addPasswordResetParameters(connector, options);
+    return connector;
+  }
+
+  /**
+   * Returns the connector to confirm a password reset for the specified user with a key.
+   *
+   * @param group   The group to use for the email templates
+   * @param member  The username or email of the member.
+   * @param options The password reset options, must include the key
+   *
+   * @return <code>true</code> if the request was successful; <code>false</code> otherwise.
+   *
+   * @throws FailedPrecondition If the group is not identifiable or the key is not specified.
+   */
+  public static PSHTTPConnector resetPassword(PSGroup group, String member, PasswordResetOptions options) throws FailedPrecondition {
+    PSHTTPConnector connector = PSHTTPConnectors.resetPassword(group, member);
+    addPasswordResetParameters(connector, options);
+    return connector;
+  }
+
+  /**
+   * Add the appropriate parameter to identify the member depending on whether it is the username or email.
+   *
+   * @param connector the connector to add the parameter to
+   * @param member username or email
+   */
+  private static void addMemberParameter(PSHTTPConnector connector, String member) {
+    if (member.indexOf('@') > 0)
+      connector.addParameter("email", member);
+    else
+      connector.addParameter("member-username", member);
+  }
+
+  /**
+   * Add the appropriate parameter to identify the member depending on whether it is the username or email.
+   *
+   * @param connector the connector to add the parameter to
+   * @param options password reset options.
+   *
+   * @throws FailedPrecondition if the key is not specified.
+   */
+  private static void addPasswordResetParameters(PSHTTPConnector connector, PasswordResetOptions options)
+      throws FailedPrecondition {
+    Preconditions.isNotEmpty(options.getKey(), "key");
+    connector.addParameter("key", options.getKey());
+    if (options.getSignificantDate() != null)
+      connector.addParameter("significant-date", options.getSignificantDateAsString());
+    if (options.getPassword() != null)
+      connector.addParameter("member-password", options.getPassword());
   }
 
   // Group

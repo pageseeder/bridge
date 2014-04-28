@@ -10,7 +10,7 @@ package org.pageseeder.bridge.net;
  * deprecated for the most part.
  *
  * @author Christophe Lauret
- * @version 0.2.4
+ * @version 0.3.0
  * @since 0.2.4
  */
 public final class Servlets {
@@ -18,11 +18,16 @@ public final class Servlets {
   /**
    * The document browser Servlet <code>com.pageseeder.review.DocumentBrowser</code>.
    */
-  public final static String DOCUMENT_BROWSER = "com.pageseeder.review.DocumentBrowser";
+  public static final String DOCUMENT_BROWSER = "com.pageseeder.review.DocumentBrowser";
 
   /**
    * The generic search Servlet <code>com.pageseeder.search.GenericSearch</code>.
    */
-  public final static String GENERIC_SEARCH = "com.pageseeder.search.GenericSearch";
+  public static final String GENERIC_SEARCH = "com.pageseeder.search.GenericSearch";
+
+  /**
+   * The upload search Servlet <code>com.pageseeder.upload.servlets.UploadServlet</code>.
+   */
+  public static final String UPLOAD_SERVLET = "com.pageseeder.upload.servlets.UploadServlet";
 
 }

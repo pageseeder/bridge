@@ -15,7 +15,7 @@ import java.net.HttpURLConnection;
  * <p>When possible, instances contain details such as the error ID and message when errors occur.
  *
  * @author Christophe Lauret
- * @version 0.2.0
+ * @version 0.3.0
  * @since 0.2.0
  */
 public final class PSHTTPResponseInfo {
@@ -45,7 +45,7 @@ public final class PSHTTPResponseInfo {
     /**
      * The request has succeeded and the HTTP response code was 2xx.
      */
-    OK,
+    SUCCESSFUL,
 
     /**
      * The response indicated that further action may be needed; the HTTP response code was 3xx.
@@ -152,7 +152,7 @@ public final class PSHTTPResponseInfo {
     } else if (code >= HttpURLConnection.HTTP_MULT_CHOICE) {
       this.status = Status.REDIRECT;
     } else if (code >= HttpURLConnection.HTTP_OK) {
-      this.status = Status.OK;
+      this.status = Status.SUCCESSFUL;
     } else {
       this.status = Status.UNKNOWN;
     }
