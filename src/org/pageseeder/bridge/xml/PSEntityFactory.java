@@ -272,6 +272,7 @@ public final class PSEntityFactory {
     String due = atts.getValue("due");
     String labels = atts.getValue("labels");
     String type = atts.getValue("type");
+    String properties = atts.getValue("properties");
 
     PSComment c = comment;
     if (c == null) {
@@ -285,6 +286,7 @@ public final class PSEntityFactory {
     c.setStatus(status);
     c.setPriority(priority);
     c.setType(type);
+    c.setProperties(properties);
     return c;
   }
 

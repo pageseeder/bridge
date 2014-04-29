@@ -7,6 +7,7 @@
  */
 package org.pageseeder.bridge.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public final class PSComment implements PSEntity {
   private List<String> labels = new ArrayList<String>();
 
   /** A pipe-separated list of properties as value pairs (e.g. x=1|y=2|) */
-  private Map<String, String> properties = new HashMap<String, String>();
+  private Map<String, String> properties;
 
   /** The author of the comment. */
   private Author author;
@@ -107,91 +108,42 @@ public final class PSComment implements PSEntity {
   }
 
   /**
-   * @return the labels
+   * @param id the id to set
    */
-  public boolean hasLabels() {
-    return this.labels.size() > 0;
+  public void setId(Long id) {
+    this.id = id;
   }
 
   /**
-   * @return the labels
+   * @param title the title to set
    */
-  public List<String> getLabels() {
-    return this.labels;
+  public void setTitle(String title) {
+    this.title = title;
   }
 
   /**
-   * @return The labels as a comma-separated list.
+   * @param content the content to set
    */
-  public String getLabelsAsString() {
-    StringBuilder s = new StringBuilder();
-    for (String label : this.labels) {
-      if (s.length() > 0) s.append(',');
-      s.append(label);
-    }
-    return s.toString();
+  public void setContent(String content) {
+    this.content = content;
   }
 
   /**
-   * @return the labels
+   * @param mediatype the mediatype to set
    */
-  public boolean hasProperties() {
-    return this.properties.size() > 0;
+  public void setMediaType(String mediatype) {
+    this.mediatype = mediatype;
   }
 
   /**
-   * @return the properties
+   * @param type the type to set
    */
-  public Map<String, String> getProperties() {
-    return this.properties;
+  public void setType(String type) {
+    this.type = type;
   }
 
-  /**
-   * @return The labels as a comma-separated list.
-   */
-  public String getPropertiesAsString() {
-    StringBuilder s = new StringBuilder();
-    for (Entry<String, String> p : this.properties.entrySet()) {
-      if (s.length() > 0) s.append('|');
-      s.append(p.getKey()).append('=').append(p.getValue());
-    }
-    return s.toString();
-  }
-
-  /**
-   * @return the author
-   */
-  public Author getAuthor() {
-    return this.author;
-  }
-
-  /**
-   * @return the status
-   */
-  public String getStatus() {
-    return this.status;
-  }
-
-  /**
-   * @return the priority
-   */
-  public String getPriority() {
-    return this.priority;
-  }
-
-  /**
-   * @return the assignedto
-   */
-  public PSMember getAssignedTo() {
-    return this.assignedto;
-  }
-
-  /**
-   * @return the due
-   */
-  public Date getDue() {
-    return this.due;
-  }
+  // Attachments
+  // ----------------------------------------------------------------------------------------------
 
   /**
    * @return the list of attachments
@@ -236,46 +188,33 @@ public final class PSComment implements PSEntity {
     this.attachments = attachments;
   }
 
+  // Labels
+  // ----------------------------------------------------------------------------------------------
+
   /**
-   * @return the context
+   * @return the labels
    */
-  public Context getContext() {
-    return this.context;
+  public boolean hasLabels() {
+    return this.labels.size() > 0;
   }
 
   /**
-   * @param id the id to set
+   * @return the labels
    */
-  public void setId(Long id) {
-    this.id = id;
+  public List<String> getLabels() {
+    return this.labels;
   }
 
   /**
-   * @param title the title to set
+   * @return The labels as a comma-separated list.
    */
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  /**
-   * @param content the content to set
-   */
-  public void setContent(String content) {
-    this.content = content;
-  }
-
-  /**
-   * @param mediatype the mediatype to set
-   */
-  public void setMediaType(String mediatype) {
-    this.mediatype = mediatype;
-  }
-
-  /**
-   * @param type the type to set
-   */
-  public void setType(String type) {
-    this.type = type;
+  public String getLabelsAsString() {
+    StringBuilder s = new StringBuilder();
+    for (String label : this.labels) {
+      if (s.length() > 0) s.append(',');
+      s.append(label);
+    }
+    return s.toString();
   }
 
   /**
@@ -288,12 +227,44 @@ public final class PSComment implements PSEntity {
   /**
    * @param labels The labels as a comma-separated list.
    */
-  public final void setLabels(String labels) {
+  public void setLabels(String labels) {
     if (labels == null) return;
     this.labels.clear();
     for (String label : labels.split(",")) {
       this.labels.add(label);
     }
+  }
+
+  // Properties
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * @return the labels
+   */
+  public boolean hasProperties() {
+    return this.properties != null && this.properties.size() > 0;
+  }
+
+  /**
+   * @return the properties
+   */
+  public Map<String, String> getProperties() {
+    if (this.properties == null) this.properties = new HashMap<String, String>();
+    return this.properties;
+  }
+
+  /**
+   * @return The labels as a comma-separated list.
+   */
+  public String getPropertiesAsString() {
+    if (this.properties == null) return "";
+    StringBuilder s = new StringBuilder();
+    for (Entry<String, String> p : this.properties.entrySet()) {
+      if (s.length() > 0) s.append('|');
+      // TODO handle escaped pipes
+      s.append(p.getKey()).append('=').append(p.getValue());
+    }
+    return s.toString();
   }
 
   /**
@@ -304,6 +275,37 @@ public final class PSComment implements PSEntity {
   }
 
   /**
+   * @param properties the properties to set
+   */
+  public void setProperties(String properties) {
+    Map<String, String> p = new HashMap<String, String>();
+    for (String property : properties.split("|")) {
+      int eq = property.indexOf('=');
+      // There must be a name and a value
+      if (eq > 0 && eq < property.length() - 1) {
+        String name = property.substring(0, eq);
+        String value = property.substring(eq + 1);
+        if ("label".equals(name)) {
+          p.put(name, value);
+        }
+      }
+    }
+    this.properties = p;
+  }
+
+  // Author
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * @return the author
+   */
+  public Author getAuthor() {
+    return this.author;
+  }
+
+  /**
+   * Sets the author directly.
+   *
    * @param author the author to set
    */
   public void setAuthor(Author author) {
@@ -311,6 +313,10 @@ public final class PSComment implements PSEntity {
   }
 
   /**
+   * Sets the author as a PageSeeder member.
+   *
+   * <p>Implementation note: This method creates a new <code>Author</code> instance.
+   *
    * @param member the member to set as the author
    */
   public void setAuthor(PSMember member) {
@@ -318,11 +324,90 @@ public final class PSComment implements PSEntity {
   }
 
   /**
+   * Sets the author as an external user.
+   *
+   * <p>Implementation note: This method creates a new <code>Author</code> instance.
+   *
    * @param name  the name of the author
    * @param email the email of the author
    */
   public void setAuthor(String name, String email) {
     this.author = new Author(name, email);
+  }
+
+  // Context
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * @return the context
+   */
+  public Context getContext() {
+    return this.context;
+  }
+
+  /**
+   * Set the context as a group.
+   *
+   * <p>Implementation note: This method creates a new context instance.
+   *
+   * @param group The group to use as context.
+   */
+  public void setContext(PSGroup group) {
+    this.context = new Context(group);
+  }
+
+  /**
+   * Set the context as a document.
+   *
+   * <p>Implementation note: This method creates a new context instance.
+   *
+   * @param document The document to use as context
+   */
+  public void setContext(PSDocument document) {
+    this.context = new Context(document);
+  }
+
+  /**
+   * Set the context as a document fragment.
+   *
+   * <p>Implementation note: This method creates a new context instance.
+   *
+   * @param document The document
+   * @param fragment The document fragment to use as context
+   */
+  public void setContext(PSDocument document, String fragment) {
+    this.context = new Context(document, fragment);
+  }
+
+  // Task attributes
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * @return the status
+   */
+  public String getStatus() {
+    return this.status;
+  }
+
+  /**
+   * @return the priority
+   */
+  public String getPriority() {
+    return this.priority;
+  }
+
+  /**
+   * @return the assignedto
+   */
+  public PSMember getAssignedTo() {
+    return this.assignedto;
+  }
+
+  /**
+   * @return the due
+   */
+  public Date getDue() {
+    return this.due;
   }
 
   /**
@@ -352,20 +437,6 @@ public final class PSComment implements PSEntity {
   public void setDue(Date due) {
     this.due = due;
   }
-
-
-  public void setContext(PSGroup group) {
-    this.context = new Context(group);
-  }
-
-  public void setContext(PSDocument document) {
-    this.context = new Context(document);
-  }
-
-  public void setContext(PSDocument document, String fragment) {
-    this.context = new Context(document, fragment);
-  }
-
 
   @Override
   public String getKey() {
@@ -402,9 +473,12 @@ public final class PSComment implements PSEntity {
   // ----------------------------------------------------------------------------------------------
 
   /**
-   * The author of a comment
+   * The author of a comment.
    */
-  public static class Author {
+  public static final class Author implements Serializable {
+
+    /** As per recommendation */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The name of the author (required) yes string
@@ -422,7 +496,10 @@ public final class PSComment implements PSEntity {
     private final String _email;
 
     /**
+     * Set the author name and email for when the author is not a PageSeeder member.
      *
+     * @param name  The name of the author (required)
+     * @param email The email of the author
      */
     public Author(String name, String email) {
       this._name = name;
@@ -431,7 +508,11 @@ public final class PSComment implements PSEntity {
     }
 
     /**
+     * Set the author as a PageSeeder member.
      *
+     * <p>The member must be identifiable and exist in PageSeeder.
+     *
+     * @param member the member.
      */
     public Author(PSMember member) {
       this._member = member;
@@ -440,21 +521,25 @@ public final class PSComment implements PSEntity {
     }
 
     /**
-     * @return the member
+     * @return the member or <code>null</code> if the author is not specified or an external user.
      */
     public PSMember member() {
       return this._member;
     }
 
     /**
-     * @return the name
+     * Returns the name for when the author is an external user.
+     *
+     * @return the email of the external user
      */
     public String name() {
       return this._name;
     }
 
     /**
-     * @return the email
+     * Returns the email for when the author is an external user.
+     *
+     * @return the email of the external user
      */
     public String email() {
       return this._email;
@@ -465,7 +550,10 @@ public final class PSComment implements PSEntity {
   /**
    * An attachment to the comment.
    */
-  public static class Attachment {
+  public static final class Attachment implements Serializable {
+
+    /** As per recommendation */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The URI of the attachment.
@@ -478,14 +566,15 @@ public final class PSComment implements PSEntity {
     private String _fragment;
 
     /**
-     *
+     * @param uri The URI to attach
      */
     public Attachment(PSURI uri) {
       this._uri = uri;
     }
 
     /**
-     *
+     * @param uri      The URI to attach
+     * @param fragment The fragment ID to attach it to.
      */
     public Attachment(PSURI uri, String fragment) {
       this._uri = uri;
@@ -493,14 +582,14 @@ public final class PSComment implements PSEntity {
     }
 
     /**
-     * @return the _uri
+     * @return the attached URI
      */
     public PSURI uri() {
       return this._uri;
     }
 
     /**
-     * @return the fragment
+     * @return the fragment of the URI where the comment is attached
      */
     public String fragment() {
       return this._fragment;
@@ -509,9 +598,12 @@ public final class PSComment implements PSEntity {
   }
 
   /**
-   * The context of the comment.
+   * The context of the comment which may be either a group or a URI.
    */
-  public static class Context {
+  public static final class Context implements Serializable {
+
+    /** As per recommendation */
+    private static final long serialVersionUID = 1L;
 
     /** The group the comment is attached to. */
     private final PSGroup _group;
@@ -523,7 +615,9 @@ public final class PSComment implements PSEntity {
     private final String _fragment;
 
     /**
+     * Create a group context.
      *
+     * @param group The group to use as the context.
      */
     public Context(PSGroup group) {
       this._group = group;
@@ -532,7 +626,9 @@ public final class PSComment implements PSEntity {
     }
 
     /**
+     * Create a URI context.
      *
+     * @param uri The uri to use as the context.
      */
     public Context(PSURI uri) {
       this._group = null;
@@ -541,7 +637,10 @@ public final class PSComment implements PSEntity {
     }
 
     /**
+     * Create a URI context at a particular fragment.
      *
+     * @param uri      The uri to use as the context.
+     * @param fragment The fragment of the URI to use as context
      */
     public Context(PSURI uri, String fragment) {
       this._group = null;

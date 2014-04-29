@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pageseeder.bridge.model.PSComment;
+import org.pageseeder.bridge.model.PSDocument;
+import org.pageseeder.bridge.model.PSGroup;
+import org.pageseeder.bridge.model.PSMember;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -36,7 +39,17 @@ public final class PSCommentHandler extends DefaultHandler {
   /**
    * To capture text data.
    */
-  private StringBuilder buffer = new StringBuilder();
+  private StringBuilder buffer = null;
+
+  /**
+   * Indicates whether the handler is within an 'attachment' element.
+   */
+  private boolean attachment;
+
+  /**
+   * The fragment ID for context and attachments
+   */
+  private String fragment = null;
 
   /**
    * Create a new handler for comments.
@@ -58,16 +71,45 @@ public final class PSCommentHandler extends DefaultHandler {
     if ("comment".equals(localName)) {
       PSComment comment = PSEntityFactory.toComment(atts, this.comment);
       this.comment = comment;
+
     } else if ("title".equals(localName)) {
-      // TODO
+      this.buffer = new StringBuilder();
+
     } else if ("author".equals(localName)) {
-      // TODO
+      // If an 'id' is specified, it is a PageSeeder member
+      if (atts.getValue("id") != null) {
+        PSMember member = PSEntityFactory.toMember(atts, null);
+        this.comment.setAuthor(member);
+      } else {
+        String name = atts.getValue("name");
+        String email = atts.getValue("email");
+        this.comment.setAuthor(name, email);
+      }
+
     } else if ("assignedto".equals(localName)) {
-      // TODO
+      PSMember member = PSEntityFactory.toMember(atts, null);
+      this.comment.setAssignedto(member);
+
     } else if ("content".equals(localName)) {
-      // TODO
+      String type = atts.getValue("type");
+      this.comment.setMediaType(type);
+      this.buffer = new StringBuilder();
+
     } else if ("attachment".equals(localName)) {
-      // TODO
+      this.attachment = true;
+      this.fragment = atts.getValue("fragment");
+
+    } else if ("group".equals(localName)) {
+      PSGroup group = PSEntityFactory.toGroup(atts, null);
+      this.comment.setContext(group);
+
+    } else if ("uri".equals(localName)) {
+      PSDocument document = PSEntityFactory.toDocument(atts, null);
+      if (this.attachment) {
+        this.comment.addAttachment(document, this.fragment);
+      } else {
+        this.comment.setContext(document);
+      }
     }
   }
 
@@ -75,6 +117,25 @@ public final class PSCommentHandler extends DefaultHandler {
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if ("comment".equals(localName)) {
       if (this.comment != null) this.comments.add(this.comment);
+
+    } else if ("title".equals(localName)) {
+      this.comment.setTitle(this.buffer.toString());
+      this.buffer = null;
+
+    } else if ("content".equals(localName)) {
+      this.comment.setContent(this.buffer.toString());
+      this.buffer = null;
+
+    } else if ("attachment".equals(localName)) {
+      this.attachment = false;
+      this.fragment = null;
+    }
+  }
+
+  @Override
+  public void characters(char[] ch, int start, int length) throws SAXException {
+    if (this.buffer != null) {
+      this.buffer.append(ch, start, length);
     }
   }
 
