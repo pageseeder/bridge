@@ -13,6 +13,8 @@ import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.InvalidEntityException;
 import org.pageseeder.bridge.PSEntityCache;
 import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.model.MemberOptions;
+import org.pageseeder.bridge.model.MemberOptions.Invitation;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSMembership;
@@ -55,6 +57,7 @@ public final class MembershipManager extends Sessionful {
     connector.post(handler);
   }
 
+
   /**
    * Creates the specified membership in PageSeeder.
    *
@@ -68,13 +71,62 @@ public final class MembershipManager extends Sessionful {
   }
 
   /**
-   * Create a membership by inviting the member to the group.
+   * Add a member to a group directly (Admin only).
+   *
+   * @param membership The membership to create.
+   * @param email      <code>true</code> to send a welcome email; <code>false</code> to silently add the member.
+   */
+  public void add(PSMembership membership, boolean email) throws APIException {
+    if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
+    MemberOptions options = new MemberOptions();
+    options.setInvitation(Invitation.NO);
+    options.setWelcomeEmail(false);
+    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._session);
+    PSMembershipHandler handler = new PSMembershipHandler(membership);
+    connector.post(handler);
+  }
+
+  /**
+   * Invite a member to the group.
+   *
+   * <p>This method will use the default options by sending a welcome email and an invitation based on the group properties.
    *
    * @param membership The membership to create.
    */
   public void invite(PSMembership membership) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, true).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, new MemberOptions()).using(this._session);
+    PSMembershipHandler handler = new PSMembershipHandler(membership);
+    connector.post(handler);
+  }
+
+  /**
+   * Invite a member to the group.
+   *
+   * @param membership The membership to create.
+   * @param email      <code>true</code> to send a welcome email;
+   *                   <code>false</code> to silently add the member.
+   */
+  public void invite(PSMembership membership, boolean email) throws APIException {
+    if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
+    MemberOptions options = new MemberOptions();
+    options.setWelcomeEmail(email);
+    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._session);
+    PSMembershipHandler handler = new PSMembershipHandler(membership);
+    connector.post(handler);
+  }
+
+  /**
+   * Create a membership by inviting the member to the group.
+   *
+   * <p>Only the <code>invitation</code> and <code>sendWelcomeEmail</code> are considered.
+   *
+   * @param membership The membership to create.
+   * @param options    The member options.
+   */
+  public void invite(PSMembership membership, MemberOptions options) throws APIException {
+    if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
+    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     connector.post(handler);
   }

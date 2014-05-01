@@ -57,7 +57,7 @@ import com.topologi.diffx.xml.XMLWriter;
  *
  * @author Christophe Lauret
  *
- * @version 0.2.0
+ * @version 0.3.0
  * @since 0.2.0
  */
 public final class PSHTTPConnection {
@@ -633,7 +633,7 @@ public final class PSHTTPConnection {
     connection.setRequestMethod(type == Method.MULTIPART ? "POST" : type.name());
     connection.setDefaultUseCaches(false);
     connection.setRequestProperty("X-Requester", "PS-Bridge-"+API_VERSION);
-    String boundary = null;
+    PSHTTPConnection instance = null;
 
     // POST using "application/x-www-form-urlencoded"
     if (type == Method.POST) {
@@ -642,21 +642,24 @@ public final class PSHTTPConnection {
       connection.setRequestProperty("Content-Length", Integer.toString(parameters.length()));
       connection.setDoInput(true);
       writePOSTData(connection, parameters);
+      instance = new PSHTTPConnection(connection, resource, type, user, null);
 
     // POST using "multipart/form-data"
     } else if (type == Method.MULTIPART) {
-      boundary = "--------------------" + Long.toString(Math.abs(random.nextLong()), 36);
+      String boundary = "--------------------" + Long.toString(Math.abs(random.nextLong()), 36);
       connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
       connection.setDoInput(true);
-    }
-    PSHTTPConnection instance = new PSHTTPConnection(connection, resource, type, user, "--"+boundary);
-
-    // Add the parameters for a multipart request
-    Map<String, String> parameters = resource.parameters();
-    if (type == Method.MULTIPART && !parameters.isEmpty()) {
-      for (Entry<String, String> p : parameters.entrySet()) {
-        instance.addParameterPart(p.getKey(), p.getValue());
+      instance = new PSHTTPConnection(connection, resource, type, user, "--"+boundary);
+      Map<String, String> parameters = resource.parameters();
+      if (!parameters.isEmpty()) {
+        for (Entry<String, String> p : parameters.entrySet()) {
+          instance.addParameterPart(p.getKey(), p.getValue());
+        }
       }
+
+    // GET, PUT and DELETE
+    } else {
+      instance = new PSHTTPConnection(connection, resource, type, user, null);
     }
 
     return instance;

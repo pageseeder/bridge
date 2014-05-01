@@ -18,6 +18,7 @@ import org.pageseeder.bridge.Requires;
 import org.pageseeder.bridge.model.GroupOptions;
 import org.pageseeder.bridge.model.MailOptions;
 import org.pageseeder.bridge.model.MemberOptions;
+import org.pageseeder.bridge.model.MemberOptions.Invitation;
 import org.pageseeder.bridge.model.PSComment;
 import org.pageseeder.bridge.model.PSComment.Attachment;
 import org.pageseeder.bridge.model.PSComment.Author;
@@ -670,13 +671,13 @@ public final class PSHTTPConnectors {
    * Returns the connector to create a member.
    *
    * @param membership The user to create.
-   * @param delegated  Whether the account is created by the user himself or an admin.
+   * @param options    The invitation options.
    *
    * @return The corresponding connector
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector inviteMembership(PSMembership membership, boolean delegated) throws FailedPrecondition {
+  public static PSHTTPConnector inviteMembership(PSMembership membership, MemberOptions options) throws FailedPrecondition {
     PSGroup group = membership.getGroup();
     PSMember member = membership.getMember();
     Preconditions.isNotNull(membership.getGroup(), "group");
@@ -693,14 +694,15 @@ public final class PSHTTPConnectors {
     if (membership.getRole() != null)
       connector.addParameter("role", membership.getRole().parameter());
 
-    connector.addParameter("auto-activate", delegated ? "true" : "false");
-    connector.addParameter("welcome-email", delegated ? "false": "true");
-    connector.addParameter("invitation", "false");
+    connector.addParameter("welcome-email", Boolean.toString(options.hasWelcomeEmail()));
+    if (options.getInvitation() != Invitation.DEFAULT) {
+      connector.addParameter("invitation", options.getInvitation() == Invitation.YES? "true" : "false");
+    }
 
     // Membership details
     PSDetails details = membership.getDetails();
     if (details != null) {
-      for (int i=1; i <= PSDetails.MAX_SIZE; i++) {
+      for (int i = 1; i <= PSDetails.MAX_SIZE; i++) {
         // Fields are 1-based
         String field = details.getField(i);
         if (field != null)
