@@ -7,7 +7,6 @@
  */
 package org.pageseeder.bridge;
 
-import java.util.List;
 
 /**
  * Interface for all entity caches.
@@ -62,7 +61,7 @@ public interface PSEntityCache<E extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  E get(String attribute, String value);
+//  E get(String attribute, String value);
 
   /**
    * Retrieve the object in the cache for the specified key.
@@ -72,7 +71,7 @@ public interface PSEntityCache<E extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  List<E> list(String attribute, String value);
+//  List<E> list(String attribute, String value);
 
   /**
    * Return the version of the element for the specified key.

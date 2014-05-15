@@ -123,7 +123,6 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  @Override
   @SuppressWarnings("unchecked")
   public E get(String attribute, String value) {
     if (value == null)
@@ -149,7 +148,6 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    *
    * @return The list of matching element or <code>null</code> if the key or element is <code>null</code>
    */
-  @Override
   @SuppressWarnings("unchecked")
   public List<E> list(String attribute, String value) {
     if (value == null)

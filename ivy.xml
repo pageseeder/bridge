@@ -17,6 +17,7 @@
     <!-- core -->
     <dependency org="weborganic" name="wo-diffx"             rev="latest.milestone"   conf="core"/>
     <dependency org="slf4j"      name="slf4j-api"            rev="latest.milestone"   conf="core"/>
+    <dependency org="javax"      name="jcache-api"           rev="1.0.0"   conf="core"/>
 
     <!-- TODO: Removed eventually -->
     <dependency org="ehcache"    name="ehcache-core"    rev="2.5+"   conf="core"/>
