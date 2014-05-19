@@ -23,10 +23,19 @@ import org.xml.sax.SAXException;
  */
 public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
 
+  /**
+   * The current member.
+   */
   private PSMember member = null;
 
+  /**
+   * The current group.
+   */
   private PSGroup group = null;
 
+  /**
+   * Text buffer.
+   */
   private StringBuilder buffer = new StringBuilder();
 
   /**
@@ -34,19 +43,39 @@ public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
    */
   private int field = -1;
 
+  /**
+   * Create a new handler without a pre-existing member or group.
+   *
+   * This constructor should be used when only the member or group id is known.
+   */
   public PSMembershipHandler() {
   }
 
+  /**
+   * Create a new handler from an existing membership.
+   *
+   * @param membership the membership to reuse.
+   */
   public PSMembershipHandler(PSMembership membership) {
     super(membership);
     this.member = membership.getMember();
     this.group = membership.getGroup();
   }
 
+  /**
+   * Create a new handler from an existing group when listing the list of groups.
+   *
+   * @param member the membership to reuse.
+   */
   public PSMembershipHandler(PSMember member) {
     this.member = member;
   }
 
+  /**
+   * Create a new handler from an existing group when listing the list of members.
+   *
+   * @param group the group to reuse.
+   */
   public PSMembershipHandler(PSGroup group) {
     this.group = group;
   }
@@ -58,11 +87,17 @@ public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
 
     } else if ("member".equals(localName)) {
       PSMember member = PSEntityFactory.toMember(atts, this.member);
-      this.current.setMember(member);
+      if (this.current != null)
+        this.current.setMember(member);
+      else
+        this.member = member;
 
     } else if ("group".equals(localName)) {
       PSGroup group = PSEntityFactory.toGroup(atts, this.group);
-      this.current.setGroup(group);
+      if (this.current != null)
+        this.current.setGroup(group);
+      else
+        this.group = group;
 
     } else if ("details".equals(localName)) {
       PSDetails details = new PSDetails();
