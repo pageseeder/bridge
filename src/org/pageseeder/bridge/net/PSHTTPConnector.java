@@ -8,6 +8,7 @@
 package org.pageseeder.bridge.net;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Map;
 
 import javax.xml.transform.Templates;
@@ -152,6 +153,20 @@ public final class PSHTTPConnector {
    */
   public PSHTTPResponseInfo get() throws APIException {
     return handle(Method.POST, (DefaultHandler)null);
+  }
+
+
+  /**
+   * Connect to PageSeeder and fetch the content using the GET method to be parsed by a handler.
+   *
+   * @param out where the output should be copied.
+   *
+   * @throws APIException Wrap any error while communicating with PageSeeder or parsing the output
+   *
+   * @return The PageSeeder HTTP response metadata
+   */
+  public PSHTTPResponseInfo get(OutputStream out) throws APIException {
+    return handle(Method.GET, out);
   }
 
   /**
@@ -353,6 +368,30 @@ public final class PSHTTPConnector {
 
   // Private helpers
   // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Connect to PageSeeder and handle the XML response using the specified handler.
+   *
+   * @param method The HTTP Method to use
+   * @param out    Where the output should be copied to
+   *
+   * @throws APIException Will wrap any I/O error thrown by the underlying connection.
+   *
+   * @return The PageSeeder HTTP response metadata
+   */
+  private PSHTTPResponseInfo handle(Method method, OutputStream out) throws APIException {
+    PSHTTPResource resource = this._resource.build();
+    PSHTTPResponseInfo response = new PSHTTPResponseInfo();
+    try {
+      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.session);
+      connection.process(response, out);
+    } catch (IOException ex) {
+      throw new APIException(ex);
+    } finally {
+      LOGGER.info("{} [{}] -> {}", resource, method, response);
+    }
+    return response;
+  }
 
   /**
    * Connect to PageSeeder and handle the XML response using the specified handler.

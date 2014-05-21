@@ -7,6 +7,7 @@
  */
 package org.pageseeder.bridge.net;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -389,6 +390,43 @@ public final class PSHTTPConnection {
 
   // Process methods
   // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Process the specified PageSeeder connection.
+   *
+   * @param response the response info
+   * @param out      where the output should be copied.
+   *
+   * @throws IOException If an error occurs when trying to write the XML.
+   */
+  public void process(PSHTTPResponseInfo response, OutputStream out) throws IOException {
+    if (this._method == Method.MULTIPART)
+      endMultipart();
+    try {
+      // Retrieve the content of the response
+      int status = this._connection.getResponseCode();
+      response.setCodeAndStatus(status);
+
+      if (isOK(status) || (this._resource.includeErrorContent() && isError(status))) {
+        String mediaType = getMediaType(this._connection);
+        response.setMediaType(mediaType);
+        copy(this._connection, out);
+        // Ensure the session is updated for that user
+        updateUser(this._connection, this._session);
+
+      } else {
+        LOGGER.info("PageSeeder returned {}: {}", status, this._connection.getResponseMessage());
+        parseError(this._connection, response);
+      }
+
+    // Could not connect to the server
+    } catch (ConnectException ex) {
+      String message = ex.getMessage();
+      LOGGER.warn("Unable to connect to PageSeeder: {}", message);
+      response.setStatus(Status.CONNECTION_ERROR, message != null ? message : "Unable to connect");
+      throw ex;
+    }
+  }
 
   /**
    * Process the specified PageSeeder connection.
@@ -806,38 +844,32 @@ public final class PSHTTPConnection {
    * Parse the response as text.
    *
    * @param connection The HTTP URL connection.
-   * @param xml        Where the final XML goes.
+   * @param out        Where the raw output should be copied to.
    *
    * @return <code>true</code> if the data was parsed without error;
    *         <code>false</code> otherwise.
    *
    * @throws IOException If an error occurs while writing the XML.
    */
-//  private static boolean parseText(HttpURLConnection connection, XMLWriter xml) throws IOException {
-//    // Get the source as input stream
-//    InputStream in = null;
-//    StringWriter buffer = new StringWriter();
-//    boolean ok = true;
-//
-//    try {
-//      in = isOK(connection.getResponseCode())? connection.getInputStream() : connection.getErrorStream();
-//      String encoding = connection.getContentEncoding();
-//      IOUtils.copy(in, buffer, encoding);
-//    } catch (IOException ex) {
-//      LOGGER.warn("Error while parsing text data from URL", ex);
-//      error(xml, "io-error", ex.getLocalizedMessage());
-//      ok = false;
-//    } finally {
-//      closeQuietly(in);
-//    }
-//
-//    // Write as CDATA section
-//    xml.writeXML("<![CDATA[");
-//    xml.writeXML(buffer.toString());
-//    xml.writeXML("]]>");
-//
-//    return ok;
-//  }
+  private static boolean copy(HttpURLConnection connection, OutputStream out) throws IOException {
+    // Get the source as input stream
+    BufferedInputStream in = null;
+    boolean ok = true;
+
+    try {
+      InputStream raw = isOK(connection.getResponseCode())? connection.getInputStream() : connection.getErrorStream();
+      in = new BufferedInputStream(raw);
+      copy(in, out);
+
+    } catch (IOException ex) {
+      LOGGER.warn("Error while parsing text data from URL", ex);
+      ok = false;
+    } finally {
+      closeQuietly(in);
+    }
+
+    return ok;
+  }
 
   /**
    * Indicates whether the response was successful based on the HTTP code.
