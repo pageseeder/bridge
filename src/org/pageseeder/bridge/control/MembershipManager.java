@@ -256,7 +256,7 @@ public final class MembershipManager extends Sessionful {
    */
   public List<PSMembership> listForMember(PSMember member) throws APIException {
     if (!member.isValid()) throw new InvalidEntityException(PSMember.class, member.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(member.getUsername()).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(member.getIdentifier()).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(member);
     connector.get(handler);
     return handler.list();
