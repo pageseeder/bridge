@@ -9,6 +9,7 @@ package org.pageseeder.bridge.net;
 
 import org.pageseeder.bridge.model.PSComment.Author;
 import org.pageseeder.bridge.model.PSComment.Context;
+import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSURI;
 
 /**
@@ -398,6 +399,28 @@ public final class Services {
         service.append("/comments/forurl");
       }
     }
+    return service.toString();
+  }
+
+
+  /**
+   * Return the service to use to create a comment.
+   *
+   * @param author  The author of the comment.
+   * @param xlinkid The comment to reply to.
+   *
+   * @return The corresponding service path.
+   */
+  public static String toReplyCommentService(Author author, long xlinkid, PSGroup group) {
+    // If the author is a member it is prefixed by '/members/[id]'
+    StringBuilder service = new StringBuilder();
+    if (author.member() != null) {
+      service.append("/members/").append(author.member().getIdentifier());
+    }
+    if (group != null) {
+      service.append("/groups/").append(group.getIdentifier());
+    }
+    service.append("/comments/").append(xlinkid).append("/reply");
     return service.toString();
   }
 

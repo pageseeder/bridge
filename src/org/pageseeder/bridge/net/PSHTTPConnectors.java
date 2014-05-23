@@ -926,6 +926,17 @@ public final class PSHTTPConnectors {
   // Comments
   // ----------------------------------------------------------------------------------------------
 
+  /**
+   * Create a new comment in PageSeeder.
+   *
+   * @param comment The comment
+   * @param notify  Notifications
+   * @param groups  The groups the comment is posted on
+   *
+   * @return
+   *
+   * @throws FailedPrecondition
+   */
   public static PSHTTPConnector createComment(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition {
     // The author and context determine the service
     Author author = comment.getAuthor();
@@ -973,6 +984,104 @@ public final class PSHTTPConnectors {
     if (context.uri() != null && context.uri().getId() == null) {
       connector.addParameter("url", context.uri().getURL());
     }
+
+    // If context is not group
+    if (groups != null) {
+      StringBuilder p = new StringBuilder();
+      for (PSGroup group : groups) {
+        if (p.length() > 0) p.append(',');
+        Preconditions.isNotEmpty(group.getName(), "group name");
+        p.append(group.getName());
+      }
+      connector.addParameter("groups", p.toString());
+    }
+
+    // Author is not a PageSeeder member
+    if (author.member() == null) {
+      connector.addParameter("authorname", author.name());
+      if (author.email() != null)
+        connector.addParameter("authoremail", author.email());
+    }
+
+    // Attachments
+    if (comment.hasAttachments()) {
+      StringBuilder uris = new StringBuilder();
+      StringBuilder urls = new StringBuilder();
+      for (Attachment attachment : comment.getAttachments()) {
+        PSURI uri = attachment.uri();
+        Preconditions.isIdentifiable(uri, "uri");
+        if (uri.getId() != null) {
+          if (uris.length() > 0) uris.append(',');
+          uris.append(uri.getId());
+          if (attachment.fragment() != null) {
+            uris.append('!').append(attachment.fragment());
+          }
+        } else {
+          if (urls.length() > 0) uris.append(',');
+          urls.append(uri.getURL());
+          if (attachment.fragment() != null) {
+            uris.append('#').append(attachment.fragment());
+          }
+        }
+      }
+      // Add the parameters
+      if (uris.length() > 0) connector.addParameter("uris", uris.toString());
+      if (urls.length() > 0) connector.addParameter("urls", urls.toString());
+    }
+
+    // Notification
+    if (notify != null) {
+      connector.addParameter("notify", notify.parameter());
+    }
+
+    return connector;
+  }
+
+
+  /**
+   * Create a new comment in PageSeeder.
+   *
+   * @param comment The comment
+   * @param notify  Notifications
+   * @param groups  The groups the comment is posted on
+   *
+   * @return
+   *
+   * @throws FailedPrecondition
+   */
+  public static PSHTTPConnector replyToComment(PSComment comment, PSNotify notify, List<PSGroup> groups, long xlink) throws FailedPrecondition {
+    // The author and context determine the service
+    Author author = comment.getAuthor();
+    Context context = comment.getContext(); // CONTEXT MAY BE NULL IN A REPLY!
+
+    // Basic preconditions to create a comment
+    Preconditions.isNotEmpty(comment.getTitle(),   "title");
+    Preconditions.isNotEmpty(comment.getContent(), "content");
+    Preconditions.isNotNull(author,   "author");
+
+    String service = Services.toReplyCommentService(author, xlink, context != null? context.group() : null);
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+
+    // Core parameters
+    connector.addParameter("title",       comment.getTitle());
+    connector.addParameter("content",     comment.getContent());
+    connector.addParameter("contenttype", comment.getMediaType());
+
+    // Optional parameters
+    if (comment.hasLabels())
+      connector.addParameter("labels",    comment.getLabelsAsString());
+    if (comment.hasProperties())
+      connector.addParameter("properties", comment.getPropertiesAsString());
+    if (comment.getStatus() != null)
+      connector.addParameter("status", comment.getStatus());
+    if (comment.getPriority() != null)
+      connector.addParameter("priority", comment.getPriority());
+    if (comment.getAssignedTo() != null)
+      connector.addParameter("assignedto", comment.getAssignedTo().getId().toString());
+    if (comment.getDue() != null)
+      connector.addParameter("due", ISO8601.CALENDAR_DATE.format(comment.getDue().getTime()));
+    if (comment.getType() != null)
+      connector.addParameter("type", comment.getType());
 
     // If context is not group
     if (groups != null) {
