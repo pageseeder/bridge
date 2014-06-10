@@ -166,7 +166,7 @@ public final class PSHTTPConnectors {
       throws FailedPrecondition, InvalidEntityException {
     Preconditions.isIdentifiable(member, "member");
     Preconditions.isValid(member, "member");
-    String service = Services.toMemberCreate(member.getIdentifier());
+    String service = Services.toCreateMember();
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("member-username", member.getUsername());
     connector.addParameter("firstname", member.getFirstname());
@@ -178,7 +178,6 @@ public final class PSHTTPConnectors {
     connector.addParameter("auto-activate",  Boolean.toString(options.isAutoActivate()));
     return connector;
   }
-
 
   /**
    * Returns the connector to force the password of a user to be reset (administrators only).

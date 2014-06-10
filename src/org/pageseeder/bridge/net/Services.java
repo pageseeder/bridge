@@ -30,10 +30,12 @@ import org.pageseeder.bridge.model.PSURI;
  * <p>There is generally no reason to access this class directly, higher-level class should be accessed instead.
  *
  * @author Christophe Lauret
- * @version 0.2.4
+ * @version 0.2.23
  * @since 0.2.0
  */
 public final class Services {
+
+  // Note: methods are declared in the order they are declared in the "services.xml" file on PageSeeder
 
   /**
    * Utility class.
@@ -41,91 +43,68 @@ public final class Services {
   private Services() {
   }
 
+  // General Services
+  // ----------------------------------------------------------------------------------------------
+
   /**
-   * Returns the URL to reset the current session.
+   * Returns the URL to get the PageSeeder version.
    *
-   * @return <code>/resetsession</code>.
+   * @return <code>/version</code>.
    */
-  public static String toResetSession() {
-    return "/resetsession";
+  public static String toVersion() {
+    return "/version";
   }
 
   /**
-   * Returns the URL to get a group.
+   * Returns the URL toe get information about PageSeeder.
    *
-   * @param group the group name or id
-   *
-   * @return <code>/groups/[group]</code>.
+   * @return <code>/about</code>.
    */
-  public static String toGetGroup(String group) {
-    return "/groups/"+group;
+  public static String toAbout() {
+    return "/about";
   }
 
   /**
-   * Returns the URL to add a subgroup.
+   * Returns the URL to report an error.
    *
-   * @param group the group name or id the subgroup is added to.
-   *
-   * @return <code>/groups/[group]/subgroups/add</code>.
+   * @return <code>/error/report</code>.
    */
-  public static String toAddSubGroup(String group) {
-    return "/groups/"+group+"/subgroups/add";
+  public static String toReportError() {
+    return "/error/report";
+  }
+
+  // Member Services
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Returns the URL to create a member.
+   *
+   * <p>To create a group member, use {@link #toCreateMembership(String)} instead.
+   *
+   * @return <code>/members/create</code>.
+   */
+  public static String toCreateMember() {
+    return "/members/create";
   }
 
   /**
-   * Returns the URL to put a resource
+   * Returns the URL to self-register a member.
    *
-   * @param project the project name or id where the resource should be put.
-   *
-   * @return <code>/groups/[project]/resources/put</code>.
+   * @return <code>/members/register</code>.
    */
-  public static String toPutResource(String project) {
-    return "/groups/"+project+"/resources/put";
+  public static String toRegisterMember() {
+    return "/members/register";
   }
 
   /**
-   * Returns the URL to create a group.
-   *
-   * @param member the member username or id
-   *
-   * @return <code>/members/[member]/groups/create</code>.
-   */
-  public static String toCreateGroup(String member) {
-    return "/members/"+member+"/groups/create";
-  }
-
-  /**
-   * Returns the URL to create a project.
-   *
-   * @param member the member username or id
-   *
-   * @return <code>/members/[member]/projects/create</code>.
-   */
-  public static String toCreateProject(String member) {
-    return "/members/"+member+"/projects/create";
-  }
-
-  /**
-   * Returns the URL to list the members of a group
+   * Returns the URL to create a group member.
    *
    * @param group  the group name or id
    *
-   * @return <code>/groups/[group]/members</code>.
+   * @return <code>/groups/[group]/members/create</code>.
    */
-  public static String toListMembers(String group) {
-    return "/groups/" + group + "/members";
-  }
-
-  /**
-   * Returns the URL to invoke the group member edit service.
-   *
-   * @param group  the group name or id
-   * @param member the member username or id
-   *
-   * @return <code>/groups/[group]/members/[member]/edit</code>.
-   */
-  public static String toEditMembership(String group, String member) {
-    return "/groups/" + group + "/members/" + member + "/edit";
+  public static String toCreateMembership(String group) {
+    return "/groups/" + group + "/members/create";
   }
 
   /**
@@ -141,52 +120,7 @@ public final class Services {
   }
 
   /**
-   * Returns the URL to invoke the group member registration service.
-   *
-   * @param group  the group name or id
-   * @param member the member username or id
-   *
-   * @return <code>/groups/[group]/members/[member]/manage</code>.
-   */
-  public static String toGroupMemberManage(String group, String member) {
-    return "/groups/" + group + "/members/" + member + "/manage";
-  }
-
-  /**
-   * Returns the URL to invoke the group member search service.
-   *
-   * @param group  the group name or id
-   *
-   * @return <code>/groups/[group]/members/find</code>.
-   */
-  public static String toFindGroupMember(String group) {
-    return "/groups/" + group + "/members/find";
-  }
-
-  /**
-   * Returns the URL to force the password to be reset.
-   *
-   * @param group  the group name or id
-   *
-   * @return <code>/groups/[group]/members/forceresetpassword</code>.
-   */
-  public static String toForceResetPassword(String group) {
-    return "/groups/" + group + "/members/forceresetpassword";
-  }
-
-  /**
-   * Returns the URL to invoke the group member creation service.
-   *
-   * @param group  the group name or id
-   *
-   * @return <code>/groups/[group]/members/create</code>.
-   */
-  public static String toCreateMembership(String group) {
-    return "/groups/" + group + "/members/create";
-  }
-
-  /**
-   * Returns the URL to invoke the group member invitation service.
+   * Returns the URL to invite a member to a group.
    *
    * @param group  the group name or id
    *
@@ -197,37 +131,59 @@ public final class Services {
   }
 
   /**
-   * Returns the URL to invoke the group member invitation service.
+   * Returns the URL for a member to ivite himself to a group.
    *
    * @param group  the group name or id
    * @param member the member username or id
    *
-   * @return <code>/groups/[group]/members/invite</code>.
+   * @return <code>/groups/[group]/members/[member]/inviteself</code>.
    */
   public static String toInviteSelf(String group, String member) {
-    return "/groups/" + group + "/members/"+member+"/inviteself";
+    return "/groups/"+group+"/members/"+member+"/inviteself";
   }
 
   /**
-   * Returns the URL to return the details of a member.
+   * Returns the URL to create a member's personal group.
+   *
+   * <p>The personal group is the home group on the personal project.
    *
    * @param member the member username or id
    *
-   * @return <code>/members/[member]/details</code>.
+   * @return <code>/members/[group]/creategroup</code>.
    */
-  public static String toMemberDetails(String member) {
-    return "/members/" + member + "/details";
+  public static String toCreate(String member) {
+    return "/members/"+member+"/creategroup";
   }
 
   /**
-   * Returns the URL to create a member.
+   * Returns the URL to reset the current session.
+   *
+   * @return <code>/resetsession</code>.
+   */
+  public static String toResetSession() {
+    return "/resetsession";
+  }
+
+  /**
+   * Returns the URL to activate a member.
    *
    * @param member the member username or id
    *
-   * @return <code>/members/[member]/edit</code>.
+   * @return <code>/members/[member]/activate</code>.
    */
-  protected static String toMemberCreate(String member) {
-    return "/members/" + member + "/create";
+  protected static String toActivateMember(String member) {
+    return "/members/" + member + "/activate";
+  }
+
+  /**
+   * Returns the URL to unlock a member (Administrator only).
+   *
+   * @param member the member username or id
+   *
+   * @return <code>/members/[member]/unlock</code>.
+   */
+  protected static String toUnlockMember(String member) {
+    return "/members/" + member + "/unlock";
   }
 
   /**
@@ -242,14 +198,25 @@ public final class Services {
   }
 
   /**
-   * Returns the URL to invoke the group member activation service.
+   * Returns the URL for a member to decline the invitation to a group.
    *
    * @param member the member username or id
    *
-   * @return <code>/members/[member]/activate</code>.
+   * @return <code>/members/[member]/declineinvitation</code>.
    */
-  protected static String toActivateMember(String member) {
-    return "/members/" + member + "/activate";
+  protected static String toDeclineInvitation(String member) {
+    return "/members/" + member + "/declineinvitation";
+  }
+
+  /**
+   * Returns the URL to return the groups visible to a member.
+   *
+   * @param member the member username or id
+   *
+   * @return <code>/members/[member]/visiblegroups</code>.
+   */
+  protected static String toVisibleGroups(String member) {
+    return "/members/" + member + "/visiblegroups";
   }
 
   /**
@@ -264,6 +231,453 @@ public final class Services {
   }
 
   /**
+   * Returns the URL to return the details of a member.
+   *
+   * @param member the member username or id
+   *
+   * @return <code>/members/[member]/details</code>.
+   */
+  public static String toMemberDetails(String member) {
+    return "/members/" + member + "/details";
+  }
+
+  /**
+   * Returns the URL to reset the password of the current user.
+   *
+   * <p>To use the email templates for a specific group, use {@link #toResetPassword(String)} instead.
+   *
+   * @return <code>/members/resetpassword</code>.
+   */
+  public static String toResetPassword() {
+    return "/members/resetpassword";
+  }
+
+  /**
+   * Returns the URL to reset the password of the current user.
+   *
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/members/resetpassword</code>.
+   */
+  public static String toResetPassword(String group) {
+    return "/groups/" + group + "/members/resetpassword";
+  }
+
+  /**
+   * Returns the URL to reset the password of the current user.
+   *
+   * <p>To use the email templates for a specific group, use {@link #toForceResetPassword(String)} instead.
+   *
+   * @return <code>/members/resetpassword</code>.
+   */
+  public static String toForceResetPassword() {
+    return "/members/forceresetpassword";
+  }
+
+  /**
+   * Returns the URL to force the password to be reset.
+   *
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/members/forceresetpassword</code>.
+   */
+  public static String toForceResetPassword(String group) {
+    return "/groups/" + group + "/members/forceresetpassword";
+  }
+
+  /**
+   * Returns the URL to check the password strength.
+   *
+   * @return <code>/password/meter</code>.
+   */
+  public static String toPasswordMeter() {
+    return "/password/meter";
+  }
+
+  // Subgroup Services
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Returns the URL to return the list of labels in a group.
+   *
+   * @param group the group name or id
+   *
+   * @return <code>/groups/[group]/labels</code>.
+   */
+  public static String toListLabels(String group) {
+    return "/groups/"+group+"/labels";
+  }
+
+  /**
+   * Returns the URL to list the subgroups of a group.
+   *
+   * @param group the group name or id.
+   *
+   * @return <code>/groups/[group]/subgroups</code>.
+   */
+  public static String toListSubGroups(String group) {
+    return "/groups/"+group+"/subgroups";
+  }
+
+  /**
+   * Returns the URL to add a subgroup.
+   *
+   * @param group the group name or id the subgroup is added to.
+   *
+   * @return <code>/groups/[group]/subgroups/add</code>.
+   */
+  public static String toAddSubGroup(String group) {
+    return "/groups/"+group+"/subgroups/add";
+  }
+
+  /**
+   * Returns the URL to edit a subgroup.
+   *
+   * @param group the group name or id.
+   * @param sub   the name or id of the subgroup
+   *
+   * @return <code>/groups/[group]/subgroups/[sub]/edit</code>.
+   */
+  public static String toEditSubGroup(String group, String sub) {
+    return "/groups/"+group+"/subgroups/"+sub+"/edit";
+  }
+
+  /**
+   * Returns the URL to remove a subgroup from a group.
+   *
+   * @param group the group name or id.
+   * @param sub   the name or id of the subgroup
+   *
+   * @return <code>/groups/[group]/subgroups/[sub]/remove</code>.
+   */
+  public static String toRemoveSubGroup(String group, String sub) {
+    return "/groups/"+group+"/subgroups/"+sub+"/remove";
+  }
+
+  // Email Services
+  // ----------------------------------------------------------------------------------------------
+
+  // /members/{member:member}/groups/{group:group}/mail/preview
+
+  /**
+   * Returns the URL to send an email.
+   *
+   * @param member the username or id of the member on behalf of whom the mail is sent
+   * @param group  the group name or id, the member belongs to.
+   *
+   * @return <code>/members/[member]/groups/[group]/mail/send</code>
+   */
+  public static String toSendMail(String member, String group) {
+    return "/members/"+member+"/groups/"+group+"/mail/send";
+  }
+
+  // Projects Services
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Returns the URL to create a project.
+   *
+   * @param member the member username or id
+   *
+   * @return <code>/members/[member]/projects/create</code>.
+   */
+  public static String toCreateProject(String member) {
+    return "/members/"+member+"/projects/create";
+  }
+
+  /**
+   * Returns the URL to edit a project.
+   *
+   * @param member  the member username or id
+   * @param project the project name or id
+   *
+   * @return <code>/members/[member]/projects/[project]/edit</code>.
+   */
+  public static String toEditProject(String member, String project) {
+    return "/members/"+member+"/projects/"+project+"/edit";
+  }
+
+  /**
+   * Returns the URL to get a project.
+   *
+   * @param member  the member username or id
+   * @param project the project name or id
+   *
+   * @return <code>/members/[member]/projects/[project]</code>.
+   */
+  public static String toGetProject(String member, String project) {
+    return "/members/"+member+"/projects/"+project;
+  }
+
+  /**
+   * Returns the URL to list the subprojects of a project.
+   *
+   * @param member  the member username or id
+   * @param project the project name or id
+   *
+   * @return <code>/members/[member]/projects/[project]/subprojectlist</code>.
+   */
+  public static String toListSubProjects(String member, String project) {
+    return "/members/"+member+"/projects/"+project+"/subprojectlist";
+  }
+
+  /**
+   * Returns the URL to list the top-level projects a member belongs to.
+   *
+   * @param member  the member username or id
+   *
+   * @return <code>/members/[member]/projectlist</code>.
+   */
+  public static String toListProjects(String member) {
+    return "/members/"+member+"/projectlist";
+  }
+
+  /**
+   * Returns the URL to return the tree of projects a member belongs to.
+   *
+   * @deprecated Use {@link #toProjects(String)} instead.
+   *
+   * @param member  the member username or id
+   *
+   * @return <code>/members/[member]/projects</code>.
+   */
+  @Deprecated
+  public static String toProjects(String member) {
+    return "/members/"+member+"/projects";
+  }
+
+  /**
+   * Returns the URL to return the sub-tree of projects a member belongs to.
+   *
+   * @deprecated Use {@link #toSubProjectsTree(String, String)} instead
+   *
+   * @param member  the member username or id
+   * @param project the project name or id
+   *
+   * @return <code>/members/[member]/projects/[project]/subprojects</code>.
+   */
+  @Deprecated
+  public static String toSubProjects(String member, String project) {
+    return "/members/"+member+"/projects/"+project+"/subprojects";
+  }
+
+  /**
+   * Returns the URL to return the tree of projects a member belongs to.
+   *
+   * @param member  the member username or id
+   *
+   * @return <code>/members/[member]/projects</code>.
+   */
+  public static String toProjectsTree(String member) {
+    return "/members/"+member+"/projecttree";
+  }
+
+  /**
+   * Returns the URL to return the sub-tree of projects a member belongs to.
+   *
+   * @param member  the member username or id
+   * @param project the project name or id
+   *
+   * @return <code>/members/[member]/projects/[project]/subprojecttree</code>.
+   */
+  public static String toSubProjectsTree(String member, String project) {
+    return "/members/"+member+"/projects/"+project+"/subprojecttree";
+  }
+
+  /**
+   * Returns the URL to archive a project.
+   *
+   * @param member  the member username or id
+   * @param project the project name or id
+   *
+   * @return <code>/members/[member]/projects/[project]/archive</code>.
+   */
+  public static String toArchiveProject(String member, String project) {
+    return "/members/"+member+"/projects/"+project+"/archive";
+  }
+
+  /**
+   * Returns the URL to rename a project.
+   *
+   * @param member  the member username or id
+   * @param project the project name or id
+   *
+   * @return <code>/members/[member]/projects/[project]/rename</code>.
+   */
+  public static String toRenameProject(String member, String project) {
+    return "/members/"+member+"/projects/"+project+"/rename";
+  }
+
+  /**
+   * Returns the URL to unarchive a project.
+   *
+   * @param member  the member username or id
+   * @param project the project name or id
+   *
+   * @return <code>/members/[member]/projects/[project]/unarchive</code>.
+   */
+  public static String toUnarchiveProject(String member, String project) {
+    return "/members/"+member+"/projects/"+project+"/unarchive";
+  }
+
+  // Group Folder (Group URI) Services
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Returns the URL to list the group folders for a group.
+   *
+   * @param group the group name or id
+   *
+   * @return <code>/groups/[group]/groupfolders</code>.
+   */
+  public static String toListGroupFolders(String group) {
+    return "/groups/"+group+"/groupfolders";
+  }
+
+  /**
+   * Returns the URL to create a new group folder in a group.
+   *
+   * @param group the group name or id
+   *
+   * @return <code>/groups/[group]/groupfolders/create</code>.
+   */
+  public static String toCreateGroupFolder2(String group) {
+    return "/groups/"+group+"/groupfolders/create";
+  }
+
+  /**
+   * Returns the URL to get a group folder for a given url.
+   *
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/folders/forurl</code>.
+   */
+  public static String toGetGroupFolderForURL2(String group) {
+    return "/groups/"+group+"/groupfolders/forurl";
+  }
+
+  /**
+   * Returns the URL to create a group folder.
+   *
+   * @deprecated Use {@link #toCreateGroupFolder2(String)} instead
+   *
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/folders/create</code>.
+   */
+  @Deprecated
+  public static String toCreateGroupFolder(String group) {
+    return "/groups/"+group+"/folders/create";
+  }
+
+  /**
+   * Returns the URL to get a group folder for a given url.
+   *
+   * @deprecated Use {@link #toGetGroupFolderForURL2(String)} instead
+   *
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/folders/forurl</code>.
+   */
+  @Deprecated
+  public static String toGetGroupFolderForURL(String group) {
+    return "/groups/"+group+"/folders/forurl";
+  }
+
+
+  // Group Services
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Returns the URL to create a group.
+   *
+   * @param member the member username or id
+   *
+   * @return <code>/members/[member]/groups/create</code>.
+   */
+  public static String toCreateGroup(String member) {
+    return "/members/"+member+"/groups/create";
+  }
+
+  /**
+   * Returns the URL to edit a group.
+   *
+   * @param member the member name or id
+   * @param group  the group name or id
+   *
+   * @return <code>/members/[member]/groups/[group]</code>.
+   */
+  public static String toEditGroup(String member, String group) {
+    return "/members/"+member+"/groups/"+group+"/edit";
+  }
+
+  /**
+   * Returns the URL to get a group.
+   *
+   * @param group the group name or id
+   *
+   * @return <code>/groups/[group]</code>.
+   */
+  public static String toGetGroup(String group) {
+    return "/groups/"+group;
+  }
+
+  /**
+   * Returns the URL to get a group.
+   *
+   * @param member the member name or id
+   * @param group  the group name or id
+   *
+   * @return <code>/members/[member]/groups/[group]</code>.
+   */
+  public static String toGetGroup(String member, String group) {
+    return "/members/"+member+"/groups/"+group;
+  }
+
+  // /groups/{group:group}/size
+
+  // /members/{member:member}/groups/{group:group}/publish/start
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/publish/start
+
+  // /groups/{group:group}/publish/check
+
+  // /groups/{group:group}/publish/cancel
+
+  /**
+   * Returns the URL to list the members of a group.
+   *
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/members</code>.
+   */
+  public static String toListMembers(String group) {
+    return "/groups/" + group + "/members";
+  }
+
+  /**
+   * Returns the URL to invoke the group member search service.
+   *
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/members/find</code>.
+   */
+  public static String toFindGroupMember(String group) {
+    return "/groups/" + group + "/members/find";
+  }
+
+  /**
+   * Returns the URL to list the members of a group including all their details.
+   *
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/members</code>.
+   */
+  public static String toListAlldetailsMembers(String group) {
+    return "/groups/" + group + "/members/alldetails";
+  }
+
+  /**
    * Returns the URL to invoke the group member details service.
    *
    * @param group  the group name or id
@@ -271,33 +685,99 @@ public final class Services {
    *
    * @return <code>/groups/[groupname]/members/[username]/details</code>.
    */
-  protected static String toMembershipDetails(String group, String member) {
+  public static String toMembershipDetails(String group, String member) {
     return "/groups/" + group + "/members/" + member + "/details";
   }
 
   /**
-   * Returns the URL to reply to a comment.
+   * Returns the URL to invoke the group member edit service.
    *
-   * @param userId  the user id
-   * @param xlinkId the xlink id of the comment to reply to
+   * @param group  the group name or id
+   * @param member the member username or id
    *
-   * @return <code>/members/[userid]/comments/[xlinkid]/reply</code>.
+   * @return <code>/groups/[group]/members/[member]/edit</code>.
    */
-  protected static String toReplyComment(String xlinkId, long userId) {
-    return "/members/" + userId + "/comments/" + xlinkId + "/reply";
+  public static String toEditMembership(String group, String member) {
+    return "/groups/" + group + "/members/" + member + "/edit";
   }
 
   /**
-   * Returns the URL to get a document for a given URL.
+   * Returns the URL to deregister a member from a group.
    *
-   * @param member the member username or id
    * @param group  the group name or id
+   * @param member the member username or id
    *
-   * @return <code>/members/[member]/groups/[group]/documents/forurl</code>.
+   * @return <code>/groups/[group]/members/[member]/deregister</code>.
    */
-  public static String toGetDocumentForURL(String member, String group) {
-    return "/members/"+member+"/groups/"+group+"/documents/forurl";
+  public static String toDeregisterMember(String group, String member) {
+    return "/groups/" + group + "/members/" + member + "/deregister";
   }
+
+  /**
+   * Returns the URL to invoke the group member registration service.
+   *
+   * @param group  the group name or id
+   * @param member the member username or id
+   *
+   * @return <code>/groups/[group]/members/[member]/manage</code>.
+   */
+  public static String toGroupMemberManage(String group, String member) {
+    return "/groups/" + group + "/members/" + member + "/manage";
+  }
+
+  // /groups/{group:group}/members/{member:member}/registration
+
+  // /groups/{group:group}/autocomplete/{field}
+
+  // /groups/{group:group}/autocomplete
+
+  // /groups/{group:group}/autosuggest
+
+  // /groups/{group:group}/omnibox
+
+  // /groups/{group:group}/autosuggest/fields
+
+  // /groups/{group:group}/facet
+
+  // /groups/{group:group}/publishconfig
+
+  // /groups/{group:group}/error/report
+
+  // /members/{member:member}/groups/{group:group}/applyshare
+
+  // /members/{member:member}/groups/{group:group}/resolvexrefs
+
+  // /members/{member:member}/groups/{group:group}/converttopsml
+
+  // /groups/{group:group}/images/find
+
+  // /members/{member:member}/groups/{group:group}/index/start
+
+  // /groups/{group:group}/index/status
+
+  // /groups/{group:group}/index/clear
+
+  // /members/{member:member}/groups/{group:group}/archive
+
+  // /members/{member:member}/groups/{group:group}/rename
+
+  // /members/{member:member}/groups/{group:group}/unarchive
+
+
+  // URI Services
+  // ----------------------------------------------------------------------------------------------
+
+  // /groups/{group:group}/uris/forurl/uris
+
+  // /groups/{group:group}/uris/{uri:uri}/uris
+
+  // /groups/{group:group}/externaluris/hosts
+
+  // /groups/{group:group}/hosts/{host}/externaluris
+
+  // /groups/{group:group}/externaluris/forurl/externaluris
+
+  // /groups/{group:group}/externaluris/{uri:uri}/externaluris
 
   /**
    * Returns the URL to get a URI for a given URL.
@@ -322,27 +802,73 @@ public final class Services {
     return "/groups/"+group+"/uris/"+uri;
   }
 
-  /**
-   * Returns the URL to create a group folder.
-   *
-   * @param group  the group name or id
-   *
-   * @return <code>/groups/[group]/folders/create</code>.
-   */
-  public static String toCreateGroupFolder(String group) {
-    return "/groups/"+group+"/folders/create";
-  }
+  // /members/{member:member}/groups/{group:group}/externaluris
+
+  // /members/{member:member}/groups/{group:group}/externaluris/{uri:uri}
+
+  // /members/{member:member}/groups/{group:group}/externaluris/{uri:uri}/archive
+
+  // /members/{member:member}/groups/{group:group}/externaluris/{uri:uri}/unarchive
+
+  // /groups/{group:group}/uris/{uri:uri}/versions
+
+  // /groups/{group:group}/uris/{uri:uri}/xrefs
+
+  // /groups/{group:group}/uris/{uri:uri}/xreftree
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/versions
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/versions/{versionid}/archive
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/xrefs
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/xrefs/{xrefid}/archive
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/resolvexrefs
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/index/start
+
+  // /groups/{group:group}/uris/{uri:uri}/history
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/properties
+
+  // /members/{member:member}/groups/{group:group}/documents
 
   /**
-   * Returns the URL to get a group folder for a given url.
+   * Returns the URL to get a document for a given URL.
    *
+   * @param member the member username or id
    * @param group  the group name or id
    *
-   * @return <code>/groups/[group]/folders/forurl</code>.
+   * @return <code>/members/[member]/groups/[group]/documents/forurl</code>.
    */
-  public static String toGetGroupFolderForURL(String group) {
-    return "/groups/"+group+"/folders/forurl";
+  public static String toGetDocumentForURL(String member, String group) {
+    return "/members/"+member+"/groups/"+group+"/documents/forurl";
   }
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/documents
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/duplicate
+
+  // /members/{member:member}/groups/{group:group}/folders
+
+  // /members/{member:member}/groups/{group:group}/folders/forurl
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/folders
+
+  // /groups/{group:group}/uris/{uri:uri}/schemas
+
+  // /groups/{group:group}/uris/{uri:uri}/index
+
+  // /groups/{group:group}/uris/{uri:uri}/publishconfig
+
+  // /groups/{group:group}/uris/publishconfig
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/editinlinelabel
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/editpsmlproperty
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/fragments
 
   /**
    * Returns the URL to get/put a fragment from a document.
@@ -358,20 +884,154 @@ public final class Services {
     return "/members/"+member+"/groups/"+group+"/uris/"+uri+"/fragments/"+fragment;
   }
 
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/fragments/{fragment}/delete
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/fragments/{fragment}/revert
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/edits/{editid}/share
+
+  // /groups/{group:group}/uris/{uri:uri}/config
+
+  // /groups/{group:group}/uris/{uri:uri}/drafts
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/drafts/{editid}/delete
+
+  // /groups/{group:group}/uris/{uri:uri}/fragments/{fragment}/drafts
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/move
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/archive
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/delete
+
+  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/foldervalidate
+
+  // /members/{member:member}/uris/{uri:uri}/export
+
+  // /members/{member:member}/export
+
+
+  // Host Services
+  // ----------------------------------------------------------------------------------------------
+
+  // /members/{member:member}/hosts/{host}/update
+
+
+  // Task Services
+  // ----------------------------------------------------------------------------------------------
+
+  // /members/{member:member}/tasks/filter
+
+  // /tasks/filter
+
+  // /members/{member:member}/tasks/{task}
+
+  // /tasks/{task}
+
+
+  // Comment and Discussions Services
+  // ----------------------------------------------------------------------------------------------
+
   /**
-   * Returns the URL to send an email
+   * Returns the URL to get the list of discussions on the group.
    *
-   * @param member the username or id of the member on behalf of whom the mail is sent
-   * @param group  the group name or id, the member belongs to.
+   * @param group  the group name or ID
    *
-   * @return <code>/members/[member]/groups/[group]/mail/send</code>
+   * @return <code>/members/[userid]/comments/[xlinkid]/reply</code>.
    */
-  public static String toSendMail(String member, String group) {
-    return "/members/"+member+"/groups/"+group+"/mail/send";
+  public static String toDiscussionsForGroup(String group) {
+    return "/groups/"+group+"/discussions";
+  }
+
+  // /groups/{group:group}/discussions/{discussion}
+
+  // /members/{member:member}/discussions/forurl
+
+  // /members/{member:member}/discussions/{discussion}
+
+  /**
+   * Returns the URL to reply to a comment.
+   *
+   * @param member the username or ID of the member
+   * @param uri    the uri ID
+   *
+   * @return <code>/members/[userid]/comments/[xlinkid]/reply</code>.
+   */
+  public static String toDiscussionsForURI(String member, String uri) {
+    return "/members/"+member+"/uris/"+uri+"/discussions";
   }
 
   /**
-   * Return the service to use to create a comment.
+   * Returns the URL to reply to a comment.
+   *
+   * @param member the username or ID of the member
+   * @param uri    the uri ID
+   * @param fragment    the fragment ID
+   *
+   * @return <code>/members/[userid]/comments/[xlinkid]/reply</code>.
+   */
+  public static String toDiscussionsForFragment(String member, String uri, String fragment) {
+    return "/members/"+member+"/uris/"+uri+"/fragments/"+fragment+"/discussions";
+  }
+
+  // /discussions/forurl
+
+  // /discussions/{discussion}
+
+  // /members/{member:member}/comments/filter
+
+  // /comments/filter
+
+  // /uris/{uri:uri}/discussions
+
+  // /uris/{uri:uri}/fragments/{fragment}/discussions
+
+  // /members/{member:member}/groups/{group:group}/comments
+
+  // /groups/{group:group}/comments
+
+  // /members/{member:member}/groups/{group:group}/comments/{xlinkid}/reply
+
+  // /groups/{group:group}/comments/{xlinkid}/reply
+
+  // /members/{member:member}/comments/{xlinkid}/reply
+
+  /**
+   * Returns the URL to reply to a comment.
+   *
+   * @param member the username or ID of the member
+   * @param xlink  the xlink id of the comment to reply to
+   *
+   * @return <code>/members/[userid]/comments/[xlinkid]/reply</code>.
+   */
+  protected static String toReplyComment(String member, String xlink) {
+    return "/members/" + member + "/comments/" + xlink + "/reply";
+  }
+
+  // /members/{member:member}/comments/forurl
+
+  // /members/{member:member}/uris/{uri:uri}/comments
+
+  // /members/{member:member}/uris/{uri:uri}/fragments/{fragment}/comments
+
+  // /comments/{xlinkid}/reply
+
+  // /comments/forurl
+
+  // /uris/{uri:uri}/comments
+
+  // /uris/{uri:uri}/fragments/{fragment}/comments
+
+  // /members/{member:member}/comments/{xlinkid}/edit
+
+  // /members/{member:member}/comments/{xlinkid}/archive
+
+  // /members/{member:member}/comments/{xlinkid}/unarchive
+
+
+
+  /**
+   * Shorthand method to return the service to use to create a comment.
    *
    * @param author  The author of the comment.
    * @param context The context of the comment.
@@ -402,12 +1062,12 @@ public final class Services {
     return service.toString();
   }
 
-
   /**
-   * Return the service to use to create a comment.
+   * Shorthand method to return the service to use to reply to a comment.
    *
    * @param author  The author of the comment.
    * @param xlinkid The comment to reply to.
+   * @param group   The group the user is
    *
    * @return The corresponding service path.
    */
@@ -423,5 +1083,105 @@ public final class Services {
     service.append("/comments/").append(xlinkid).append("/reply");
     return service.toString();
   }
+
+  // Loading Zone related Services
+  // ----------------------------------------------------------------------------------------------
+
+  // /members/{member:member}/groups/{group:group}/loadingzone/delete
+
+  // /members/{member:member}/groups/{group:group}/loadingzone/unzip
+
+  // /members/{member:member}/groups/{group:group}/loadingzone/clear
+
+  // /members/{member:member}/groups/{group:group}/loadingzone/uris
+
+
+  // Thread related Services
+  // ----------------------------------------------------------------------------------------------
+
+  // /threads
+
+  // /groups/{group:group}/threads
+
+  // /groups/{group:group}/threads/{threadid}/cancel
+
+  // /threads/{threadid}/cancel
+
+  // /groups/{group:group}/threads/{threadid}/progress
+
+  // /threads/{threadid}/progress
+
+  // /groups/{group:group}/threads/{threadid}/logs
+
+
+  // Developer Related Services
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Returns the URL to get a resource.
+   *
+   * @param project the project name or id where the resource should be put.
+   *
+   * @return <code>/groups/[project]/resources</code>.
+   */
+  public static String toResource(String project) {
+    return "/groups/"+project+"/resources";
+  }
+
+  /**
+   * Returns the URL to create a resource.
+   *
+   * @param project the project name or id where the resource should be put.
+   *
+   * @return <code>/groups/[project]/resources/create</code>.
+   */
+  public static String toCreateResource(String project) {
+    return "/groups/"+project+"/resources/create";
+  }
+
+  /**
+   * Returns the URL to put a resource.
+   *
+   * @param project the project name or id where the resource should be put.
+   *
+   * @return <code>/groups/[project]/resources/put</code>.
+   */
+  public static String toGetResource(String project) {
+    return "/groups/"+project+"/resources/get";
+  }
+
+  /**
+   * Returns the URL to put a resource.
+   *
+   * @param project the project name or id where the resource should be put.
+   *
+   * @return <code>/groups/[project]/resources/put</code>.
+   */
+  public static String toPutResource(String project) {
+    return "/groups/"+project+"/resources/put";
+  }
+
+  /**
+   * Returns the URL to delete a resource.
+   *
+   * @param project the project name or id where the resource should be put.
+   *
+   * @return <code>/groups/[project]/resources/put</code>.
+   */
+  public static String toDeleteResource(String project) {
+    return "/groups/"+project+"/resources/delete";
+  }
+
+  // /groups/{group:group}/resources/move
+
+  // /groups/{group:group}/resources/export
+
+  // /groups/{group:group}/resources/import
+
+  // /groups/{group:group}/resources/history
+
+  // /groups/{group:group}/documenttypes/converttopsml
+
+
 
 }
