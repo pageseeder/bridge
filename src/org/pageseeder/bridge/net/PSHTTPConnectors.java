@@ -1134,10 +1134,38 @@ public final class PSHTTPConnectors {
     return connector;
   }
 
+  /**
+   * Archive the specified comment.
+   *
+   * @param comment The comment to archive.
+   * @param member  The member archiving the comment.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition if the member or comment is not identifiable.
+   */
   public static PSHTTPConnector archiveComment(PSComment comment, PSMember member) throws FailedPrecondition {
     Preconditions.isIdentifiable(member, "member");
     Preconditions.isIdentifiable(comment, "comment");
-    String service = "/members/"+member+"/comments/"+comment+"/archive";
+    String service = Services.toArchiveComment(member.getIdentifier(), comment.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    return connector;
+  }
+
+  /**
+   * Archive the specified comment.
+   *
+   * @param comment The comment to archive.
+   * @param member  The member archiving the comment.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition if the member or comment is not identifiable.
+   */
+  public static PSHTTPConnector unarchiveComment(PSComment comment, PSMember member) throws FailedPrecondition {
+    Preconditions.isIdentifiable(member, "member");
+    Preconditions.isIdentifiable(comment, "comment");
+    String service = Services.toUnarchiveComment(member.getIdentifier(), comment.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     return connector;
   }

@@ -83,13 +83,25 @@ public final class CommentManager extends Sessionful {
   }
 
   /**
-   * Creates the specified comment in PageSeeder.
+   * Archives the specified comment in PageSeeder.
    *
    * @param comment The comment to archive
    * @param member  The member archiving the comment
    */
   public boolean archiveComment(PSComment comment, PSMember member) throws FailedPrecondition, APIException {
     PSHTTPConnector connector = PSHTTPConnectors.archiveComment(comment, member).using(this._session);
+    PSHTTPResponseInfo info = connector.post();
+    return info.getStatus() == Status.SUCCESSFUL;
+  }
+
+  /**
+   * Unarchives the specified comment in PageSeeder.
+   *
+   * @param comment The comment to archive
+   * @param member  The member archiving the comment
+   */
+  public boolean unarchiveComment(PSComment comment, PSMember member) throws FailedPrecondition, APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.unarchiveComment(comment, member).using(this._session);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
   }

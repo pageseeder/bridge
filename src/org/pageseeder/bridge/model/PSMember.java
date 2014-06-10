@@ -42,6 +42,30 @@ public final class PSMember implements PSEntity {
   /** Whether the member has been activated. */
   private boolean activated;
 
+  /**
+   * Construct a new member without an ID or username.
+   */
+  public PSMember() {
+  }
+
+  /**
+   * Construct a new member with the specified ID.
+   *
+   * @param id The ID of the member.
+   */
+  public PSMember(Long id) {
+    this.id = id;
+  }
+
+  /**
+   * Construct a new member with the specified username.
+   *
+   * @param username The username of the member.
+   */
+  public PSMember(String username) {
+    this.username = username;
+  }
+
   @Override
   public Long getId() {
     return this.id;
