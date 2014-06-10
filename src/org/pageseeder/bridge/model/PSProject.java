@@ -26,6 +26,15 @@ public final class PSProject extends PSGroup {
   }
 
   /**
+   * Create a new project with a private identifier.
+   *
+   * @param id The id of the project.
+   */
+  public PSProject(Long id) {
+    super(id);
+  }
+
+  /**
    * Create a new project with a public identifier.
    *
    * <p>Not: this constructor does not check whether the name is valid.

@@ -65,6 +65,15 @@ public class PSGroup implements PSEntity {
   }
 
   /**
+   * Create a new group from the specified ID.
+   *
+   * @param id The name of the group.
+   */
+  public PSGroup(Long id) {
+    this.id = id;
+  }
+
+  /**
    * Create a new group with a public identifier.
    *
    * <p>Note: the constructor does not check that the name is valid.
