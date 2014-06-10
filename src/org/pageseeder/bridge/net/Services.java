@@ -7,6 +7,7 @@
  */
 package org.pageseeder.bridge.net;
 
+import org.pageseeder.bridge.Requires;
 import org.pageseeder.bridge.model.PSComment.Author;
 import org.pageseeder.bridge.model.PSComment.Context;
 import org.pageseeder.bridge.model.PSGroup;
@@ -530,6 +531,7 @@ public final class Services {
    *
    * @return <code>/groups/[group]/groupfolders</code>.
    */
+  @Requires(minVersion = 56012)
   public static String toListGroupFolders(String group) {
     return "/groups/"+group+"/groupfolders";
   }
@@ -541,6 +543,7 @@ public final class Services {
    *
    * @return <code>/groups/[group]/groupfolders/create</code>.
    */
+  @Requires(minVersion = 56012)
   public static String toCreateGroupFolder2(String group) {
     return "/groups/"+group+"/groupfolders/create";
   }
@@ -552,6 +555,7 @@ public final class Services {
    *
    * @return <code>/groups/[group]/folders/forurl</code>.
    */
+  @Requires(minVersion = 56012)
   public static String toGetGroupFolderForURL2(String group) {
     return "/groups/"+group+"/groupfolders/forurl";
   }
@@ -1022,13 +1026,41 @@ public final class Services {
 
   // /uris/{uri:uri}/fragments/{fragment}/comments
 
-  // /members/{member:member}/comments/{xlinkid}/edit
+  /**
+   * Returns the URL to edit a comment.
+   *
+   * @param member  the username or ID of the member
+   * @param comment the xlink ID of the comment to archive
+   *
+   * @return <code>/members/[member]/comments/[comment]/archive</code>.
+   */
+  public static String toEditComment(String member, String comment) {
+    return "/members/" + member + "/comments/" + comment + "/edit";
+  }
 
-  // /members/{member:member}/comments/{xlinkid}/archive
+  /**
+   * Returns the URL to archive to a comment.
+   *
+   * @param member  the username or ID of the member
+   * @param comment the xlink ID of the comment to archive
+   *
+   * @return <code>/members/[member]/comments/[comment]/archive</code>.
+   */
+  public static String toArchiveComment(String member, String comment) {
+    return "/members/" + member + "/comments/" + comment + "/archive";
+  }
 
-  // /members/{member:member}/comments/{xlinkid}/unarchive
-
-
+  /**
+   * Returns the URL to unarchive to a comment.
+   *
+   * @param member  the username or ID of the member
+   * @param comment the xlink ID of the comment to archive
+   *
+   * @return <code>/members/[member]/comments/[comment]/unarchive</code>.
+   */
+  public static String toUnarchiveComment(String member, String comment) {
+    return "/members/" + member + "/comments/" + comment + "/unarchive";
+  }
 
   /**
    * Shorthand method to return the service to use to create a comment.
