@@ -87,7 +87,7 @@ public final class PSHandlers {
     if (role == null) return null;
     try {
       return PSRole.valueOf(role);
-    } catch (NumberFormatException ex) {
+    } catch (IllegalArgumentException ex) {
       LOGGER.warn("Found suspicious role value: {}", role);
       return null;
     }
