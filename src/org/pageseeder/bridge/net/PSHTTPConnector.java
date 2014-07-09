@@ -418,6 +418,7 @@ public final class PSHTTPConnector {
     try {
       PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.session);
       connection.process(response, handler);
+      this.session = connection.getSession();
     } catch (IOException ex) {
       throw new APIException(ex);
     } finally {
@@ -446,6 +447,7 @@ public final class PSHTTPConnector {
     try {
       PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.session);
       connection.process(response, xml);
+      this.session = connection.getSession();
     } catch (IOException ex) {
       throw new APIException(ex);
     } finally {
@@ -477,6 +479,7 @@ public final class PSHTTPConnector {
     try {
       PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.session);
       connection.process(response, xml, templates, parameters);
+      this.session = connection.getSession();
     } catch (IOException ex) {
       throw new APIException(ex);
     } finally {
