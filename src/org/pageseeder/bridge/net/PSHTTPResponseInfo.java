@@ -124,6 +124,17 @@ public final class PSHTTPResponseInfo {
   }
 
   /**
+   * Shorthand method to check whether the response was successful.
+   *
+   * @return <code>true</code> is the status is SUCCESSFUL;
+   *         <code>false</code> for any other status.
+   */
+  public boolean isSuccessful() {
+    return this.status == Status.SUCCESSFUL;
+  }
+
+
+  /**
    * @return the error (services only)
    */
   public String getErrorID() {

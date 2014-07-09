@@ -13,7 +13,7 @@ import java.io.Serializable;
  * A simple object to represent a PageSeeder session.
  *
  * @author Christophe Lauret
- * @version 0.2.0
+ * @version 0.2.27
  * @since 0.1.0
  */
 public final class PSSession implements Serializable {
@@ -92,4 +92,29 @@ public final class PSSession implements Serializable {
   public String toString() {
     return this._jsessionid;
   }
+
+  /**
+   * Generate the session from the <code>Set-Cookie</code> HTTP response header.
+   *
+   * <p>The expected header value should be:
+   * <pre>
+   *  JSESSIONID=F354C484E7368C6EB08E83A6E913FEA4; Path=/ps; Secure
+   * </pre>
+   *
+   * @param cookie The cookie value
+   * @return the corresponding instance or <code>null</code> if the cookie could be parsed
+   */
+  public static PSSession parseSetCookieHeader(String cookie) {
+    String name = "JSESSIONID=";
+    if (cookie != null && cookie.length() > name.length()) {
+      int from = cookie.indexOf(name);
+      int to = cookie.indexOf(';', from+name.length());
+      if (from != -1 && to != -1) {
+        return new PSSession(cookie.substring(from+name.length(), to));
+      }
+    }
+    // no sessionid it seems.
+    return null;
+  }
+
 }

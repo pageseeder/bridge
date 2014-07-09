@@ -139,4 +139,48 @@ public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
   public PSMembership make(Attributes atts, PSMembership entity) {
     return PSEntityFactory.toMembership(atts, entity);
   }
+
+  /**
+   * Set the member to use for the memberships.
+   *
+   * <p>If while parsing, the member is different, it may be replaced or updated.
+   *
+   * <p>There is generally no reason to invoke this method after parsing.
+   *
+   * @param member the member to set
+   */
+  public void setMember(PSMember member) {
+    this.member = member;
+  }
+
+  /**
+   * Set the group to use for the memberships.
+   *
+   * <p>If while parsing, the group is different, it may be replaced or updated.
+   *
+   * <p>There is generally no reason to invoke this method after parsing.
+   *
+   * @param group the group to set
+   */
+  public void setGroup(PSGroup group) {
+    this.group = group;
+  }
+
+  /**
+   * Returns the group that was before set (before parsing) or that was parsed (after parsing).
+   *
+   * @return the group
+   */
+  public PSGroup getGroup() {
+    return this.group;
+  }
+
+  /**
+   * Returns the member that was before set (before parsing) or that was parsed (after parsing).
+   *
+   * @return the member
+   */
+  public PSMember getMember() {
+    return this.member;
+  }
 }

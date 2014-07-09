@@ -26,7 +26,7 @@ import com.topologi.diffx.xml.XMLWriter;
  * Represents a request made to the PageSeeder Server.
  *
  * <p>By default the request is made anonymously. In order to make a request on behalf of a
- * PageSeeder user, use the {@link #setUser(PSSession)} method - this is required for any page
+ * PageSeeder user, use the {@link #using(PSSession)} method - this is required for any page
  * that needs login access.
  *
  * <p>For simple PageSeeder connections via GET or POST, this class provides convenience methods
@@ -53,7 +53,7 @@ import com.topologi.diffx.xml.XMLWriter;
  * <p>Note: This class was forked from Bastille 0.8.29
  *
  * @author Christophe Lauret
- * @version 0.2.0
+ * @version 0.2.27
  * @since 0.2.0
  */
 public final class PSHTTPConnector {
@@ -98,6 +98,13 @@ public final class PSHTTPConnector {
    */
   public void setUser(PSSession user) {
     this.session = user;
+  }
+
+  /**
+   * @return the session which may have been updated after the connection
+   */
+  public PSSession getSession() {
+    return this.session;
   }
 
   /**
@@ -385,6 +392,8 @@ public final class PSHTTPConnector {
     try {
       PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.session);
       connection.process(response, out);
+      // get the session
+      this.session = connection.getSession();
     } catch (IOException ex) {
       throw new APIException(ex);
     } finally {

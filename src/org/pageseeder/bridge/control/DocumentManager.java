@@ -75,9 +75,8 @@ public final class DocumentManager extends Sessionful {
    */
   public boolean create(PSDocument document, PSGroup group, PSMember creator)
       throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, creator, null);
+    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, creator, null).using(this._session);
     PSDocumentHandler handler = new PSDocumentHandler(document);
-    connector.setUser(this._session);
     PSHTTPResponseInfo info = connector.post(handler);
     return info.getStatus() == Status.SUCCESSFUL;
   }
@@ -94,9 +93,8 @@ public final class DocumentManager extends Sessionful {
    */
   public boolean create(PSDocument document, PSGroup group, PSMember creator, Map<String, String> parameters)
       throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, creator, parameters);
+    PSHTTPConnector connector = PSHTTPConnectors.createDocument(document, group, creator, parameters).using(this._session);
     PSDocumentHandler handler = new PSDocumentHandler(document);
-    connector.setUser(this._session);
     PSHTTPResponseInfo info = connector.post(handler);
     return info.getStatus() == Status.SUCCESSFUL;
   }

@@ -126,13 +126,6 @@ public final class PSHTTPConnection {
   private final Method _method;
 
   /**
-   * The user who initiated the connection.
-   *
-   * A <code>null</code> value indicates an anonymous connection.
-   */
-  private final PSSession _session;
-
-  /**
    * The part boundary.
    */
   private final String _boundary;
@@ -141,6 +134,13 @@ public final class PSHTTPConnection {
    * The output stream used to write the data to push through the connection (e.g. Multipart).
    */
   private DataOutputStream out = null;
+
+  /**
+   * The user who initiated the connection.
+   *
+   * A <code>null</code> value indicates an anonymous connection.
+   */
+  private PSSession session;
 
   /**
    * Can only be created by the factory method.
@@ -155,8 +155,8 @@ public final class PSHTTPConnection {
     this._connection = connection;
     this._resource = resource;
     this._method = method;
-    this._session = session;
     this._boundary = boundary;
+    this.session = session;
   }
 
   /**
@@ -388,6 +388,15 @@ public final class PSHTTPConnection {
     return this._method;
   }
 
+  /**
+   * The session may have been updated after the connection was made.
+   *
+   * @return the session
+   */
+  public PSSession getSession() {
+    return this.session;
+  }
+
   // Process methods
   // ----------------------------------------------------------------------------------------------
 
@@ -411,8 +420,7 @@ public final class PSHTTPConnection {
         String mediaType = getMediaType(this._connection);
         response.setMediaType(mediaType);
         copy(this._connection, out);
-        // Ensure the session is updated for that user
-        updateUser(this._connection, this._session);
+        updateSession(this._connection);
 
       } else {
         LOGGER.info("PageSeeder returned {}: {}", status, this._connection.getResponseMessage());
@@ -458,7 +466,7 @@ public final class PSHTTPConnection {
         }
 
         // Ensure the session is updated for that user
-        updateUser(this._connection, this._session);
+        updateSession(this._connection);
 
       } else {
         LOGGER.info("PageSeeder returned {}: {}", status, this._connection.getResponseMessage());
@@ -507,7 +515,7 @@ public final class PSHTTPConnection {
         }
 
         // Ensure the session is updated for that user
-        updateUser(this._connection, this._session);
+        updateSession(this._connection);
 
       } else {
         LOGGER.info("PageSeeder returned {}: {}", status, this._connection.getResponseMessage());
@@ -577,7 +585,7 @@ public final class PSHTTPConnection {
         }
 
         // Ensure the session is updated for that user
-        updateUser(this._connection, this._session);
+        updateSession(this._connection);
 
       } else {
         LOGGER.info("PageSeeder returned {}: {}", status, this._connection.getResponseMessage());
@@ -617,20 +625,24 @@ public final class PSHTTPConnection {
    * Updates the user session ID and last connection time from the HTTP response headers.
    *
    * @param connection the HTTP connection
-   * @param session The current user.
    */
-  private static void updateUser(HttpURLConnection connection, PSSession session) {
-    // Updating the session of the PageSeeder user
-    if (session != null) {
-      session.update();
+  private void updateSession(HttpURLConnection connection) {
+    // Updating the session
+    if (this.session != null) {
+      this.session.update();
     } else {
-      PSSession tmp = Sessions.getAnonymous();
-      if (Sessions.isValid(tmp)) {
-        tmp.update();
-      } else {
-        LOGGER.info("Setting anonymous PageSeeder session");
-        Sessions.setAnonymous(new PSSession(getJSessionIDfromCookie(connection)));
-      }
+      String cookie = connection.getHeaderField("Set-Cookie");
+      this.session = PSSession.parseSetCookieHeader(cookie);
+
+      // TODO Not necessarily anonymous if credentials were supplied!
+//      LOGGER.info("Setting anonymous PageSeeder session");
+//      PSSession tmp = Sessions.getAnonymous();
+//      if (Sessions.isValid(tmp)) {
+//        tmp.update();
+//      } else {
+//        LOGGER.info("Setting anonymous PageSeeder session");
+//        Sessions.setAnonymous(this.session);
+//      }
     }
   }
 
@@ -659,12 +671,12 @@ public final class PSHTTPConnection {
    *
    * @param resource The resource to connect to.
    * @param type     The type of connection.
-   * @param user     The user login to use (optional).
+   * @param session  The user login to use (optional).
    * @return A newly opened connection to the specified URL
    * @throws IOException Should an exception be returns while opening the connection
    */
-  protected static PSHTTPConnection connect(PSHTTPResource resource, Method type, PSSession user) throws IOException {
-    URL url = resource.toURL(user, type == Method.POST ? false : true);
+  protected static PSHTTPConnection connect(PSHTTPResource resource, Method type, PSSession session) throws IOException {
+    URL url = resource.toURL(session, type == Method.POST ? false : true);
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setDoOutput(true);
     connection.setInstanceFollowRedirects(true);
@@ -680,14 +692,14 @@ public final class PSHTTPConnection {
       connection.setRequestProperty("Content-Length", Integer.toString(parameters.length()));
       connection.setDoInput(true);
       writePOSTData(connection, parameters);
-      instance = new PSHTTPConnection(connection, resource, type, user, null);
+      instance = new PSHTTPConnection(connection, resource, type, session, null);
 
     // POST using "multipart/form-data"
     } else if (type == Method.MULTIPART) {
       String boundary = "--------------------" + Long.toString(Math.abs(random.nextLong()), 36);
       connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
       connection.setDoInput(true);
-      instance = new PSHTTPConnection(connection, resource, type, user, "--"+boundary);
+      instance = new PSHTTPConnection(connection, resource, type, session, "--"+boundary);
       Map<String, String> parameters = resource.parameters();
       if (!parameters.isEmpty()) {
         for (Entry<String, String> p : parameters.entrySet()) {
@@ -697,7 +709,7 @@ public final class PSHTTPConnection {
 
     // GET, PUT and DELETE
     } else {
-      instance = new PSHTTPConnection(connection, resource, type, user, null);
+      instance = new PSHTTPConnection(connection, resource, type, session, null);
     }
 
     return instance;
@@ -948,26 +960,6 @@ public final class PSHTTPConnection {
       err = connection.getErrorStream();
     }
     return err;
-  }
-
-  /**
-   * Extract the JSession ID from the 'Set-Cookie' response header.
-   *
-   * @param connection The connection (must have been connected)
-   * @return the JSession ID or <code>null</code>.
-   */
-  private static String getJSessionIDfromCookie(HttpURLConnection connection) {
-    String name = "JSESSIONID=";
-    String cookie = connection.getHeaderField("Set-Cookie");
-    if (cookie != null && cookie.length() > name.length()) {
-      int from = cookie.indexOf(name);
-      int to = cookie.indexOf(';', from+name.length());
-      if (from != -1 && to != -1) {
-        return cookie.substring(from+name.length(), to);
-      }
-    }
-    // no sessionid it seems.
-    return null;
   }
 
   /**

@@ -25,7 +25,7 @@ import org.pageseeder.bridge.PSSession;
  * <p>Note: This class was initially forked from Bastille 0.8.29
  *
  * @author Christophe Lauret
- * @version 0.2.0
+ * @version 0.2.27
  * @since 0.2.0
  */
 public final class PSHTTPResource {
@@ -239,9 +239,6 @@ public final class PSHTTPResource {
     if (session != null) {
       // Use the specified user if available
       url.append(";jsessionid=").append(session);
-    } else if (Sessions.getAnonymous() != null) {
-      // Recycle an anonymous session ID if possible
-      url.append(";jsessionid=").append(Sessions.getAnonymous());
     }
 
     // Query Part
