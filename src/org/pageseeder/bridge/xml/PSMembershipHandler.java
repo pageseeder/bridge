@@ -11,6 +11,7 @@ import org.pageseeder.bridge.model.PSDetails;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSMembership;
+import org.pageseeder.bridge.model.PSProject;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -98,6 +99,13 @@ public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
         this.current.setGroup(group);
       else
         this.group = group;
+
+    } else if ("project".equals(localName)) {
+      PSProject project = PSEntityFactory.toProject(atts, this.group);
+      if (this.current != null)
+        this.current.setGroup(project);
+      else
+        this.group = project;
 
     } else if ("details".equals(localName)) {
       PSDetails details = new PSDetails();
