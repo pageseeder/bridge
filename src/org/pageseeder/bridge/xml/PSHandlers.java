@@ -86,7 +86,7 @@ public final class PSHandlers {
   public static PSRole role(String role) {
     if (role == null) return null;
     try {
-      return PSRole.valueOf(role);
+      return PSRole.valueOf(role.replace('-', '_'));
     } catch (IllegalArgumentException ex) {
       LOGGER.warn("Found suspicious role value: {}", role);
       return null;
