@@ -30,4 +30,10 @@
     <funnel:lib-javadoc/>
   </target>
 
+  <!-- Deploy the build on the local installation -->
+  <target name="deploy-local" description="deploy the latest revision on the local install">
+    <loadproperties srcFile="local.properties"/>
+    <funnel:lib-deploy-local/>
+  </target>
+
 </project>
