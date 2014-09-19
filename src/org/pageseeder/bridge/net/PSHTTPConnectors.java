@@ -25,6 +25,7 @@ import org.pageseeder.bridge.model.PSComment.Author;
 import org.pageseeder.bridge.model.PSComment.Context;
 import org.pageseeder.bridge.model.PSDetails;
 import org.pageseeder.bridge.model.PSDocument;
+import org.pageseeder.bridge.model.PSExternalURI;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSMembership;
@@ -926,6 +927,56 @@ public final class PSHTTPConnectors {
   // ----------------------------------------------------------------------------------------------
 
   /**
+   * Returns the connector to retrieve a comment from PageSeeder.
+   *
+   * @param comment The ID of the comment to retrieve.
+   *
+   * @return The corresponding connector
+   * @throws FailedPrecondition if conditions fail
+   */
+  public static PSHTTPConnector getComment(PSMember member, Long comment) throws FailedPrecondition {
+    Preconditions.isIdentifiable(member, "member");
+    Preconditions.isNotNull(comment, "comment");
+    String service = Services.toGetComment(member.getIdentifier(), comment.toString());
+    return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+  }
+
+  /**
+   * Returns the connector to find comments from PageSeeder.
+   *
+   * @param member the author searching for comments
+   * @param group  the context group
+   * @param title  a comment title (can be null)
+   * @param type   a comment type (can be null)
+   * @param paths  a list of URI paths (can be null)
+   *
+   * @return The corresponding connector
+   * 
+   * @throws FailedPrecondition if conditions fail
+   */
+  public static PSHTTPConnector getCommentsByFilter(PSMember member, PSGroup group, String title, String type, List<String> paths) throws FailedPrecondition {
+    Preconditions.isIdentifiable(member, "member");
+    Preconditions.isNotNull(group, "group");
+    String service = Services.toGetCommentsByFilter(member.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    connector.addParameter("groups", group.getName());
+    // title
+    if (title != null) connector.addParameter("title", title);
+    // type
+    if (type != null) connector.addParameter("type", type);
+    // paths
+    if (paths != null) {
+      StringBuilder pathsAsString = new StringBuilder();
+      for (String p : paths) {
+        if (pathsAsString.length() != 0) pathsAsString.append(',');
+        pathsAsString.append(p);
+      }
+      connector.addParameter("paths", pathsAsString.toString());
+    }
+    return connector;
+  }
+
+  /**
    * Create a new comment in PageSeeder.
    *
    * @param comment The comment
@@ -1114,15 +1165,126 @@ public final class PSHTTPConnectors {
             uris.append('!').append(attachment.fragment());
           }
         } else {
-          if (urls.length() > 0) uris.append(',');
+          if (urls.length() > 0) urls.append(',');
           urls.append(uri.getURL());
           if (attachment.fragment() != null) {
-            uris.append('#').append(attachment.fragment());
+            urls.append('#').append(attachment.fragment());
           }
         }
       }
       // Add the parameters
       if (uris.length() > 0) connector.addParameter("uris", uris.toString());
+      if (urls.length() > 0) connector.addParameter("urls", urls.toString());
+    }
+
+    // Notification
+    if (notify != null) {
+      connector.addParameter("notify", notify.parameter());
+    }
+
+    return connector;
+  }
+
+  /**
+   * Edit an existing comment in PageSeeder.
+   *
+   * @param comment The comment
+   * @param notify  Notifications
+   * @param groups  The groups the comment is posted on
+   *
+   * @return the connector
+   *
+   * @throws FailedPrecondition
+   */
+  public static PSHTTPConnector editComment(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition {
+    // The author and context determine the service
+    Author author = comment.getAuthor();
+    Context context = comment.getContext();
+
+    // Basic preconditions to editing a comment
+    Preconditions.isIdentifiable(comment, "comment");
+    Preconditions.isNotEmpty(comment.getTitle(),   "title");
+    Preconditions.isNotEmpty(comment.getContent(), "content");
+    Preconditions.isNotNull(author,   "author");
+    Preconditions.isNotNull(context,  "context");
+    if (context.group() != null)
+      Preconditions.isNotEmpty(context.group().getName(),  "group");
+    if (context.uri() != null) {
+      Preconditions.isIdentifiable(context.uri(), "uri");
+      Preconditions.isNotNull(groups, "group");
+      if (groups.isEmpty())
+        throw new FailedPrecondition("At least one group must be specified when attaching a comment to a URI");
+    }
+
+    String service = Services.toEditComment(author.member().getIdentifier(), comment.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+
+    // Core parameters
+    connector.addParameter("title",       comment.getTitle());
+    connector.addParameter("content",     comment.getContent());
+    connector.addParameter("contenttype", comment.getMediaType());
+
+    // context
+    if (context.group() != null)
+      connector.addParameter("group", context.group().getName());
+    else if (context.uri() != null) {
+      connector.addParameter("uri", context.uri().getIdentifier());
+      if (context.fragment() != null)
+        connector.addParameter("fragment", context.fragment());
+    }
+
+    // Optional parameters
+    if (comment.hasLabels())
+      connector.addParameter("labels",    comment.getLabelsAsString());
+    if (comment.hasProperties())
+      connector.addParameter("properties", comment.getPropertiesAsString());
+    if (comment.getStatus() != null)
+      connector.addParameter("status", comment.getStatus());
+    if (comment.getPriority() != null)
+      connector.addParameter("priority", comment.getPriority());
+    if (comment.getAssignedTo() != null)
+      connector.addParameter("assignedto", comment.getAssignedTo().getId().toString());
+    if (comment.getDue() != null)
+      connector.addParameter("due", ISO8601.CALENDAR_DATE.format(comment.getDue().getTime()));
+    if (comment.getType() != null)
+      connector.addParameter("type", comment.getType());
+
+    // URL must be specified if the context is a URI but we don't know the ID
+    if (context.uri() != null && context.uri().getId() == null) {
+      connector.addParameter("url", context.uri().getURL());
+    }
+
+    // If context is not group
+    if (groups != null) {
+      StringBuilder p = new StringBuilder();
+      for (PSGroup group : groups) {
+        if (p.length() > 0) p.append(',');
+        Preconditions.isNotEmpty(group.getName(), "group name");
+        p.append(group.getName());
+      }
+      connector.addParameter("groups", p.toString());
+    }
+
+    // Author is not a PageSeeder member
+    if (author.member() == null) {
+      connector.addParameter("authorname", author.name());
+      if (author.email() != null)
+        connector.addParameter("authoremail", author.email());
+    }
+
+    // Attachments
+    if (comment.hasAttachments()) {
+      StringBuilder urls = new StringBuilder();
+      for (Attachment attachment : comment.getAttachments()) {
+        PSURI uri = attachment.uri();
+        Preconditions.isIdentifiable(uri, "uri");
+        if (urls.length() > 0) urls.append(',');
+        urls.append(uri.getURL());
+        if (attachment.fragment() != null) {
+          urls.append('#').append(attachment.fragment());
+        }
+      }
+      // Add the parameters
       if (urls.length() > 0) connector.addParameter("urls", urls.toString());
     }
 
@@ -1167,6 +1329,41 @@ public final class PSHTTPConnectors {
     Preconditions.isIdentifiable(comment, "comment");
     String service = Services.toUnarchiveComment(member.getIdentifier(), comment.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    return connector;
+  }
+
+  // External URIs
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Create an external URI.
+   *
+   * @param externaluri the external URI to create
+   * @param group       the group where it should be created
+   * @param creator     the member who creates it.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition Should any precondition fail.
+   */
+  public static PSHTTPConnector createExternalURI(PSExternalURI externaluri, PSGroup group, PSMember creator)
+      throws FailedPrecondition {
+    Preconditions.isNotNull(externaluri, "externaluri");
+    Preconditions.isNotEmpty(externaluri.getURL(), "url");
+    Preconditions.isIdentifiable(group, "group");
+    Preconditions.isIdentifiable(creator, "member");
+    String service = Services.toCreateExternalURIService(creator.getIdentifier(), group.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+
+    // document properties
+    String url = externaluri.getURL();
+    connector.addParameter("url", url);
+    connector.addParameter("mediatype", externaluri.getMediaType());
+    connector.addParameter("labels", externaluri.getLabelsAsString());
+    if (externaluri.getTitle() != null)       connector.addParameter("title", externaluri.getTitle());
+    if (externaluri.getDocid() != null)       connector.addParameter("docid", externaluri.getDocid());
+    if (externaluri.getDescription() != null) connector.addParameter("description", externaluri.getDescription());
+    if (externaluri.isFolder())               connector.addParameter("folder", "true");
     return connector;
   }
 

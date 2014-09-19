@@ -18,6 +18,7 @@ import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
+import org.pageseeder.bridge.xml.PSCommentHandler;
 
 /**
  * A manager for comments and tasks.
@@ -74,10 +75,36 @@ public final class CommentManager extends Sessionful {
    *
    * @param comment The comment to create
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
-   * @param groups   The group the comment should be posted against
+   * @param groups  The group the comment should be posted against
    */
   public boolean createComment(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
     PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, notify, groups).using(this._session);
+    PSHTTPResponseInfo info = connector.post();
+    return info.getStatus() == Status.SUCCESSFUL;
+  }
+
+  /**
+   * Edits the specified comment in PageSeeder.
+   *
+   * @param comment The comment to save
+   * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
+   * @param group   The group the comment should be posted against
+   */
+  public boolean save(PSComment comment, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.editComment(comment, notify, Collections.singletonList(group)).using(this._session);
+    PSHTTPResponseInfo info = connector.post();
+    return info.getStatus() == Status.SUCCESSFUL;
+  }
+
+  /**
+   * Edits the specified comment in PageSeeder.
+   *
+   * @param comment The comment to save
+   * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
+   * @param groups  The groups the comment should be posted against
+   */
+  public boolean save(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.editComment(comment, notify, groups).using(this._session);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
   }
@@ -118,6 +145,49 @@ public final class CommentManager extends Sessionful {
     PSHTTPConnector connector = PSHTTPConnectors.replyToComment(comment, notify, groups, xlink).using(this._session);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
+  }
+
+  /**
+   * Identify a comment from a specific comment ID.
+   *
+   * @param id     The ID of the comment.
+   * @param member The member who is trying to access the comment.
+   * 
+   * @return the matching comment (<code>null</code> if not found)
+   */
+  public PSComment getComment(long id, PSMember member) throws APIException {
+    PSComment comment = cache.get(Long.valueOf(id));
+    if (comment == null) {
+      PSHTTPConnector connector = PSHTTPConnectors.getComment(member, id).using(this._session);
+      PSCommentHandler handler = new PSCommentHandler();
+      connector.get(handler);
+      comment = handler.getComment();
+      if (comment != null)
+        cache.put(comment);
+    }
+    return comment;
+  }
+
+  /**
+   * Get a list of comments using filters.
+   *
+   * @param member The member who is trying to access the comments.
+   * @param group  The context group
+   * @param title  The comments title (can be <code>null</code>)
+   * @param type   The comments type (can be <code>null</code>)
+   * @param paths  A list of paths of URIs the comments must be attached to (can be <code>null</code>)
+   * 
+   * @return the list of comments found (never <code>null</code>)
+   */
+  public List<PSComment> getCommentsByFilter(PSMember member, PSGroup group,
+      String title, String type, List<String> paths) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.getCommentsByFilter(member, group, title, type, paths).using(this._session);
+    PSCommentHandler handler = new PSCommentHandler();
+    connector.get(handler);
+    List<PSComment> comments = handler.listComments();
+    // store them for later TODO??
+    for (PSComment comment : comments) cache.put(comment);
+    return comments;
   }
 
   /**

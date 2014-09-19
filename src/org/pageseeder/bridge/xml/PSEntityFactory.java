@@ -10,11 +10,13 @@ package org.pageseeder.bridge.xml;
 import org.pageseeder.bridge.PSEntityCache;
 import org.pageseeder.bridge.control.CommentManager;
 import org.pageseeder.bridge.control.DocumentManager;
+import org.pageseeder.bridge.control.ExternalURIManager;
 import org.pageseeder.bridge.control.GroupManager;
 import org.pageseeder.bridge.control.MemberManager;
 import org.pageseeder.bridge.control.MembershipManager;
 import org.pageseeder.bridge.model.PSComment;
 import org.pageseeder.bridge.model.PSDocument;
+import org.pageseeder.bridge.model.PSExternalURI;
 import org.pageseeder.bridge.model.PSFolder;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSGroupFolder;
@@ -256,6 +258,51 @@ public final class PSEntityFactory {
     return d;
   }
 
+  /**
+   *
+   * <uri id="2439"
+   *  scheme="http"
+   *    host="localhost"
+   *    port="8080"
+   *    path="/ps/acme/data/documents"
+   * decodedpath="/ps/acme/data/documents"
+   * external="true"
+   *  folder="true"
+   * mediatype="folder"
+   * created="2014-01-31T16:19:12+11:00"
+   *
+   * @param atts     The attributes the "uri" element
+   * @param document The PSDocument instance (may be <code>null</code>).
+   *
+   * @return The corresponding PSDocument.
+   */
+  public static PSExternalURI toExternalURI(Attributes atts, PSExternalURI externaluri) {
+    String id = atts.getValue("id");
+    String path = atts.getValue("path");
+    String description = atts.getValue("description");
+    String docid = atts.getValue("docid");
+    String filename = atts.getValue("filename");
+    String labels = atts.getValue("labels");
+    String title = atts.getValue("title");
+    String mediatype = atts.getValue("mediatype");
+    boolean folder = "true".equals(atts.getValue("folder"));
+
+    PSExternalURI u = externaluri;
+    if (u == null) {
+      PSEntityCache<PSExternalURI> cache = ExternalURIManager.getCache();
+      u = cache.get(id);
+      if (u == null)
+        u = new PSExternalURI(path);
+    }
+    u.setId(PSHandlers.id(id));
+    u.setDescription(description);
+    u.setDocid(docid);
+    u.setLabels(labels);
+    u.setTitle(title);
+    u.setMediaType(mediatype);
+    u.setFolder(folder);
+    return u;
+  }
 
   /**
    *

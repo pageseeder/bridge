@@ -806,7 +806,18 @@ public final class Services {
     return "/groups/"+group+"/uris/"+uri;
   }
 
-  // /members/{member:member}/groups/{group:group}/externaluris
+
+  /**
+   * Returns the URL to create an external URI.
+   *
+   * @param member the member id
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/uris/[uri]</code>.
+   */
+  public static String toCreateExternalURIService(String member, String group) {
+    return "/members/" + member + "/groups/" + group + "/externaluris";
+  }
 
   // /members/{member:member}/groups/{group:group}/externaluris/{uri:uri}
 
@@ -978,13 +989,33 @@ public final class Services {
     return "/members/"+member+"/uris/"+uri+"/fragments/"+fragment+"/discussions";
   }
 
+  /**
+   * Returns the URL to load a comment.
+   *
+   * @param member  the username or ID of the member
+   * @param comment the comment ID
+   *
+   * @return <code>/members/[userid]/comments/[xlinkid]</code>.
+   */
+  public static String toGetComment(String member, String comment) {
+    return "/members/" + member + "/comments/"+comment;
+  }
+
   // /discussions/forurl
 
   // /discussions/{discussion}
 
   // /members/{member:member}/comments/filter
 
-  // /comments/filter
+
+  /**
+   * Returns the URL to load comments by filter.
+   *
+   * @return <code>/member/[userid]/comments/filter</code>.
+   */
+  public static String toGetCommentsByFilter(String member) {
+    return "/members/" + member + "/comments/filter";
+  }
 
   // /uris/{uri:uri}/discussions
 

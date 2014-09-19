@@ -368,6 +368,17 @@ public final class PSComment implements PSEntity {
   }
 
   /**
+   * Set the context as an external URI.
+   *
+   * <p>Implementation note: This method creates a new context instance.
+   *
+   * @param externaluri The external URI to use as context
+   */
+  public void setContext(PSExternalURI externaluri) {
+    this.context = new Context(externaluri);
+  }
+
+  /**
    * Set the context as a document fragment.
    *
    * <p>Implementation note: This method creates a new context instance.
