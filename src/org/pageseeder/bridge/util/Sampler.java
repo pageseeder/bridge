@@ -48,7 +48,9 @@ public final class Sampler {
    * @return A random first name.
    */
   public String nextFirstName() {
-    if (firstNames == null) firstNames = load("firstnames.txt");
+    if (firstNames == null) {
+      firstNames = load("firstnames.txt");
+    }
     return firstNames[this.random.nextInt(firstNames.length)];
   }
 
@@ -58,7 +60,9 @@ public final class Sampler {
    * @return A random last name.
    */
   public String nextLastName() {
-    if (lastNames == null) lastNames = load("lastnames.txt");
+    if (lastNames == null) {
+      lastNames = load("lastnames.txt");
+    }
     return lastNames[this.random.nextInt(lastNames.length)];
   }
 
@@ -97,8 +101,8 @@ public final class Sampler {
     String lastname = nextLastName();
     int no = nextInt(0, 10000);
     String email = (firstname+lastname+no).toLowerCase()+"@sampler.local";
-    member.setFirstname(nextFirstName());
-    member.setSurname(nextLastName());
+    member.setFirstname(firstname);
+    member.setSurname(lastname);
     member.setEmail(email);
     member.setUsername((firstname+lastname+no).toLowerCase());
     return member;
