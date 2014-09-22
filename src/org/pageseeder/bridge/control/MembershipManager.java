@@ -20,16 +20,86 @@ import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSMembership;
 import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
+import org.pageseeder.bridge.net.PSHTTPResponseInfo;
+import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
 import org.pageseeder.bridge.xml.PSMembershipHandler;
 
 /**
- * A manager for memberships (based on PageSeeder MemberForGroups and Details)
+ * A manager for memberships (based on PageSeeder MemberForGroups and Details).
  *
  * @author Christophe Lauret
- * @version 0.2.0
+ * @version 0.2.32
  * @since 0.2.0
  */
 public final class MembershipManager extends Sessionful {
+
+  /**
+   * The results of creating a membership operation.
+   */
+  public enum MembershipResult {
+
+    ok,
+
+    invalid_username,
+
+    invalid_email,
+
+    invalid_group,
+
+    already_in_use,
+
+    already_a_member,
+
+    password_too_weak,
+
+    invalid_password,
+
+    too_many_members,
+
+    member_details_misconfigured,
+
+    no_moderator,
+
+    unknown;
+
+    /**
+     * Returns the membership results for the specified response info.
+     *
+     * @param info The response info from the connector
+     *
+     * @return The corresponding membership result.
+     */
+    public static MembershipResult forResponse(PSHTTPResponseInfo info) {
+      if (info.isSuccessful()) return ok;
+      final int _error = info.getCode();
+      switch (_error) {
+        // 0x1001 If the username contains the character '@'.".
+        case 0x1001: return invalid_username;
+        // 0x1002 If the email address is invalid.
+        case 0x1002: return invalid_email;
+        // 0x1003 If the specified group is a personal group.
+        case 0x1003: return invalid_group;
+        // 0x1004 If the username or email are already in use.
+        case 0x1004: return already_in_use;
+        // 0x1005 If the maximum number of members on the server has been reached
+        case 0x1005: return too_many_members;
+        // 0x1015 Password is too weak
+        case 0x1015: return password_too_weak;
+        // 0x1016 Password is equal to username
+        case 0x1016: return invalid_password;
+        // 0x1023 Invite to admin group not allowed
+        case 0x1023: return invalid_group;
+        // 0x1025 The member already belongs to the group
+        case 0x1025: return already_a_member;
+        // 0x6004 If the member details have not been configured properly
+        case 0x6004: return member_details_misconfigured;
+        // 0x6005 Group has no moderator with an email address (when Self Registration: Moderated)
+        case 0x6005: return already_a_member;
+        // Any other
+        default: return MembershipResult.unknown;
+      }
+    }
+  }
 
   /**
    * Internal cache for memberships
@@ -49,25 +119,38 @@ public final class MembershipManager extends Sessionful {
    * Creates the specified membership in PageSeeder.
    *
    * @param membership The Membership to create.
+   *
+   * @return The result of the membership creation as an enumeration value.
+   *
+   * @throws APIException if the operation is not successful or caused by client.
    */
-  public void create(PSMembership membership) throws APIException {
+  public MembershipResult create(PSMembership membership) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
     PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, null, true).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.post(handler);
+    PSHTTPResponseInfo info = connector.post(handler);
+    Status status = info.getStatus();
+    if (status != Status.SUCCESSFUL || status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    return MembershipResult.forResponse(info);
   }
-
 
   /**
    * Creates the specified membership in PageSeeder.
    *
    * @param membership The Membership to create.
    * @param password   The password for the user (must be strong enough)
+   *
+   * @return The result of the membership creation as an enumeration value.
+   *
+   * @throws APIException if the operation is not successful or caused by client.
    */
-  public void create(PSMembership membership, String password) throws APIException {
+  public MembershipResult create(PSMembership membership, String password) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, password, true).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.post(handler);
+    PSHTTPResponseInfo info = connector.post(handler);
+    Status status = info.getStatus();
+    if (status != Status.SUCCESSFUL || status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    return MembershipResult.forResponse(info);
   }
 
   /**
@@ -75,29 +158,44 @@ public final class MembershipManager extends Sessionful {
    *
    * @param membership The membership to create.
    * @param email      <code>true</code> to send a welcome email; <code>false</code> to silently add the member.
+   *
+   * @return The result of the membership creation as an enumeration value.
+   *
+   * @throws APIException if the operation is not successful or caused by client.
    */
-  public void add(PSMembership membership, boolean email) throws APIException {
+  public MembershipResult add(PSMembership membership, boolean email) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
     MemberOptions options = new MemberOptions();
     options.setInvitation(Invitation.NO);
     options.setWelcomeEmail(false);
     PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.post(handler);
+    PSHTTPResponseInfo info = connector.post(handler);
+    Status status = info.getStatus();
+    if (status != Status.SUCCESSFUL || status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    return MembershipResult.forResponse(info);
   }
 
   /**
    * Invite a member to the group.
    *
-   * <p>This method will use the default options by sending a welcome email and an invitation based on the group properties.
+   * <p>This method will use the default options by sending a welcome email and an invitation
+   * based on the group properties.
    *
    * @param membership The membership to create.
+   *
+   * @return The result of the membership creation as an enumeration value.
+   *
+   * @throws APIException if the operation is not successful or caused by client.
    */
-  public void invite(PSMembership membership) throws APIException {
+  public MembershipResult invite(PSMembership membership) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
     PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, new MemberOptions()).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.post(handler);
+    PSHTTPResponseInfo info = connector.post(handler);
+    Status status = info.getStatus();
+    if (status != Status.SUCCESSFUL || status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    return MembershipResult.forResponse(info);
   }
 
   /**
@@ -106,14 +204,21 @@ public final class MembershipManager extends Sessionful {
    * @param membership The membership to create.
    * @param email      <code>true</code> to send a welcome email;
    *                   <code>false</code> to silently add the member.
+   *
+   * @return The result of the membership creation as an enumeration value.
+   *
+   * @throws APIException if the operation is not successful or caused by client.
    */
-  public void invite(PSMembership membership, boolean email) throws APIException {
+  public MembershipResult invite(PSMembership membership, boolean email) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
     MemberOptions options = new MemberOptions();
     options.setWelcomeEmail(email);
     PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.post(handler);
+    PSHTTPResponseInfo info = connector.post(handler);
+    Status status = info.getStatus();
+    if (status != Status.SUCCESSFUL || status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    return MembershipResult.forResponse(info);
   }
 
   /**
@@ -123,12 +228,19 @@ public final class MembershipManager extends Sessionful {
    *
    * @param membership The membership to create.
    * @param options    The member options.
+   *
+   * @return The result of the membership creation as an enumeration value.
+   *
+   * @throws APIException if the operation is not successful or caused by client.
    */
-  public void invite(PSMembership membership, MemberOptions options) throws APIException {
+  public MembershipResult invite(PSMembership membership, MemberOptions options) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
     PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.post(handler);
+    PSHTTPResponseInfo info = connector.post(handler);
+    Status status = info.getStatus();
+    if (status != Status.SUCCESSFUL || status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    return MembershipResult.forResponse(info);
   }
 
   /**
@@ -137,12 +249,19 @@ public final class MembershipManager extends Sessionful {
    * <p>A welcome email will be sent to the user.
    *
    * @param membership The membership to create.
+   *
+   * @return The result of the membership creation as an enumeration value.
+   *
+   * @throws APIException if the operation is not successful or caused by client.
    */
-  public void inviteSelf(PSMembership membership) throws APIException {
+  public MembershipResult inviteSelf(PSMembership membership) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
     PSHTTPConnector connector = PSHTTPConnectors.inviteSelf(membership, true).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.post(handler);
+    PSHTTPResponseInfo info = connector.post(handler);
+    Status status = info.getStatus();
+    if (status != Status.SUCCESSFUL || status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    return MembershipResult.forResponse(info);
   }
 
   /**
@@ -153,24 +272,38 @@ public final class MembershipManager extends Sessionful {
    * @param membership The membership to create.
    * @param email      <code>true</code> to send the welcome email;
    *                   <code>false</code> otherwise (the member is added silently)
+   *
+   * @return The result of the membership creation as an enumeration value.
+   *
+   * @throws APIException if the operation is not successful or caused by client.
    */
-  public void inviteSelf(PSMembership membership, boolean email) throws APIException {
+  public MembershipResult inviteSelf(PSMembership membership, boolean email) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
     PSHTTPConnector connector = PSHTTPConnectors.inviteSelf(membership, true).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.post(handler);
+    PSHTTPResponseInfo info = connector.post(handler);
+    Status status = info.getStatus();
+    if (status != Status.SUCCESSFUL || status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    return MembershipResult.forResponse(info);
   }
 
   /**
    * Creates the specified membership in PageSeeder.
    *
    * @param membership The Membership to create.
+   *
+   * @return The result of the membership creation as an enumeration value.
+   *
+   * @throws APIException if the operation is not successful or caused by client.
    */
-  public void register(PSMembership membership) throws APIException {
+  public MembershipResult register(PSMembership membership) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
     PSHTTPConnector connector = PSHTTPConnectors.registerMembership(membership).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.post(handler);
+    PSHTTPResponseInfo info = connector.post(handler);
+    Status status = info.getStatus();
+    if (status != Status.SUCCESSFUL || status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    return MembershipResult.forResponse(info);
   }
 
   /**
@@ -181,8 +314,6 @@ public final class MembershipManager extends Sessionful {
    *
    * @return The corresponding membership if it exists
    *         or <code>null</code> if the member does not belong to the group
-   *
-   * @throws APIException
    */
   public PSMembership get(String group, String member) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(group, member).using(this._session);
@@ -234,7 +365,7 @@ public final class MembershipManager extends Sessionful {
    * Saves the specified membership in PageSeeder.
    *
    * @param membership The Membership to create.
-   * @param forceEmail A boolean to force emeil change
+   * @param forceEmail A boolean to force email change
    */
   public void save(PSMembership membership, boolean forceEmail) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
@@ -310,4 +441,5 @@ public final class MembershipManager extends Sessionful {
   public static PSEntityCache<PSMembership> getCache() {
     return cache;
   }
+
 }
