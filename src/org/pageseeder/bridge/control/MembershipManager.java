@@ -149,7 +149,6 @@ public final class MembershipManager extends Sessionful {
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
-    System.err.println(status);
     if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
     return MembershipResult.forResponse(info);
   }
