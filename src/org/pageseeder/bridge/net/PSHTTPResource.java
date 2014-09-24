@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.pageseeder.bridge.PSConfig;
+import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
 
 /**
@@ -156,15 +157,15 @@ public final class PSHTTPResource {
    * <p>If the user is specified, its details will be included in the URL so that the resource can
    * be accessed on his behalf.
    *
-   * @param session               A PageSeeder session to access this resource.
+   * @param credentials           Authentication method to generate the URL
    * @param includePOSTParameters Whether to include the parameters for POST requests.
    *
    * @return the URL to access this resource.
    *
    * @throws MalformedURLException If the URL is not well-formed
    */
-  protected URL toURL(PSSession session, boolean includePOSTParameters) throws MalformedURLException {
-    return new URL(toURLString(session, includePOSTParameters));
+  protected URL toURL(PSCredentials credentials, boolean includePOSTParameters) throws MalformedURLException {
+    return new URL(toURLString(credentials, includePOSTParameters));
   }
 
   /**
@@ -176,7 +177,9 @@ public final class PSHTTPResource {
     StringBuilder q = new StringBuilder();
     try {
       for (Entry<String, String> p : this._parameters.entrySet()) {
-        if (q.length() > 0) q.append("&");
+        if (q.length() > 0) {
+          q.append("&");
+        }
         q.append(URLEncoder.encode(p.getKey(), "utf-8"));
         q.append("=").append(URLEncoder.encode(p.getValue(), "utf-8"));
       }
@@ -203,12 +206,12 @@ public final class PSHTTPResource {
    * <p>If the user is specified, its details will be included in the URL so that the resource can
    * be accessed on his behalf.
    *
-   * @param session           A PageSeeder session to access this resource.
+   * @param credentials       PageSeeder credentials to generathe query string
    * @param includeParameters Whether to include the parameters for POST requests.
    *
    * @return the URL to access this resource.
    */
-  private String toURLString(PSSession session, boolean includeParameters) {
+  private String toURLString(PSCredentials credentials, boolean includeParameters) {
     PSConfig pageseeder = PSConfig.singleton();
 
     // Start building the URL
@@ -236,9 +239,9 @@ public final class PSHTTPResource {
     }
 
     // If the session ID is available
-    if (session != null) {
+    if (credentials instanceof PSSession) {
       // Use the specified user if available
-      url.append(";jsessionid=").append(session);
+      url.append(";jsessionid=").append(credentials);
     }
 
     // Query Part
@@ -254,20 +257,25 @@ public final class PSHTTPResource {
     // When not using the "application/x-www-form-urlencoded"
     boolean firstParameter = query == null && this._type == PSHTTPResourceType.SERVICE;
     if (includeParameters) {
-      try {
-        for (Entry<String, String> p : this._parameters.entrySet()) {
-          url.append(firstParameter? '?' : '&').append(URLEncoder.encode(p.getKey(), "utf-8"));
-          url.append("=").append(URLEncoder.encode(p.getValue(), "utf-8"));
-          firstParameter = false;
-        }
-      } catch (UnsupportedEncodingException ex) {
-        // Should never happen as UTF-8 is supported
-        ex.printStackTrace();
+      for (Entry<String, String> p : this._parameters.entrySet()) {
+        url.append(firstParameter? '?' : '&').append(encodeWithUTF8(p.getKey()));
+        url.append("=").append(encodeWithUTF8(p.getValue()));
+        firstParameter = false;
       }
     }
+
+    // PageSeeder prior to version 5.6
+    if (credentials instanceof UsernamePassword) {
+      UsernamePassword up = (UsernamePassword)credentials;
+      url.append(firstParameter? '?' : '&').append("username");
+      url.append("=").append(encodeWithUTF8(up.username()));
+      url.append("&password=").append(encodeWithUTF8(up.password()));
+    }
+
     // Fragment if any
-    if (frag != null)
+    if (frag != null) {
       url.append(frag);
+    }
     return url.toString();
   }
 
@@ -308,6 +316,22 @@ public final class PSHTTPResource {
   private static String getURLFragment(String resource) {
     int h = resource.indexOf('#');
     return h >= 0 ? resource.substring(h) : null;
+  }
+
+  /**
+   * URL encode using UTF-8 without throwing a <code>UnsupportedEncodingException</code> which
+   * can never occur.
+   *
+   * @param s string to encoded (e.g. parameter)
+   * @return the URL encoded string
+   */
+  private static String encodeWithUTF8(String s) {
+    try {
+      return URLEncoder.encode(s, "utf-8");
+    } catch (UnsupportedEncodingException ex) {
+      // this should never happen since "utf" support is required by JDK.
+      throw new RuntimeException(ex);
+    }
   }
 
   // Private helpers

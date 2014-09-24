@@ -1,3 +1,10 @@
+/*
+ * This file is part of the PageSeeder Bridge API.
+ *
+ * For licensing information please see the file license.txt included in the release.
+ * A copy of this licence can also be found at
+ *   http://www.opensource.org/licenses/artistic-license-2.0.php
+ */
 package org.pageseeder.bridge.net;
 
 /**
@@ -15,6 +22,10 @@ package org.pageseeder.bridge.net;
  */
 public final class Servlets {
 
+  /** Utility class */
+  private Servlets() {
+  }
+
   /**
    * The document browser Servlet <code>com.pageseeder.review.DocumentBrowser</code>.
    */
@@ -24,6 +35,11 @@ public final class Servlets {
    * The generic search Servlet <code>com.pageseeder.search.GenericSearch</code>.
    */
   public static final String GENERIC_SEARCH = "com.pageseeder.search.GenericSearch";
+
+  /**
+   * The login Servlet.
+   */
+  public static final String LOGIN_SERVLET = "com.pageseeder.Login";
 
   /**
    * The upload search Servlet <code>com.pageseeder.upload.servlets.UploadServlet</code>.

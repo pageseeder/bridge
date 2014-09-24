@@ -16,7 +16,7 @@ import java.io.Serializable;
  * @version 0.2.27
  * @since 0.1.0
  */
-public final class PSSession implements Serializable {
+public final class PSSession implements PSCredentials, Serializable {
 
   /**
    * As per recommendation for the {@link Serializable} interface.
@@ -109,9 +109,7 @@ public final class PSSession implements Serializable {
     if (cookie != null && cookie.length() > name.length()) {
       int from = cookie.indexOf(name);
       int to = cookie.indexOf(';', from+name.length());
-      if (from != -1 && to != -1) {
-        return new PSSession(cookie.substring(from+name.length(), to));
-      }
+      if (from != -1 && to != -1) return new PSSession(cookie.substring(from+name.length(), to));
     }
     // no sessionid it seems.
     return null;

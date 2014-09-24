@@ -36,6 +36,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
 import org.slf4j.Logger;
@@ -58,7 +59,7 @@ import com.topologi.diffx.xml.XMLWriter;
  *
  * @author Christophe Lauret
  *
- * @version 0.3.0
+ * @version 0.3.32
  * @since 0.2.0
  */
 public final class PSHTTPConnection {
@@ -409,8 +410,9 @@ public final class PSHTTPConnection {
    * @throws IOException If an error occurs when trying to write the XML.
    */
   public void process(PSHTTPResponseInfo response, OutputStream out) throws IOException {
-    if (this._method == Method.MULTIPART)
+    if (this._method == Method.MULTIPART) {
       endMultipart();
+    }
     try {
       // Retrieve the content of the response
       int status = this._connection.getResponseCode();
@@ -447,8 +449,9 @@ public final class PSHTTPConnection {
    * @throws IOException If an error occurs when trying to write the XML.
    */
   public void process(PSHTTPResponseInfo response, DefaultHandler handler) throws IOException {
-    if (this._method == Method.MULTIPART)
+    if (this._method == Method.MULTIPART) {
       endMultipart();
+    }
     try {
       // Retrieve the content of the response
       int status = this._connection.getResponseCode();
@@ -493,8 +496,9 @@ public final class PSHTTPConnection {
    * @throws IOException If an error occurs when trying to write the XML.
    */
   public void process(PSHTTPResponseInfo response, XMLWriter xml) throws IOException {
-    if (this._method == Method.MULTIPART)
+    if (this._method == Method.MULTIPART) {
       endMultipart();
+    }
     try {
       // Retrieve the content of the response
       int status = this._connection.getResponseCode();
@@ -565,8 +569,9 @@ public final class PSHTTPConnection {
    */
   public PSHTTPResponseInfo process(PSHTTPResponseInfo response, XMLWriter xml, Templates templates, Map<String, String> parameters)
       throws IOException {
-    if (this._method == Method.MULTIPART)
+    if (this._method == Method.MULTIPART) {
       endMultipart();
+    }
     try {
       // Retrieve the content of the response
       int status = this._connection.getResponseCode();
@@ -616,8 +621,9 @@ public final class PSHTTPConnection {
   private static String getMediaType(HttpURLConnection connection) {
     String mediaType = connection.getContentType();
     // Strip ";charset" declaration if any
-    if (mediaType != null && mediaType.indexOf(";charset=") > 0)
+    if (mediaType != null && mediaType.indexOf(";charset=") > 0) {
       mediaType = mediaType.substring(0, mediaType.indexOf(";charset="));
+    }
     return mediaType;
   }
 
@@ -633,16 +639,6 @@ public final class PSHTTPConnection {
     } else {
       String cookie = connection.getHeaderField("Set-Cookie");
       this.session = PSSession.parseSetCookieHeader(cookie);
-
-      // TODO Not necessarily anonymous if credentials were supplied!
-//      LOGGER.info("Setting anonymous PageSeeder session");
-//      PSSession tmp = Sessions.getAnonymous();
-//      if (Sessions.isValid(tmp)) {
-//        tmp.update();
-//      } else {
-//        LOGGER.info("Setting anonymous PageSeeder session");
-//        Sessions.setAnonymous(this.session);
-//      }
     }
   }
 
@@ -669,20 +665,28 @@ public final class PSHTTPConnection {
    *   <li>Ignore cache by default</li>
    * </ul>
    *
-   * @param resource The resource to connect to.
-   * @param type     The type of connection.
-   * @param session  The user login to use (optional).
+   * @param resource    The resource to connect to.
+   * @param type        The type of connection.
+   * @param credentials The user login to use (optional).
+   *
    * @return A newly opened connection to the specified URL
    * @throws IOException Should an exception be returns while opening the connection
    */
-  protected static PSHTTPConnection connect(PSHTTPResource resource, Method type, PSSession session) throws IOException {
-    URL url = resource.toURL(session, type == Method.POST ? false : true);
+  protected static PSHTTPConnection connect(PSHTTPResource resource, Method type, PSCredentials credentials)
+      throws IOException {
+    URL url = resource.toURL(credentials, type == Method.POST ? false : true);
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setDoOutput(true);
     connection.setInstanceFollowRedirects(true);
     connection.setRequestMethod(type == Method.MULTIPART ? "POST" : type.name());
     connection.setDefaultUseCaches(false);
     connection.setRequestProperty("X-Requester", "PS-Bridge-"+API_VERSION);
+    if (credentials instanceof UsernamePassword) {
+      // Use Basic Auth (5.6+)
+      connection.addRequestProperty("Authorization", ((UsernamePassword)credentials).toBasicAuthorization());
+    }
+
+    PSSession session = credentials instanceof PSSession? (PSSession)credentials : null;
     PSHTTPConnection instance = null;
 
     // POST using "application/x-www-form-urlencoded"
@@ -764,7 +768,9 @@ public final class PSHTTPConnection {
 
       // Ensure the encoding is correct
       String encoding = connection.getContentEncoding();
-      if (encoding != null) source.setEncoding(encoding);
+      if (encoding != null) {
+        source.setEncoding(encoding);
+      }
 
       // And parse!
       SAXParser parser = factory.newSAXParser();
@@ -921,7 +927,9 @@ public final class PSHTTPConnection {
       // Setup the input source
       InputSource source = new InputSource(err);
       String encoding = connection.getContentEncoding();
-      if (encoding != null) source.setEncoding(encoding);
+      if (encoding != null) {
+        source.setEncoding(encoding);
+      }
 
       // And parse!
       PSErrorHandler.parseError(source, info);
@@ -969,8 +977,9 @@ public final class PSHTTPConnection {
    */
   private static void closeQuietly(Closeable closeable) {
     try {
-      if (closeable != null)
+      if (closeable != null) {
         closeable.close();
+      }
     } catch (IOException ex) {
       LOGGER.debug("thrown when attempting to close quietly: {}", ex.getMessage(), ex);
     }
@@ -985,8 +994,9 @@ public final class PSHTTPConnection {
    * @throws IOException Any error reported while writing on the output
    */
   private static void write(String data, OutputStream output) throws IOException {
-    if (data != null)
+    if (data != null) {
       output.write(data.getBytes(UTF8));
+    }
   }
 
   /**
@@ -1124,7 +1134,9 @@ public final class PSHTTPConnection {
 
     @Override
     public void characters(char[] ch, int start, int length) {
-      if (this.isMessage) this.message.append(ch, start, length);
+      if (this.isMessage) {
+        this.message.append(ch, start, length);
+      }
     }
 
     /**

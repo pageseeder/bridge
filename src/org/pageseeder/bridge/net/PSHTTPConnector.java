@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.xml.transform.Templates;
 
 import org.pageseeder.bridge.APIException;
+import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.net.PSHTTPConnection.Method;
 import org.slf4j.Logger;
@@ -67,6 +68,11 @@ public final class PSHTTPConnector {
   private final PSHTTPResource.Builder _resource;
 
   /**
+   * Credentials that can be used to connect to the connector.
+   */
+  private PSCredentials credentials = null;
+
+  /**
    * If specified, the request will be made on behalf of that user.
    */
   private PSSession session = null;
@@ -82,13 +88,28 @@ public final class PSHTTPConnector {
   }
 
   /**
-   * Sets the user for this request as a chainable method.
+   * Sets the session for this request as a chainable method.
    *
-   * @param user the user for this request.
+   * @param session the user for this request.
    * @return this connector
    */
-  public PSHTTPConnector using(PSSession user) {
-    this.session = user;
+  public PSHTTPConnector using(PSSession session) {
+    this.credentials = session;
+    this.session = session;
+    return this;
+  }
+
+  /**
+   * Sets the username and password for this request as a chainable method.
+   *
+   * @param username the user for this request.
+   * @param password the password
+   *
+   * @return this connector
+   */
+  public PSHTTPConnector using(String username, String password) {
+    if (this.session != null) throw new IllegalStateException("Session already specified.");
+    this.credentials = new UsernamePassword(username, password);
     return this;
   }
 
@@ -390,7 +411,7 @@ public final class PSHTTPConnector {
     PSHTTPResource resource = this._resource.build();
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     try {
-      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.session);
+      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.credentials);
       connection.process(response, out);
       // get the session
       this.session = connection.getSession();
@@ -416,7 +437,7 @@ public final class PSHTTPConnector {
     PSHTTPResource resource = this._resource.build();
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     try {
-      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.session);
+      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.credentials);
       connection.process(response, handler);
       this.session = connection.getSession();
     } catch (IOException ex) {
@@ -445,7 +466,7 @@ public final class PSHTTPConnector {
     PSHTTPResource resource = this._resource.build();
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     try {
-      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.session);
+      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.credentials);
       connection.process(response, xml);
       this.session = connection.getSession();
     } catch (IOException ex) {
@@ -477,7 +498,7 @@ public final class PSHTTPConnector {
     PSHTTPResource resource = this._resource.build();
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     try {
-      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.session);
+      PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.credentials);
       connection.process(response, xml, templates, parameters);
       this.session = connection.getSession();
     } catch (IOException ex) {

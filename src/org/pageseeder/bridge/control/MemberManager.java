@@ -16,15 +16,17 @@ import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PasswordResetOptions;
 import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
+import org.pageseeder.bridge.net.PSHTTPResourceType;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
+import org.pageseeder.bridge.net.Servlets;
 import org.pageseeder.bridge.xml.PSMemberHandler;
 
 /**
  * A manager for groups and projects (based on PageSeeder Groups).
  *
  * @author Christophe Lauret
- * @version 0.3.0
+ * @version 0.3.32
  * @since 0.2.0
  */
 public final class MemberManager extends Sessionful {
@@ -60,8 +62,9 @@ public final class MemberManager extends Sessionful {
       PSMemberHandler handler = new PSMemberHandler();
       connector.get(handler);
       member = handler.get();
-      if (member != null)
+      if (member != null) {
         cache.put(member);
+      }
     }
     return member;
   }
@@ -77,8 +80,9 @@ public final class MemberManager extends Sessionful {
     PSMemberHandler handler = new PSMemberHandler(member);
     connector.post(handler);
     PSMember m = handler.get();
-    if (m != null)
+    if (m != null) {
       cache.put(m);
+    }
   }
 
   /**
@@ -98,8 +102,9 @@ public final class MemberManager extends Sessionful {
       PSMemberHandler handler = new PSMemberHandler(member);
       connector.get(handler);
       m = handler.get();
-      if (member != null)
+      if (member != null) {
         cache.put(m);
+      }
     }
     return m;
   }
@@ -116,8 +121,9 @@ public final class MemberManager extends Sessionful {
     PSMemberHandler handler = new PSMemberHandler(member);
     connector.post(handler);
     PSMember m = handler.get();
-    if (m != null)
+    if (m != null) {
       cache.put(m);
+    }
   }
 
   /**
@@ -238,6 +244,43 @@ public final class MemberManager extends Sessionful {
     PSHTTPConnector connector = PSHTTPConnectors.resetPassword(group, member, options).using(this._session);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
+  }
+
+  /**
+   * Logout the user from the current session in PageSeeder.
+   *
+   * <p>This will invalidate the session on PageSeeder. After calling this method, other methods
+   * will fail if the call requires
+   *
+   * @return <code>true</code> if the user was successfully logout;
+   *         <code>false</code> if it was not.
+   *
+   * @throws APIException If an error occurs while connecting to PageSeeder.
+   */
+  public boolean logout() throws APIException {
+    return logout(this._session);
+  }
+
+  /**
+   * Logout the user from the current session in PageSeeder.
+   *
+   * <p>This will invalidate the session on PageSeeder, the session should no longer
+   * be used and be discarded.
+   *
+   * @param session The session to use to logout.
+   *
+   * @return <code>true</code> if the user was successfully logout;
+   *         <code>false</code> if it was not.
+   *
+   * @throws APIException If an error occurs while connecting to PageSeeder.
+   */
+  public static boolean logout(PSSession session) throws APIException {
+    if (session == null) throw new NullPointerException("Session is required to logout.");
+    String servlet = Servlets.LOGIN_SERVLET;
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, servlet);
+    connector.using(session);
+    connector.addParameter("action", "logout");
+    return connector.get().isSuccessful();
   }
 
   /**
