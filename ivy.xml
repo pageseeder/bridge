@@ -20,7 +20,7 @@
     <dependency org="javax"      name="jcache-api"           rev="1.0.0"   conf="core"/>
 
     <!-- TODO: Removed eventually -->
-    <dependency org="ehcache"    name="ehcache-core"    rev="2.5+"   conf="core"/>
+    <dependency org="ehcache"    name="ehcache"         rev="2.8+"   conf="core"/>
     <dependency org="weborganic" name="wo-berlioz"      rev="0.9+"   conf="core"/>
 
   </dependencies>
