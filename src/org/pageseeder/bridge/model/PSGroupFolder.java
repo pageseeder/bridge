@@ -51,17 +51,17 @@ public class PSGroupFolder extends PSAddressable implements PSEntity {
 
   @Override
   public String getKey() {
-    return this.getURL();
+    return getURL();
   }
 
   @Override
   public boolean isIdentifiable() {
-    return this.id != null || this.getURL() != null;
+    return this.id != null || getURL() != null;
   }
 
   @Override
   public String getIdentifier() {
-    return this.id != null? this.id.toString() : this.getURL();
+    return this.id != null? this.id.toString() : getURL();
   }
 
   /**
@@ -129,7 +129,7 @@ public class PSGroupFolder extends PSAddressable implements PSEntity {
 
   @Override
   public String toString() {
-    return "GF("+this.id+":"+this.getURL()+")";
+    return "GF("+this.id+":"+getURL()+")";
   }
 
   // Static helpers
@@ -137,7 +137,7 @@ public class PSGroupFolder extends PSAddressable implements PSEntity {
 
   public static PSGroupFolder forPath(String path) {
     PSGroupFolder f = new PSGroupFolder(path);
-    PSConfig p = PSConfig.singleton();
+    PSConfig p = PSConfig.getDefault();
     f.setScheme(p.getScheme());
     f.setHost(p.getHost());
     f.setPort(p.getPort());

@@ -212,10 +212,10 @@ public final class PSHTTPResource {
    * @return the URL to access this resource.
    */
   private String toURLString(PSCredentials credentials, boolean includeParameters) {
-    PSConfig pageseeder = PSConfig.singleton();
+    PSConfig ps = PSConfig.getDefault();
 
     // Start building the URL
-    StringBuilder url = pageseeder.buildAPIURL();
+    StringBuilder url = ps.buildAPIURL();
 
     // Decompose the resource (in case it contains a query or fragment part)
     String path  = getURLPath(this._name);
@@ -224,13 +224,12 @@ public final class PSHTTPResource {
 
     // Servlets
     if (this._type == PSHTTPResourceType.SERVLET) {
-      url.append(pageseeder.getServletPrefix()).append('/');
+      url.append(ps.getSitePrefix()).append("/servlet/");
       url.append(path);
 
     // Services
     } else if (this._type == PSHTTPResourceType.SERVICE) {
-      url.append(pageseeder.getSitePrefix());
-      url.append("/service");
+      url.append(ps.getSitePrefix()).append("/service");
       url.append(path);
 
     // Any other resource

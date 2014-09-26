@@ -148,8 +148,9 @@ public final class GroupManager extends Sessionful {
     if (info.getCode() >= 400)
       throw new APIException("Unable to create group folder '"+url+"': "+info.getMessage());
     PSGroupFolder folder = handler.get();
-    if (folder != null)
+    if (folder != null) {
       folders.put(folder);
+    }
   }
 
   /**
@@ -170,8 +171,9 @@ public final class GroupManager extends Sessionful {
       PSGroupHandler handler = new PSGroupHandler();
       connector.get(handler);
       group = handler.get();
-      if (group != null)
+      if (group != null) {
         cache.put(group);
+      }
     }
     return group;
   }
@@ -215,8 +217,9 @@ public final class GroupManager extends Sessionful {
       if (info.getCode() >= 400)
         throw new APIException("Unable to find group folder '"+url+"': "+info.getMessage());
       folder = handler.get();
-      if (folder != null)
+      if (folder != null) {
         folders.put(folder);
+      }
     }
     return folder;
   }
@@ -297,10 +300,13 @@ public final class GroupManager extends Sessionful {
   }
 
   /**
+   * @deprecated Use <code>PSConfig.getDefault().getHostURL()</code>;
+   *
    * @return the host URL.
    */
+  @Deprecated
   public static String getHostURL() {
-    return PSConfig.singleton().getHostURL();
+    return PSConfig.getDefault().getHostURL();
   }
 
 }

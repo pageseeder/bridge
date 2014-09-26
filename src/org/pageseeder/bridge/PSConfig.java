@@ -7,97 +7,125 @@
  */
 package org.pageseeder.bridge;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.Properties;
+import java.util.ServiceLoader;
+
+import org.pageseeder.bridge.spi.ConfigProvider;
 
 /**
  * Configuration of the PageSeeder server that the API should use to connect.
  *
  * @author Christophe Lauret
- * @version 0.1.1
+ *
+ * @version 0.3.1
  * @since 0.1.0
  */
-public class PSConfig {
+public final class PSConfig {
 
-  private volatile static PSConfig singleton = null;
+  /** The default URI for user access. */
+  protected static final URI DEFAULT_URI = URI.create("http://localhost:8080");
 
-  private final Properties config;
+  /** The default URI for API access. */
+  protected static final  URI DEFAULT_API = URI.create("http://localhost:8282");
 
-  private final String scheme;
+  /** The default PageSeeder site prefix. */
+  protected static final String DEFAULT_PREFIX = "/ps";
 
-  private final String apiScheme;
+  /** Default config instance. */
+  private static volatile PSConfig singleton = null;
 
-  private final String host;
+  /**
+   * The base URL for the API.
+   */
+  private final URL _api;
 
-  private final String apiHost;
+  /**
+   * The base URL for the server and URIs.
+   */
+  private final URL _uri;
 
-  private final int port;
+  /**
+   * Prefix of the PageSeeder Web application (usually "/ps")
+   */
+  private final String _sitePrefix;
 
-  private final int apiPort;
+  // Constructors
+  // ---------------------------------------------------------------------------------------------
 
-  private final String sitePrefix;
-
-  private final String servletPrefix;
-
-  private PSConfig(Properties p) {
-    this.config = p;
-    this.scheme = this.config.getProperty("urischeme", "http");
-    this.apiScheme = this.config.getProperty("scheme", "http");
-    this.host = this.config.getProperty("urihost", "localhost");
-    this.apiHost = this.config.getProperty("host", "localhost");
-    this.port = Integer.parseInt(this.config.getProperty("uriport", "8080"));
-    this.apiPort = Integer.parseInt(this.config.getProperty("port", "8282"));
-    this.sitePrefix = this.config.getProperty("siteprefix", "/ps");
-    this.servletPrefix = this.config.getProperty("servletprefix", "/ps/servlet");
+  /**
+   * Create a new configuration.
+   *
+   * @param uri    The base URI for PageSeeder user access and URIs
+   * @param api    The base URI for PageSeeder API access
+   * @param prefix The prefix of the PageSeeder application.
+   */
+  private PSConfig(URL uri, URL api, String prefix) {
+    this._uri = uri;
+    this._api = api;
+    this._sitePrefix = prefix;
   }
 
+  // Getters
+  // ---------------------------------------------------------------------------------------------
+
   public String getScheme() {
-    return this.scheme;
+    return this._uri.getProtocol();
   }
 
   public String getHost() {
-    return this.host;
+    return this._uri.getHost();
   }
 
   public int getPort() {
-    return this.port;
+    return getActualPort(this._uri);
   }
 
-  public int getApiPort() {
-    return this.apiPort;
+  public String getAPIScheme() {
+    return this._api.getProtocol();
+  }
+
+  public String getAPIHost() {
+    return this._api.getHost();
+  }
+
+  public int getAPIPort() {
+    return getActualPort(this._api);
   }
 
   public String getSitePrefix() {
-    return this.sitePrefix;
+    return this._sitePrefix;
   }
 
+  @Deprecated
   public String getServletPrefix() {
-    return this.servletPrefix;
+    return this._sitePrefix+"/servlet";
+  }
+
+  // Builders
+  // ---------------------------------------------------------------------------------------------
+
+  /**
+   * @return the host URL.
+   */
+  public URL getAPIBaseURL() {
+    return this._api;
   }
 
   /**
    * @return the API URL as a string builder.
    */
   public StringBuilder buildAPIURL() {
-    StringBuilder url = new StringBuilder();
-    url.append(this.apiScheme).append("://");
-    url.append(this.apiHost);
-    if (!isDefaultPort(this.scheme, this.apiPort)) {
-      url.append(":").append(this.apiPort);
-    }
-    return url;
+    return toURLBuilder(this._api);
   }
 
   /**
    * @return the host URL as a string builder.
    */
   public StringBuilder buildHostURL() {
-    StringBuilder url = new StringBuilder();
-    url.append(this.scheme).append("://");
-    url.append(this.host);
-    if (!isDefaultPort(this.scheme, this.port)) {
-      url.append(":").append(this.port);
-    }
-    return url;
+    return toURLBuilder(this._uri);
   }
 
   /**
@@ -107,18 +135,168 @@ public class PSConfig {
     return buildHostURL().toString();
   }
 
-  public static void configure(Properties p) {
-    if (singleton == null) singleton = new PSConfig(p);
+  // Configuration
+  // ---------------------------------------------------------------------------------------------
+
+  /**
+   * To configure the bridge manually.
+   *
+   * @param p The properties to use to configure the bridge manually.
+   */
+  public static void setDefault(PSConfig p) {
+    singleton = p;
   }
 
-  public static PSConfig singleton() {
-    if (singleton == null) throw new IllegalStateException("PSConfig is not configured");
+  /**
+   * Returns the default configuration.
+   *
+   * <p>This method will attempt to use the SPI for providing a configuration.
+   *
+   * @return the default configuration.
+   */
+  public static PSConfig getDefault() {
+    if (singleton == null) {
+      singleton = loadFromService();
+      if (singleton == null) throw new IllegalStateException("PSConfig is not configured");
+    }
     return singleton;
   }
 
-  private static boolean isDefaultPort(String scheme, int port) {
-    return "http".equals(scheme) && port == 80
-        || "https".equals(scheme) && port == 443;
+  /**
+   * @deprecated Use {@link #getDefault()} instead.
+   * @return the default config to use.
+   */
+  @Deprecated
+  public static PSConfig singleton() {
+    return getDefault();
   }
 
+  // Factory methods
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * For use by service providers to create a new PSConfig instance.
+   *
+   * @param p The set of properties to parse
+   *
+   * @return The corresponding configuration instance.
+   *
+   * @throws IllegalArgumentException If any or the properties yield to an malformed URL
+   */
+  public static PSConfig newInstance(Properties p) {
+    String prefix = p.getProperty("siteprefix", DEFAULT_PREFIX);
+    try {
+      // Compute URL
+      URL uri = toBaseURL(p, "uri", DEFAULT_URI);
+      URL api = toBaseURL(p, "api", DEFAULT_API);
+      return new PSConfig(uri, api, prefix);
+    } catch (MalformedURLException | NumberFormatException ex) {
+      throw new IllegalArgumentException("PageSeeder properties are not configured properly", ex);
+    }
+  }
+
+  /**
+   * For use by service providers to create a new PSConfig instance.
+   *
+   * @param uri The URL to use as the base URI for PageSeeder URIs
+   * @param api The URL to use as the base URI for API access
+   *
+   * @return The corresponding configuration instance.
+   *
+   * @throws IllegalArgumentException If any or the properties yield to an malformed URL
+   */
+  public static PSConfig newInstance(String uri, String api) {
+    try {
+      // Compute URL
+      URL u = new URL(uri);
+      URL a = new URL(api);
+      return new PSConfig(u, a, DEFAULT_PREFIX);
+    } catch (MalformedURLException ex) {
+      throw new IllegalArgumentException("PageSeeder configuration URLs are not configured properly");
+    }
+  }
+
+  // private helpers
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Load the configuration instance to providers using a service loaders.
+   *
+   * @return the configuration from the SPI
+   */
+  private static PSConfig loadFromService() {
+    ServiceLoader<ConfigProvider> services = ServiceLoader.load(ConfigProvider.class);
+    PSConfig config = null;
+    for (ConfigProvider provider : services) {
+      if (config != null)
+        throw new IllegalStateException("Multiple providers for the configuration, configure manually");
+      config = provider.getConfig();
+    }
+    return config;
+  }
+
+  /**
+   * Compute the base URL
+   *
+   * @param p
+   * @param start
+   * @param fallback
+   * @return
+   * @throws MalformedURLException
+   */
+  private static URL toBaseURL(Properties p, String start, URI fallback) throws MalformedURLException {
+    if (p.containsKey(start+"baseurl")) return new URL(p.getProperty(start+"baseurl"));
+    // Compute default URI from unqualified properties first
+    String defaultScheme = p.getProperty("scheme", fallback.getScheme());
+    String defaultHost = p.getProperty("host", fallback.getHost());
+    int defaultPort = p.containsKey("port")? Integer.parseInt(p.getProperty("port")) : fallback.getPort();
+    // Then get the qualified one
+    String scheme = p.getProperty(start+"scheme", defaultScheme);
+    String host = p.getProperty(start+"host", defaultHost);
+    int port = p.containsKey(start+"port")? Integer.parseInt(p.getProperty(start+"port")) : defaultPort;
+    return toBaseURL(scheme, host, port);
+  }
+
+  /**
+   * Generate a base URL from the protocol, host and port.
+   *
+   *
+   */
+  private static URL toBaseURL(String protocol, String host, int port) throws IllegalArgumentException {
+    try {
+      return new URL(protocol, host, port, "/");
+    } catch (MalformedURLException ex) {
+      throw new IllegalArgumentException(ex);
+    }
+  }
+
+  /**
+   * Generate a string builder from the specified URL
+   *
+   * @param url The URL to construct the builder.
+   *
+   * @return A string builder using the url as a base.
+   */
+  private static StringBuilder toURLBuilder(URL url) {
+    StringBuilder s = new StringBuilder();
+    s.append(url.getProtocol()).append("://");
+    s.append(url.getHost());
+    int port = url.getPort();
+    if (port != -1 && port != url.getDefaultPort()) {
+      s.append(":").append(port);
+    }
+    return s;
+  }
+
+  /**
+   * Returns the port actually in use by the URL so that if the URL is configured with the default
+   * port it does not return -1.
+   *
+   * @param url The URL
+   * @return the actual port.
+   */
+  private static int getActualPort(URL url) {
+    int port = url.getPort();
+    return port != -1? port : url.getDefaultPort();
+  }
 }

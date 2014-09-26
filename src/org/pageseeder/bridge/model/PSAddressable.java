@@ -65,19 +65,17 @@ public abstract class PSAddressable implements Addressable, PSEntity {
    */
   protected PSAddressable(String url) {
     Matcher m = URL_DECOMPOSER.matcher(url);
-    PSConfig p = PSConfig.singleton();
+    PSConfig p = PSConfig.getDefault();
     if (m.matches()) {
       String scheme = m.group(1);
       String host = m.group(2);
       String port = m.group(3);
       String path = m.group(4);
-      this.setScheme(scheme != null? scheme : p.getScheme());
-      this.setHost(scheme != null? host : p.getHost());
-      this.setPort(port != null? Integer.parseInt(port) : p.getPort());
-      this.setPath(path);
-    } else {
-      throw new IllegalArgumentException("Invalid url");
-    }
+      setScheme(scheme != null? scheme : p.getScheme());
+      setHost(scheme != null? host : p.getHost());
+      setPort(port != null? Integer.parseInt(port) : p.getPort());
+      setPath(path);
+    } else throw new IllegalArgumentException("Invalid url");
   }
 
   /**
@@ -90,10 +88,10 @@ public abstract class PSAddressable implements Addressable, PSEntity {
    */
   public PSAddressable(String scheme, String host, int port, String path) {
     // We use the methods to ensure that the values are correctly checked
-    this.setScheme(scheme);
-    this.setHost(host);
-    this.setPort(port);
-    this.setPath(path);
+    setScheme(scheme);
+    setHost(host);
+    setPort(port);
+    setPath(path);
   }
 
   /**
@@ -144,10 +142,16 @@ public abstract class PSAddressable implements Addressable, PSEntity {
   @Override
   public final String getHostURL() {
     StringBuilder url = new StringBuilder();
-    if (this.scheme != null) url.append(this.scheme).append(':');
+    if (this.scheme != null) {
+      url.append(this.scheme).append(':');
+    }
     url.append("//");
-    if (this.host != null) url.append(this.host);
-    if (this.port > 0) url.append(':').append(this.port);
+    if (this.host != null) {
+      url.append(this.host);
+    }
+    if (this.port > 0) {
+      url.append(':').append(this.port);
+    }
     return url.toString();
   }
 
@@ -201,11 +205,19 @@ public abstract class PSAddressable implements Addressable, PSEntity {
    */
   public final String toURL() {
     StringBuilder url = new StringBuilder();
-    if (this.scheme != null) url.append(this.scheme).append(':');
+    if (this.scheme != null) {
+      url.append(this.scheme).append(':');
+    }
     url.append("//");
-    if (this.host != null) url.append(this.host);
-    if (this.port > 0) url.append(':').append(this.port);
-    if (this.path != null) url.append(this.path);
+    if (this.host != null) {
+      url.append(this.host);
+    }
+    if (this.port > 0) {
+      url.append(':').append(this.port);
+    }
+    if (this.path != null) {
+      url.append(this.path);
+    }
     return url.toString();
   }
 

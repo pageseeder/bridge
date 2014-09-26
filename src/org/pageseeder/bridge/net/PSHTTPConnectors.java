@@ -285,10 +285,11 @@ public final class PSHTTPConnectors {
    * @param member username or email
    */
   private static void addMemberParameter(PSHTTPConnector connector, String member) {
-    if (member.indexOf('@') > 0)
+    if (member.indexOf('@') > 0) {
       connector.addParameter("email", member);
-    else
+    } else {
       connector.addParameter("member-username", member);
+    }
   }
 
   /**
@@ -303,10 +304,12 @@ public final class PSHTTPConnectors {
       throws FailedPrecondition {
     Preconditions.isNotEmpty(options.getKey(), "key");
     connector.addParameter("key", options.getKey());
-    if (options.getSignificantDate() != null)
+    if (options.getSignificantDate() != null) {
       connector.addParameter("significant-date", options.getSignificantDateAsString());
-    if (options.getPassword() != null)
+    }
+    if (options.getPassword() != null) {
       connector.addParameter("member-password", options.getPassword());
+    }
   }
 
   // Group
@@ -341,31 +344,41 @@ public final class PSHTTPConnectors {
     connector.addParameter("projectname", project);
     connector.addParameter("shortname",   shortname);
     connector.addParameter("description", group.getDescription());
-    if (group.getOwner() != null)
+    if (group.getOwner() != null) {
       connector.addParameter("owner",  group.getOwner());
-    if (group.getDetailsType() != null)
+    }
+    if (group.getDetailsType() != null) {
       connector.addParameter("detailstype",  group.getDetailsType());
-    if (group.getDefaultRole() != null)
+    }
+    if (group.getDefaultRole() != null) {
       connector.addParameter("defaultrole",  group.getDefaultRole().toString());
-    if (group.getDefaultNotification() != null)
+    }
+    if (group.getDefaultNotification() != null) {
       connector.addParameter("defaultnotification", group.getDefaultNotification().toString());
+    }
     // Group options
     if (options != null) {
       connector.addParameter("addmember",  Boolean.toString(options.doAddCreatorAsMember()));
       connector.addParameter("common",  Boolean.toString(options.isCommon()));
       connector.addParameter("createdocuments",  Boolean.toString(options.doCreateDocuments()));
-      if (options.getAccess() != null)
+      if (options.getAccess() != null) {
         connector.addParameter("access",  options.getAccess());
-      if (options.getCommenting() != null)
+      }
+      if (options.getCommenting() != null) {
         connector.addParameter("commenting", options.getCommenting());
-      if (options.getMessage() != null)
+      }
+      if (options.getMessage() != null) {
         connector.addParameter("message", options.getMessage());
-      if (options.getModeration() != null)
+      }
+      if (options.getModeration() != null) {
         connector.addParameter("moderation", options.getModeration());
-      if (options.getRegistration() != null)
+      }
+      if (options.getRegistration() != null) {
         connector.addParameter("registration", options.getRegistration());
-      if (options.getVisibility() != null)
+      }
+      if (options.getVisibility() != null) {
         connector.addParameter("visibility", options.getVisibility());
+      }
       // Group properties
       for (Entry<String, String> property : options.getProperties().entrySet()) {
         connector.addParameter("property."+property.getKey(), property.getValue().toString());
@@ -400,31 +413,39 @@ public final class PSHTTPConnectors {
       connector.addParameter("projectname", parent);
     } else {
       // we must compute the host URL
-      String hosturl = PSConfig.singleton().getHostURL();
+      String hosturl = PSConfig.getDefault().getHostURL();
       connector.addParameter("hosturl",   hosturl.toString());
     }
     connector.addParameter("shortname",   shortname);
     connector.addParameter("description", project.getDescription());
-    if (project.getOwner() != null)
+    if (project.getOwner() != null) {
       connector.addParameter("owner",  project.getOwner());
-    if (project.getDetailsType() != null)
+    }
+    if (project.getDetailsType() != null) {
       connector.addParameter("detailstype",  project.getDetailsType());
+    }
     // Group options
     if (options != null) {
       connector.addParameter("addmember",  Boolean.toString(options.doAddCreatorAsMember()));
       connector.addParameter("common",  Boolean.toString(options.isCommon()));
-      if (options.getAccess() != null)
+      if (options.getAccess() != null) {
         connector.addParameter("access",  options.getAccess());
-      if (options.getCommenting() != null)
+      }
+      if (options.getCommenting() != null) {
         connector.addParameter("commenting", options.getCommenting());
-      if (options.getMessage() != null)
+      }
+      if (options.getMessage() != null) {
         connector.addParameter("message", options.getMessage());
-      if (options.getModeration() != null)
+      }
+      if (options.getModeration() != null) {
         connector.addParameter("moderation", options.getModeration());
-      if (options.getRegistration() != null)
+      }
+      if (options.getRegistration() != null) {
         connector.addParameter("registration", options.getRegistration());
-      if (options.getVisibility() != null)
+      }
+      if (options.getVisibility() != null) {
         connector.addParameter("visibility", options.getVisibility());
+      }
       // Group properties
       for (Entry<String, String> property : options.getProperties().entrySet()) {
         connector.addParameter("property."+property.getKey(), property.getValue().toString());
@@ -503,10 +524,12 @@ public final class PSHTTPConnectors {
     String service = Services.toAddSubGroup(group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("subgroup", subgroup.getIdentifier());
-    if (notification != null)
+    if (notification != null) {
       connector.addParameter("notification", notification.parameter());
-    if (role != null)
+    }
+    if (role != null) {
       connector.addParameter("role", role.parameter());
+    }
     connector.addParameter("listed", Boolean.toString(listed));
     return connector;
   }
@@ -566,18 +589,23 @@ public final class PSHTTPConnectors {
     // Member details
     connector.addParameter("firstname", member.getFirstname());
     connector.addParameter("surname", member.getSurname());
-    if (member.getEmail() != null)
+    if (member.getEmail() != null) {
       connector.addParameter("email", member.getEmail());
-    if (member.getUsername() != null)
+    }
+    if (member.getUsername() != null) {
       connector.addParameter("member-username", member.getUsername());
-    if (password != null)
+    }
+    if (password != null) {
       connector.addParameter("member-password", password);
+    }
     connector.addParameter("listed", Boolean.toString(membership.isListed()));
 
-    if (membership.getNotification() != null)
+    if (membership.getNotification() != null) {
       connector.addParameter("notification", membership.getNotification().parameter());
-    if (membership.getRole() != null)
+    }
+    if (membership.getRole() != null) {
       connector.addParameter("role", membership.getRole().parameter());
+    }
 
     connector.addParameter("auto-activate", delegated ? "true" : "false");
     connector.addParameter("welcome-email", delegated ? "false": "true");
@@ -589,8 +617,9 @@ public final class PSHTTPConnectors {
       for (int i = 1; i <= PSDetails.MAX_SIZE; i++) {
         // Fields are 1-based
         String field = details.getField(i);
-        if (field != null)
+        if (field != null) {
           connector.addParameter("field"+i, field);
+        }
       }
     }
 
@@ -622,17 +651,21 @@ public final class PSHTTPConnectors {
     // Member details
     connector.addParameter("firstname", member.getFirstname());
     connector.addParameter("surname", member.getSurname());
-    if (member.getEmail() != null && member.getEmail().length() > 0)
+    if (member.getEmail() != null && member.getEmail().length() > 0) {
       connector.addParameter("email", member.getEmail());
+    }
     connector.addParameter("listed", Boolean.toString(membership.isListed()));
 
-    if (membership.getNotification() != null)
+    if (membership.getNotification() != null) {
       connector.addParameter("notification", membership.getNotification().parameter());
-    if (membership.getRole() != null)
+    }
+    if (membership.getRole() != null) {
       connector.addParameter("role", membership.getRole().parameter());
+    }
 
-    if (forceEmail)
+    if (forceEmail) {
       connector.addParameter("force-email-change", "true");
+    }
 
     // Membership details
     PSDetails details = membership.getDetails();
@@ -640,8 +673,9 @@ public final class PSHTTPConnectors {
       for (int i=1; i <= PSDetails.MAX_SIZE; i++) {
         // Fields are 1-based
         String field = details.getField(i);
-        if (field != null)
+        if (field != null) {
           connector.addParameter("field"+i, field);
+        }
       }
     }
 
@@ -689,10 +723,12 @@ public final class PSHTTPConnectors {
     connector.addParameter("email", member.getEmail());
     connector.addParameter("listed", Boolean.toString(membership.isListed()));
 
-    if (membership.getNotification() != null)
+    if (membership.getNotification() != null) {
       connector.addParameter("notification", membership.getNotification().parameter());
-    if (membership.getRole() != null)
+    }
+    if (membership.getRole() != null) {
       connector.addParameter("role", membership.getRole().parameter());
+    }
 
     connector.addParameter("welcome-email", Boolean.toString(options.hasWelcomeEmail()));
     if (options.getInvitation() != Invitation.DEFAULT) {
@@ -705,8 +741,9 @@ public final class PSHTTPConnectors {
       for (int i = 1; i <= PSDetails.MAX_SIZE; i++) {
         // Fields are 1-based
         String field = details.getField(i);
-        if (field != null)
+        if (field != null) {
           connector.addParameter("field"+i, field);
+        }
       }
     }
 
@@ -728,10 +765,12 @@ public final class PSHTTPConnectors {
     connector.addParameter("email", member.getEmail());
     connector.addParameter("listed", Boolean.toString(membership.isListed()));
 
-    if (membership.getNotification() != null)
+    if (membership.getNotification() != null) {
       connector.addParameter("notification", membership.getNotification().parameter());
-    if (membership.getRole() != null)
+    }
+    if (membership.getRole() != null) {
       connector.addParameter("role", membership.getRole().parameter());
+    }
     connector.addParameter("register", "true");
 
     // Membership details
@@ -740,8 +779,9 @@ public final class PSHTTPConnectors {
       for (int i=1; i <= PSDetails.MAX_SIZE; i++) {
         // Fields are 1-based
         String field = details.getField(i);
-        if (field != null)
+        if (field != null) {
           connector.addParameter("field"+i, field);
+        }
       }
     }
 
@@ -769,8 +809,9 @@ public final class PSHTTPConnectors {
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     // Member details
     connector.addParameter("listed", Boolean.toString(membership.isListed()));
-    if (membership.getNotification() != null)
+    if (membership.getNotification() != null) {
       connector.addParameter("notification", membership.getNotification().parameter());
+    }
     connector.addParameter("welcome-email", Boolean.toString(email));
     // Membership details
     PSDetails details = membership.getDetails();
@@ -778,8 +819,9 @@ public final class PSHTTPConnectors {
       for (int i = 1; i <= PSDetails.MAX_SIZE; i++) {
         // Fields are 1-based
         String field = details.getField(i);
-        if (field != null)
+        if (field != null) {
           connector.addParameter("field"+i, field);
+        }
       }
     }
 
@@ -866,20 +908,34 @@ public final class PSHTTPConnectors {
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     PSMember m = membership.getMember();
     // To get details
-    if (isManager) connector.addParameter("role", "manager");
+    if (isManager) {
+      connector.addParameter("role", "manager");
+    }
     // Member attributes filter
     if (m != null) {
-      if (m.getFirstname() != null) connector.addParameter("firstname",       m.getFirstname());
-      if (m.getSurname()   != null) connector.addParameter("surname",         m.getSurname());
-      if (m.getEmail()     != null) connector.addParameter("email",           m.getEmail());
-      if (m.getUsername()  != null) connector.addParameter("member-username", m.getUsername());
+      if (m.getFirstname() != null) {
+        connector.addParameter("firstname",       m.getFirstname());
+      }
+      if (m.getSurname()   != null) {
+        connector.addParameter("surname",         m.getSurname());
+      }
+      if (m.getEmail()     != null) {
+        connector.addParameter("email",           m.getEmail());
+      }
+      if (m.getUsername()  != null) {
+        connector.addParameter("member-username", m.getUsername());
+      }
     }
     // Membership attributes filter
-    if (membership.getRole() != null) connector.addParameter("member-role", membership.getRole().parameter());
+    if (membership.getRole() != null) {
+      connector.addParameter("member-role", membership.getRole().parameter());
+    }
     PSDetails details = membership.getDetails();
     if (details != null) {
       for (int i=1; i <= PSDetails.MAX_SIZE; i++) {
-        if (details.getField(i) != null) connector.addParameter("field"+i, details.getField(i));
+        if (details.getField(i) != null) {
+          connector.addParameter("field"+i, details.getField(i));
+        }
       }
     }
     return connector;
@@ -951,7 +1007,7 @@ public final class PSHTTPConnectors {
    * @param paths  a list of URI paths (can be null)
    *
    * @return The corresponding connector
-   * 
+   *
    * @throws FailedPrecondition if conditions fail
    */
   public static PSHTTPConnector getCommentsByFilter(PSMember member, PSGroup group, String title, String type, List<String> paths) throws FailedPrecondition {
@@ -961,14 +1017,20 @@ public final class PSHTTPConnectors {
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("groups", group.getName());
     // title
-    if (title != null) connector.addParameter("title", title);
+    if (title != null) {
+      connector.addParameter("title", title);
+    }
     // type
-    if (type != null) connector.addParameter("type", type);
+    if (type != null) {
+      connector.addParameter("type", type);
+    }
     // paths
     if (paths != null) {
       StringBuilder pathsAsString = new StringBuilder();
       for (String p : paths) {
-        if (pathsAsString.length() != 0) pathsAsString.append(',');
+        if (pathsAsString.length() != 0) {
+          pathsAsString.append(',');
+        }
         pathsAsString.append(p);
       }
       connector.addParameter("paths", pathsAsString.toString());
@@ -997,8 +1059,9 @@ public final class PSHTTPConnectors {
     Preconditions.isNotEmpty(comment.getContent(), "content");
     Preconditions.isNotNull(author,   "author");
     Preconditions.isNotNull(context,  "context");
-    if (context.group() != null)
+    if (context.group() != null) {
       Preconditions.isNotEmpty(context.group().getName(),  "group");
+    }
     if (context.uri() != null) {
       Preconditions.isIdentifiable(context.uri(), "uri");
       Preconditions.isNotNull(groups, "group");
@@ -1015,20 +1078,27 @@ public final class PSHTTPConnectors {
     connector.addParameter("contenttype", comment.getMediaType());
 
     // Optional parameters
-    if (comment.hasLabels())
+    if (comment.hasLabels()) {
       connector.addParameter("labels",    comment.getLabelsAsString());
-    if (comment.hasProperties())
+    }
+    if (comment.hasProperties()) {
       connector.addParameter("properties", comment.getPropertiesAsString());
-    if (comment.getStatus() != null)
+    }
+    if (comment.getStatus() != null) {
       connector.addParameter("status", comment.getStatus());
-    if (comment.getPriority() != null)
+    }
+    if (comment.getPriority() != null) {
       connector.addParameter("priority", comment.getPriority());
-    if (comment.getAssignedTo() != null)
+    }
+    if (comment.getAssignedTo() != null) {
       connector.addParameter("assignedto", comment.getAssignedTo().getId().toString());
-    if (comment.getDue() != null)
+    }
+    if (comment.getDue() != null) {
       connector.addParameter("due", ISO8601.CALENDAR_DATE.format(comment.getDue().getTime()));
-    if (comment.getType() != null)
+    }
+    if (comment.getType() != null) {
       connector.addParameter("type", comment.getType());
+    }
 
     // URL must be specified if the context is a URI but we don't know the ID
     if (context.uri() != null && context.uri().getId() == null) {
@@ -1039,7 +1109,9 @@ public final class PSHTTPConnectors {
     if (groups != null) {
       StringBuilder p = new StringBuilder();
       for (PSGroup group : groups) {
-        if (p.length() > 0) p.append(',');
+        if (p.length() > 0) {
+          p.append(',');
+        }
         Preconditions.isNotEmpty(group.getName(), "group name");
         p.append(group.getName());
       }
@@ -1049,8 +1121,9 @@ public final class PSHTTPConnectors {
     // Author is not a PageSeeder member
     if (author.member() == null) {
       connector.addParameter("authorname", author.name());
-      if (author.email() != null)
+      if (author.email() != null) {
         connector.addParameter("authoremail", author.email());
+      }
     }
 
     // Attachments
@@ -1061,13 +1134,17 @@ public final class PSHTTPConnectors {
         PSURI uri = attachment.uri();
         Preconditions.isIdentifiable(uri, "uri");
         if (uri.getId() != null) {
-          if (uris.length() > 0) uris.append(',');
+          if (uris.length() > 0) {
+            uris.append(',');
+          }
           uris.append(uri.getId());
           if (attachment.fragment() != null) {
             uris.append('!').append(attachment.fragment());
           }
         } else {
-          if (urls.length() > 0) uris.append(',');
+          if (urls.length() > 0) {
+            uris.append(',');
+          }
           urls.append(uri.getURL());
           if (attachment.fragment() != null) {
             uris.append('#').append(attachment.fragment());
@@ -1075,8 +1152,12 @@ public final class PSHTTPConnectors {
         }
       }
       // Add the parameters
-      if (uris.length() > 0) connector.addParameter("uris", uris.toString());
-      if (urls.length() > 0) connector.addParameter("urls", urls.toString());
+      if (uris.length() > 0) {
+        connector.addParameter("uris", uris.toString());
+      }
+      if (urls.length() > 0) {
+        connector.addParameter("urls", urls.toString());
+      }
     }
 
     // Notification
@@ -1118,26 +1199,35 @@ public final class PSHTTPConnectors {
     connector.addParameter("contenttype", comment.getMediaType());
 
     // Optional parameters
-    if (comment.hasLabels())
+    if (comment.hasLabels()) {
       connector.addParameter("labels",    comment.getLabelsAsString());
-    if (comment.hasProperties())
+    }
+    if (comment.hasProperties()) {
       connector.addParameter("properties", comment.getPropertiesAsString());
-    if (comment.getStatus() != null)
+    }
+    if (comment.getStatus() != null) {
       connector.addParameter("status", comment.getStatus());
-    if (comment.getPriority() != null)
+    }
+    if (comment.getPriority() != null) {
       connector.addParameter("priority", comment.getPriority());
-    if (comment.getAssignedTo() != null)
+    }
+    if (comment.getAssignedTo() != null) {
       connector.addParameter("assignedto", comment.getAssignedTo().getId().toString());
-    if (comment.getDue() != null)
+    }
+    if (comment.getDue() != null) {
       connector.addParameter("due", ISO8601.CALENDAR_DATE.format(comment.getDue().getTime()));
-    if (comment.getType() != null)
+    }
+    if (comment.getType() != null) {
       connector.addParameter("type", comment.getType());
+    }
 
     // If context is not group
     if (groups != null) {
       StringBuilder p = new StringBuilder();
       for (PSGroup group : groups) {
-        if (p.length() > 0) p.append(',');
+        if (p.length() > 0) {
+          p.append(',');
+        }
         Preconditions.isNotEmpty(group.getName(), "group name");
         p.append(group.getName());
       }
@@ -1147,8 +1237,9 @@ public final class PSHTTPConnectors {
     // Author is not a PageSeeder member
     if (author.member() == null) {
       connector.addParameter("authorname", author.name());
-      if (author.email() != null)
+      if (author.email() != null) {
         connector.addParameter("authoremail", author.email());
+      }
     }
 
     // Attachments
@@ -1159,13 +1250,17 @@ public final class PSHTTPConnectors {
         PSURI uri = attachment.uri();
         Preconditions.isIdentifiable(uri, "uri");
         if (uri.getId() != null) {
-          if (uris.length() > 0) uris.append(',');
+          if (uris.length() > 0) {
+            uris.append(',');
+          }
           uris.append(uri.getId());
           if (attachment.fragment() != null) {
             uris.append('!').append(attachment.fragment());
           }
         } else {
-          if (urls.length() > 0) urls.append(',');
+          if (urls.length() > 0) {
+            urls.append(',');
+          }
           urls.append(uri.getURL());
           if (attachment.fragment() != null) {
             urls.append('#').append(attachment.fragment());
@@ -1173,8 +1268,12 @@ public final class PSHTTPConnectors {
         }
       }
       // Add the parameters
-      if (uris.length() > 0) connector.addParameter("uris", uris.toString());
-      if (urls.length() > 0) connector.addParameter("urls", urls.toString());
+      if (uris.length() > 0) {
+        connector.addParameter("uris", uris.toString());
+      }
+      if (urls.length() > 0) {
+        connector.addParameter("urls", urls.toString());
+      }
     }
 
     // Notification
@@ -1207,8 +1306,9 @@ public final class PSHTTPConnectors {
     Preconditions.isNotEmpty(comment.getContent(), "content");
     Preconditions.isNotNull(author,   "author");
     Preconditions.isNotNull(context,  "context");
-    if (context.group() != null)
+    if (context.group() != null) {
       Preconditions.isNotEmpty(context.group().getName(),  "group");
+    }
     if (context.uri() != null) {
       Preconditions.isIdentifiable(context.uri(), "uri");
       Preconditions.isNotNull(groups, "group");
@@ -1225,29 +1325,37 @@ public final class PSHTTPConnectors {
     connector.addParameter("contenttype", comment.getMediaType());
 
     // context
-    if (context.group() != null)
+    if (context.group() != null) {
       connector.addParameter("group", context.group().getName());
-    else if (context.uri() != null) {
+    } else if (context.uri() != null) {
       connector.addParameter("uri", context.uri().getIdentifier());
-      if (context.fragment() != null)
+      if (context.fragment() != null) {
         connector.addParameter("fragment", context.fragment());
+      }
     }
 
     // Optional parameters
-    if (comment.hasLabels())
+    if (comment.hasLabels()) {
       connector.addParameter("labels",    comment.getLabelsAsString());
-    if (comment.hasProperties())
+    }
+    if (comment.hasProperties()) {
       connector.addParameter("properties", comment.getPropertiesAsString());
-    if (comment.getStatus() != null)
+    }
+    if (comment.getStatus() != null) {
       connector.addParameter("status", comment.getStatus());
-    if (comment.getPriority() != null)
+    }
+    if (comment.getPriority() != null) {
       connector.addParameter("priority", comment.getPriority());
-    if (comment.getAssignedTo() != null)
+    }
+    if (comment.getAssignedTo() != null) {
       connector.addParameter("assignedto", comment.getAssignedTo().getId().toString());
-    if (comment.getDue() != null)
+    }
+    if (comment.getDue() != null) {
       connector.addParameter("due", ISO8601.CALENDAR_DATE.format(comment.getDue().getTime()));
-    if (comment.getType() != null)
+    }
+    if (comment.getType() != null) {
       connector.addParameter("type", comment.getType());
+    }
 
     // URL must be specified if the context is a URI but we don't know the ID
     if (context.uri() != null && context.uri().getId() == null) {
@@ -1258,7 +1366,9 @@ public final class PSHTTPConnectors {
     if (groups != null) {
       StringBuilder p = new StringBuilder();
       for (PSGroup group : groups) {
-        if (p.length() > 0) p.append(',');
+        if (p.length() > 0) {
+          p.append(',');
+        }
         Preconditions.isNotEmpty(group.getName(), "group name");
         p.append(group.getName());
       }
@@ -1268,8 +1378,9 @@ public final class PSHTTPConnectors {
     // Author is not a PageSeeder member
     if (author.member() == null) {
       connector.addParameter("authorname", author.name());
-      if (author.email() != null)
+      if (author.email() != null) {
         connector.addParameter("authoremail", author.email());
+      }
     }
 
     // Attachments
@@ -1278,14 +1389,18 @@ public final class PSHTTPConnectors {
       for (Attachment attachment : comment.getAttachments()) {
         PSURI uri = attachment.uri();
         Preconditions.isIdentifiable(uri, "uri");
-        if (urls.length() > 0) urls.append(',');
+        if (urls.length() > 0) {
+          urls.append(',');
+        }
         urls.append(uri.getURL());
         if (attachment.fragment() != null) {
           urls.append('#').append(attachment.fragment());
         }
       }
       // Add the parameters
-      if (urls.length() > 0) connector.addParameter("urls", urls.toString());
+      if (urls.length() > 0) {
+        connector.addParameter("urls", urls.toString());
+      }
     }
 
     // Notification
@@ -1360,10 +1475,18 @@ public final class PSHTTPConnectors {
     connector.addParameter("url", url);
     connector.addParameter("mediatype", externaluri.getMediaType());
     connector.addParameter("labels", externaluri.getLabelsAsString());
-    if (externaluri.getTitle() != null)       connector.addParameter("title", externaluri.getTitle());
-    if (externaluri.getDocid() != null)       connector.addParameter("docid", externaluri.getDocid());
-    if (externaluri.getDescription() != null) connector.addParameter("description", externaluri.getDescription());
-    if (externaluri.isFolder())               connector.addParameter("folder", "true");
+    if (externaluri.getTitle() != null) {
+      connector.addParameter("title", externaluri.getTitle());
+    }
+    if (externaluri.getDocid() != null) {
+      connector.addParameter("docid", externaluri.getDocid());
+    }
+    if (externaluri.getDescription() != null) {
+      connector.addParameter("description", externaluri.getDescription());
+    }
+    if (externaluri.isFolder()) {
+      connector.addParameter("folder", "true");
+    }
     return connector;
   }
 
@@ -1400,10 +1523,12 @@ public final class PSHTTPConnectors {
     connector.addParameter("title", document.getTitle());
     connector.addParameter("type", document.getType());
     connector.addParameter("labels", document.getLabelsAsString());
-    if (document.getDocid() != null)
+    if (document.getDocid() != null) {
       connector.addParameter("docid", document.getDocid());
-    if (document.getDescription() != null)
+    }
+    if (document.getDescription() != null) {
       connector.addParameter("description", document.getDescription());
+    }
 
     // Add the template parameters if specified
     if (parameters != null) {
@@ -1487,8 +1612,9 @@ public final class PSHTTPConnectors {
     String service = Services.toCreateGroupFolder(group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("url", url);
-    if (isPublic)
+    if (isPublic) {
       connector.addParameter("public", "true");
+    }
     return connector;
   }
 
@@ -1610,7 +1736,9 @@ public final class PSHTTPConnectors {
     // Construct the list of groups
     StringBuilder parameter = new StringBuilder();
     for (PSGroup group : groups) {
-      if (parameter.length() > 0) parameter.append(',');
+      if (parameter.length() > 0) {
+        parameter.append(',');
+      }
       parameter.append(group.getName());
     }
     connector.addParameter("groups", parameter.toString());
@@ -1642,10 +1770,12 @@ public final class PSHTTPConnectors {
     // The service is mapped to 'name' but the generator uses 'template'
     connector.addParameter("template", template);
     connector.addParameter("name", template);
-    if (options.hasRecipients())
+    if (options.hasRecipients()) {
       connector.addParameter("recipients", options.getRecipientsAsString());
-    if (options.hasAttachments())
+    }
+    if (options.hasAttachments()) {
       connector.addParameter("attachments", options.getAttachmentsAsString());
+    }
     return connector;
   }
 }
