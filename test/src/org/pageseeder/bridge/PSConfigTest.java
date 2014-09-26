@@ -11,13 +11,13 @@ public final class PSConfigTest {
   @Test
   public void testNewInstance_Properties() throws Exception{
     PSConfig config = PSConfig.newInstance(new Properties());
-    Assert.assertEquals(PSConfig.DEFAULT_URI.getScheme(), config.getScheme());
-    Assert.assertEquals(PSConfig.DEFAULT_URI.getHost(), config.getHost());
-    Assert.assertEquals(PSConfig.DEFAULT_URI.getPort(), config.getPort());
+    Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.getScheme(), config.getScheme());
+    Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.getHost(), config.getHost());
+    Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.getPort(), config.getPort());
     Assert.assertEquals(PSConfig.DEFAULT_API.getScheme(), config.getAPIScheme());
     Assert.assertEquals(PSConfig.DEFAULT_API.getHost(), config.getAPIHost());
     Assert.assertEquals(PSConfig.DEFAULT_API.getPort(), config.getAPIPort());
-    Assert.assertEquals(PSConfig.DEFAULT_URI.toString(), config.buildHostURL().toString());
+    Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.toString(), config.buildHostURL().toString());
     Assert.assertEquals(PSConfig.DEFAULT_API.toString(), config.buildAPIURL().toString());
     Assert.assertEquals(PSConfig.DEFAULT_PREFIX, config.getSitePrefix());
   }

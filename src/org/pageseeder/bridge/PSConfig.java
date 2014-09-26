@@ -26,7 +26,7 @@ import org.pageseeder.bridge.spi.ConfigProvider;
 public final class PSConfig {
 
   /** The default URI for user access. */
-  protected static final URI DEFAULT_URI = URI.create("http://localhost:8080");
+  protected static final URI DEFAULT_WEBSITE = URI.create("http://localhost:8080");
 
   /** The default URI for API access. */
   protected static final  URI DEFAULT_API = URI.create("http://localhost:8282");
@@ -108,10 +108,24 @@ public final class PSConfig {
   // ---------------------------------------------------------------------------------------------
 
   /**
-   * @return the host URL.
+   * @return the base URL to use to connect.
    */
   public URL getAPIBaseURL() {
     return this._api;
+  }
+
+  /**
+   * @return the default base URL for documents.
+   */
+  public URL getDocumentBaseURL() {
+    return this._uri;
+  }
+
+  /**
+   * @return the default base URL for the website.
+   */
+  public URL getWebsiteBaseURL() {
+    return this._uri;
   }
 
   /**
@@ -171,6 +185,20 @@ public final class PSConfig {
     return getDefault();
   }
 
+  /**
+   * To configure the bridge manually.
+   *
+   * @deprecated Use {@link #setDefault()} instead if no provider is available.
+   *
+   * @param p The properties to use to configure the bridge manually.
+   */
+  @Deprecated
+  public static void configure(PSConfig p) {
+    if (singleton != null) {
+      singleton = p;
+    }
+  }
+
   // Factory methods
   // ----------------------------------------------------------------------------------------------
 
@@ -187,7 +215,7 @@ public final class PSConfig {
     String prefix = p.getProperty("siteprefix", DEFAULT_PREFIX);
     try {
       // Compute URL
-      URL uri = toBaseURL(p, "uri", DEFAULT_URI);
+      URL uri = toBaseURL(p, "uri", DEFAULT_WEBSITE);
       URL api = toBaseURL(p, "api", DEFAULT_API);
       return new PSConfig(uri, api, prefix);
     } catch (MalformedURLException | NumberFormatException ex) {
@@ -245,7 +273,7 @@ public final class PSConfig {
    * @throws MalformedURLException
    */
   private static URL toBaseURL(Properties p, String start, URI fallback) throws MalformedURLException {
-    if (p.containsKey(start+"baseurl")) return new URL(p.getProperty(start+"baseurl"));
+    if (p.containsKey(start+"-url")) return new URL(p.getProperty(start+"-url"));
     // Compute default URI from unqualified properties first
     String defaultScheme = p.getProperty("scheme", fallback.getScheme());
     String defaultHost = p.getProperty("host", fallback.getHost());
