@@ -76,7 +76,7 @@ import org.weborganic.berlioz.util.ISO8601;
  * required to support that method.
  *
  * @author Christophe Lauret
- * @version 0.3.0
+ * @version 0.3.3
  * @since 0.2.0
  */
 public final class PSHTTPConnectors {
@@ -501,6 +501,22 @@ public final class PSHTTPConnectors {
     String service = Services.toAddSubGroup(group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("subgroup", subgroup.getIdentifier());
+    return connector;
+  }
+
+  /**
+   * List the subgroups of the specified group.
+   *
+   * @param group    The group
+   *
+   * @return The list of subgroups
+   *
+   * @throws FailedPrecondition If either the group or subgroup is not identifiable.
+   */
+  public static PSHTTPConnector listSubGroups(PSGroup group) throws FailedPrecondition {
+    Preconditions.isIdentifiable(group, "group");
+    String service = Services.toListSubGroups(group.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     return connector;
   }
 

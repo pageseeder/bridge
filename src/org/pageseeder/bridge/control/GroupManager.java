@@ -3,6 +3,8 @@
  */
 package org.pageseeder.bridge.control;
 
+import java.util.List;
+
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.InvalidEntityException;
@@ -28,7 +30,7 @@ import org.pageseeder.bridge.xml.PSGroupHandler;
  * A manager for groups, projects and group folders.
  *
  * @author Christophe Lauret
- * @version 0.2.4
+ * @version 0.3.3
  * @since 0.2.0
  */
 public final class GroupManager extends Sessionful {
@@ -256,6 +258,24 @@ public final class GroupManager extends Sessionful {
     PSHTTPResponseInfo info = connector.post();
     if (info.getCode() >= 400)
       throw new APIException("Unable to add subgroup '"+subgroup.getName()+"' to '"+group.getName()+"': "+info.getMessage());
+  }
+
+  /**
+   * Returns the list of subgroups for the specified group.
+   *
+   * @param group The group.
+   *
+   * @throws APIException
+   */
+  public List<PSGroup> listSubGroups(PSGroup group) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.listSubGroups(group).using(this._session);
+    PSGroupHandler handler = new PSGroupHandler();
+    PSHTTPResponseInfo info = connector.get(handler);
+    // TODO We should simply return null?
+    if (info.getCode() >= 400)
+      throw new APIException("Unable to list subgroups of '"+group.getName()+"': "+info.getMessage());
+    List<PSGroup> subgroups = handler.list();
+    return subgroups;
   }
 
   /**
