@@ -54,7 +54,7 @@ import com.topologi.diffx.xml.XMLWriter;
  * <p>Note: This class was forked from Bastille 0.8.29
  *
  * @author Christophe Lauret
- * @version 0.2.27
+ * @version 0.3.6
  * @since 0.2.0
  */
 public final class PSHTTPConnector {
@@ -180,9 +180,8 @@ public final class PSHTTPConnector {
    * @return The PageSeeder HTTP response metadata
    */
   public PSHTTPResponseInfo get() throws APIException {
-    return handle(Method.POST, (DefaultHandler)null);
+    return handle(Method.GET, (DefaultHandler)null);
   }
-
 
   /**
    * Connect to PageSeeder and fetch the content using the GET method to be parsed by a handler.
