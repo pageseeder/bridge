@@ -578,18 +578,19 @@ public final class PSHTTPConnectors {
   // Membership
   // ----------------------------------------------------------------------------------------------
 
+
   /**
    * Returns the connector to create a member.
    *
    * @param membership The membership to create.
    * @param password   The user's password.
-   * @param delegated  Whether the account is created by the user himself or an admin.
+   * @param options    Member options to create the membership
    *
    * @return The corresponding connector
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector createMembership(PSMembership membership, String password, boolean delegated)
+  public static PSHTTPConnector createMembership(PSMembership membership, String password, MemberOptions options)
       throws FailedPrecondition, InvalidEntityException {
     PSGroup group = membership.getGroup();
     PSMember member = membership.getMember();
@@ -623,9 +624,11 @@ public final class PSHTTPConnectors {
       connector.addParameter("role", membership.getRole().parameter());
     }
 
-    connector.addParameter("auto-activate", delegated ? "true" : "false");
-    connector.addParameter("welcome-email", delegated ? "false": "true");
-    connector.addParameter("invitation", "false");
+    connector.addParameter("auto-activate", Boolean.toString(options.isAutoActivate()));
+    connector.addParameter("welcome-email", Boolean.toString(options.hasWelcomeEmail()));
+    if (Invitation.DEFAULT != options.getInvitation()) {
+      connector.addParameter("invitation", Boolean.toString(options.getInvitation() == Invitation.YES));
+    }
 
     // Membership details
     PSDetails details = membership.getDetails();
@@ -640,6 +643,26 @@ public final class PSHTTPConnectors {
     }
 
     return connector;
+  }
+
+  /**
+   * Returns the connector to create a member.
+   *
+   * @param membership The membership to create.
+   * @param password   The user's password.
+   * @param delegated  Whether the account is created by the user himself or an admin.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition Should any precondition fail.
+   */
+  public static PSHTTPConnector createMembership(PSMembership membership, String password, boolean delegated)
+      throws FailedPrecondition, InvalidEntityException {
+    MemberOptions options = new MemberOptions();
+    options.setAutoActivate(delegated);
+    options.setWelcomeEmail(!delegated);
+    options.setInvitation(Invitation.NO);
+    return createMembership(membership, password, options);
   }
 
   /**

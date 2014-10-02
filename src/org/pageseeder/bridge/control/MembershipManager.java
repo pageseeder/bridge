@@ -154,6 +154,26 @@ public final class MembershipManager extends Sessionful {
   }
 
   /**
+   * Creates the specified membership in PageSeeder.
+   *
+   * @param membership The Membership to create.
+   * @param password   The password for the user (must be strong enough)
+   * @param options    The member options
+   *
+   * @return The result of the membership creation as an enumeration value.
+   *
+   * @throws APIException if the operation is not successful or caused by client.
+   */
+  public MembershipResult create(PSMembership membership, String password, MemberOptions options) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, password, options).using(this._session);
+    PSMembershipHandler handler = new PSMembershipHandler(membership);
+    PSHTTPResponseInfo info = connector.post(handler);
+    Status status = info.getStatus();
+    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    return MembershipResult.forResponse(info);
+  }
+
+  /**
    * Add a member to a group directly (Admin only).
    *
    * @param membership The membership to create.
