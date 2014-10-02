@@ -1000,10 +1000,25 @@ public final class PSHTTPConnectors {
   }
 
   /**
+   * Returns the connector to activate a member without an activation key (admin only).
+   *
+   * @param member The username or id of the user to activate.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition Should any precondition fail.
+   */
+  public static PSHTTPConnector getActivate(String member) throws FailedPrecondition {
+    Preconditions.isNotEmpty(member, "member");
+    String service = Services.toActivateMember(member);
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    return connector;
+  }
+
+  /**
    * Returns the connector to force the password to be reset.
    *
    * @param email The email address of the user
-   * @param admin A user with administrator privileges
    *
    * @return The corresponding connector
    *
