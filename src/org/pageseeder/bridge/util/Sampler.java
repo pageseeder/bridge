@@ -22,7 +22,7 @@ import org.pageseeder.bridge.model.PSMember;
  * A simple class to generate sample data.
  *
  * @author Christophe Lauret
- * @version 0.2.2
+ * @version 0.3.7
  * @since 0.1.0
  */
 public final class Sampler {
@@ -41,6 +41,29 @@ public final class Sampler {
    * Random
    */
   private final Random random = new Random();
+
+  /**
+   * domain to use when generating
+   */
+  private String emailDomain = "sampler.local";
+
+  /**
+   * Set the email domain to use for the sampler.
+   *
+   * @param domain the email domain
+   */
+  public void setEmailDomain(String domain) {
+    if (domain == null) throw new NullPointerException();
+    if (domain.length() == 0) throw new IllegalArgumentException();
+    this.emailDomain = domain;
+  }
+
+  /**
+   * @return the email domain to use for the sampler
+   */
+  public String getEmailDomain() {
+    return this.emailDomain;
+  }
 
   /**
    * Returns a random first name from the internal list.
@@ -100,7 +123,7 @@ public final class Sampler {
     String firstname = nextFirstName();
     String lastname = nextLastName();
     int no = nextInt(0, 10000);
-    String email = (firstname+lastname+no).toLowerCase()+"@sampler.local";
+    String email = (firstname+lastname+no).toLowerCase()+"@"+this.emailDomain;
     member.setFirstname(firstname);
     member.setSurname(lastname);
     member.setEmail(email);

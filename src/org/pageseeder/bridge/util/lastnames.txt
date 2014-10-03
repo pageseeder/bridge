@@ -34,12 +34,14 @@ Chambers
 Chapman
 Chen
 Choi
+Christensen
 Clark
 Clarke
 Cole
 Collins
 Cook
 Cooper
+Copeland
 Cox
 Cruz
 Cunningham
@@ -54,12 +56,14 @@ Dubois
 Dupont
 Edwards
 Ellis
+Estrada
 Evans
 Faizan
 Fakhouri
 Ferrari
 Fischer
 Fisher
+Fitzgerald
 Foster
 Fournier
 Fox
@@ -102,6 +106,7 @@ James
 Jansen
 Jawaldeh
 Jbarat
+Jefferson
 Jenkins
 Jensen
 Jeon
@@ -138,7 +143,10 @@ Martin
 Mason
 Masuda
 Matthews
-Mcdonald
+Maxwell
+McCarthy
+McDonald
+McKenzie
 Mehta
 Meyer
 Miller
@@ -156,7 +164,9 @@ Muller
 Murphy
 Murray
 Nguyen
+Osborne
 Owen
+Padilla
 Palmer
 Parker
 Patel
@@ -206,6 +216,7 @@ Sloan
 Smirnov
 Smith
 Song
+Sparks
 Spencer
 Stevens
 Stewart
