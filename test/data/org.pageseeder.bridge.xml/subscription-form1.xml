@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <wo-constant>
+    <websitescheme>https</websitescheme>
+    <websiteaddress>localhost</websiteaddress>
+    <autoresponderreplylimit>10</autoresponderreplylimit>
+    <servletprefix>/ps/servlet</servletprefix>
+    <websiteport>8443</websiteport>
+    <anchorprefix>ps</anchorprefix>
+    <autoresponderminutes>90</autoresponderminutes>
+    <siteprefix>/ps</siteprefix>
+    <emailsenderdomain>oxforddigital.localhost</emailsenderdomain>
+    <autoresponderlimit>25</autoresponderlimit>
+    <reviewmaxxlinks>100</reviewmaxxlinks>
+    <autoresponderwarnings>5</autoresponderwarnings>
+    <buildnumber>5.6012</buildnumber>
+  </wo-constant>
+  <wo-jsessionid>5668F7882A9604A0D43E1F183D405AFF</wo-jsessionid>
+  <wo-request></wo-request>
+  <mem>
+    <id>1</id>
+    <username>jsmith</username>
+    <surname>Smith</surname>
+    <firstname>John</firstname>
+  </mem>
+  <memberemail>jsmith@example.org</memberemail>
+  <status>success</status>
+  <currentgroups>
+    <group>
+      <description>Group for administrators</description>
+      <name>role-administrator</name>
+      <id>6</id>
+      <owner>oxford</owner>
+      <flags>taev</flags>
+      <ownerdirectory>role</ownerdirectory>
+      <controlgroupname>role-administrator</controlgroupname>
+    </group>
+  </currentgroups>
+  <notifygroups>
+    <group>
+      <description>Group for administrators</description>
+      <name>role-administrator</name>
+      <id>6</id>
+      <owner>oxford</owner>
+      <flags>taev</flags>
+      <ownerdirectory>role</ownerdirectory>
+      <controlgroupname>role-administrator</controlgroupname>
+    </group>
+  </notifygroups>
+  <dailygroups></dailygroups>
+  <listgroups>
+    <group>
+      <description>Group for administrators</description>
+      <name>role-administrator</name>
+      <id>6</id>
+      <owner>oxford</owner>
+      <flags>taev</flags>
+      <ownerdirectory>role</ownerdirectory>
+      <controlgroupname>role-administrator</controlgroupname>
+    </group>
+  </listgroups>
+  <urigroups></urigroups>
+  <ownergroups></ownergroups>
+  <deregistergroups></deregistergroups>
+  <othergroups>
+    <group>
+      <description>Group for administrators</description>
+      <name>role-administrator</name>
+      <id>6</id>
+      <owner>oxford</owner>
+      <flags>taev</flags>
+      <ownerdirectory>role</ownerdirectory>
+      <controlgroupname>role-administrator</controlgroupname>
+    </group>
+  </othergroups>
+  <publicgroups></publicgroups>
+  <changessaved>false</changessaved>
+</root>
