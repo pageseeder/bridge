@@ -261,6 +261,21 @@ public final class GroupManager extends Sessionful {
   }
 
   /**
+   * Removes a subgroup from another group.
+   *
+   * @param group    The "parent" group.
+   * @param subgroup The subgroup to remove.
+   *
+   * @throws APIException
+   */
+  public void deleteSubGroup(PSGroup group, PSGroup subgroup) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.deleteSubGroup(group, subgroup).using(this._session);
+    PSHTTPResponseInfo info = connector.post();
+    if (info.getCode() >= 400)
+      throw new APIException("Unable to remove subgroup '"+subgroup.getName()+"' from '"+group.getName()+"': "+info.getMessage());
+  }
+
+  /**
    * Returns the list of subgroups for the specified group.
    *
    * @param group The group.

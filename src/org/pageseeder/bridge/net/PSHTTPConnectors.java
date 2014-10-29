@@ -505,6 +505,24 @@ public final class PSHTTPConnectors {
   }
 
   /**
+   * Deletes a subgroup from another group.
+   *
+   * @param group    The "parent" group
+   * @param subgroup The subgroup to remove.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition If either the group or subgroup is not identifiable.
+   */
+  public static PSHTTPConnector deleteSubGroup(PSGroup group, PSGroup subgroup) throws FailedPrecondition {
+    Preconditions.isIdentifiable(group, "group");
+    Preconditions.isIdentifiable(subgroup, "subgroup");
+    String service = Services.toRemoveSubGroup(group.getIdentifier(), subgroup.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    return connector;
+  }
+
+  /**
    * List the subgroups of the specified group.
    *
    * @param group    The group
