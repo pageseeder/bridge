@@ -177,8 +177,8 @@ public final class PSMember implements PSEntity {
    */
   @Override
   public EntityValidity checkValid() {
-    if (this.firstname != null && this.firstname.length() > 20) return EntityValidity.MEMBER_FIRSTNAME_IS_TOO_LONG;
-    if (this.surname   != null && this.surname.length()   > 20) return EntityValidity.MEMBER_SURNAME_IS_TOO_LONG;
+    if (this.firstname != null && this.firstname.length() > 50) return EntityValidity.MEMBER_FIRSTNAME_IS_TOO_LONG;
+    if (this.surname   != null && this.surname.length()   > 50) return EntityValidity.MEMBER_SURNAME_IS_TOO_LONG;
     if (this.username  != null && this.username.length()  > 100) return EntityValidity.MEMBER_USERNAME_IS_TOO_LONG;
     if (this.email     != null && this.email.length()     > 100) return EntityValidity.MEMBER_EMAIL_IS_TOO_LONG;
     return EntityValidity.OK;
