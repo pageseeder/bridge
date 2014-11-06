@@ -7,8 +7,11 @@
  */
 package org.pageseeder.bridge.model;
 
+import java.util.Date;
+
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.PSEntity;
+import org.pageseeder.bridge.Requires;
 
 /**
  *
@@ -51,6 +54,12 @@ public final class PSMembership implements PSEntity  {
    * Role of the member in the group.
    */
   private PSRole role;
+
+  /**
+   * Membership created date (since 5.7)
+   */
+  @Requires(minVersion = 57000)
+  private Date created = null;
 
   /**
    * Membership detail fields if any
@@ -157,6 +166,14 @@ public final class PSMembership implements PSEntity  {
   }
 
   /**
+   * @return the date the membership was created
+   */
+  @Requires(minVersion = 57000)
+  public Date getCreated() {
+    return this.created;
+  }
+
+  /**
    * @return Membership detail fields if any
    */
   public PSDetails getDetails() {
@@ -208,6 +225,13 @@ public final class PSMembership implements PSEntity  {
   }
 
   /**
+   * @param created the date the membership was created.
+   */
+  public void setCreated(Date created) {
+    this.created = created;
+  }
+
+  /**
    * @param details Membership detail fields if any
    */
   public void setDetails(PSDetails details) {
@@ -256,6 +280,6 @@ public final class PSMembership implements PSEntity  {
 
   @Override
   public String toString() {
-    return "X("+this.id+":"+this.getMember()+","+this.getGroup()+")";
+    return "X("+this.id+":"+getMember()+","+getGroup()+")";
   }
 }

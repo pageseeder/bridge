@@ -7,6 +7,8 @@
  */
 package org.pageseeder.bridge.xml;
 
+import java.util.Date;
+
 import org.pageseeder.bridge.PSEntityCache;
 import org.pageseeder.bridge.control.CommentManager;
 import org.pageseeder.bridge.control.DocumentManager;
@@ -31,7 +33,7 @@ import org.xml.sax.Attributes;
  * A utility class used to generate objects from the XML returned by services.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.3.10
  */
 public final class PSEntityFactory {
 
@@ -62,6 +64,8 @@ public final class PSEntityFactory {
     String listed = atts.getValue("email-listed");
     PSNotification notification = PSHandlers.notification(atts.getValue("notification"));
     PSRole role = PSHandlers.role(atts.getValue("role"));
+    Date created = PSHandlers.datetime(atts.getValue("created")); // since 5.7
+
     // XXX: Unused attributes
 //    String flags = atts.getValue("flags");
 //    String status = atts.getValue("status");
@@ -70,13 +74,15 @@ public final class PSEntityFactory {
     if (m == null) {
       PSEntityCache<PSMembership> cache = MembershipManager.getCache();
       m = cache.get(id);
-      if (m == null)
+      if (m == null) {
         m = new PSMembership();
+      }
     }
     m.setId(id);
     m.setListed("true".equals(listed));
     m.setNotification(notification);
     m.setRole(role);
+    m.setCreated(created);
 
     return m;
   }
@@ -109,15 +115,17 @@ public final class PSEntityFactory {
     if (m == null) {
       PSEntityCache<PSMember> cache = MemberManager.getCache();
       m = cache.get(id);
-      if (m == null)
+      if (m == null) {
         m = new PSMember();
+      }
     }
     m.setId(PSHandlers.id(id));
     m.setFirstname(firstname);
     m.setSurname(surname);
     m.setUsername(username);
-    if (email != null)
+    if (email != null) {
       m.setEmail(email);
+    }
     return m;
   }
 
@@ -150,17 +158,20 @@ public final class PSEntityFactory {
     if (g == null) {
       PSEntityCache<PSGroup> cache = GroupManager.getCache();
       g = cache.get(id);
-      if (g == null)
+      if (g == null) {
         g = new PSGroup(name);
+      }
     }
 
     g.setId(PSHandlers.id(id));
     g.setName(name);
     g.setDescription(description);
-    if (defaultRole != null)
+    if (defaultRole != null) {
       g.setDefaultRole(defaultRole);
-    if (defaultNotification != null)
+    }
+    if (defaultNotification != null) {
       g.setDefaultNotification(defaultNotification);
+    }
     return g;
   }
 
@@ -194,17 +205,20 @@ public final class PSEntityFactory {
       PSEntityCache<PSGroup> cache = GroupManager.getCache();
       // FIXME: If project was previous a group??
       p = (PSProject)cache.get(id);
-      if (p == null)
+      if (p == null) {
         p = new PSProject();
+      }
     }
 
     p.setId(PSHandlers.id(id));
     p.setName(name);
     p.setDescription(description);
-    if (defaultRole != null)
+    if (defaultRole != null) {
       p.setDefaultRole(defaultRole);
-    if (defaultNotification != null)
+    }
+    if (defaultNotification != null) {
       p.setDefaultNotification(defaultNotification);
+    }
     return p;
   }
 
@@ -235,22 +249,25 @@ public final class PSEntityFactory {
     String labels = atts.getValue("labels");
     String title = atts.getValue("title");
     String type = atts.getValue("type");
-    if (type == null)
-     type = atts.getValue("documenttype");
+    if (type == null) {
+      type = atts.getValue("documenttype");
+    }
     String mediatype = atts.getValue("mediatype");
 
     PSDocument d = document;
     if (d == null) {
       PSEntityCache<PSDocument> cache = DocumentManager.getCache();
       d = cache.get(id);
-      if (d == null)
+      if (d == null) {
         d = new PSDocument(path);
+      }
     }
     d.setId(PSHandlers.id(id));
     d.setDescription(description);
     d.setDocid(docid);
-    if (filename != null)
+    if (filename != null) {
       d.setFilename(filename);
+    }
     d.setLabels(labels);
     d.setTitle(title);
     d.setType(type);
@@ -291,8 +308,9 @@ public final class PSEntityFactory {
     if (u == null) {
       PSEntityCache<PSExternalURI> cache = ExternalURIManager.getCache();
       u = cache.get(id);
-      if (u == null)
+      if (u == null) {
         u = new PSExternalURI(path);
+      }
     }
     u.setId(PSHandlers.id(id));
     u.setDescription(description);
@@ -325,8 +343,9 @@ public final class PSEntityFactory {
     if (c == null) {
       PSEntityCache<PSComment> cache = CommentManager.getCache();
       c = cache.get(id);
-      if (c == null)
+      if (c == null) {
         c = new PSComment();
+      }
     }
     c.setId(PSHandlers.id(id));
     c.setLabels(labels);
@@ -368,8 +387,9 @@ public final class PSEntityFactory {
     if (d == null) {
       PSEntityCache<PSFolder> cache = DocumentManager.getFoldersCache();
       d = cache.get(id);
-      if (d == null)
+      if (d == null) {
         d = new PSFolder(path);
+      }
     }
     d.setId(PSHandlers.id(id));
     d.setDescription(description);
@@ -403,8 +423,9 @@ public final class PSEntityFactory {
     if (f == null) {
       PSEntityCache<PSGroupFolder> cache = GroupManager.getFoldersCache();
       f = cache.get(id);
-      if (f == null)
+      if (f == null) {
         f = new PSGroupFolder(path);
+      }
     }
 
     f.setId(PSHandlers.id(id));
