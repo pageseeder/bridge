@@ -436,7 +436,7 @@ public final class Services {
   /**
    * Returns the URL to return the tree of projects a member belongs to.
    *
-   * @deprecated Use {@link #toProjects(String)} instead.
+   * @deprecated Use {@link #toListProjects(String)} or {@link #toProjectsTree(String)} instead.
    *
    * @param member  the member username or id
    *
@@ -448,9 +448,20 @@ public final class Services {
   }
 
   /**
+   * Returns the URL to return the results for a projects/groups search.
+   *
+   * @param member  the member username or id
+   *
+   * @return <code>/members/[member]/projectsfind</code>.
+   */
+  public static String toProjectsFind(String member) {
+    return "/members/"+member+"/projectfind";
+  }
+
+  /**
    * Returns the URL to return the sub-tree of projects a member belongs to.
    *
-   * @deprecated Use {@link #toSubProjectsTree(String, String)} instead
+   * @deprecated Use {@link #toListSubProjects(String, String)} or {@link #toSubProjectsTree(String, String)} instead
    *
    * @param member  the member username or id
    * @param project the project name or id

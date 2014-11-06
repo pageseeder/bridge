@@ -523,6 +523,25 @@ public final class PSHTTPConnectors {
   }
 
   /**
+   * List the projects for the specified member.
+   *
+   * @param member  the member
+   * @param includeAll if <code>true</code>, all the projects are listed (only for admins)
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition If either the member is not identifiable.
+   */
+  public static PSHTTPConnector findProjects(PSMember member, String prefix, boolean includeAll) throws FailedPrecondition {
+    Preconditions.isIdentifiable(member, "member");
+    String service = Services.toProjectsFind(member.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    if (prefix != null) connector.addParameter("nameprefix", prefix);
+    if (includeAll) connector.addParameter("for", "server");
+    return connector;
+  }
+
+  /**
    * List the subgroups of the specified group.
    *
    * @param group    The group
@@ -644,6 +663,7 @@ public final class PSHTTPConnectors {
 
     connector.addParameter("auto-activate", Boolean.toString(options.isAutoActivate()));
     connector.addParameter("welcome-email", Boolean.toString(options.hasWelcomeEmail()));
+    connector.addParameter("personal-group", Boolean.toString(options.hasPersonalGroup()));
     if (Invitation.DEFAULT != options.getInvitation()) {
       connector.addParameter("invitation", Boolean.toString(options.getInvitation() == Invitation.YES));
     }

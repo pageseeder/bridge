@@ -294,6 +294,26 @@ public final class GroupManager extends Sessionful {
   }
 
   /**
+   * Returns the list of subgroups for the specified group.
+   *
+   * @param group The group.
+   *
+   * @throws APIException
+   */
+  public List<PSGroup> findGroups(PSMember member, String prefix, boolean includeAll) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.findProjects(member, prefix, includeAll).using(this._session);
+    PSGroupHandler handler = new PSGroupHandler();
+    PSHTTPResponseInfo info = connector.get(handler);
+    // TODO We should simply return null?
+    if (info.getCode() >= 400)
+      throw new APIException("Unable to find groups of '"+member.getId()+"': "+info.getMessage());
+    List<PSGroup> groups = handler.list();
+    // cache them
+    for (PSGroup group : groups) cache.put(group);
+    return groups;
+  }
+
+  /**
    * Put a resource on the project.
    *
    * <p>Implementation note: this method only supports text resources, not binary resources.
