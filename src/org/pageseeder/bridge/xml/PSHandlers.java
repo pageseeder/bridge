@@ -7,10 +7,14 @@
  */
 package org.pageseeder.bridge.xml;
 
+import java.text.ParseException;
+import java.util.Date;
+
 import org.pageseeder.bridge.model.PSNotification;
 import org.pageseeder.bridge.model.PSRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.weborganic.berlioz.util.ISO8601;
 
 /**
  * A collection of utility functions for PageSeeder handler.
@@ -27,6 +31,22 @@ public final class PSHandlers {
 
   /** Utility class. */
   private PSHandlers() {
+  }
+
+  /**
+   * Parse the date as an ISO8601 date time and return the corresponding <code>Date</code>.
+   *
+   * @param date the date as 'YYYY-MM-DDThh:mm:ss' with optional timezone component.
+   * @return the corresponding Date value or <code>null</code>
+   */
+  public static Date datetime(String date) {
+    if (date == null) return null;
+    try {
+      return ISO8601.parseAuto(date);
+    } catch (ParseException ex) {
+      LOGGER.warn("Found suspicious date value: {}", date);
+      return null;
+    }
   }
 
   /**
