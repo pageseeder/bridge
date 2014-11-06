@@ -76,4 +76,19 @@ public final class Rules {
     if (email.indexOf('@') < 0) return false;
     return EMAIL.matcher(email).matches();
   }
+
+  /**
+   * @param mtype the media type to check
+   *
+   * @return <code>true</code> if it's an XML media type
+   */
+  public static boolean isXMLMediaType(String mtype) {
+    return "text/xml".equals(mtype) ||
+        "application/xml".equals(mtype) ||
+        "text/xml-external-parsed-entity".equals(mtype) ||
+        "application/xml-external-parsed-entity".equals(mtype) ||
+        "application/xml-dtd".equals(mtype) ||
+        (mtype != null && mtype.endsWith("+xml"));
+  }
+
 }

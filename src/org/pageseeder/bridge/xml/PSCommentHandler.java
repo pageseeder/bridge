@@ -7,6 +7,7 @@
  */
 package org.pageseeder.bridge.xml;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +15,13 @@ import org.pageseeder.bridge.model.PSComment;
 import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
+import org.pageseeder.bridge.util.Rules;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import com.topologi.diffx.xml.XMLStringWriter;
+import com.topologi.diffx.xml.XMLWriter;
 
 /**
  * Handles XML for services returning comments.
@@ -40,6 +45,11 @@ public final class PSCommentHandler extends DefaultHandler {
    * To capture text data.
    */
   private StringBuilder buffer = null;
+
+  /**
+   * To capture XML content.
+   */
+  private XMLWriter xmlContent = null;
 
   /**
    * Indicates whether the handler is within an 'attachment' element.
@@ -68,6 +78,16 @@ public final class PSCommentHandler extends DefaultHandler {
 
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+    if (this.xmlContent != null) {
+      try {
+        this.xmlContent.openElement(uri, localName, true);
+        for (int i = 0; i < atts.getLength(); i++) {
+          this.xmlContent.attribute(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
+        }
+      } catch (IOException ex) {
+        // shouldn't happen as internal writer
+      }
+    }
     if ("comment".equals(localName)) {
       PSComment comment = PSEntityFactory.toComment(atts, this.comment);
       this.comment = comment;
@@ -93,7 +113,11 @@ public final class PSCommentHandler extends DefaultHandler {
     } else if ("content".equals(localName)) {
       String type = atts.getValue("type");
       this.comment.setMediaType(type);
-      this.buffer = new StringBuilder();
+      if (Rules.isXMLMediaType(type)) {
+        this.xmlContent = new XMLStringWriter(true);
+      } else {
+        this.buffer = new StringBuilder();
+      }
 
     } else if ("attachment".equals(localName)) {
       this.attachment = true;
@@ -123,18 +147,32 @@ public final class PSCommentHandler extends DefaultHandler {
       this.buffer = null;
 
     } else if ("content".equals(localName)) {
-      this.comment.setContent(this.buffer.toString());
+      this.comment.setContent(this.xmlContent == null ? this.buffer.toString() : this.xmlContent.toString());
       this.buffer = null;
+      this.xmlContent = null;
 
     } else if ("attachment".equals(localName)) {
       this.attachment = false;
       this.fragment = null;
     }
+    if (this.xmlContent != null) {
+      try {
+        this.xmlContent.closeElement();
+      } catch (IOException ex) {
+        // shouldn't happen as internal writer
+      }
+    }
   }
 
   @Override
   public void characters(char[] ch, int start, int length) throws SAXException {
-    if (this.buffer != null) {
+    if (this.xmlContent != null) {
+      try {
+        this.xmlContent.writeText(ch, start, length);
+      } catch (IOException ex) {
+        // shouldn't happen as internal writer
+      }
+    } else if (this.buffer != null) {
       this.buffer.append(ch, start, length);
     }
   }

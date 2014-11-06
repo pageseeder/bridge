@@ -53,8 +53,11 @@ public final class CommentManager extends Sessionful {
   public boolean createComment(PSComment comment) throws FailedPrecondition, APIException {
     List<PSGroup> nogroup = Collections.emptyList();
     PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, null, nogroup).using(this._session);
-    PSHTTPResponseInfo info = connector.post();
-    return info.getStatus() == Status.SUCCESSFUL;
+    PSCommentHandler handler = new PSCommentHandler(comment);
+    PSHTTPResponseInfo info = connector.post(handler);
+    if (info.getStatus() != Status.SUCCESSFUL) return false;
+    cache.put(comment);
+    return true;
   }
 
   /**
@@ -66,8 +69,11 @@ public final class CommentManager extends Sessionful {
    */
   public boolean createComment(PSComment comment, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
     PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, notify, Collections.singletonList(group)).using(this._session);
-    PSHTTPResponseInfo info = connector.post();
-    return info.getStatus() == Status.SUCCESSFUL;
+    PSCommentHandler handler = new PSCommentHandler(comment);
+    PSHTTPResponseInfo info = connector.post(handler);
+    if (info.getStatus() != Status.SUCCESSFUL) return false;
+    cache.put(comment);
+    return true;
   }
 
   /**
@@ -79,8 +85,11 @@ public final class CommentManager extends Sessionful {
    */
   public boolean createComment(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
     PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, notify, groups).using(this._session);
-    PSHTTPResponseInfo info = connector.post();
-    return info.getStatus() == Status.SUCCESSFUL;
+    PSCommentHandler handler = new PSCommentHandler(comment);
+    PSHTTPResponseInfo info = connector.post(handler);
+    if (info.getStatus() != Status.SUCCESSFUL) return false;
+    cache.put(comment);
+    return true;
   }
 
   /**
@@ -92,8 +101,11 @@ public final class CommentManager extends Sessionful {
    */
   public boolean save(PSComment comment, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
     PSHTTPConnector connector = PSHTTPConnectors.editComment(comment, notify, Collections.singletonList(group)).using(this._session);
-    PSHTTPResponseInfo info = connector.post();
-    return info.getStatus() == Status.SUCCESSFUL;
+    PSCommentHandler handler = new PSCommentHandler(comment);
+    PSHTTPResponseInfo info = connector.post(handler);
+    if (info.getStatus() != Status.SUCCESSFUL) return false;
+    cache.put(comment);
+    return true;
   }
 
   /**
@@ -105,8 +117,11 @@ public final class CommentManager extends Sessionful {
    */
   public boolean save(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
     PSHTTPConnector connector = PSHTTPConnectors.editComment(comment, notify, groups).using(this._session);
-    PSHTTPResponseInfo info = connector.post();
-    return info.getStatus() == Status.SUCCESSFUL;
+    PSCommentHandler handler = new PSCommentHandler(comment);
+    PSHTTPResponseInfo info = connector.post(handler);
+    if (info.getStatus() != Status.SUCCESSFUL) return false;
+    cache.put(comment);
+    return true;
   }
 
   /**
