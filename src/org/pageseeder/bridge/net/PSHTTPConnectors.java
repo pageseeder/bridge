@@ -35,6 +35,7 @@ import org.pageseeder.bridge.model.PSPredicate;
 import org.pageseeder.bridge.model.PSProject;
 import org.pageseeder.bridge.model.PSResource;
 import org.pageseeder.bridge.model.PSRole;
+import org.pageseeder.bridge.model.PSThreadStatus;
 import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.model.PasswordResetOptions;
 import org.pageseeder.bridge.psml.PSMLFragment;
@@ -312,6 +313,23 @@ public final class PSHTTPConnectors {
     }
   }
 
+  // Thread
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Add the appropriate parameter to identify the member depending on whether it is the username or email.
+   *
+   * @param connector the connector to add the parameter to
+   * @param options password reset options.
+   *
+   * @throws FailedPrecondition if the thread ID is missing from the status.
+   */
+  public static PSHTTPConnector checkThreadProgress(PSThreadStatus status) throws FailedPrecondition {
+    Preconditions.isNotEmpty(status.getThreadID(), "threadid");
+    String service = Services.toThreadProgress(status.getThreadID());
+    return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+  }
+
   // Group
   // ----------------------------------------------------------------------------------------------
 
@@ -483,6 +501,63 @@ public final class PSHTTPConnectors {
   public static PSHTTPConnector getGroup(String identifier) {
     String service = Services.toGetGroup(identifier);
     return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+  }
+
+  /**
+   * Rename an existing group in PageSeeder.
+   *
+   * @param group   the group
+   * @param editor  the author of the rename
+   * @param newname the new group name
+   *
+   * @return the connector
+   *
+   * @throws FailedPrecondition
+   */
+  public static PSHTTPConnector renameGroup(PSGroup group, PSMember editor, String newname) throws FailedPrecondition {
+    Preconditions.isIdentifiable(group,  "group");
+    Preconditions.isIdentifiable(editor, "editor");
+    String service = Services.toRenameGroup(editor.getIdentifier(), group.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    connector.addParameter("name", newname);
+    return connector;
+  }
+
+  /**
+   * Edit an existing group in PageSeeder.
+   *
+   * @param group   the group to edit
+   * @param editor  the author of the edit
+   *
+   * @return the connector
+   *
+   * @throws FailedPrecondition
+   */
+  public static PSHTTPConnector editGroup(PSGroup group, PSMember editor, GroupOptions options) throws FailedPrecondition {
+    Preconditions.isIdentifiable(group,  "group");
+    Preconditions.isIdentifiable(editor, "editor");
+    String service = Services.toEditGroup(editor.getIdentifier(), group.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    if (group.getDescription() != null) connector.addParameter("description", group.getDescription());
+    if (group.getOwner() != null) connector.addParameter("owner", group.getOwner());
+    if (group.getDetailsType() != null) connector.addParameter("detailstype", group.getDetailsType());
+    if (group.getDefaultRole() != null) connector.addParameter("defaultrole", group.getDefaultRole().toString());
+    if (group.getDefaultNotification() != null) connector.addParameter("defaultnotification", group.getDefaultNotification().toString());
+    if (options != null) {
+      if (options.getVisibility() != null) connector.addParameter("visibility", options.getVisibility());
+      if (options.getCommenting() != null) connector.addParameter("commenting", options.getCommenting());
+      if (options.getMessage() != null) connector.addParameter("message", options.getMessage());
+      if (options.getRegistration() != null) connector.addParameter("registration", options.getRegistration());
+      if (options.getAccess() != null) connector.addParameter("access", options.getAccess());
+      if (options.getModeration() != null) connector.addParameter("moderation", options.getModeration());
+      Map<String, String> properties = options.getProperties();
+      if (properties != null) {
+        for (String pname : properties.keySet()) {
+          connector.addParameter("property."+pname, properties.get(pname));
+        }
+      }
+    }
+    return connector;
   }
 
   /**

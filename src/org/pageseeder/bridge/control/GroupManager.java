@@ -20,11 +20,13 @@ import org.pageseeder.bridge.model.PSNotification;
 import org.pageseeder.bridge.model.PSProject;
 import org.pageseeder.bridge.model.PSResource;
 import org.pageseeder.bridge.model.PSRole;
+import org.pageseeder.bridge.model.PSThreadStatus;
 import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo;
 import org.pageseeder.bridge.xml.PSGroupFolderHandler;
 import org.pageseeder.bridge.xml.PSGroupHandler;
+import org.pageseeder.bridge.xml.PSThreadHandler;
 
 /**
  * A manager for groups, projects and group folders.
@@ -153,6 +155,69 @@ public final class GroupManager extends Sessionful {
     if (folder != null) {
       folders.put(folder);
     }
+  }
+
+  /**
+   * Renames the specified group in PageSeeder.
+   *
+   * <p>Renaming a group is an asynchronous operation on PageSeeder so this method returns a {@link PSThreadStatus} object.
+   *
+   * @param group   The group to rename
+   * @param editor  The member making the request
+   * @param newname The new group name
+   *
+   * @throws FailedPrecondition   Should a precondition fail to create a project
+   * @throws APIException         If an error occurs while communicating with PageSeeder.
+   * @throws NullPointerException If the group, editor or newname is <code>null</code>.
+   */
+  public PSThreadStatus renameGroup(PSGroup group, PSMember editor, String newname) throws FailedPrecondition, APIException {
+    if (group   == null) throw new NullPointerException("group");
+    if (editor  == null) throw new NullPointerException("editor");
+    if (newname == null) throw new NullPointerException("newname");
+    PSHTTPConnector connector = PSHTTPConnectors.renameGroup(group, editor, newname).using(this._session);
+    PSThreadHandler handler = new PSThreadHandler();
+    PSHTTPResponseInfo info = connector.post(handler);
+    if (info.getCode() >= 400)
+      throw new APIException("Unable to rename group '"+group.getName()+"': "+info.getMessage());
+    return handler.getThreadStatus();
+  }
+
+  /**
+   * Edit the specified group in PageSeeder (name not included, use {@link renameGroup()} to rename a group).
+   *
+   * @param group   The group to edit
+   * @param creator The member making the request
+   *
+   * @throws FailedPrecondition   Should a precondition fail to edit the group
+   * @throws APIException         If an error occurs while communicating with PageSeeder.
+   * @throws NullPointerException If the group or editor is <code>null</code>.
+   */
+  public void editGroup(PSGroup group, PSMember editor) throws FailedPrecondition, APIException {
+    editGroup(group, editor, null);
+  }
+
+  /**
+   * Edit the specified group in PageSeeder (name not included, use {@link renameGroup()} to rename a group).
+   *
+   * <p>The optional group options parameters can be used to specify additional options to edit the group
+   * or set some group properties.
+   *
+   * @param group   The group to edit
+   * @param creator The member making the request
+   * @param options The group creation options (including group properties)
+   *
+   * @throws FailedPrecondition   Should a precondition fail to edit the group
+   * @throws APIException         If an error occurs while communicating with PageSeeder.
+   * @throws NullPointerException If the group or editor is <code>null</code>.
+   */
+  public void editGroup(PSGroup group, PSMember editor, GroupOptions options) throws FailedPrecondition, APIException {
+    if (group   == null) throw new NullPointerException("group");
+    if (editor  == null) throw new NullPointerException("editor");
+    PSHTTPConnector connector = PSHTTPConnectors.editGroup(group, editor, options).using(this._session);
+    PSThreadHandler handler = new PSThreadHandler();
+    PSHTTPResponseInfo info = connector.post(handler);
+    if (info.getCode() >= 400)
+      throw new APIException("Unable to edit group '"+group.getName()+"': "+info.getMessage());
   }
 
   /**

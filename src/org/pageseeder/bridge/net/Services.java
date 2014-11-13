@@ -772,9 +772,29 @@ public final class Services {
 
   // /groups/{group:group}/index/clear
 
-  // /members/{member:member}/groups/{group:group}/archive
+  /**
+   * Returns the URL to archive a group.
+   *
+   * @param member  the member username or id
+   * @param group   the group to archive
+   *
+   * @return <code>/members/[member]/groups/[groups]/archive</code>.
+   */
+  public static String toArchiveGroup(String member, String group) {
+    return "/members/"+member+"/groups/"+group+"/archive";
+  }
 
-  // /members/{member:member}/groups/{group:group}/rename
+  /**
+   * Returns the URL to rename a group.
+   *
+   * @param member  the member username or id
+   * @param group   the project's old name or id
+   *
+   * @return <code>/members/[member]/groups/[groups]/rename</code>.
+   */
+  public static String toRenameGroup(String member, String group) {
+    return "/members/"+member+"/groups/"+group+"/rename";
+  }
 
   // /members/{member:member}/groups/{group:group}/unarchive
 
@@ -1181,7 +1201,16 @@ public final class Services {
 
   // /threads/{threadid}/cancel
 
-  // /groups/{group:group}/threads/{threadid}/progress
+  /**
+   * Returns the URL to check the progress of a thread.
+   *
+   * @param threadid  the ID of the thread
+   *
+   * @return <code>/threads/[threadid]/progress</code>.
+   */
+  public static String toThreadProgress(String threadid) {
+    return "/threads/"+threadid+"/progress";
+  }
 
   // /threads/{threadid}/progress
 
