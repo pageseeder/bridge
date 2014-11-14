@@ -166,7 +166,7 @@ public final class GroupManager extends Sessionful {
    * @param editor  The member making the request
    * @param newname The new group name
    *
-   * @throws FailedPrecondition   Should a precondition fail to create a project
+   * @throws FailedPrecondition   Should a precondition fail
    * @throws APIException         If an error occurs while communicating with PageSeeder.
    * @throws NullPointerException If the group, editor or newname is <code>null</code>.
    */
@@ -179,6 +179,29 @@ public final class GroupManager extends Sessionful {
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getCode() >= 400)
       throw new APIException("Unable to rename group '"+group.getName()+"': "+info.getMessage());
+    return handler.getThreadStatus();
+  }
+
+  /**
+   * Archives the specified group in PageSeeder.
+   *
+   * <p>Archiving a group is an asynchronous operation on PageSeeder so this method returns a {@link PSThreadStatus} object.
+   *
+   * @param group   The group to archive
+   * @param editor  The member making the request
+   *
+   * @throws FailedPrecondition   Should a precondition fail
+   * @throws APIException         If an error occurs while communicating with PageSeeder.
+   * @throws NullPointerException If the group or editor is <code>null</code>.
+   */
+  public PSThreadStatus archiveGroup(PSGroup group, PSMember editor) throws FailedPrecondition, APIException {
+    if (group   == null) throw new NullPointerException("group");
+    if (editor  == null) throw new NullPointerException("editor");
+    PSHTTPConnector connector = PSHTTPConnectors.archiveGroup(group, editor).using(this._session);
+    PSThreadHandler handler = new PSThreadHandler();
+    PSHTTPResponseInfo info = connector.post(handler);
+    if (info.getCode() >= 400)
+      throw new APIException("Unable to archive group '"+group.getName()+"': "+info.getMessage());
     return handler.getThreadStatus();
   }
 

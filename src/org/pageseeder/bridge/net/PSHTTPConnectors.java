@@ -524,6 +524,23 @@ public final class PSHTTPConnectors {
   }
 
   /**
+   * Archive an existing group in PageSeeder.
+   *
+   * @param group   the group
+   * @param editor  the author of the archive
+   *
+   * @return the connector
+   *
+   * @throws FailedPrecondition
+   */
+  public static PSHTTPConnector archiveGroup(PSGroup group, PSMember editor) throws FailedPrecondition {
+    Preconditions.isIdentifiable(group,  "group");
+    Preconditions.isIdentifiable(editor, "editor");
+    String service = Services.toArchiveGroup(editor.getIdentifier(), group.getIdentifier());
+    return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+  }
+
+  /**
    * Edit an existing group in PageSeeder.
    *
    * @param group   the group to edit
