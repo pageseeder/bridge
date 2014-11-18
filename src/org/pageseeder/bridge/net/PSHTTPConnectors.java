@@ -555,18 +555,40 @@ public final class PSHTTPConnectors {
     Preconditions.isIdentifiable(editor, "editor");
     String service = Services.toEditGroup(editor.getIdentifier(), group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
-    if (group.getDescription() != null) connector.addParameter("description", group.getDescription());
-    if (group.getOwner() != null) connector.addParameter("owner", group.getOwner());
-    if (group.getDetailsType() != null) connector.addParameter("detailstype", group.getDetailsType());
-    if (group.getDefaultRole() != null) connector.addParameter("defaultrole", group.getDefaultRole().toString());
-    if (group.getDefaultNotification() != null) connector.addParameter("defaultnotification", group.getDefaultNotification().toString());
+    if (group.getDescription() != null) {
+      connector.addParameter("description", group.getDescription());
+    }
+    if (group.getOwner() != null) {
+      connector.addParameter("owner", group.getOwner());
+    }
+    if (group.getDetailsType() != null) {
+      connector.addParameter("detailstype", group.getDetailsType());
+    }
+    if (group.getDefaultRole() != null) {
+      connector.addParameter("defaultrole", group.getDefaultRole().toString());
+    }
+    if (group.getDefaultNotification() != null) {
+      connector.addParameter("defaultnotification", group.getDefaultNotification().toString());
+    }
     if (options != null) {
-      if (options.getVisibility() != null) connector.addParameter("visibility", options.getVisibility());
-      if (options.getCommenting() != null) connector.addParameter("commenting", options.getCommenting());
-      if (options.getMessage() != null) connector.addParameter("message", options.getMessage());
-      if (options.getRegistration() != null) connector.addParameter("registration", options.getRegistration());
-      if (options.getAccess() != null) connector.addParameter("access", options.getAccess());
-      if (options.getModeration() != null) connector.addParameter("moderation", options.getModeration());
+      if (options.getVisibility() != null) {
+        connector.addParameter("visibility", options.getVisibility());
+      }
+      if (options.getCommenting() != null) {
+        connector.addParameter("commenting", options.getCommenting());
+      }
+      if (options.getMessage() != null) {
+        connector.addParameter("message", options.getMessage());
+      }
+      if (options.getRegistration() != null) {
+        connector.addParameter("registration", options.getRegistration());
+      }
+      if (options.getAccess() != null) {
+        connector.addParameter("access", options.getAccess());
+      }
+      if (options.getModeration() != null) {
+        connector.addParameter("moderation", options.getModeration());
+      }
       Map<String, String> properties = options.getProperties();
       if (properties != null) {
         for (String pname : properties.keySet()) {
@@ -628,8 +650,12 @@ public final class PSHTTPConnectors {
     Preconditions.isIdentifiable(member, "member");
     String service = Services.toProjectsFind(member.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
-    if (prefix != null) connector.addParameter("nameprefix", prefix);
-    if (includeAll) connector.addParameter("for", "server");
+    if (prefix != null) {
+      connector.addParameter("nameprefix", prefix);
+    }
+    if (includeAll) {
+      connector.addParameter("for", "server");
+    }
     return connector;
   }
 
@@ -1891,7 +1917,11 @@ public final class PSHTTPConnectors {
         connector.addParameter(p.getKey(), p.getValue());
       }
     }
-    connector.addParameter("groups", group.getName());
+    if (group instanceof PSProject) {
+      connector.addParameter("project", group.getName());
+    } else {
+      connector.addParameter("groups", group.getName());
+    }
     connector.addParameter("xformat", "xml");
     return connector;
   }
