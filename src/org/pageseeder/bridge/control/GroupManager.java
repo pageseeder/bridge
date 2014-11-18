@@ -161,6 +161,8 @@ public final class GroupManager extends Sessionful {
    * Renames the specified group in PageSeeder.
    *
    * <p>Renaming a group is an asynchronous operation on PageSeeder so this method returns a {@link PSThreadStatus} object.
+   * 
+   * <p>The {@link groupIsRenamed(group)} must be called when the thread is completed successfully.
    *
    * @param group   The group to rename
    * @param editor  The member making the request
@@ -183,9 +185,23 @@ public final class GroupManager extends Sessionful {
   }
 
   /**
+   * Should be called when the rename group thread is completed, to update the local cache
+   * 
+   * @param group the group that was renamed
+   * 
+   * @throws NullPointerException If the group is <code>null</code>.
+   */
+  public void groupIsRenamed(PSGroup group) {
+    if (group == null) throw new NullPointerException("group");
+    cache.put(group);
+  }
+
+  /**
    * Archives the specified group in PageSeeder.
    *
    * <p>Archiving a group is an asynchronous operation on PageSeeder so this method returns a {@link PSThreadStatus} object.
+   * 
+   * <p>The {@link groupIsArchived(group)} must be called when the thread is completed successfully.
    *
    * @param group   The group to archive
    * @param editor  The member making the request
@@ -203,6 +219,18 @@ public final class GroupManager extends Sessionful {
     if (info.getCode() >= 400)
       throw new APIException("Unable to archive group '"+group.getName()+"': "+info.getMessage());
     return handler.getThreadStatus();
+  }
+
+  /**
+   * Should be called when the archive group thread is completed, to update the local cache
+   * 
+   * @param group the group that was archived
+   * 
+   * @throws NullPointerException If the group is <code>null</code>.
+   */
+  public void groupIsArchived(PSGroup group) {
+    if (group == null) throw new NullPointerException("group");
+    cache.remove(group.getKey());
   }
 
   /**
@@ -241,6 +269,8 @@ public final class GroupManager extends Sessionful {
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getCode() >= 400)
       throw new APIException("Unable to edit group '"+group.getName()+"': "+info.getMessage());
+    // update cache
+    cache.put(group);
   }
 
   /**
