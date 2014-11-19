@@ -1252,6 +1252,7 @@ public final class PSHTTPConnectors {
    * Create a new comment in PageSeeder.
    *
    * @param comment The comment
+   * @param creator The comment's creator (may be different from author)
    * @param notify  Notifications
    * @param groups  The groups the comment is posted on
    *
@@ -1259,7 +1260,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition
    */
-  public static PSHTTPConnector createComment(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition {
+  public static PSHTTPConnector createComment(PSComment comment, PSMember creator, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition {
     // The author and context determine the service
     Author author = comment.getAuthor();
     Context context = comment.getContext();
@@ -1279,7 +1280,7 @@ public final class PSHTTPConnectors {
         throw new FailedPrecondition("At least one group must be specified when attaching a comment to a URI");
     }
 
-    String service = Services.toCreateCommentService(author, context);
+    String service = Services.toCreateCommentService(creator, context);
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
 
     // Core parameters
@@ -1505,7 +1506,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition
    */
-  public static PSHTTPConnector editComment(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition {
+  public static PSHTTPConnector editComment(PSComment comment, PSMember editor, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition {
     // The author and context determine the service
     Author author = comment.getAuthor();
     Context context = comment.getContext();
@@ -1526,7 +1527,7 @@ public final class PSHTTPConnectors {
         throw new FailedPrecondition("At least one group must be specified when attaching a comment to a URI");
     }
 
-    String service = Services.toEditComment(author.member().getIdentifier(), comment.getIdentifier());
+    String service = Services.toEditComment(editor.getIdentifier(), comment.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
 
     // Core parameters

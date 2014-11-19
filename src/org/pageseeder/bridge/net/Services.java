@@ -11,6 +11,7 @@ import org.pageseeder.bridge.Requires;
 import org.pageseeder.bridge.model.PSComment.Author;
 import org.pageseeder.bridge.model.PSComment.Context;
 import org.pageseeder.bridge.model.PSGroup;
+import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSURI;
 
 /**
@@ -1127,16 +1128,16 @@ public final class Services {
   /**
    * Shorthand method to return the service to use to create a comment.
    *
-   * @param author  The author of the comment.
+   * @param creator The creator of the comment.
    * @param context The context of the comment.
    *
    * @return The corresponding service path.
    */
-  public static String toCreateCommentService(Author author, Context context) {
+  public static String toCreateCommentService(PSMember creator, Context context) {
     // If the author is a member it is prefixed by '/members/[id]'
     StringBuilder service = new StringBuilder();
-    if (author.member() != null) {
-      service.append("/members/").append(author.member().getIdentifier());
+    if (creator != null) {
+      service.append("/members/").append(creator.getIdentifier());
     }
     // The context determines the rest of the URL
     if (context.group() != null) {

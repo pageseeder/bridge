@@ -51,13 +51,22 @@ public final class CommentManager extends Sessionful {
    * @param comment The comment to create
    */
   public boolean createComment(PSComment comment) throws FailedPrecondition, APIException {
-    List<PSGroup> nogroup = Collections.emptyList();
-    PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, null, nogroup).using(this._session);
-    PSCommentHandler handler = new PSCommentHandler(comment);
-    PSHTTPResponseInfo info = connector.post(handler);
-    if (info.getStatus() != Status.SUCCESSFUL) return false;
-    cache.put(comment);
-    return true;
+    if (comment.getAuthor() == null || comment.getAuthor().member() == null)
+      throw new FailedPrecondition("Comment must have a member author");
+    return createComment(comment, comment.getAuthor().member());
+  }
+
+  /**
+   * Creates the specified comment in PageSeeder.
+   *
+   * <p>This method only works for comments posted against a group.
+   *
+   * @param comment The comment to create
+   * @param creator The comment's creator (may be different from author)
+   */
+  public boolean createComment(PSComment comment, PSMember creator) throws FailedPrecondition, APIException {
+    List<PSGroup> empty = Collections.emptyList();
+    return createComment(comment, creator, null, empty);
   }
 
   /**
@@ -68,12 +77,21 @@ public final class CommentManager extends Sessionful {
    * @param group   The group the comment should be posted against
    */
   public boolean createComment(PSComment comment, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, notify, Collections.singletonList(group)).using(this._session);
-    PSCommentHandler handler = new PSCommentHandler(comment);
-    PSHTTPResponseInfo info = connector.post(handler);
-    if (info.getStatus() != Status.SUCCESSFUL) return false;
-    cache.put(comment);
-    return true;
+    if (comment.getAuthor() == null || comment.getAuthor().member() == null)
+      throw new FailedPrecondition("Comment must have a member author");
+    return createComment(comment, comment.getAuthor().member(), notify, Collections.singletonList(group));
+  }
+
+  /**
+   * Creates the specified comment in PageSeeder.
+   *
+   * @param comment The comment to create
+   * @param creator The comment's creator (may be different from author)
+   * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
+   * @param group   The group the comment should be posted against
+   */
+  public boolean createComment(PSComment comment, PSMember creator, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
+    return createComment(comment, creator, notify, Collections.singletonList(group));
   }
 
   /**
@@ -84,7 +102,21 @@ public final class CommentManager extends Sessionful {
    * @param groups  The group the comment should be posted against
    */
   public boolean createComment(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, notify, groups).using(this._session);
+    if (comment.getAuthor() == null || comment.getAuthor().member() == null)
+      throw new FailedPrecondition("Comment must have a member author");
+    return createComment(comment, comment.getAuthor().member(), notify, groups);
+  }
+
+  /**
+   * Creates the specified comment in PageSeeder.
+   *
+   * @param comment The comment to create
+   * @param creator The comment's creator (may be different from author)
+   * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
+   * @param groups  The group the comment should be posted against
+   */
+  public boolean createComment(PSComment comment, PSMember creator, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, creator, notify, groups).using(this._session);
     PSCommentHandler handler = new PSCommentHandler(comment);
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getStatus() != Status.SUCCESSFUL) return false;
@@ -100,12 +132,21 @@ public final class CommentManager extends Sessionful {
    * @param group   The group the comment should be posted against
    */
   public boolean save(PSComment comment, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.editComment(comment, notify, Collections.singletonList(group)).using(this._session);
-    PSCommentHandler handler = new PSCommentHandler(comment);
-    PSHTTPResponseInfo info = connector.post(handler);
-    if (info.getStatus() != Status.SUCCESSFUL) return false;
-    cache.put(comment);
-    return true;
+    if (comment.getAuthor() == null || comment.getAuthor().member() == null)
+      throw new FailedPrecondition("Comment must have a member author");
+    return save(comment, comment.getAuthor().member(), notify, Collections.singletonList(group));
+  }
+
+  /**
+   * Edits the specified comment in PageSeeder.
+   *
+   * @param comment The comment to save
+   * @param editor  The comment's editor (may be different from author)
+   * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
+   * @param group   The group the comment should be posted against
+   */
+  public boolean save(PSComment comment, PSMember editor, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
+    return save(comment, editor, notify, Collections.singletonList(group));
   }
 
   /**
@@ -113,10 +154,24 @@ public final class CommentManager extends Sessionful {
    *
    * @param comment The comment to save
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
-   * @param groups  The groups the comment should be posted against
+   * @param group   The group the comment should be posted against
    */
   public boolean save(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.editComment(comment, notify, groups).using(this._session);
+    if (comment.getAuthor() == null || comment.getAuthor().member() == null)
+      throw new FailedPrecondition("Comment must have a member author");
+    return save(comment, comment.getAuthor().member(), notify, groups);
+  }
+
+  /**
+   * Edits the specified comment in PageSeeder.
+   *
+   * @param comment The comment to save
+   * @param editor  The comment's editor (may be different from author)
+   * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
+   * @param groups  The groups the comment should be posted against
+   */
+  public boolean save(PSComment comment, PSMember editor, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.editComment(comment, editor, notify, groups).using(this._session);
     PSCommentHandler handler = new PSCommentHandler(comment);
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getStatus() != Status.SUCCESSFUL) return false;
