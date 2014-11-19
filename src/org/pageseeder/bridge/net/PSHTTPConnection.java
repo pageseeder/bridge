@@ -1082,8 +1082,8 @@ public final class PSHTTPConnection {
         }
       }
       this.reader.setContentHandler(actual);
-      this.handler.startDocument();
-      this.handler.startElement(uri, localName, qName, attributes);
+      actual.startDocument();
+      actual.startElement(uri, localName, qName, attributes);
     }
 
   }
