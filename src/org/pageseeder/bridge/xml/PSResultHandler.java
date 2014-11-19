@@ -10,6 +10,7 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSResult;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -34,6 +35,11 @@ public final class PSResultHandler extends DefaultHandler {
   private StringBuilder buffer = new StringBuilder();
 
   /**
+   * The current group the result is part of.
+   */
+  private PSGroup group = null;
+
+  /**
    * Result being processed (state variable)
    */
   private PSResult result = null;
@@ -46,9 +52,20 @@ public final class PSResultHandler extends DefaultHandler {
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
     if ("document".equals(localName)) {
-      this.result = new PSResult();
+      this.result = new PSResult(this.group);
     } else if ("field".equals(localName)) {
       this.field = atts.getValue("name");
+    } else if ("search".equals(localName)) {
+      String groupid = atts.getValue("groupid");
+      String groupname = atts.getValue("groupname");
+      if (groupname != null) {
+        this.group = new PSGroup(groupname);
+        try {
+          this.group.setId(Long.parseLong(groupid));
+        } catch (NumberFormatException ex) {
+          // Ignore
+        }
+      }
     }
   }
 

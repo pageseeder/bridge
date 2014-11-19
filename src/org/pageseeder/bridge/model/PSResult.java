@@ -28,9 +28,26 @@ public class PSResult implements Serializable {
   private List<Field> fields = new ArrayList<Field>();
 
   /**
-   * Sole constructor
+   * The group this result is part of.
    */
-  public PSResult() {
+  private PSGroup group = null;
+
+  /**
+   * Sole constructor.
+   *
+   * @param group the group the result if part of if known.
+   */
+  public PSResult(PSGroup group) {
+    this.group = group;
+  }
+
+  /**
+   * Indicate which group the result is part of.
+   *
+   * @return the group the result if part of if known.
+   */
+  public PSGroup getGroup() {
+    return this.group;
   }
 
   /**
