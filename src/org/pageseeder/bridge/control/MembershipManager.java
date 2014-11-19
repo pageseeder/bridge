@@ -71,7 +71,13 @@ public final class MembershipManager extends Sessionful {
      */
     public static MembershipResult forResponse(PSHTTPResponseInfo info) {
       if (info.isSuccessful()) return ok;
-      final int _error = info.getCode();
+      final int _error;
+      try {
+        _error = Integer.parseInt(info.getErrorID(), 16);
+      } catch (NumberFormatException ex) {
+        // not a number, it is unknown then
+        return MembershipResult.unknown;
+      }
       switch (_error) {
         // 0x1001 If the username contains the character '@'.".
         case 0x1001: return invalid_username;
