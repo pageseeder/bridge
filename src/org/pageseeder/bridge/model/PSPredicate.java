@@ -8,9 +8,12 @@
 package org.pageseeder.bridge.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.weborganic.berlioz.util.ISO8601;
 
 /**
  * A predicate for a search.
@@ -42,6 +45,17 @@ public final class PSPredicate implements Serializable {
    * Facets.
    */
   private int pageSize = 100;
+
+  /**
+   */
+  private long from = Long.MIN_VALUE;
+
+  /** */
+  private long to = Long.MAX_VALUE;
+
+  /** */
+  private String sortBy = null;
+
 
   /**
    * @param type the type to set
@@ -98,6 +112,35 @@ public final class PSPredicate implements Serializable {
     this.facets.put(field, value);
   }
 
+  public void setFrom(long from) {
+    this.from = from;
+  }
+
+  public void setTo(long to) {
+    this.to = to;
+  }
+
+  public void setFrom(Date from) {
+    this.from = from != null? from.getTime() : Long.MIN_VALUE;
+  }
+
+  public void setTo(Date to) {
+    this.to = to != null? to.getTime() :Long.MAX_VALUE;
+  }
+
+  public void setBetween(Date from, Date to) {
+    setFrom(from);
+    setTo(to);
+  }
+
+  public void setSortBy(String sortBy) {
+    this.sortBy = sortBy;
+  }
+
+  public String getSortBy() {
+    return this.sortBy;
+  }
+
   /**
    * Add a facet for the specified property.
    *
@@ -118,17 +161,32 @@ public final class PSPredicate implements Serializable {
    */
   public Map<String, String> toParameters() {
     Map<String, String> parameters = new HashMap<String, String>();
-    if (this.type != null) parameters.put("types", this.type);
+    if (this.type != null) {
+      parameters.put("types", this.type);
+    }
+    if (this.from != Long.MIN_VALUE) {
+      parameters.put("from", ISO8601.DATETIME.format(this.from));
+    }
+    if (this.to != Long.MAX_VALUE) {
+      parameters.put("to", ISO8601.DATETIME.format(this.to));
+    }
     if (!this.facets.isEmpty()) {
       StringBuilder select = new StringBuilder();
       for (Entry<String, String> f : this.facets.entrySet()) {
-        if (select.length() > 0) select.append(',');
+        if (select.length() > 0) {
+          select.append(',');
+        }
         // TODO URL encoding
         select.append(f.getKey()).append(':').append(f.getValue());
       }
       parameters.put("select", select.toString());
-      if (this.page > 1) parameters.put("page", Integer.toString(this.page));
+      if (this.page > 1) {
+        parameters.put("page", Integer.toString(this.page));
+      }
       parameters.put("page-size", Integer.toString(this.pageSize));
+    }
+    if (this.sortBy != null) {
+      parameters.put("sortby", this.sortBy);
     }
     return parameters;
   }
@@ -136,7 +194,9 @@ public final class PSPredicate implements Serializable {
   @Override
   public String toString() {
     StringBuilder s = new StringBuilder();
-    if (this.type != null) s.append("types=").append(this.type).append(';');
+    if (this.type != null) {
+      s.append("types=").append(this.type).append(';');
+    }
     if (!this.facets.isEmpty()) {
       for (Entry<String, String> f : this.facets.entrySet()) {
         s.append(f.getKey()).append('=').append(f.getValue()).append(';');
