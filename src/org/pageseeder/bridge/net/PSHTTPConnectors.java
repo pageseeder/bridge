@@ -699,7 +699,7 @@ public final class PSHTTPConnectors {
       connector.addParameter("notification", notification.parameter());
     }
     if (role != null) {
-      connector.addParameter("role", role.parameter());
+      connector.addParameter("role", role.parameterMixed());
     }
     connector.addParameter("listed", Boolean.toString(listed));
     return connector;
@@ -776,7 +776,7 @@ public final class PSHTTPConnectors {
       connector.addParameter("notification", membership.getNotification().parameter());
     }
     if (membership.getRole() != null) {
-      connector.addParameter("role", membership.getRole().parameter());
+      connector.addParameter("role", membership.getRole().parameterMixed());
     }
 
     connector.addParameter("auto-activate", Boolean.toString(options.isAutoActivate()));
@@ -855,7 +855,7 @@ public final class PSHTTPConnectors {
       connector.addParameter("notification", membership.getNotification().parameter());
     }
     if (membership.getRole() != null) {
-      connector.addParameter("role", membership.getRole().parameter());
+      connector.addParameter("role", membership.getRole().parameterMixed());
     }
 
     if (forceEmail) {
@@ -922,7 +922,7 @@ public final class PSHTTPConnectors {
       connector.addParameter("notification", membership.getNotification().parameter());
     }
     if (membership.getRole() != null) {
-      connector.addParameter("role", membership.getRole().parameter());
+      connector.addParameter("role", membership.getRole().parameterMixed());
     }
 
     connector.addParameter("welcome-email", Boolean.toString(options.hasWelcomeEmail()));
@@ -964,7 +964,7 @@ public final class PSHTTPConnectors {
       connector.addParameter("notification", membership.getNotification().parameter());
     }
     if (membership.getRole() != null) {
-      connector.addParameter("role", membership.getRole().parameter());
+      connector.addParameter("role", membership.getRole().parameterMixed());
     }
     connector.addParameter("register", "true");
 
@@ -1123,7 +1123,7 @@ public final class PSHTTPConnectors {
     }
     // Membership attributes filter
     if (membership.getRole() != null) {
-      connector.addParameter("member-role", membership.getRole().parameter());
+      connector.addParameter("member-role", membership.getRole().parameterMixed());
     }
     PSDetails details = membership.getDetails();
     if (details != null) {

@@ -54,6 +54,17 @@ public enum PSRole {
    * @return the parameter to use when communicating with PageSeder
    */
   public String parameter() {
+    return this._parameter.toLowerCase();
+  }
+
+  /**
+   *
+   * @deprecated Mixed case is deprecated, but some services still require it.
+   *
+   * @return the parameter to use when communicating with PageSeder using mixed case
+   */
+  @Deprecated
+  public String parameterMixed() {
     return this._parameter;
   }
 
