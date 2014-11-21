@@ -1123,7 +1123,7 @@ public final class PSHTTPConnectors {
     }
     // Membership attributes filter
     if (membership.getRole() != null) {
-      connector.addParameter("member-role", membership.getRole().parameterMixed());
+      connector.addParameter("member-role", membership.getRole().parameter());
     }
     PSDetails details = membership.getDetails();
     if (details != null) {
