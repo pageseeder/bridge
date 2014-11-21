@@ -180,11 +180,12 @@ public final class PSPredicate implements Serializable {
         select.append(f.getKey()).append(':').append(f.getValue());
       }
       parameters.put("select", select.toString());
-      if (this.page > 1) {
-        parameters.put("page", Integer.toString(this.page));
-      }
-      parameters.put("page-size", Integer.toString(this.pageSize));
     }
+    // Paging
+    if (this.page > 1) {
+      parameters.put("page", Integer.toString(this.page));
+    }
+    parameters.put("page-size", Integer.toString(this.pageSize));
     if (this.sortBy != null) {
       parameters.put("sortby", this.sortBy);
     }
