@@ -1077,7 +1077,7 @@ public final class PSHTTPConnectors {
    */
   public static PSHTTPConnector listMembershipsForGroup(String group) throws FailedPrecondition {
     Preconditions.isNotEmpty(group, "group");
-    String service = Services.toListMembers(group);
+    String service = Services.toListAlldetailsMembers(group);
     return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
   }
 
