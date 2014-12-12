@@ -262,6 +262,41 @@ public final class MemberManager extends Sessionful {
   }
 
   /**
+   * Activate an account for administrators only.
+   *
+   * <p>If the session does not belong to an administrator the call will fail.
+   *
+   * @param username The username of the member to activate
+   *
+   * @return If the member was successfully activated
+   *
+   * @throws APIException If an error occurs while connecting to PageSeeder.
+   */
+  public boolean activate(String username) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.getActivate(username).using(this._session);
+    PSHTTPResponseInfo info = connector.post();
+    return info.isSuccessful();
+  }
+
+  /**
+   * Activate an account.
+   *
+   * <p>No session is required; since the user is not logged in
+   *.
+   * @param username The username of the member to activate
+   * @param key      The key the required for activation.
+   *
+   * @return If the member was successfully activated
+   *
+   * @throws APIException If an error occurs while connecting to PageSeeder.
+   */
+  public static boolean activate(String username, String key) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.getActivateByKey(username, key);
+    PSHTTPResponseInfo info = connector.get();
+    return info.isSuccessful();
+  }
+
+  /**
    * Logout the user from the current session in PageSeeder.
    *
    * <p>This will invalidate the session on PageSeeder, the session should no longer
