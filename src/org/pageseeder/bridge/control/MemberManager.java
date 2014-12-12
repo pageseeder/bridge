@@ -102,7 +102,7 @@ public final class MemberManager extends Sessionful {
       PSMemberHandler handler = new PSMemberHandler(member);
       connector.get(handler);
       m = handler.get();
-      if (member != null) {
+      if (m != null) {
         cache.put(m);
       }
     }

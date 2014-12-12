@@ -193,7 +193,7 @@ public final class MembershipManager extends Sessionful {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
     MemberOptions options = new MemberOptions();
     options.setInvitation(Invitation.NO);
-    options.setWelcomeEmail(false);
+    options.setWelcomeEmail(email);
     PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
