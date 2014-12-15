@@ -166,11 +166,28 @@ public final class PSHTTPConnectors {
    */
   public static PSHTTPConnector createMember(PSMember member, MemberOptions options)
       throws FailedPrecondition, InvalidEntityException {
+    return createMember(member, options, null);
+  }
+
+  /**
+   * Returns the connector to edit the details of a member.
+   *
+   * @param member   The member instance containing the new details.
+   * @param options  The member options
+   * @param password The member's password (if null, PS will generate it)
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition If the member is not ientifiable.
+   */
+  public static PSHTTPConnector createMember(PSMember member, MemberOptions options, String password)
+      throws FailedPrecondition, InvalidEntityException {
     Preconditions.isIdentifiable(member, "member");
     Preconditions.isValid(member, "member");
     String service = Services.toCreateMember();
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("member-username", member.getUsername());
+    if (password != null) connector.addParameter("member-password", password);
     connector.addParameter("firstname", member.getFirstname());
     connector.addParameter("surname", member.getSurname());
     connector.addParameter("email", member.getEmail());

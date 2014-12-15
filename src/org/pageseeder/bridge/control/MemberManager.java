@@ -86,6 +86,23 @@ public final class MemberManager extends Sessionful {
   }
 
   /**
+   * Saves the details of the specified member.
+   *
+   * @param member   The username of that member
+   * @param options  The options to create the member.
+   * @param password The member's password
+   */
+  public void create(PSMember member, MemberOptions options, String password) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.createMember(member, options, password).using(this._session);
+    PSMemberHandler handler = new PSMemberHandler(member);
+    connector.post(handler);
+    PSMember m = handler.get();
+    if (m != null) {
+      cache.put(m);
+    }
+  }
+
+  /**
    * Returns the member for the specified username.
    *
    * @param username The username of that member
