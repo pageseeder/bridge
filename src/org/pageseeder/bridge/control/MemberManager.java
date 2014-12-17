@@ -314,6 +314,24 @@ public final class MemberManager extends Sessionful {
   }
 
   /**
+   * Creates a session on PageSeeder from the specified username and password.
+   *
+   * @param username The username
+   * @param password The password to login
+   *
+   * @return A new session if the username and password were valid; <code>null</code> otherwise.
+   *
+   * @throws APIException If an error occurs while connecting to PageSeeder.
+   */
+  public static PSSession login(String username, String password) throws APIException {
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/self");
+    connector.addParameter("username", username);
+    connector.addParameter("password", password);
+    PSHTTPResponseInfo info = connector.get();
+    return info.isSuccessful()? connector.getSession() : null;
+  }
+
+  /**
    * Logout the user from the current session in PageSeeder.
    *
    * <p>This will invalidate the session on PageSeeder, the session should no longer
