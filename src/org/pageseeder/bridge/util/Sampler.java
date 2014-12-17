@@ -114,6 +114,34 @@ public final class Sampler {
   }
 
   /**
+   * Returns the next item in the list.
+   *
+   * @param list the list
+   *
+   * @param <T> The type of object in the list.
+   *
+   * @return a random item from the list.
+   */
+  public <T> T nextInList(List<T> list) {
+    int i = this.random.nextInt(list.size());
+    return list.get(i);
+  }
+
+  /**
+   * Returns the next item in the array.
+   *
+   * @param array the array to take object from
+   *
+   * @param <T> The type of object in the array.
+   *
+   * @return a random item from the array.
+   */
+  public <T> T nextInArray(T[] array) {
+    int i = this.random.nextInt(array.length);
+    return array[i];
+  }
+
+  /**
    * Generate a new PageSeeder member with random names and email.
    *
    * @return a random PageSeeder member.
