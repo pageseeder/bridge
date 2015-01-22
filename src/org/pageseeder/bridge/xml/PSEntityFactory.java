@@ -38,8 +38,7 @@ import org.xml.sax.Attributes;
 public final class PSEntityFactory {
 
   /** Utility */
-  private PSEntityFactory() {
-  }
+  private PSEntityFactory() {}
 
   /**
    * Generates the membership object from the attributes of a "membership" element.
@@ -67,8 +66,8 @@ public final class PSEntityFactory {
     Date created = PSHandlers.datetime(atts.getValue("created")); // since 5.7
 
     // XXX: Unused attributes
-//    String flags = atts.getValue("flags");
-//    String status = atts.getValue("status");
+    // String flags = atts.getValue("flags");
+    // String status = atts.getValue("status");
 
     PSMembership m = membership;
     if (m == null) {
@@ -137,6 +136,7 @@ public final class PSEntityFactory {
    *   <li><b>id</b> - the group unique database ID
    *   <li><b>name</b> - name of the group (primary key)
    *   <li><b>description</b> - description of the group
+   *   <li><b>owner</b> - owner of the group
    *   <li><b>defaultrole</b> - default role of members (if available)
    *   <li><b>defaultnotify</b> - default notification of members (if available)
    * </ul>
@@ -151,6 +151,7 @@ public final class PSEntityFactory {
     String id = atts.getValue("id");
     String name = atts.getValue("name");
     String description = atts.getValue("description");
+    String owner = atts.getValue("owner");
     PSRole defaultRole = PSHandlers.role(atts.getValue("defaultrole"));
     PSNotification defaultNotification = PSHandlers.notification(atts.getValue("defaultnotify"));
 
@@ -166,6 +167,10 @@ public final class PSEntityFactory {
     g.setId(PSHandlers.id(id));
     g.setName(name);
     g.setDescription(description);
+
+    if (owner != null) {
+      g.setOwner(owner);
+    }
     if (defaultRole != null) {
       g.setDefaultRole(defaultRole);
     }
@@ -200,11 +205,11 @@ public final class PSEntityFactory {
     PSRole defaultRole = PSHandlers.role(atts.getValue("defaultrole"));
     PSNotification defaultNotification = PSHandlers.notification(atts.getValue("defaultnotify"));
 
-    PSProject p = group instanceof PSProject? (PSProject)group : null;
+    PSProject p = group instanceof PSProject ? (PSProject) group : null;
     if (p == null) {
       PSEntityCache<PSGroup> cache = GroupManager.getCache();
       // FIXME: If project was previous a group??
-      p = (PSProject)cache.get(id);
+      p = (PSProject) cache.get(id);
       if (p == null) {
         p = new PSProject();
       }
