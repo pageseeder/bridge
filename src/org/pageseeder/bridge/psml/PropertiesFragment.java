@@ -38,6 +38,16 @@ public class PropertiesFragment extends FragmentBase implements PSMLFragment {
   }
 
   /**
+   * Creates a new properties fragment with the specified ID and type.
+   *
+   * @param id The fragment ID.
+   * @param type the fragment type..
+   */
+  public PropertiesFragment(String id, String type) {
+    super(id, type);
+  }
+
+  /**
    * Returns the property for the specified name.
    *
    * @param name the property name.
@@ -46,9 +56,9 @@ public class PropertiesFragment extends FragmentBase implements PSMLFragment {
    * @throws NullPointerException if the name if <code>null</code>
    */
   public Property getProperty(String name) {
-    if (name == null) throw new NullPointerException("name");
+    if (name == null) { throw new NullPointerException("name"); }
     for (Property p : this.properties) {
-      if (name.equals(p.getName())) return p;
+      if (name.equals(p.getName())) { return p; }
     }
     return null;
   }
@@ -95,7 +105,7 @@ public class PropertiesFragment extends FragmentBase implements PSMLFragment {
    */
   public String getPropertyValue(String name) {
     Property p = getProperty(name);
-    return p != null? p.getValue() : null;
+    return p != null ? p.getValue() : null;
   }
 
   /**
@@ -109,7 +119,7 @@ public class PropertiesFragment extends FragmentBase implements PSMLFragment {
    * @param value The value of the property to set.
    */
   public void setProperty(String name, String value) {
-    if (value == null) return;
+    if (value == null) { return; }
     for (Property p : this.properties) {
       if (p.getName().equals(name)) {
         p.setValue(value);
@@ -142,7 +152,7 @@ public class PropertiesFragment extends FragmentBase implements PSMLFragment {
     if (type() != null) {
       psml.attribute("type", type());
     }
-    for (Property p: this.properties) {
+    for (Property p : this.properties) {
       p.toXML(psml);
     }
     psml.closeElement();
