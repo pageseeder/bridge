@@ -10,13 +10,17 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pageseeder.bridge.psml.Fragment;
 import org.pageseeder.bridge.psml.PSMLFragment;
 import org.pageseeder.bridge.psml.PropertiesFragment;
 import org.pageseeder.bridge.psml.Property;
+import org.pageseeder.bridge.psml.StandardFragment;
+import org.weborganic.berlioz.xml.XMLCopy;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import com.topologi.diffx.xml.XMLStringWriter;
+import com.topologi.diffx.xml.XMLWriter;
 
 /**
  * Handles for PSML fragments.
@@ -42,17 +46,41 @@ public final class PSFragmentHandler extends DefaultHandler {
   private StringBuilder buffer = new StringBuilder();
 
   /**
+   * Whether to copy the content
+   */
+  private boolean copyAll = false;
+
+  /**
+   * A handler to do the elements copy.
+   */
+  private XMLCopy copy = null;
+
+  /**
+   * A writer to store the fragment content.
+   */
+  private XMLWriter fragXmlContent = new XMLStringWriter(false);
+
+  /**
    * Create a new handler for document belong to a specific group.
    */
-  public PSFragmentHandler() {
-  }
+  public PSFragmentHandler() {}
 
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+
+    if (this.copyAll) {
+      if (this.copy == null) {
+        this.copy = new XMLCopy(this.fragXmlContent);
+      }
+      // copy the start element and attribute
+      this.copy.startElement(uri, localName, qName, atts);
+    }
+
     if ("fragment".equals(localName)) {
       String id = atts.getValue("id");
       String type = atts.getValue("type");
-      this.fragment = new Fragment(id, type);
+      this.fragment = new StandardFragment(id, type);
+      this.copyAll = true;
 
     } else if ("properties-fragment".equals(localName)) {
       String id = atts.getValue("id");
@@ -65,7 +93,7 @@ public final class PSFragmentHandler extends DefaultHandler {
       // TODO
 
     } else if ("property".equals(localName) && this.fragment instanceof PropertiesFragment) {
-      PropertiesFragment f = (PropertiesFragment)this.fragment;
+      PropertiesFragment f = (PropertiesFragment) this.fragment;
       String name = atts.getValue("name");
       String title = atts.getValue("title");
       String value = atts.getValue("value");
@@ -83,6 +111,12 @@ public final class PSFragmentHandler extends DefaultHandler {
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if ("fragment".equals(localName)) {
+      // store the content
+      if (this.fragment instanceof StandardFragment) {
+        StandardFragment frag = (StandardFragment) this.fragment;
+        frag.setContent(this.fragXmlContent.toString());
+        this.copyAll = false;
+      }
 
     } else if ("properties-fragment".equals(localName)) {
 
@@ -93,11 +127,21 @@ public final class PSFragmentHandler extends DefaultHandler {
     } else if ("property".equals(localName)) {
 
     }
+
+    // copy the end element
+    if (this.copyAll) {
+      this.copy.endElement(uri, localName, qName);
+    }
   }
 
   @Override
   public void characters(char[] ch, int start, int length) throws SAXException {
     this.buffer.append(ch, start, length);
+
+    // copy the value
+    if (this.copyAll) {
+      this.copy.characters(ch, start, length);
+    }
   }
 
   /**
