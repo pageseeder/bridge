@@ -7,10 +7,13 @@
  */
 package org.pageseeder.bridge.model;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.pageseeder.bridge.EntityValidity;
+import org.weborganic.berlioz.util.ISO8601;
 
 /**
  * The common base class for folders and documents.
@@ -38,6 +41,9 @@ public abstract class PSURI extends PSAddressable {
 
   /** The media type */
   private String mediatype;
+
+  /** The created date */
+  private Date created;
 
   /** List of labels on the document */
   private List<String> labels = new ArrayList<String>();
@@ -87,7 +93,7 @@ public abstract class PSURI extends PSAddressable {
 
   @Override
   public String getIdentifier() {
-    return this.id != null? this.id.toString() : this.getURL();
+    return this.id != null ? this.id.toString() : this.getURL();
   }
 
   /**
@@ -116,6 +122,13 @@ public abstract class PSURI extends PSAddressable {
    */
   public final String getTitle() {
     return this.title;
+  }
+
+  /**
+   * @return the created date
+   */
+  public final Date getCreatedDate() {
+    return this.created;
   }
 
   /**
@@ -167,6 +180,13 @@ public abstract class PSURI extends PSAddressable {
     this.mediatype = mediatype;
   }
 
+  /**
+   * @param date the ISO8601 date
+   */
+  public final void setCreatedDate(String date) {
+    this.created = toDate(date);
+  }
+
   // Convenience methods
   // ----------------------------------------------------------------------------------------------
 
@@ -176,7 +196,9 @@ public abstract class PSURI extends PSAddressable {
   public final String getLabelsAsString() {
     StringBuilder s = new StringBuilder();
     for (String label : this.labels) {
-      if (s.length() > 0) s.append(',');
+      if (s.length() > 0) {
+        s.append(',');
+      }
       s.append(label);
     }
     return s.toString();
@@ -186,7 +208,7 @@ public abstract class PSURI extends PSAddressable {
    * @param labels The labels as a comma-separated list.
    */
   public final void setLabels(String labels) {
-    if (labels == null) return;
+    if (labels == null) { return; }
     this.labels.clear();
     for (String label : labels.split(",")) {
       this.labels.add(label);
@@ -199,16 +221,13 @@ public abstract class PSURI extends PSAddressable {
    * @return the validity of the URI.
    */
   public EntityValidity checkURIValid() {
-    if (this.docid     != null && this.docid.length()       > 100)
-      return EntityValidity.DOCUMENT_DOCID_IS_TOO_LONG;
-    if (this.mediatype != null && this.mediatype.length()   > 100)
-      return EntityValidity.DOCUMENT_TITLE_IS_TOO_LONG;
-    if (this.title     != null && this.title.length() > 250)
-      return EntityValidity.DOCUMENT_TITLE_IS_TOO_LONG;
+    if (this.docid != null && this.docid.length() > 100) { return EntityValidity.DOCUMENT_DOCID_IS_TOO_LONG; }
+    if (this.mediatype != null && this.mediatype.length() > 100) { return EntityValidity.DOCUMENT_TITLE_IS_TOO_LONG; }
+    if (this.title != null && this.title.length() > 250) { return EntityValidity.DOCUMENT_TITLE_IS_TOO_LONG; }
     int length = 0;
     for (String label : this.labels) {
-      length += label.length() +1;
-      if (length > 250) return EntityValidity.DOCUMENT_LABELS_ARE_TOO_LONG;
+      length += label.length() + 1;
+      if (length > 250) { return EntityValidity.DOCUMENT_LABELS_ARE_TOO_LONG; }
     }
     return EntityValidity.OK;
   }
@@ -216,6 +235,19 @@ public abstract class PSURI extends PSAddressable {
   @Override
   public boolean isValid() {
     return checkValid() == EntityValidity.OK;
+  }
+
+  /**
+   * @param date the ISO8601 date format 
+   * @return the 
+   */
+  private static Date toDate(String date) {
+    try {
+      return ISO8601.parseAuto(date);
+    } catch (ParseException ex) {
+      // it should not happen but set to now in case.
+      return new Date();
+    }
   }
 
 }

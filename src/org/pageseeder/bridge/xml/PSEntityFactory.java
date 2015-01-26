@@ -258,6 +258,7 @@ public final class PSEntityFactory {
       type = atts.getValue("documenttype");
     }
     String mediatype = atts.getValue("mediatype");
+    String created = atts.getValue("created");
 
     PSDocument d = document;
     if (d == null) {
@@ -277,6 +278,7 @@ public final class PSEntityFactory {
     d.setTitle(title);
     d.setType(type);
     d.setMediaType(mediatype);
+    d.setCreatedDate(created);
     return d;
   }
 
