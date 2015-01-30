@@ -383,8 +383,8 @@ public final class MembershipManager extends Sessionful {
    *
    * @param membership The Membership to create.
    */
-  public void save(PSMembership membership) throws APIException {
-    save(membership, false);
+  public MembershipResult save(PSMembership membership) throws APIException {
+    return save(membership, false);
   }
 
   /**
@@ -393,11 +393,14 @@ public final class MembershipManager extends Sessionful {
    * @param membership The Membership to create.
    * @param forceEmail A boolean to force email change
    */
-  public void save(PSMembership membership, boolean forceEmail) throws APIException {
+  public MembershipResult save(PSMembership membership, boolean forceEmail) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
     PSHTTPConnector connector = PSHTTPConnectors.editMembership(membership, forceEmail).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    connector.post(handler);
+    PSHTTPResponseInfo info = connector.post(handler);
+    Status status = info.getStatus();
+    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    return MembershipResult.forResponse(info);
   }
 
   /**
