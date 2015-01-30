@@ -197,8 +197,7 @@ public final class PSHTTPConnection {
       this.out = new DataOutputStream(this._connection.getOutputStream());
     }
     try {
-      if (this._method != Method.MULTIPART)
-        throw new IOException("Cannot add XML part unless connection type is set to Multipart");
+      if (this._method != Method.MULTIPART) { throw new IOException("Cannot add XML part unless connection type is set to Multipart"); }
 
       // Start with boundary
       write(this._boundary, this.out);
@@ -242,8 +241,7 @@ public final class PSHTTPConnection {
       this.out = new DataOutputStream(this._connection.getOutputStream());
     }
     try {
-      if (this._method != Method.MULTIPART)
-        throw new IOException("Cannot add file part unless connection type is set to Multipart");
+      if (this._method != Method.MULTIPART) { throw new IOException("Cannot add file part unless connection type is set to Multipart"); }
 
       // Start with boundary
       write(this._boundary, this.out);
@@ -291,15 +289,14 @@ public final class PSHTTPConnection {
       this.out = new DataOutputStream(this._connection.getOutputStream());
     }
     try {
-      if (this._method != Method.MULTIPART)
-        throw new IOException("Cannot add parameter connection type is set to Multipart");
+      if (this._method != Method.MULTIPART) { throw new IOException("Cannot add parameter connection type is set to Multipart"); }
 
       // Start with boundary
       write(this._boundary, this.out);
       writeCRLF(this.out);
 
       // Write Parameter
-      write("Content-Disposition: form-data; name=\""+name+"\"", this.out);
+      write("Content-Disposition: form-data; name=\"" + name + "\"", this.out);
       writeCRLF(this.out);
       writeCRLF(this.out);
       write(value, this.out);
@@ -429,7 +426,7 @@ public final class PSHTTPConnection {
         parseError(this._connection, response);
       }
 
-    // Could not connect to the server
+      // Could not connect to the server
     } catch (ConnectException ex) {
       String message = ex.getMessage();
       LOGGER.warn("Unable to connect to PageSeeder: {}", message);
@@ -476,7 +473,7 @@ public final class PSHTTPConnection {
         parseError(this._connection, response);
       }
 
-    // Could not connect to the server
+      // Could not connect to the server
     } catch (ConnectException ex) {
       String message = ex.getMessage();
       LOGGER.warn("Unable to connect to PageSeeder: {}", message);
@@ -526,7 +523,7 @@ public final class PSHTTPConnection {
         parseError(this._connection, response);
       }
 
-    // Could not connect to the server
+      // Could not connect to the server
     } catch (ConnectException ex) {
       String message = ex.getMessage();
       LOGGER.warn("Unable to connect to PageSeeder: {}", message);
@@ -597,7 +594,7 @@ public final class PSHTTPConnection {
         parseError(this._connection, response);
       }
 
-    // Could not connect to the server
+      // Could not connect to the server
     } catch (ConnectException ex) {
       String message = ex.getMessage();
       LOGGER.warn("Unable to connect to PageSeeder: {}", message);
@@ -650,6 +647,7 @@ public final class PSHTTPConnection {
    *         <code>false</code> otherwise.
    */
   private static boolean isXML(String contentType) {
+    if (contentType == null) { return false; }
     return "text/xml".equals(contentType)
         || "application/xml".equals(contentType)
         || contentType.endsWith("+xml");
@@ -680,13 +678,13 @@ public final class PSHTTPConnection {
     connection.setInstanceFollowRedirects(true);
     connection.setRequestMethod(type == Method.MULTIPART ? "POST" : type.name());
     connection.setDefaultUseCaches(false);
-    connection.setRequestProperty("X-Requester", "PS-Bridge-"+API_VERSION);
+    connection.setRequestProperty("X-Requester", "PS-Bridge-" + API_VERSION);
     if (credentials instanceof UsernamePassword) {
       // Use Basic Auth (5.6+)
-      connection.addRequestProperty("Authorization", ((UsernamePassword)credentials).toBasicAuthorization());
+      connection.addRequestProperty("Authorization", ((UsernamePassword) credentials).toBasicAuthorization());
     }
 
-    PSSession session = credentials instanceof PSSession? (PSSession)credentials : null;
+    PSSession session = credentials instanceof PSSession ? (PSSession) credentials : null;
     PSHTTPConnection instance = null;
 
     // POST using "application/x-www-form-urlencoded"
@@ -698,12 +696,12 @@ public final class PSHTTPConnection {
       writePOSTData(connection, parameters);
       instance = new PSHTTPConnection(connection, resource, type, session, null);
 
-    // POST using "multipart/form-data"
+      // POST using "multipart/form-data"
     } else if (type == Method.MULTIPART) {
       String boundary = "--------------------" + Long.toString(Math.abs(random.nextLong()), 36);
       connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
       connection.setDoInput(true);
-      instance = new PSHTTPConnection(connection, resource, type, session, "--"+boundary);
+      instance = new PSHTTPConnection(connection, resource, type, session, "--" + boundary);
       Map<String, String> parameters = resource.parameters();
       if (!parameters.isEmpty()) {
         for (Entry<String, String> p : parameters.entrySet()) {
@@ -711,7 +709,7 @@ public final class PSHTTPConnection {
         }
       }
 
-    // GET, PUT and DELETE
+      // GET, PUT and DELETE
     } else {
       instance = new PSHTTPConnection(connection, resource, type, session, null);
     }
@@ -875,7 +873,7 @@ public final class PSHTTPConnection {
     boolean ok = true;
 
     try {
-      InputStream raw = isOK(connection.getResponseCode())? connection.getInputStream() : connection.getErrorStream();
+      InputStream raw = isOK(connection.getResponseCode()) ? connection.getInputStream() : connection.getErrorStream();
       in = new BufferedInputStream(raw);
       copy(in, out);
 
@@ -1074,7 +1072,7 @@ public final class PSHTTPConnection {
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
       DefaultHandler actual = this.handler;
       // If the first element is "error" we dispatch to error handler.
-      if ("error".equals(localName) || "error".equals(qName))  {
+      if ("error".equals(localName) || "error".equals(qName)) {
         if (this.duplex) {
           actual = new DuplexHandler(new PSErrorHandler(this.response), actual);
         } else {
