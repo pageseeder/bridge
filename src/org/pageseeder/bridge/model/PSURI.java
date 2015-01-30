@@ -245,8 +245,8 @@ public abstract class PSURI extends PSAddressable {
     try {
       return ISO8601.parseAuto(date);
     } catch (ParseException ex) {
-      // it should not happen but set to now in case.
-      return new Date();
+      // it should not happen but set to "the epoch" in case.
+      return new Date(0);
     }
   }
 

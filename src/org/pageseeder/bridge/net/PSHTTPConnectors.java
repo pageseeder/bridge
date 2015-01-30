@@ -85,8 +85,7 @@ public final class PSHTTPConnectors {
   /**
    * Utility class.
    */
-  private PSHTTPConnectors() {
-  }
+  private PSHTTPConnectors() {}
 
   // Member
   // ----------------------------------------------------------------------------------------------
@@ -187,14 +186,16 @@ public final class PSHTTPConnectors {
     String service = Services.toCreateMember();
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("member-username", member.getUsername());
-    if (password != null) connector.addParameter("member-password", password);
+    if (password != null) {
+      connector.addParameter("member-password", password);
+    }
     connector.addParameter("firstname", member.getFirstname());
     connector.addParameter("surname", member.getSurname());
     connector.addParameter("email", member.getEmail());
     // Member options
-    connector.addParameter("welcome-email",  Boolean.toString(options.hasWelcomeEmail()));
+    connector.addParameter("welcome-email", Boolean.toString(options.hasWelcomeEmail()));
     connector.addParameter("personal-group", Boolean.toString(options.hasPersonalGroup()));
-    connector.addParameter("auto-activate",  Boolean.toString(options.isAutoActivate()));
+    connector.addParameter("auto-activate", Boolean.toString(options.isAutoActivate()));
     return connector;
   }
 
@@ -224,7 +225,7 @@ public final class PSHTTPConnectors {
    */
   public static PSHTTPConnector forceResetPassword(PSGroup group, String member) throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
-    String service = "/groups/"+group.getKey()+"/members/forceresetpassword";
+    String service = "/groups/" + group.getKey() + "/members/forceresetpassword";
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     addMemberParameter(connector, member);
     return connector;
@@ -256,12 +257,11 @@ public final class PSHTTPConnectors {
    */
   public static PSHTTPConnector resetPassword(PSGroup group, String member) throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
-    String service = "/groups/"+group.getKey()+"/members/resetpassword";
+    String service = "/groups/" + group.getKey() + "/members/resetpassword";
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     addMemberParameter(connector, member);
     return connector;
   }
-
 
   /**
    * Returns the connector to confirm a password reset for the specified user with a key.
@@ -377,27 +377,27 @@ public final class PSHTTPConnectors {
     String service = Services.toCreateGroup(creator.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("projectname", project);
-    connector.addParameter("shortname",   shortname);
+    connector.addParameter("shortname", shortname);
     connector.addParameter("description", group.getDescription());
     if (group.getOwner() != null) {
-      connector.addParameter("owner",  group.getOwner());
+      connector.addParameter("owner", group.getOwner());
     }
     if (group.getDetailsType() != null) {
-      connector.addParameter("detailstype",  group.getDetailsType());
+      connector.addParameter("detailstype", group.getDetailsType());
     }
     if (group.getDefaultRole() != null) {
-      connector.addParameter("defaultrole",  group.getDefaultRole().toString());
+      connector.addParameter("defaultrole", group.getDefaultRole().toString());
     }
     if (group.getDefaultNotification() != null) {
       connector.addParameter("defaultnotification", group.getDefaultNotification().toString());
     }
     // Group options
     if (options != null) {
-      connector.addParameter("addmember",  Boolean.toString(options.doAddCreatorAsMember()));
-      connector.addParameter("common",  Boolean.toString(options.isCommon()));
-      connector.addParameter("createdocuments",  Boolean.toString(options.doCreateDocuments()));
+      connector.addParameter("addmember", Boolean.toString(options.doAddCreatorAsMember()));
+      connector.addParameter("common", Boolean.toString(options.isCommon()));
+      connector.addParameter("createdocuments", Boolean.toString(options.doCreateDocuments()));
       if (options.getAccess() != null) {
-        connector.addParameter("access",  options.getAccess());
+        connector.addParameter("access", options.getAccess());
       }
       if (options.getCommenting() != null) {
         connector.addParameter("commenting", options.getCommenting());
@@ -416,7 +416,7 @@ public final class PSHTTPConnectors {
       }
       // Group properties
       for (Entry<String, String> property : options.getProperties().entrySet()) {
-        connector.addParameter("property."+property.getKey(), property.getValue().toString());
+        connector.addParameter("property." + property.getKey(), property.getValue().toString());
       }
     }
 
@@ -449,22 +449,22 @@ public final class PSHTTPConnectors {
     } else {
       // we must compute the host URL
       String hosturl = PSConfig.getDefault().getHostURL();
-      connector.addParameter("hosturl",   hosturl.toString());
+      connector.addParameter("hosturl", hosturl.toString());
     }
-    connector.addParameter("shortname",   shortname);
+    connector.addParameter("shortname", shortname);
     connector.addParameter("description", project.getDescription());
     if (project.getOwner() != null) {
-      connector.addParameter("owner",  project.getOwner());
+      connector.addParameter("owner", project.getOwner());
     }
     if (project.getDetailsType() != null) {
-      connector.addParameter("detailstype",  project.getDetailsType());
+      connector.addParameter("detailstype", project.getDetailsType());
     }
     // Group options
     if (options != null) {
-      connector.addParameter("addmember",  Boolean.toString(options.doAddCreatorAsMember()));
-      connector.addParameter("common",  Boolean.toString(options.isCommon()));
+      connector.addParameter("addmember", Boolean.toString(options.doAddCreatorAsMember()));
+      connector.addParameter("common", Boolean.toString(options.isCommon()));
       if (options.getAccess() != null) {
-        connector.addParameter("access",  options.getAccess());
+        connector.addParameter("access", options.getAccess());
       }
       if (options.getCommenting() != null) {
         connector.addParameter("commenting", options.getCommenting());
@@ -483,7 +483,7 @@ public final class PSHTTPConnectors {
       }
       // Group properties
       for (Entry<String, String> property : options.getProperties().entrySet()) {
-        connector.addParameter("property."+property.getKey(), property.getValue().toString());
+        connector.addParameter("property." + property.getKey(), property.getValue().toString());
       }
     }
     return connector;
@@ -498,7 +498,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition If the group is not identifiable
    */
-  @Requires(minVersion=56000)
+  @Requires(minVersion = 56000)
   public static PSHTTPConnector getGroup(PSGroup group) throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
     String service = Services.toGetGroup(group.getIdentifier());
@@ -514,7 +514,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition If the group is not identifiable
    */
-  @Requires(minVersion=56000)
+  @Requires(minVersion = 56000)
   public static PSHTTPConnector getGroup(String identifier) {
     String service = Services.toGetGroup(identifier);
     return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
@@ -532,7 +532,7 @@ public final class PSHTTPConnectors {
    * @throws FailedPrecondition
    */
   public static PSHTTPConnector renameGroup(PSGroup group, PSMember editor, String newname) throws FailedPrecondition {
-    Preconditions.isIdentifiable(group,  "group");
+    Preconditions.isIdentifiable(group, "group");
     Preconditions.isIdentifiable(editor, "editor");
     String service = Services.toRenameGroup(editor.getIdentifier(), group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
@@ -551,7 +551,7 @@ public final class PSHTTPConnectors {
    * @throws FailedPrecondition
    */
   public static PSHTTPConnector archiveGroup(PSGroup group, PSMember editor) throws FailedPrecondition {
-    Preconditions.isIdentifiable(group,  "group");
+    Preconditions.isIdentifiable(group, "group");
     Preconditions.isIdentifiable(editor, "editor");
     String service = Services.toArchiveGroup(editor.getIdentifier(), group.getIdentifier());
     return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
@@ -568,7 +568,7 @@ public final class PSHTTPConnectors {
    * @throws FailedPrecondition
    */
   public static PSHTTPConnector editGroup(PSGroup group, PSMember editor, GroupOptions options) throws FailedPrecondition {
-    Preconditions.isIdentifiable(group,  "group");
+    Preconditions.isIdentifiable(group, "group");
     Preconditions.isIdentifiable(editor, "editor");
     String service = Services.toEditGroup(editor.getIdentifier(), group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
@@ -609,7 +609,7 @@ public final class PSHTTPConnectors {
       Map<String, String> properties = options.getProperties();
       if (properties != null) {
         for (String pname : properties.keySet()) {
-          connector.addParameter("property."+pname, properties.get(pname));
+          connector.addParameter("property." + pname, properties.get(pname));
         }
       }
     }
@@ -693,6 +693,30 @@ public final class PSHTTPConnectors {
   }
 
   /**
+   * List the groups.
+   *
+   * @param member    The Member
+   * @param nameprefix the prefix of the group/project
+   * @param maximum  The maximum groups return
+   *
+   * @return The list of subgroups
+   *
+   * @throws FailedPrecondition If member is not identifiable.
+   */
+  public static PSHTTPConnector listProjectsTree(PSMember member, String nameprefix, int maximum) throws FailedPrecondition {
+    if (maximum < 1) { throw new IllegalArgumentException("maximum less than 1."); }
+    Preconditions.isIdentifiable(member, "member");
+    String service = Services.toProjectsTree(member.getUsername());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    connector.addParameter("resultsize", String.valueOf(maximum));
+    connector.addParameter("for", "server");
+    if (nameprefix != null) {
+      connector.addParameter("nameprefix", nameprefix);
+    }
+    return connector;
+  }
+
+  /**
    * Adds a group as a subgroup of another with additional options.
    *
    * @param group        The target group
@@ -737,8 +761,8 @@ public final class PSHTTPConnectors {
       throws FailedPrecondition {
     Preconditions.isNotEmpty(resource.getLocation(), "location");
     Preconditions.isIdentifiable(project, "project");
-    if (resource.isBinary()) throw new FailedPrecondition("Only text content resource can be put on the project");
-    if (resource.getContent() == null) throw new FailedPrecondition("Resource has no content");
+    if (resource.isBinary()) { throw new FailedPrecondition("Only text content resource can be put on the project"); }
+    if (resource.getContent() == null) { throw new FailedPrecondition("Resource has no content"); }
     String service = Services.toPutResource(project.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("location", resource.getLocation());
@@ -749,7 +773,6 @@ public final class PSHTTPConnectors {
 
   // Membership
   // ----------------------------------------------------------------------------------------------
-
 
   /**
    * Returns the connector to create a member.
@@ -810,7 +833,7 @@ public final class PSHTTPConnectors {
         // Fields are 1-based
         String field = details.getField(i);
         if (field != null) {
-          connector.addParameter("field"+i, field);
+          connector.addParameter("field" + i, field);
         }
       }
     }
@@ -882,11 +905,11 @@ public final class PSHTTPConnectors {
     // Membership details
     PSDetails details = membership.getDetails();
     if (details != null) {
-      for (int i=1; i <= PSDetails.MAX_SIZE; i++) {
+      for (int i = 1; i <= PSDetails.MAX_SIZE; i++) {
         // Fields are 1-based
         String field = details.getField(i);
         if (field != null) {
-          connector.addParameter("field"+i, field);
+          connector.addParameter("field" + i, field);
         }
       }
     }
@@ -944,7 +967,7 @@ public final class PSHTTPConnectors {
 
     connector.addParameter("welcome-email", Boolean.toString(options.hasWelcomeEmail()));
     if (options.getInvitation() != Invitation.DEFAULT) {
-      connector.addParameter("invitation", options.getInvitation() == Invitation.YES? "true" : "false");
+      connector.addParameter("invitation", options.getInvitation() == Invitation.YES ? "true" : "false");
     }
 
     // Membership details
@@ -954,14 +977,13 @@ public final class PSHTTPConnectors {
         // Fields are 1-based
         String field = details.getField(i);
         if (field != null) {
-          connector.addParameter("field"+i, field);
+          connector.addParameter("field" + i, field);
         }
       }
     }
 
     return connector;
   }
-
 
   public static PSHTTPConnector registerMembership(PSMembership membership) throws FailedPrecondition {
     PSGroup group = membership.getGroup();
@@ -988,17 +1010,18 @@ public final class PSHTTPConnectors {
     // Membership details
     PSDetails details = membership.getDetails();
     if (details != null) {
-      for (int i=1; i <= PSDetails.MAX_SIZE; i++) {
+      for (int i = 1; i <= PSDetails.MAX_SIZE; i++) {
         // Fields are 1-based
         String field = details.getField(i);
         if (field != null) {
-          connector.addParameter("field"+i, field);
+          connector.addParameter("field" + i, field);
         }
       }
     }
 
     return connector;
   }
+
   /**
    * Returns the connector to create a member.
    *
@@ -1032,7 +1055,7 @@ public final class PSHTTPConnectors {
         // Fields are 1-based
         String field = details.getField(i);
         if (field != null) {
-          connector.addParameter("field"+i, field);
+          connector.addParameter("field" + i, field);
         }
       }
     }
@@ -1126,15 +1149,15 @@ public final class PSHTTPConnectors {
     // Member attributes filter
     if (m != null) {
       if (m.getFirstname() != null) {
-        connector.addParameter("firstname",       m.getFirstname());
+        connector.addParameter("firstname", m.getFirstname());
       }
-      if (m.getSurname()   != null) {
-        connector.addParameter("surname",         m.getSurname());
+      if (m.getSurname() != null) {
+        connector.addParameter("surname", m.getSurname());
       }
-      if (m.getEmail()     != null) {
-        connector.addParameter("email",           m.getEmail());
+      if (m.getEmail() != null) {
+        connector.addParameter("email", m.getEmail());
       }
-      if (m.getUsername()  != null) {
+      if (m.getUsername() != null) {
         connector.addParameter("member-username", m.getUsername());
       }
     }
@@ -1144,9 +1167,9 @@ public final class PSHTTPConnectors {
     }
     PSDetails details = membership.getDetails();
     if (details != null) {
-      for (int i=1; i <= PSDetails.MAX_SIZE; i++) {
+      for (int i = 1; i <= PSDetails.MAX_SIZE; i++) {
         if (details.getField(i) != null) {
-          connector.addParameter("field"+i, details.getField(i));
+          connector.addParameter("field" + i, details.getField(i));
         }
       }
     }
@@ -1283,31 +1306,30 @@ public final class PSHTTPConnectors {
     Context context = comment.getContext();
 
     // Basic preconditions to create a comment
-    Preconditions.isNotEmpty(comment.getTitle(),   "title");
+    Preconditions.isNotEmpty(comment.getTitle(), "title");
     Preconditions.isNotEmpty(comment.getContent(), "content");
-    Preconditions.isNotNull(author,   "author");
-    Preconditions.isNotNull(context,  "context");
+    Preconditions.isNotNull(author, "author");
+    Preconditions.isNotNull(context, "context");
     if (context.group() != null) {
-      Preconditions.isNotEmpty(context.group().getName(),  "group");
+      Preconditions.isNotEmpty(context.group().getName(), "group");
     }
     if (context.uri() != null) {
       Preconditions.isIdentifiable(context.uri(), "uri");
       Preconditions.isNotNull(groups, "group");
-      if (groups.isEmpty())
-        throw new FailedPrecondition("At least one group must be specified when attaching a comment to a URI");
+      if (groups.isEmpty()) { throw new FailedPrecondition("At least one group must be specified when attaching a comment to a URI"); }
     }
 
     String service = Services.toCreateCommentService(creator, context);
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
 
     // Core parameters
-    connector.addParameter("title",       comment.getTitle());
-    connector.addParameter("content",     comment.getContent());
+    connector.addParameter("title", comment.getTitle());
+    connector.addParameter("content", comment.getContent());
     connector.addParameter("contenttype", comment.getMediaType());
 
     // Optional parameters
     if (comment.hasLabels()) {
-      connector.addParameter("labels",    comment.getLabelsAsString());
+      connector.addParameter("labels", comment.getLabelsAsString());
     }
     if (comment.hasProperties()) {
       connector.addParameter("properties", comment.getPropertiesAsString());
@@ -1396,7 +1418,6 @@ public final class PSHTTPConnectors {
     return connector;
   }
 
-
   /**
    * Create a new comment in PageSeeder.
    *
@@ -1414,21 +1435,21 @@ public final class PSHTTPConnectors {
     Context context = comment.getContext(); // CONTEXT MAY BE NULL IN A REPLY!
 
     // Basic preconditions to create a comment
-    Preconditions.isNotEmpty(comment.getTitle(),   "title");
+    Preconditions.isNotEmpty(comment.getTitle(), "title");
     Preconditions.isNotEmpty(comment.getContent(), "content");
-    Preconditions.isNotNull(author,   "author");
+    Preconditions.isNotNull(author, "author");
 
-    String service = Services.toReplyCommentService(author, xlink, context != null? context.group() : null);
+    String service = Services.toReplyCommentService(author, xlink, context != null ? context.group() : null);
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
 
     // Core parameters
-    connector.addParameter("title",       comment.getTitle());
-    connector.addParameter("content",     comment.getContent());
+    connector.addParameter("title", comment.getTitle());
+    connector.addParameter("content", comment.getContent());
     connector.addParameter("contenttype", comment.getMediaType());
 
     // Optional parameters
     if (comment.hasLabels()) {
-      connector.addParameter("labels",    comment.getLabelsAsString());
+      connector.addParameter("labels", comment.getLabelsAsString());
     }
     if (comment.hasProperties()) {
       connector.addParameter("properties", comment.getPropertiesAsString());
@@ -1530,26 +1551,25 @@ public final class PSHTTPConnectors {
 
     // Basic preconditions to editing a comment
     Preconditions.isIdentifiable(comment, "comment");
-    Preconditions.isNotEmpty(comment.getTitle(),   "title");
+    Preconditions.isNotEmpty(comment.getTitle(), "title");
     Preconditions.isNotEmpty(comment.getContent(), "content");
-    Preconditions.isNotNull(author,   "author");
-    Preconditions.isNotNull(context,  "context");
+    Preconditions.isNotNull(author, "author");
+    Preconditions.isNotNull(context, "context");
     if (context.group() != null) {
-      Preconditions.isNotEmpty(context.group().getName(),  "group");
+      Preconditions.isNotEmpty(context.group().getName(), "group");
     }
     if (context.uri() != null) {
       Preconditions.isIdentifiable(context.uri(), "uri");
       Preconditions.isNotNull(groups, "group");
-      if (groups.isEmpty())
-        throw new FailedPrecondition("At least one group must be specified when attaching a comment to a URI");
+      if (groups.isEmpty()) { throw new FailedPrecondition("At least one group must be specified when attaching a comment to a URI"); }
     }
 
     String service = Services.toEditComment(editor.getIdentifier(), comment.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
 
     // Core parameters
-    connector.addParameter("title",       comment.getTitle());
-    connector.addParameter("content",     comment.getContent());
+    connector.addParameter("title", comment.getTitle());
+    connector.addParameter("content", comment.getContent());
     connector.addParameter("contenttype", comment.getMediaType());
 
     // context
@@ -1564,7 +1584,7 @@ public final class PSHTTPConnectors {
 
     // Optional parameters
     if (comment.hasLabels()) {
-      connector.addParameter("labels",    comment.getLabelsAsString());
+      connector.addParameter("labels", comment.getLabelsAsString());
     }
     if (comment.hasProperties()) {
       connector.addParameter("properties", comment.getPropertiesAsString());
@@ -1764,7 +1784,7 @@ public final class PSHTTPConnectors {
         String name = p.getKey();
         String value = p.getValue();
         if (value != null) {
-          connector.addParameter("template."+name, value);
+          connector.addParameter("template." + name, value);
         }
       }
     }
@@ -1780,7 +1800,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector getURI(String url, PSGroup group) throws FailedPrecondition  {
+  public static PSHTTPConnector getURI(String url, PSGroup group) throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
     Preconditions.isNotEmpty(url, "url");
     String service = Services.toGetURIForURL(group.getIdentifier());
@@ -1798,7 +1818,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector getURI(long uriid, PSGroup group) throws FailedPrecondition  {
+  public static PSHTTPConnector getURI(long uriid, PSGroup group) throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
     String service = Services.toGetURIForID(group.getIdentifier(), Long.toString(uriid));
     return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
@@ -1817,8 +1837,8 @@ public final class PSHTTPConnectors {
     Preconditions.isNotNull(group.getId(), "group id");
     String servlet = Servlets.DOCUMENT_BROWSER;
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, servlet);
-    connector.addParameter("grp",     group.getId().toString());
-    connector.addParameter("astree",  "false");
+    connector.addParameter("grp", group.getId().toString());
+    connector.addParameter("astree", "false");
     connector.addParameter("xformat", "xml");
     return connector;
   }
@@ -1878,7 +1898,7 @@ public final class PSHTTPConnectors {
    * @throws FailedPrecondition If the document, group or member is not identifiable or if the fragment ID is empty.
    */
   public static PSHTTPConnector getFragment(PSDocument document, PSGroup group, PSMember editor, String fragment)
-      throws FailedPrecondition  {
+      throws FailedPrecondition {
     Preconditions.isIdentifiable(document, "document");
     Preconditions.isIdentifiable(group, "group");
     Preconditions.isIdentifiable(editor, "member");
@@ -1903,7 +1923,7 @@ public final class PSHTTPConnectors {
    *                            or if the fragment ID is <code>null</code> or empty.
    */
   public static PSHTTPConnector putFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment)
-      throws FailedPrecondition  {
+      throws FailedPrecondition {
     Preconditions.isIdentifiable(document, "document");
     Preconditions.isIdentifiable(group, "group");
     Preconditions.isIdentifiable(editor, "member");
@@ -1955,8 +1975,7 @@ public final class PSHTTPConnectors {
    * @throws FailedPrecondition If the group name if not specified.
    */
   public static PSHTTPConnector find(PSPredicate predicate, List<PSGroup> groups) throws FailedPrecondition {
-    if (groups.isEmpty())
-      throw new FailedPrecondition("At one group must be specified");
+    if (groups.isEmpty()) { throw new FailedPrecondition("At one group must be specified"); }
     String servlet = Servlets.GENERIC_SEARCH;
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, servlet);
     if (predicate != null) {
