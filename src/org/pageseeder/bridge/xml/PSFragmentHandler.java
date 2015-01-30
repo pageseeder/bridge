@@ -51,14 +51,14 @@ public final class PSFragmentHandler extends DefaultHandler {
   private boolean copyAll = false;
 
   /**
-   * A handler to do the elements copy.
-   */
-  private XMLCopy copy = null;
-
-  /**
    * A writer to store the fragment content.
    */
   private XMLWriter fragXmlContent = new XMLStringWriter(false);
+
+  /**
+   * A handler to do the elements copy.
+   */
+  private XMLCopy copy = new XMLCopy(this.fragXmlContent);
 
   /**
    * Create a new handler for document belong to a specific group.
@@ -69,9 +69,6 @@ public final class PSFragmentHandler extends DefaultHandler {
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
 
     if (this.copyAll) {
-      if (this.copy == null) {
-        this.copy = new XMLCopy(this.fragXmlContent);
-      }
       // copy the start element and attribute
       this.copy.startElement(uri, localName, qName, atts);
     }
