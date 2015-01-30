@@ -96,6 +96,7 @@ public final class PSEntityFactory {
    *   <li><b>firstname</b> - first name of user
    *   <li><b>surname</b> - last name of user
    *   <li><b>email</b> - email address if available only
+   *   <li><b>status</b> - status of user
    * </ul>
    *
    * @param atts   the attributes of the "member" element.
@@ -109,6 +110,7 @@ public final class PSEntityFactory {
     String surname = atts.getValue("surname");
     String username = atts.getValue("username");
     String email = atts.getValue("email");
+    String status = atts.getValue("status");
 
     PSMember m = member;
     if (m == null) {
@@ -125,6 +127,10 @@ public final class PSEntityFactory {
     if (email != null) {
       m.setEmail(email);
     }
+    if (status != null) {
+      m.setActivated("activated".equals(status));
+    }
+
     return m;
   }
 
