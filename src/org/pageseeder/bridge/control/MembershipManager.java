@@ -442,8 +442,20 @@ public final class MembershipManager extends Sessionful {
    * @return the list of memberships.
    */
   public List<PSMembership> listForGroup(PSGroup group) throws APIException {
+    return listForGroup(group, true);
+  }
+
+  /**
+   * Returns the list of memberships for specific group.
+   *
+   * @param group            the name of the group.
+   * @param includeSubgroups if members from subgroups should be included
+   *
+   * @return the list of memberships.
+   */
+  public List<PSMembership> listForGroup(PSGroup group, boolean includeSubgroups) throws APIException {
     if (!group.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForGroup(group.getName()).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForGroup(group.getName(), includeSubgroups).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(group);
     connector.get(handler);
     return handler.list();

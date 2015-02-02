@@ -1122,6 +1122,24 @@ public final class PSHTTPConnectors {
   }
 
   /**
+   * A connector to list the memberships for a group.
+   *
+   * @param group            The name of the group
+   * @param includeSubgroups If members from subgroups should be included
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition Should any precondition fail.
+   */
+  public static PSHTTPConnector listMembershipsForGroup(String group, boolean includeSubgroups) throws FailedPrecondition {
+    Preconditions.isNotEmpty(group, "group");
+    String service = Services.toListAlldetailsMembers(group);
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    connector.addParameter("subgroups", includeSubgroups ? "true" : "false");
+    return connector;
+  }
+
+  /**
    * A connector to find the memberships in a group.
    *
    * <p>The name of the group must be specified.
