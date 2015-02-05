@@ -112,8 +112,9 @@ public final class DocumentManager extends Sessionful {
       PSDocumentHandler handler = new PSDocumentHandler();
       connector.get(handler);
       document = handler.getDocument();
-      if (document != null)
+      if (document != null) {
         cache.put(document);
+      }
     }
     return document;
   }
@@ -133,8 +134,9 @@ public final class DocumentManager extends Sessionful {
       PSDocumentHandler handler = new PSDocumentHandler();
       connector.get(handler);
       document = handler.getDocument();
-      if (document != null)
+      if (document != null) {
         cache.put(document);
+      }
     }
     return document;
   }
@@ -154,8 +156,9 @@ public final class DocumentManager extends Sessionful {
       PSDocumentHandler handler = new PSDocumentHandler();
       connector.get(handler);
       folder = handler.getFolder();
-      if (folder != null)
+      if (folder != null) {
         folders.put(folder);
+      }
     }
     return folder;
   }
@@ -172,7 +175,6 @@ public final class DocumentManager extends Sessionful {
     connector.get(handler);
     return handler.listDocuments();
   }
-
 
   /**
    * Uploads a file on the server at the specified URL.
@@ -244,13 +246,31 @@ public final class DocumentManager extends Sessionful {
   }
 
   /**
+   * Create the specified document in PageSeeder by using POST method.
+   *
+   * @param document The document to create
+   * @param group    The group the document is part of
+   * @param editor   The member editing the document
+   * @param fragment The fragment to edit
+   *
+   * @return the updated fragment.
+   */
+  public PSMLFragment postFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment)
+      throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.putFragment(document, group, editor, fragment).using(this._session);
+    PSFragmentHandler handler = new PSFragmentHandler();
+    connector.post(handler);
+    return handler.getFragment();
+  }
+
+  /**
    * Write the content of the specified document onto the XML writer.
    *
    * @param uri The URI ID of the document.
    * @param xml The XML to write the content
    */
   public void getContent(Long uri, XMLWriter xml) throws APIException {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/uri/"+uri).using(this._session);
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/uri/" + uri).using(this._session);
     connector.get(xml);
   }
 
@@ -261,7 +281,7 @@ public final class DocumentManager extends Sessionful {
    * @param handler The handler to handle the content
    */
   public void getContent(Long uri, DefaultHandler handler) throws APIException {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/uri/"+uri).using(this._session);
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/uri/" + uri).using(this._session);
     connector.get(handler);
   }
 
@@ -272,7 +292,7 @@ public final class DocumentManager extends Sessionful {
    * @param xml   The XML to write the content
    */
   public void getContent(String docid, XMLWriter xml) throws APIException {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/docid/"+docid).using(this._session);
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/docid/" + docid).using(this._session);
     connector.get(xml);
   }
 
@@ -283,7 +303,7 @@ public final class DocumentManager extends Sessionful {
    * @param handler The handler to handle the content
    */
   public void getContent(String docid, DefaultHandler handler) throws APIException {
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/docid/"+docid).using(this._session);
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.RESOURCE, "/ps/docid/" + docid).using(this._session);
     connector.get(handler);
   }
 
