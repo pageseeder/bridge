@@ -66,6 +66,11 @@ public enum EntityValidity {
   GROUP_DETAILTYPE_IS_TOO_LONG,
 
   /**
+   * The template of the group is too long, max allowed is 60.
+   */
+  GROUP_TEMPLATE_IS_TOO_LONG,
+
+  /**
    * The name of the group is either reserved or uses and invalid character.
    */
   GROUP_NAME_IS_INVALID,

@@ -382,6 +382,10 @@ public final class PSHTTPConnectors {
     if (group.getOwner() != null) {
       connector.addParameter("owner", group.getOwner());
     }
+    // style owner
+    if (group.getTemplate() != null) {
+      connector.addParameter("template", group.getTemplate());
+    }
     if (group.getDetailsType() != null) {
       connector.addParameter("detailstype", group.getDetailsType());
     }
@@ -459,6 +463,11 @@ public final class PSHTTPConnectors {
     if (project.getDetailsType() != null) {
       connector.addParameter("detailstype", project.getDetailsType());
     }
+    // style owner
+    if (project.getTemplate() != null) {
+      connector.addParameter("template", project.getTemplate());
+    }
+
     // Group options
     if (options != null) {
       connector.addParameter("addmember", Boolean.toString(options.doAddCreatorAsMember()));

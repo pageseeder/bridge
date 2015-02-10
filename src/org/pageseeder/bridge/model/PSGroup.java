@@ -58,11 +58,13 @@ public class PSGroup implements PSEntity {
   /** The type of details */
   private String detailsType;
 
+  /** The template folder for customizations (aka style owner)*/
+  private String template;
+
   /**
    * Create a new group without any identifier.
    */
-  public PSGroup() {
-  }
+  public PSGroup() {}
 
   /**
    * Create a new group from the specified ID.
@@ -101,7 +103,7 @@ public class PSGroup implements PSEntity {
 
   @Override
   public String getIdentifier() {
-    return this.id != null? this.id.toString() : this.name;
+    return this.id != null ? this.id.toString() : this.name;
   }
 
   /**
@@ -121,7 +123,7 @@ public class PSGroup implements PSEntity {
    * @return the name of the parent or <code>null</code> if the name is <code>null</code> or does not include a dash.
    */
   public String getParentName() {
-    if (this.name == null) return null;
+    if (this.name == null) { return null; }
     int dash = this.name.lastIndexOf('-');
     return dash > 0 ? this.name.substring(0, dash) : null;
   }
@@ -134,9 +136,9 @@ public class PSGroup implements PSEntity {
    * @return the short name or <code>null</code> if the name is <code>null</code>.
    */
   public String getShortName() {
-    if (this.name == null) return null;
+    if (this.name == null) { return null; }
     int dash = this.name.lastIndexOf('-');
-    return dash > 0 ? this.name.substring(dash+1) : this.name;
+    return dash > 0 ? this.name.substring(dash + 1) : this.name;
   }
 
   /**
@@ -221,6 +223,14 @@ public class PSGroup implements PSEntity {
   }
 
   /**
+   * Return the template folder for customizations (aka style owner).
+   * @return the style owner.
+   */
+  public String getTemplate() {
+    return this.template;
+  }
+
+  /**
    * Sets type of membership details for this group.
    *
    * <p>The details type is the name of the configuration file defining the details to
@@ -230,6 +240,16 @@ public class PSGroup implements PSEntity {
    */
   public void setDetailsType(String type) {
     this.detailsType = type;
+  }
+
+  /**
+   * Set the style owner for this group.
+   * <p>The style owner is the template folder for customizations </p>
+   * 
+   * @param template the style owner for this group.
+   */
+  public void setTempate(String template) {
+    this.template = template;
   }
 
   /**
@@ -264,12 +284,15 @@ public class PSGroup implements PSEntity {
    */
   @Override
   public EntityValidity checkValid() {
-    if (this.name        != null && this.name.length()        > 60) return EntityValidity.GROUP_NAME_IS_TOO_LONG;
-    if (this.owner       != null && this.owner.length()       > 100) return EntityValidity.GROUP_OWNER_IS_TOO_LONG;
-    if (this.description != null && this.description.length() > 250) return EntityValidity.GROUP_DESCRIPTION_IS_TOO_LONG;
-    if (this.detailsType != null && this.detailsType.length() > 150) return EntityValidity.GROUP_DETAILTYPE_IS_TOO_LONG;
-    if (!isValidGroupName(this.name)) return EntityValidity.GROUP_NAME_IS_INVALID;
+    if (this.name != null && this.name.length() > 60) { return EntityValidity.GROUP_NAME_IS_TOO_LONG; }
+    if (this.owner != null && this.owner.length() > 100) { return EntityValidity.GROUP_OWNER_IS_TOO_LONG; }
+    if (this.description != null && this.description.length() > 250) { return EntityValidity.GROUP_DESCRIPTION_IS_TOO_LONG; }
+    if (this.detailsType != null && this.detailsType.length() > 150) { return EntityValidity.GROUP_DETAILTYPE_IS_TOO_LONG; }
+    if (this.template != null && this.template.length() > 60) { return EntityValidity.GROUP_TEMPLATE_IS_TOO_LONG; }
+
+    if (!isValidGroupName(this.name)) { return EntityValidity.GROUP_NAME_IS_INVALID;
     // TODO Constraints on possible roles and notifications?
+    }
 
     return EntityValidity.OK;
   }
@@ -281,7 +304,7 @@ public class PSGroup implements PSEntity {
 
   @Override
   public String toString() {
-    return "G("+this.id+":"+this.name+")";
+    return "G(" + this.id + ":" + this.name + ")";
   }
 
   // Static helpers
@@ -292,9 +315,9 @@ public class PSGroup implements PSEntity {
    */
   public static final Collection<String> RESERVED_GROUP_NAMES;
   static {
-    String[] reserved = new String[]{
-      "page", "block", "tree", "uri", "fullpage", "embed", "psadmin", "bundle", "service", "error",
-      "weborganic", "woconfig", "servlet", "psdoc", "filter","group","home","member","project"
+    String[] reserved = new String[] {
+        "page", "block", "tree", "uri", "fullpage", "embed", "psadmin", "bundle", "service", "error",
+        "weborganic", "woconfig", "servlet", "psdoc", "filter", "group", "home", "member", "project"
     };
     RESERVED_GROUP_NAMES = Collections.unmodifiableList(Arrays.asList(reserved));
   }
@@ -311,10 +334,12 @@ public class PSGroup implements PSEntity {
    *         <code>false</code> otherwise.
    */
   public static boolean isValidGroupName(String name) {
-    if (name == null || name.length() == 0) return false;
+    if (name == null || name.length() == 0) { return false; }
     String pjname = name;
     int dash = name.indexOf('-');
-    if (dash  != -1) pjname = name.substring(0, dash);
+    if (dash != -1) {
+      pjname = name.substring(0, dash);
+    }
     return name.matches(REGEX_GROUP_NAME) && !RESERVED_GROUP_NAMES.contains(pjname) && !name.endsWith("-silent") && name.indexOf("--") == -1;
   }
 
