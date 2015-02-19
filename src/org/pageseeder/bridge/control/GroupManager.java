@@ -402,15 +402,31 @@ public final class GroupManager extends Sessionful {
   }
 
   /**
-   * Returns the list of groups and projects in tree format.
+   * Returns the list of projects and groups for the given member.
    *
    * @param member The member making the request.
    * @param nameprefix the prefix of project/group.
    * @param max the maximum number of group to return.
-   *
+   * @return the list of projects and groups for the given member.
+   * 
    * @throws APIException
    */
   public List<PSGroup> listProjectTree(PSMember member, String nameprefix, int max) throws APIException {
+    return listProjectTree(member, nameprefix, max, true);
+  }
+
+  /**
+   * Returns the list of projects and groups for the given member.
+   *
+   * @param member The member making the request.
+   * @param nameprefix the prefix of project/group.
+   * @param max the maximum number of group to return.
+   * @param showGroup whether to return groups 
+   * @return the list of projects and groups for the given member.
+   * 
+   * @throws APIException
+   */
+  public List<PSGroup> listProjectTree(PSMember member, String nameprefix, int max, boolean showGroup) throws APIException {
     if (member == null) { throw new NullPointerException("member"); }
     PSHTTPConnector connector = PSHTTPConnectors.listProjectsTree(member, nameprefix, max).using(this._session);
     PSGroupHandler handler = new PSGroupHandler();

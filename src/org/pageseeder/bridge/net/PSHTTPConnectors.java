@@ -705,14 +705,15 @@ public final class PSHTTPConnectors {
    * List the groups.
    *
    * @param member    The Member
-   * @param nameprefix the prefix of the group/project
+   * @param nameprefix The prefix of the group/project
    * @param maximum  The maximum groups return
+   * @param showGroup Whether to return groups 
    *
-   * @return The list of subgroups
+   * @return Returns the list of projects and groups for the given member.
    *
    * @throws FailedPrecondition If member is not identifiable.
    */
-  public static PSHTTPConnector listProjectsTree(PSMember member, String nameprefix, int maximum) throws FailedPrecondition {
+  public static PSHTTPConnector listProjectsTree(PSMember member, String nameprefix, int maximum, boolean showGroup) throws FailedPrecondition {
     if (maximum < 1) { throw new IllegalArgumentException("maximum less than 1."); }
     Preconditions.isIdentifiable(member, "member");
     String service = Services.toProjectsTree(member.getUsername());
@@ -722,7 +723,24 @@ public final class PSHTTPConnectors {
     if (nameprefix != null) {
       connector.addParameter("nameprefix", nameprefix);
     }
+    connector.addParameter("groups", showGroup ? "true" : "false");
     return connector;
+  }
+
+  /**
+   * List the groups.
+   *
+   * @param member    The Member
+   * @param nameprefix The prefix of the group/project
+   * @param maximum  The maximum groups return
+   * @param showGroup Whether to return groups 
+   *
+   * @return Returns the list of projects and groups for the given member.
+   *
+   * @throws FailedPrecondition If member is not identifiable.
+   */
+  public static PSHTTPConnector listProjectsTree(PSMember member, String nameprefix, int maximum) throws FailedPrecondition {
+    return listProjectsTree(member, nameprefix, maximum, true);
   }
 
   /**
