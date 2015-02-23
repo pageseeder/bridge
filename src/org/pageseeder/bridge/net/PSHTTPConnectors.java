@@ -1837,6 +1837,42 @@ public final class PSHTTPConnectors {
   }
 
   /**
+   * Edit a document properties.
+   *
+   * @param document   the document to edit
+   * @param group      the group where the document store.
+   * @param creator    the member who edit the document.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition Should any precondition fail.
+   */
+  public static PSHTTPConnector editDocumentProperties(PSDocument document, PSGroup group, PSMember creator) throws FailedPrecondition {
+    Preconditions.isNotNull(document, "document");
+    Preconditions.isNotEmpty(document.getFilename(), "filename");
+    Preconditions.isNotEmpty(document.getTitle(), "title");
+    Preconditions.isIdentifiable(group, "group");
+    Preconditions.isIdentifiable(creator, "member");
+
+    String service = Services.toSaveURIProperties(creator.getIdentifier(), group.getIdentifier(), document.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    // document properties
+    if (document.getTitle() != null) {
+      connector.addParameter("title", document.getTitle());
+    }
+    if (document.getLabelsAsString() != null) {
+      connector.addParameter("labels", document.getLabelsAsString());
+    }
+    if (document.getDescription() != null) {
+      connector.addParameter("description", document.getDescription());
+    }
+    if (document.getFilename() != null) {
+      connector.addParameter("name", document.getFilename());
+    }
+    return connector;
+  }
+
+  /**
    *
    * @param url
    * @param group

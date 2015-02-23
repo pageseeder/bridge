@@ -42,8 +42,7 @@ public final class Services {
   /**
    * Utility class.
    */
-  private Services() {
-  }
+  private Services() {}
 
   // General Services
   // ----------------------------------------------------------------------------------------------
@@ -141,7 +140,7 @@ public final class Services {
    * @return <code>/groups/[group]/members/[member]/inviteself</code>.
    */
   public static String toInviteSelf(String group, String member) {
-    return "/groups/"+group+"/members/"+member+"/inviteself";
+    return "/groups/" + group + "/members/" + member + "/inviteself";
   }
 
   /**
@@ -154,7 +153,7 @@ public final class Services {
    * @return <code>/members/[group]/creategroup</code>.
    */
   public static String toCreate(String member) {
-    return "/members/"+member+"/creategroup";
+    return "/members/" + member + "/creategroup";
   }
 
   /**
@@ -307,7 +306,7 @@ public final class Services {
    * @return <code>/groups/[group]/labels</code>.
    */
   public static String toListLabels(String group) {
-    return "/groups/"+group+"/labels";
+    return "/groups/" + group + "/labels";
   }
 
   /**
@@ -318,7 +317,7 @@ public final class Services {
    * @return <code>/groups/[group]/subgroups</code>.
    */
   public static String toListSubGroups(String group) {
-    return "/groups/"+group+"/subgroups";
+    return "/groups/" + group + "/subgroups";
   }
 
   /**
@@ -329,7 +328,7 @@ public final class Services {
    * @return <code>/groups/[group]/subgroups/add</code>.
    */
   public static String toAddSubGroup(String group) {
-    return "/groups/"+group+"/subgroups/add";
+    return "/groups/" + group + "/subgroups/add";
   }
 
   /**
@@ -341,7 +340,7 @@ public final class Services {
    * @return <code>/groups/[group]/subgroups/[sub]/edit</code>.
    */
   public static String toEditSubGroup(String group, String sub) {
-    return "/groups/"+group+"/subgroups/"+sub+"/edit";
+    return "/groups/" + group + "/subgroups/" + sub + "/edit";
   }
 
   /**
@@ -353,7 +352,7 @@ public final class Services {
    * @return <code>/groups/[group]/subgroups/[sub]/remove</code>.
    */
   public static String toRemoveSubGroup(String group, String sub) {
-    return "/groups/"+group+"/subgroups/"+sub+"/remove";
+    return "/groups/" + group + "/subgroups/" + sub + "/remove";
   }
 
   // Email Services
@@ -370,7 +369,7 @@ public final class Services {
    * @return <code>/members/[member]/groups/[group]/mail/send</code>
    */
   public static String toSendMail(String member, String group) {
-    return "/members/"+member+"/groups/"+group+"/mail/send";
+    return "/members/" + member + "/groups/" + group + "/mail/send";
   }
 
   // Projects Services
@@ -384,7 +383,7 @@ public final class Services {
    * @return <code>/members/[member]/projects/create</code>.
    */
   public static String toCreateProject(String member) {
-    return "/members/"+member+"/projects/create";
+    return "/members/" + member + "/projects/create";
   }
 
   /**
@@ -396,7 +395,7 @@ public final class Services {
    * @return <code>/members/[member]/projects/[project]/edit</code>.
    */
   public static String toEditProject(String member, String project) {
-    return "/members/"+member+"/projects/"+project+"/edit";
+    return "/members/" + member + "/projects/" + project + "/edit";
   }
 
   /**
@@ -408,7 +407,7 @@ public final class Services {
    * @return <code>/members/[member]/projects/[project]</code>.
    */
   public static String toGetProject(String member, String project) {
-    return "/members/"+member+"/projects/"+project;
+    return "/members/" + member + "/projects/" + project;
   }
 
   /**
@@ -420,7 +419,7 @@ public final class Services {
    * @return <code>/members/[member]/projects/[project]/subprojectlist</code>.
    */
   public static String toListSubProjects(String member, String project) {
-    return "/members/"+member+"/projects/"+project+"/subprojectlist";
+    return "/members/" + member + "/projects/" + project + "/subprojectlist";
   }
 
   /**
@@ -431,7 +430,7 @@ public final class Services {
    * @return <code>/members/[member]/projectlist</code>.
    */
   public static String toListProjects(String member) {
-    return "/members/"+member+"/projectlist";
+    return "/members/" + member + "/projectlist";
   }
 
   /**
@@ -445,7 +444,7 @@ public final class Services {
    */
   @Deprecated
   public static String toProjects(String member) {
-    return "/members/"+member+"/projects";
+    return "/members/" + member + "/projects";
   }
 
   /**
@@ -456,7 +455,7 @@ public final class Services {
    * @return <code>/members/[member]/projectsfind</code>.
    */
   public static String toProjectsFind(String member) {
-    return "/members/"+member+"/projectfind";
+    return "/members/" + member + "/projectfind";
   }
 
   /**
@@ -471,7 +470,7 @@ public final class Services {
    */
   @Deprecated
   public static String toSubProjects(String member, String project) {
-    return "/members/"+member+"/projects/"+project+"/subprojects";
+    return "/members/" + member + "/projects/" + project + "/subprojects";
   }
 
   /**
@@ -482,7 +481,7 @@ public final class Services {
    * @return <code>/members/[member]/projects</code>.
    */
   public static String toProjectsTree(String member) {
-    return "/members/"+member+"/projecttree";
+    return "/members/" + member + "/projecttree";
   }
 
   /**
@@ -494,7 +493,7 @@ public final class Services {
    * @return <code>/members/[member]/projects/[project]/subprojecttree</code>.
    */
   public static String toSubProjectsTree(String member, String project) {
-    return "/members/"+member+"/projects/"+project+"/subprojecttree";
+    return "/members/" + member + "/projects/" + project + "/subprojecttree";
   }
 
   /**
@@ -506,7 +505,7 @@ public final class Services {
    * @return <code>/members/[member]/projects/[project]/archive</code>.
    */
   public static String toArchiveProject(String member, String project) {
-    return "/members/"+member+"/projects/"+project+"/archive";
+    return "/members/" + member + "/projects/" + project + "/archive";
   }
 
   /**
@@ -518,7 +517,7 @@ public final class Services {
    * @return <code>/members/[member]/projects/[project]/rename</code>.
    */
   public static String toRenameProject(String member, String project) {
-    return "/members/"+member+"/projects/"+project+"/rename";
+    return "/members/" + member + "/projects/" + project + "/rename";
   }
 
   /**
@@ -530,7 +529,7 @@ public final class Services {
    * @return <code>/members/[member]/projects/[project]/unarchive</code>.
    */
   public static String toUnarchiveProject(String member, String project) {
-    return "/members/"+member+"/projects/"+project+"/unarchive";
+    return "/members/" + member + "/projects/" + project + "/unarchive";
   }
 
   // Group Folder (Group URI) Services
@@ -545,7 +544,7 @@ public final class Services {
    */
   @Requires(minVersion = 56012)
   public static String toListGroupFolders(String group) {
-    return "/groups/"+group+"/groupfolders";
+    return "/groups/" + group + "/groupfolders";
   }
 
   /**
@@ -557,7 +556,7 @@ public final class Services {
    */
   @Requires(minVersion = 56012)
   public static String toCreateGroupFolder2(String group) {
-    return "/groups/"+group+"/groupfolders/create";
+    return "/groups/" + group + "/groupfolders/create";
   }
 
   /**
@@ -569,7 +568,7 @@ public final class Services {
    */
   @Requires(minVersion = 56012)
   public static String toGetGroupFolderForURL2(String group) {
-    return "/groups/"+group+"/groupfolders/forurl";
+    return "/groups/" + group + "/groupfolders/forurl";
   }
 
   /**
@@ -583,7 +582,7 @@ public final class Services {
    */
   @Deprecated
   public static String toCreateGroupFolder(String group) {
-    return "/groups/"+group+"/folders/create";
+    return "/groups/" + group + "/folders/create";
   }
 
   /**
@@ -597,9 +596,8 @@ public final class Services {
    */
   @Deprecated
   public static String toGetGroupFolderForURL(String group) {
-    return "/groups/"+group+"/folders/forurl";
+    return "/groups/" + group + "/folders/forurl";
   }
-
 
   // Group Services
   // ----------------------------------------------------------------------------------------------
@@ -612,7 +610,7 @@ public final class Services {
    * @return <code>/members/[member]/groups/create</code>.
    */
   public static String toCreateGroup(String member) {
-    return "/members/"+member+"/groups/create";
+    return "/members/" + member + "/groups/create";
   }
 
   /**
@@ -624,7 +622,7 @@ public final class Services {
    * @return <code>/members/[member]/groups/[group]</code>.
    */
   public static String toEditGroup(String member, String group) {
-    return "/members/"+member+"/groups/"+group+"/edit";
+    return "/members/" + member + "/groups/" + group + "/edit";
   }
 
   /**
@@ -635,7 +633,7 @@ public final class Services {
    * @return <code>/groups/[group]</code>.
    */
   public static String toGetGroup(String group) {
-    return "/groups/"+group;
+    return "/groups/" + group;
   }
 
   /**
@@ -647,7 +645,7 @@ public final class Services {
    * @return <code>/members/[member]/groups/[group]</code>.
    */
   public static String toGetGroup(String member, String group) {
-    return "/members/"+member+"/groups/"+group;
+    return "/members/" + member + "/groups/" + group;
   }
 
   // /groups/{group:group}/size
@@ -782,7 +780,7 @@ public final class Services {
    * @return <code>/members/[member]/groups/[groups]/archive</code>.
    */
   public static String toArchiveGroup(String member, String group) {
-    return "/members/"+member+"/groups/"+group+"/archive";
+    return "/members/" + member + "/groups/" + group + "/archive";
   }
 
   /**
@@ -794,11 +792,10 @@ public final class Services {
    * @return <code>/members/[member]/groups/[groups]/rename</code>.
    */
   public static String toRenameGroup(String member, String group) {
-    return "/members/"+member+"/groups/"+group+"/rename";
+    return "/members/" + member + "/groups/" + group + "/rename";
   }
 
   // /members/{member:member}/groups/{group:group}/unarchive
-
 
   // URI Services
   // ----------------------------------------------------------------------------------------------
@@ -823,7 +820,7 @@ public final class Services {
    * @return <code>/groups/[group]/uris/forurl</code>.
    */
   public static String toGetURIForURL(String group) {
-    return "/groups/"+group+"/uris/forurl";
+    return "/groups/" + group + "/uris/forurl";
   }
 
   /**
@@ -835,9 +832,8 @@ public final class Services {
    * @return <code>/groups/[group]/uris/[uri]</code>.
    */
   public static String toGetURIForID(String group, String uri) {
-    return "/groups/"+group+"/uris/"+uri;
+    return "/groups/" + group + "/uris/" + uri;
   }
-
 
   /**
    * Returns the URL to create an external URI.
@@ -890,7 +886,20 @@ public final class Services {
    * @return <code>/members/[member]/groups/[group]/documents/forurl</code>.
    */
   public static String toGetDocumentForURL(String member, String group) {
-    return "/members/"+member+"/groups/"+group+"/documents/forurl";
+    return "/members/" + member + "/groups/" + group + "/documents/forurl";
+  }
+
+  /**
+   * Returns the URL to saves the core properties of a URI..
+   *
+   * @param member the member username or id
+   * @param group  the group name or id
+   * @param uri    the id of uri
+   *
+   * @return <code>/members/[member]/groups/[group]/uris/{uri}/properties </code>.
+   */
+  public static String toSaveURIProperties(String member, String group, String uri) {
+    return "/members/" + member + "/groups/" + group + "/uris/" + uri + "/properties";
   }
 
   // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/documents
@@ -928,7 +937,7 @@ public final class Services {
    * @return <code>/members/[member]/groups/[group]/uris/[uri]/fragments/[fragment]</code>
    */
   public static String toGetFragment(String member, String group, String uri, String fragment) {
-    return "/members/"+member+"/groups/"+group+"/uris/"+uri+"/fragments/"+fragment;
+    return "/members/" + member + "/groups/" + group + "/uris/" + uri + "/fragments/" + fragment;
   }
 
   // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/fragments/{fragment}/delete
@@ -957,12 +966,10 @@ public final class Services {
 
   // /members/{member:member}/export
 
-
   // Host Services
   // ----------------------------------------------------------------------------------------------
 
   // /members/{member:member}/hosts/{host}/update
-
 
   // Task Services
   // ----------------------------------------------------------------------------------------------
@@ -975,7 +982,6 @@ public final class Services {
 
   // /tasks/{task}
 
-
   // Comment and Discussions Services
   // ----------------------------------------------------------------------------------------------
 
@@ -987,7 +993,7 @@ public final class Services {
    * @return <code>/members/[userid]/comments/[xlinkid]/reply</code>.
    */
   public static String toDiscussionsForGroup(String group) {
-    return "/groups/"+group+"/discussions";
+    return "/groups/" + group + "/discussions";
   }
 
   // /groups/{group:group}/discussions/{discussion}
@@ -1005,7 +1011,7 @@ public final class Services {
    * @return <code>/members/[userid]/comments/[xlinkid]/reply</code>.
    */
   public static String toDiscussionsForURI(String member, String uri) {
-    return "/members/"+member+"/uris/"+uri+"/discussions";
+    return "/members/" + member + "/uris/" + uri + "/discussions";
   }
 
   /**
@@ -1018,7 +1024,7 @@ public final class Services {
    * @return <code>/members/[userid]/comments/[xlinkid]/reply</code>.
    */
   public static String toDiscussionsForFragment(String member, String uri, String fragment) {
-    return "/members/"+member+"/uris/"+uri+"/fragments/"+fragment+"/discussions";
+    return "/members/" + member + "/uris/" + uri + "/fragments/" + fragment + "/discussions";
   }
 
   /**
@@ -1030,7 +1036,7 @@ public final class Services {
    * @return <code>/members/[userid]/comments/[xlinkid]</code>.
    */
   public static String toGetComment(String member, String comment) {
-    return "/members/" + member + "/comments/"+comment;
+    return "/members/" + member + "/comments/" + comment;
   }
 
   // /discussions/forurl
@@ -1038,7 +1044,6 @@ public final class Services {
   // /discussions/{discussion}
 
   // /members/{member:member}/comments/filter
-
 
   /**
    * Returns the URL to load comments by filter.
@@ -1190,7 +1195,6 @@ public final class Services {
 
   // /members/{member:member}/groups/{group:group}/loadingzone/uris
 
-
   // Thread related Services
   // ----------------------------------------------------------------------------------------------
 
@@ -1210,13 +1214,12 @@ public final class Services {
    * @return <code>/threads/[threadid]/progress</code>.
    */
   public static String toThreadProgress(String threadid) {
-    return "/threads/"+threadid+"/progress";
+    return "/threads/" + threadid + "/progress";
   }
 
   // /threads/{threadid}/progress
 
   // /groups/{group:group}/threads/{threadid}/logs
-
 
   // Developer Related Services
   // ----------------------------------------------------------------------------------------------
@@ -1229,7 +1232,7 @@ public final class Services {
    * @return <code>/groups/[project]/resources</code>.
    */
   public static String toResource(String project) {
-    return "/groups/"+project+"/resources";
+    return "/groups/" + project + "/resources";
   }
 
   /**
@@ -1240,7 +1243,7 @@ public final class Services {
    * @return <code>/groups/[project]/resources/create</code>.
    */
   public static String toCreateResource(String project) {
-    return "/groups/"+project+"/resources/create";
+    return "/groups/" + project + "/resources/create";
   }
 
   /**
@@ -1251,7 +1254,7 @@ public final class Services {
    * @return <code>/groups/[project]/resources/put</code>.
    */
   public static String toGetResource(String project) {
-    return "/groups/"+project+"/resources/get";
+    return "/groups/" + project + "/resources/get";
   }
 
   /**
@@ -1262,7 +1265,7 @@ public final class Services {
    * @return <code>/groups/[project]/resources/put</code>.
    */
   public static String toPutResource(String project) {
-    return "/groups/"+project+"/resources/put";
+    return "/groups/" + project + "/resources/put";
   }
 
   /**
@@ -1273,7 +1276,7 @@ public final class Services {
    * @return <code>/groups/[project]/resources/put</code>.
    */
   public static String toDeleteResource(String project) {
-    return "/groups/"+project+"/resources/delete";
+    return "/groups/" + project + "/resources/delete";
   }
 
   // /groups/{group:group}/resources/move
@@ -1285,7 +1288,5 @@ public final class Services {
   // /groups/{group:group}/resources/history
 
   // /groups/{group:group}/documenttypes/converttopsml
-
-
 
 }

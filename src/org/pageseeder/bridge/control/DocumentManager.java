@@ -100,6 +100,23 @@ public final class DocumentManager extends Sessionful {
   }
 
   /**
+   * Edit the properties for specified document in PageSeeder.
+   *
+   * @param document The document to create
+   * @param group    The group the document is part of
+   * @param creator  The member creating the document
+   *
+   * @return <code>true</code> if the document properties was edit.
+   */
+  public boolean editDocumentProperties(PSDocument document, PSGroup group, PSMember creator)
+      throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.editDocumentProperties(document, group, creator).using(this._session);
+    PSDocumentHandler handler = new PSDocumentHandler(document);
+    PSHTTPResponseInfo info = connector.post(handler);
+    return info.getStatus() == Status.SUCCESSFUL;
+  }
+
+  /**
    * Identify a document from a specific URI ID.
    *
    * @param id    The URI ID of the document.

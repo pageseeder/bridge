@@ -70,7 +70,7 @@ public final class MembershipManager extends Sessionful {
      * @return The corresponding membership result.
      */
     public static MembershipResult forResponse(PSHTTPResponseInfo info) {
-      if (info.isSuccessful()) return ok;
+      if (info.isSuccessful()) { return ok; }
       final int _error;
       try {
         _error = Integer.parseInt(info.getErrorID(), 16);
@@ -79,30 +79,42 @@ public final class MembershipManager extends Sessionful {
         return MembershipResult.unknown;
       }
       switch (_error) {
-        // 0x1001 If the username contains the character '@'.".
-        case 0x1001: return invalid_username;
+      // 0x1001 If the username contains the character '@'.".
+      case 0x1001:
+        return invalid_username;
         // 0x1002 If the email address is invalid.
-        case 0x1002: return invalid_email;
+      case 0x1002:
+        return invalid_email;
         // 0x1003 If the specified group is a personal group.
-        case 0x1003: return invalid_group;
+      case 0x1003:
+        return invalid_group;
         // 0x1004 If the username or email are already in use.
-        case 0x1004: return already_in_use;
+      case 0x1004:
+        return already_in_use;
         // 0x1005 If the maximum number of members on the server has been reached
-        case 0x1005: return too_many_members;
+      case 0x1005:
+        return too_many_members;
         // 0x1015 Password is too weak
-        case 0x1015: return password_too_weak;
+      case 0x1015:
+        return password_too_weak;
         // 0x1016 Password is equal to username
-        case 0x1016: return invalid_password;
+      case 0x1016:
+        return invalid_password;
         // 0x1023 Invite to admin group not allowed
-        case 0x1023: return invalid_group;
+      case 0x1023:
+        return invalid_group;
         // 0x1025 The member already belongs to the group
-        case 0x1025: return already_a_member;
+      case 0x1025:
+        return already_a_member;
         // 0x6004 If the member details have not been configured properly
-        case 0x6004: return member_details_misconfigured;
+      case 0x6004:
+        return member_details_misconfigured;
         // 0x6005 Group has no moderator with an email address (when Self Registration: Moderated)
-        case 0x6005: return already_a_member;
+      case 0x6005:
+        return already_a_member;
         // Any other
-        default: return MembershipResult.unknown;
+      default:
+        return MembershipResult.unknown;
       }
     }
   }
@@ -131,12 +143,12 @@ public final class MembershipManager extends Sessionful {
    * @throws APIException if the operation is not successful or caused by client.
    */
   public MembershipResult create(PSMembership membership) throws APIException {
-    if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
+    if (!membership.isValid()) { throw new InvalidEntityException(PSMembership.class, membership.checkValid()); }
     PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, null, true).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
-    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) { throw new APIException(info.getMessage()); }
     return MembershipResult.forResponse(info);
   }
 
@@ -155,7 +167,7 @@ public final class MembershipManager extends Sessionful {
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
-    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) { throw new APIException(info.getMessage()); }
     return MembershipResult.forResponse(info);
   }
 
@@ -175,7 +187,7 @@ public final class MembershipManager extends Sessionful {
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
-    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) { throw new APIException(info.getMessage()); }
     return MembershipResult.forResponse(info);
   }
 
@@ -190,15 +202,30 @@ public final class MembershipManager extends Sessionful {
    * @throws APIException if the operation is not successful or caused by client.
    */
   public MembershipResult add(PSMembership membership, boolean email) throws APIException {
-    if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
+    if (!membership.isValid()) { throw new InvalidEntityException(PSMembership.class, membership.checkValid()); }
     MemberOptions options = new MemberOptions();
     options.setInvitation(Invitation.NO);
     options.setWelcomeEmail(email);
+    return add(membership, options);
+  }
+
+  /**
+   * Add a member to a group directly (Admin only).
+   *
+   * @param membership The membership to create.
+   * @param options    The {@link MemberOptions}
+   *
+   * @return The result of the membership creation as an enumeration value.
+   *
+   * @throws APIException if the operation is not successful or caused by client.
+   */
+  public MembershipResult add(PSMembership membership, MemberOptions options) throws APIException {
+    if (!membership.isValid()) { throw new InvalidEntityException(PSMembership.class, membership.checkValid()); }
     PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
-    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) { throw new APIException(info.getMessage()); }
     return MembershipResult.forResponse(info);
   }
 
@@ -215,12 +242,12 @@ public final class MembershipManager extends Sessionful {
    * @throws APIException if the operation is not successful or caused by client.
    */
   public MembershipResult invite(PSMembership membership) throws APIException {
-    if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
+    if (!membership.isValid()) { throw new InvalidEntityException(PSMembership.class, membership.checkValid()); }
     PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, new MemberOptions()).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
-    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) { throw new APIException(info.getMessage()); }
     return MembershipResult.forResponse(info);
   }
 
@@ -236,14 +263,14 @@ public final class MembershipManager extends Sessionful {
    * @throws APIException if the operation is not successful or caused by client.
    */
   public MembershipResult invite(PSMembership membership, boolean email) throws APIException {
-    if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
+    if (!membership.isValid()) { throw new InvalidEntityException(PSMembership.class, membership.checkValid()); }
     MemberOptions options = new MemberOptions();
     options.setWelcomeEmail(email);
     PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
-    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) { throw new APIException(info.getMessage()); }
     return MembershipResult.forResponse(info);
   }
 
@@ -260,12 +287,12 @@ public final class MembershipManager extends Sessionful {
    * @throws APIException if the operation is not successful or caused by client.
    */
   public MembershipResult invite(PSMembership membership, MemberOptions options) throws APIException {
-    if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
+    if (!membership.isValid()) { throw new InvalidEntityException(PSMembership.class, membership.checkValid()); }
     PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
-    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) { throw new APIException(info.getMessage()); }
     return MembershipResult.forResponse(info);
   }
 
@@ -281,12 +308,12 @@ public final class MembershipManager extends Sessionful {
    * @throws APIException if the operation is not successful or caused by client.
    */
   public MembershipResult inviteSelf(PSMembership membership) throws APIException {
-    if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
+    if (!membership.isValid()) { throw new InvalidEntityException(PSMembership.class, membership.checkValid()); }
     PSHTTPConnector connector = PSHTTPConnectors.inviteSelf(membership, true).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
-    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) { throw new APIException(info.getMessage()); }
     return MembershipResult.forResponse(info);
   }
 
@@ -304,12 +331,12 @@ public final class MembershipManager extends Sessionful {
    * @throws APIException if the operation is not successful or caused by client.
    */
   public MembershipResult inviteSelf(PSMembership membership, boolean email) throws APIException {
-    if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
+    if (!membership.isValid()) { throw new InvalidEntityException(PSMembership.class, membership.checkValid()); }
     PSHTTPConnector connector = PSHTTPConnectors.inviteSelf(membership, email).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
-    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) { throw new APIException(info.getMessage()); }
     return MembershipResult.forResponse(info);
   }
 
@@ -323,12 +350,12 @@ public final class MembershipManager extends Sessionful {
    * @throws APIException if the operation is not successful or caused by client.
    */
   public MembershipResult register(PSMembership membership) throws APIException {
-    if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
+    if (!membership.isValid()) { throw new InvalidEntityException(PSMembership.class, membership.checkValid()); }
     PSHTTPConnector connector = PSHTTPConnectors.registerMembership(membership).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
-    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) { throw new APIException(info.getMessage()); }
     return MembershipResult.forResponse(info);
   }
 
@@ -358,8 +385,8 @@ public final class MembershipManager extends Sessionful {
    *         or <code>null</code> if the member does not belong to the group
    */
   public PSMembership get(PSGroup group, PSMember member) throws APIException {
-    if (!group.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
-    if (!member.isValid()) throw new InvalidEntityException(PSMember.class, member.checkValid());
+    if (!group.isValid()) { throw new InvalidEntityException(PSGroup.class, group.checkValid()); }
+    if (!member.isValid()) { throw new InvalidEntityException(PSMember.class, member.checkValid()); }
     PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(group.getName(), member.getUsername()).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(group);
     connector.get(handler);
@@ -394,12 +421,12 @@ public final class MembershipManager extends Sessionful {
    * @param forceEmail A boolean to force email change
    */
   public MembershipResult save(PSMembership membership, boolean forceEmail) throws APIException {
-    if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
+    if (!membership.isValid()) { throw new InvalidEntityException(PSMembership.class, membership.checkValid()); }
     PSHTTPConnector connector = PSHTTPConnectors.editMembership(membership, forceEmail).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
-    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
+    if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) { throw new APIException(info.getMessage()); }
     return MembershipResult.forResponse(info);
   }
 
@@ -415,7 +442,7 @@ public final class MembershipManager extends Sessionful {
    * @return the list of memberships for the specified member.
    */
   public List<PSMembership> listForMember(PSMember member) throws APIException {
-    if (!member.isValid()) throw new InvalidEntityException(PSMember.class, member.checkValid());
+    if (!member.isValid()) { throw new InvalidEntityException(PSMember.class, member.checkValid()); }
     PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(member.getIdentifier()).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(member);
     connector.get(handler);
@@ -454,7 +481,7 @@ public final class MembershipManager extends Sessionful {
    * @return the list of memberships.
    */
   public List<PSMembership> listForGroup(PSGroup group, boolean includeSubgroups) throws APIException {
-    if (!group.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
+    if (!group.isValid()) { throw new InvalidEntityException(PSGroup.class, group.checkValid()); }
     PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForGroup(group.getName(), includeSubgroups).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(group);
     connector.get(handler);
