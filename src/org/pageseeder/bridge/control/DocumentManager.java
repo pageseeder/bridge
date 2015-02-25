@@ -111,8 +111,11 @@ public final class DocumentManager extends Sessionful {
   public boolean editDocumentProperties(PSDocument document, PSGroup group, PSMember creator)
       throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.editDocumentProperties(document, group, creator).using(this._session);
-    PSDocumentHandler handler = new PSDocumentHandler(document);
-    PSHTTPResponseInfo info = connector.post(handler);
+    PSHTTPResponseInfo info = connector.post();
+    // FIXME the return xml from "editDocumentProperties" is not a complete XML to create Document object.
+    if (info.getStatus() == Status.SUCCESSFUL) {
+      cache.remove(String.valueOf(document.getId()));
+    }
     return info.getStatus() == Status.SUCCESSFUL;
   }
 
