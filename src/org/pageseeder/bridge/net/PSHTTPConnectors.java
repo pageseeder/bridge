@@ -708,18 +708,21 @@ public final class PSHTTPConnectors {
    * @param nameprefix The prefix of the group/project
    * @param maximum  The maximum groups return
    * @param showGroup Whether to return groups 
+   * @param showAll Whether to return all projects/groups for server (Administrator only)
    *
    * @return Returns the list of projects and groups for the given member.
    *
    * @throws FailedPrecondition If member is not identifiable.
    */
-  public static PSHTTPConnector listProjectsTree(PSMember member, String nameprefix, int maximum, boolean showGroup) throws FailedPrecondition {
+  public static PSHTTPConnector listProjectsTree(PSMember member, String nameprefix, int maximum, boolean showGroup, boolean showAll) throws FailedPrecondition {
     if (maximum < 1) { throw new IllegalArgumentException("maximum less than 1."); }
     Preconditions.isIdentifiable(member, "member");
     String service = Services.toProjectsTree(member.getUsername());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("resultsize", String.valueOf(maximum));
-    connector.addParameter("for", "server");
+    if (showAll) {
+      connector.addParameter("for", "server");
+    }
     if (nameprefix != null) {
       connector.addParameter("nameprefix", nameprefix);
     }
@@ -734,13 +737,14 @@ public final class PSHTTPConnectors {
    * @param nameprefix The prefix of the group/project
    * @param maximum  The maximum groups return
    * @param showGroup Whether to return groups 
-   *
+   * @param showAll Whether to return all projects/groups for server (Administrator only)
+   * 
    * @return Returns the list of projects and groups for the given member.
    *
    * @throws FailedPrecondition If member is not identifiable.
    */
-  public static PSHTTPConnector listProjectsTree(PSMember member, String nameprefix, int maximum) throws FailedPrecondition {
-    return listProjectsTree(member, nameprefix, maximum, true);
+  public static PSHTTPConnector listProjectsTree(PSMember member, String nameprefix, int maximum, boolean showAll) throws FailedPrecondition {
+    return listProjectsTree(member, nameprefix, maximum, true, showAll);
   }
 
   /**

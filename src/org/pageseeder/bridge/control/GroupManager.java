@@ -412,7 +412,7 @@ public final class GroupManager extends Sessionful {
    * @throws APIException
    */
   public List<PSGroup> listProjectTree(PSMember member, String nameprefix, int max) throws APIException {
-    return listProjectTree(member, nameprefix, max, true);
+    return listProjectTree(member, nameprefix, max, true, false);
   }
 
   /**
@@ -422,13 +422,14 @@ public final class GroupManager extends Sessionful {
    * @param nameprefix the prefix of project/group.
    * @param max the maximum number of group to return.
    * @param showGroup whether to return groups 
+   * @param showAll Whether to return all projects/groups for server (Administrator only)
    * @return the list of projects and groups for the given member.
    * 
    * @throws APIException
    */
-  public List<PSGroup> listProjectTree(PSMember member, String nameprefix, int max, boolean showGroup) throws APIException {
+  public List<PSGroup> listProjectTree(PSMember member, String nameprefix, int max, boolean showGroup, boolean showAll) throws APIException {
     if (member == null) { throw new NullPointerException("member"); }
-    PSHTTPConnector connector = PSHTTPConnectors.listProjectsTree(member, nameprefix, max).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.listProjectsTree(member, nameprefix, max, showAll).using(this._session);
     PSGroupHandler handler = new PSGroupHandler();
     PSHTTPResponseInfo info = connector.get(handler);
     if (info.getCode() >= 400) { throw new APIException("Unable to list groups for member '" + member.getId() + "': " + info.getMessage()); }
