@@ -2,8 +2,7 @@ package org.pageseeder.bridge;
 
 import java.util.Properties;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 public final class PSConfigTest {

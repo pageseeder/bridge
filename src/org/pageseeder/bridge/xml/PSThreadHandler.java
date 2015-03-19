@@ -19,13 +19,18 @@ import com.topologi.diffx.xml.XMLStringWriter;
 import com.topologi.diffx.xml.XMLWriter;
 
 /**
- * Handler for PageSeeder groups and projects.
+ * Handler for PageSeeder thread status.
  *
- * @author Christophe Lauret
- * @version 0.2.2
- * @since 0.1.0
+ * @author Jean-Baptiste Reure
+ * @version 0.3.27
+ * @since 0.2.2
  */
 public final class PSThreadHandler extends DefaultHandler {
+
+  /**
+   * Use old XML format
+   */
+  private boolean oldFormat = true;
 
   private PSThreadStatus tempStatus = null;
 
@@ -52,15 +57,27 @@ public final class PSThreadHandler extends DefaultHandler {
         // shouldn't happen as internal writer
       }
     }
+    if ("thread".equals(localName)) {
+      String id = atts.getValue("id");
+      this.oldFormat = id == null;
+      if (!this.oldFormat) {
+        this.tempStatus = new PSThreadStatus(id);
+        this.tempStatus.setGroupID(Long.valueOf(atts.getValue("groupid")));
+        this.tempStatus.setStatus(atts.getValue("status"));
+        this.tempStatus.setUsername(atts.getValue("username"));
+        this.tempStatus.setName(atts.getValue("name"));
+      }
+    }
     String dad = this.elements.isEmpty() ? null : this.elements.peek();
     if ("thread".equals(dad) && ("id".equals(localName) ||
                            "username".equals(localName) ||
                                "name".equals(localName) ||
-                            "groupid".equals(localName))) {
+                            "groupid".equals(localName)) && this.oldFormat) {
       this.buffer = new StringBuilder();
-    } else if ("threadstatus".equals(dad) && "status".equals(localName)) {
+    } else if ("threadstatus".equals(dad) && "status".equals(localName) && this.oldFormat) {
       this.buffer = new StringBuilder();
-    } else if ("threadstatus".equals(dad) && "message".equals(localName)) {
+    } else if ("message".equals(localName) &&
+        ((this.oldFormat && "threadstatus".equals(dad)) || (!this.oldFormat && "thread".equals(dad)))) {
       this.xmlContent = new XMLStringWriter(false);
     }
     this.elements.push(localName);
@@ -68,19 +85,19 @@ public final class PSThreadHandler extends DefaultHandler {
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
-    if ("id".equals(localName) && this.buffer != null) {
+    if ("id".equals(localName) && this.buffer != null && this.oldFormat) {
       this.tempStatus = new PSThreadStatus(this.buffer.toString());
       this.buffer = null;
-    } else if ("name".equals(localName) && this.buffer != null && this.tempStatus != null) {
+    } else if ("name".equals(localName) && this.buffer != null && this.tempStatus != null && this.oldFormat) {
       this.tempStatus.setName(this.buffer.toString());
       this.buffer = null;
-    } else if ("username".equals(localName) && this.buffer != null && this.tempStatus != null) {
+    } else if ("username".equals(localName) && this.buffer != null && this.tempStatus != null && this.oldFormat) {
       this.tempStatus.setUsername(this.buffer.toString());
       this.buffer = null;
-    } else if ("groupid".equals(localName) && this.buffer != null && this.tempStatus != null) {
+    } else if ("groupid".equals(localName) && this.buffer != null && this.tempStatus != null && this.oldFormat) {
       this.tempStatus.setGroupID(Long.parseLong(this.buffer.toString()));
       this.buffer = null;
-    } else if ("status".equals(localName) && this.buffer != null && this.tempStatus != null) {
+    } else if ("status".equals(localName) && this.buffer != null && this.tempStatus != null && this.oldFormat) {
       this.tempStatus.setStatus(this.buffer.toString());
       this.buffer = null;
     } else if ("message".equals(localName) && this.xmlContent != null && this.tempStatus != null) {
