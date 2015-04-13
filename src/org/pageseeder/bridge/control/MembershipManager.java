@@ -376,6 +376,32 @@ public final class MembershipManager extends Sessionful {
   }
 
   /**
+   * Returns the membership information for the given group and email or username of member.
+   *
+   * @param group  The name of the group.
+   * @param emailOrUsername The username or email of the member.
+   * @param isManager <code>true</code> to indicate that the user is a manager.
+   *
+   * @return The corresponding membership if it exists
+   *         or <code>null</code> if the member does not belong to the group
+   */
+  public PSMembership getAuto(String group, String emailOrUsername, boolean isManager) throws APIException {
+    // guess if the input value is email address
+    if (emailOrUsername != null && emailOrUsername.contains("@")) {
+      PSMember member = new PSMember();
+      member.setEmail(emailOrUsername);
+      PSMembership membership = new PSMembership(new PSGroup(group), member);
+      PSHTTPConnector connector = PSHTTPConnectors.findMembershipsForGroup(membership, isManager).using(this._session);
+      PSMembershipHandler handler = new PSMembershipHandler();
+      connector.get(handler);
+      return handler.get();
+    } else {
+      return get(group, emailOrUsername);
+    }
+
+  }
+
+  /**
    * Returns the membership information for the given group and member.
    *
    * @param group  The group instance.

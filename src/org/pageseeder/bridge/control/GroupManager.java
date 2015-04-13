@@ -429,7 +429,7 @@ public final class GroupManager extends Sessionful {
    */
   public List<PSGroup> listProjectTree(PSMember member, String nameprefix, int max, boolean showGroup, boolean showAll) throws APIException {
     if (member == null) { throw new NullPointerException("member"); }
-    PSHTTPConnector connector = PSHTTPConnectors.listProjectsTree(member, nameprefix, max, showAll).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.listProjectsTree(member, nameprefix, max, showGroup, showAll).using(this._session);
     PSGroupHandler handler = new PSGroupHandler();
     PSHTTPResponseInfo info = connector.get(handler);
     if (info.getCode() >= 400) { throw new APIException("Unable to list groups for member '" + member.getId() + "': " + info.getMessage()); }
