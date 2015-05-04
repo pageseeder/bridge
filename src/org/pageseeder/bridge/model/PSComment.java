@@ -280,15 +280,20 @@ public final class PSComment implements PSEntity {
   public void setProperties(String properties) {
     Map<String, String> p = new HashMap<String, String>();
     if (properties != null) {
-      for (String property : properties.split("|")) {
+      for (String property: properties.split("(?<!\\|)\\|(?!\\|)")) {
+        property = property.replaceAll("\\|\\|", "\\|");
         int eq = property.indexOf('=');
-        // There must be a name and a value
-        if (eq > 0 && eq < property.length() - 1) {
+        //There must be a name and a value
+        if (eq > 0) {
           String name = property.substring(0, eq);
           String value = property.substring(eq + 1);
-          if ("label".equals(name)) {
+          if ("label".equals(name) == false)
             p.put(name, value);
-          }
+        }
+        //Otherwise, just use the name without any value
+        else if (eq == -1 && !property.isEmpty()) {
+          if ("label".equals(property) == false)
+            p.put(property, "");
         }
       }
     }
