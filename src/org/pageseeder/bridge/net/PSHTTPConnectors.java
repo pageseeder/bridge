@@ -1310,6 +1310,25 @@ public final class PSHTTPConnectors {
    * @throws FailedPrecondition if conditions fail
    */
   public static PSHTTPConnector getCommentsByFilter(PSMember member, PSGroup group, String title, String type, List<String> paths) throws FailedPrecondition {
+    return getCommentsByFilter(member, group, title, type, null, paths);
+  }
+
+  /**
+   * Returns the connector to find comments from PageSeeder.
+   *
+   * @param member   the author searching for comments
+   * @param group    the context group
+   * @param title    a comment title (can be null)
+   * @param type     a comment type (can be null)
+   * @param statuses a comment status (can be null)
+   * @param paths    a list of URI paths (can be null)
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition if conditions fail
+   */
+  public static PSHTTPConnector getCommentsByFilter(PSMember member, PSGroup group, String title, String type,
+      List<String> statuses, List<String> paths) throws FailedPrecondition {
     Preconditions.isIdentifiable(member, "member");
     Preconditions.isNotNull(group, "group");
     String service = Services.toGetCommentsByFilter(member.getIdentifier());
@@ -1323,16 +1342,13 @@ public final class PSHTTPConnectors {
     if (type != null) {
       connector.addParameter("type", type);
     }
+    // statuses
+    if (statuses != null) {
+      connector.addParameter("statuses",  join(statuses));
+    }
     // paths
     if (paths != null) {
-      StringBuilder pathsAsString = new StringBuilder();
-      for (String p : paths) {
-        if (pathsAsString.length() != 0) {
-          pathsAsString.append(',');
-        }
-        pathsAsString.append(p);
-      }
-      connector.addParameter("paths", pathsAsString.toString());
+      connector.addParameter("paths", join(paths));
     }
     return connector;
   }
@@ -2113,5 +2129,21 @@ public final class PSHTTPConnectors {
       connector.addParameter("attachments", options.getAttachmentsAsString());
     }
     return connector;
+  }
+
+  /**
+   * Utility method to join a list of strings using a comma.
+   * 
+   * @param strings the list of strings
+   * 
+   * @return the resulting string, never <code>null</code>
+   */
+  private static String join(List<String> strings) {
+    StringBuilder builder = new StringBuilder();
+    for (String s : strings) {
+      if (builder.length() != 0) { builder.append(','); }
+      builder.append(s);
+    }
+    return builder.toString();
   }
 }

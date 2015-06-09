@@ -92,7 +92,7 @@ public final class PSCommentHandler extends DefaultHandler {
       PSComment comment = PSEntityFactory.toComment(atts, this.comment);
       this.comment = comment;
 
-    } else if ("title".equals(localName)) {
+    } else if ("title".equals(localName) || "labels".equals(localName)) {
       this.buffer = new StringBuilder();
 
     } else if ("author".equals(localName)) {
@@ -141,9 +141,14 @@ public final class PSCommentHandler extends DefaultHandler {
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if ("comment".equals(localName)) {
       if (this.comment != null) this.comments.add(this.comment);
+      this.comment = null;
 
     } else if ("title".equals(localName)) {
       this.comment.setTitle(this.buffer.toString());
+      this.buffer = null;
+
+    } else if ("labels".equals(localName)) {
+      this.comment.setLabels(this.buffer.toString());
       this.buffer = null;
 
     } else if ("content".equals(localName)) {
