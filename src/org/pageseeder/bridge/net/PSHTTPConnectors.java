@@ -428,6 +428,19 @@ public final class PSHTTPConnectors {
   }
 
   /**
+   * @param member the member needs to create personal group.
+   * @return the corresponding connector
+   * @throws FailedPrecondition If the member is not identifiable;
+   */
+  public static PSHTTPConnector createPersonalGroup(PSMember member) throws FailedPrecondition {
+    Preconditions.isIdentifiable(member, "member");
+    String service = Services.toCreate(member.getId().toString());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+
+    return connector;
+  }
+
+  /**
    * Returns the connector to create a project.
    *
    * @param project The project to create in PageSeeder
@@ -1344,7 +1357,7 @@ public final class PSHTTPConnectors {
     }
     // statuses
     if (statuses != null) {
-      connector.addParameter("statuses",  join(statuses));
+      connector.addParameter("statuses", join(statuses));
     }
     // paths
     if (paths != null) {
@@ -2141,7 +2154,9 @@ public final class PSHTTPConnectors {
   private static String join(List<String> strings) {
     StringBuilder builder = new StringBuilder();
     for (String s : strings) {
-      if (builder.length() != 0) { builder.append(','); }
+      if (builder.length() != 0) {
+        builder.append(',');
+      }
       builder.append(s);
     }
     return builder.toString();

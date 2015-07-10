@@ -1,6 +1,4 @@
-/*
- * Copyright (c) 2014 Allette Systems
- */
+/* Copyright (c) 2014 Allette Systems */
 package org.pageseeder.bridge.control;
 
 import java.util.List;
@@ -140,6 +138,9 @@ public final class GroupManager extends Sessionful {
    * Creates the group folder.
    *
    * @param group The group where the group folder should be created.
+   *
+   * @throws InvalidEntityException If the group is invalid.
+   * @throws APIException If an error occurs while communicating with PageSeeder.
    */
   public void createGroupFolder(PSGroup group, String url, boolean isPublic)
       throws InvalidEntityException, APIException {
@@ -152,6 +153,23 @@ public final class GroupManager extends Sessionful {
     if (folder != null) {
       folders.put(folder);
     }
+  }
+
+  /**
+   * Creates a personal group for specified member.
+   * 
+   * @param member The member needs to create a personal group.
+   *  
+   * @throws APIException If an error occurs while communicating with PageSeeder.
+   */
+  public void createPersonalGroup(PSMember member) throws APIException {
+    if (member == null) { throw new NullPointerException("member"); }
+    PSHTTPConnector connector = PSHTTPConnectors.createPersonalGroup(member).using(this._session);
+    PSGroup group = new PSGroup("member-" + member.getId() + "-home");
+    PSGroupHandler handler = new PSGroupHandler(group);
+    PSHTTPResponseInfo info = connector.post(handler);
+    if (info.getCode() >= 400) { throw new APIException("Unable to create personal group '" + group.getName() + "': " + info.getMessage()); }
+    cache.put(group);
   }
 
   /**
