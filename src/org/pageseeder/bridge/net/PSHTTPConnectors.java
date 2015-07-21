@@ -600,6 +600,9 @@ public final class PSHTTPConnectors {
     if (group.getOwner() != null) {
       connector.addParameter("owner", group.getOwner());
     }
+    if (group.getTemplate() != null) {
+      connector.addParameter("template", group.getTemplate());
+    }
     if (group.getDetailsType() != null) {
       connector.addParameter("detailstype", group.getDetailsType());
     }
@@ -720,7 +723,7 @@ public final class PSHTTPConnectors {
    * @param member    The Member
    * @param nameprefix The prefix of the group/project
    * @param maximum  The maximum groups return
-   * @param showGroup Whether to return groups 
+   * @param showGroup Whether to return groups
    * @param showAll Whether to return all projects/groups for server (Administrator only)
    *
    * @return Returns the list of projects and groups for the given member.
@@ -749,9 +752,9 @@ public final class PSHTTPConnectors {
    * @param member    The Member
    * @param nameprefix The prefix of the group/project
    * @param maximum  The maximum groups return
-   * @param showGroup Whether to return groups 
+   * @param showGroup Whether to return groups
    * @param showAll Whether to return all projects/groups for server (Administrator only)
-   * 
+   *
    * @return Returns the list of projects and groups for the given member.
    *
    * @throws FailedPrecondition If member is not identifiable.
@@ -2146,9 +2149,9 @@ public final class PSHTTPConnectors {
 
   /**
    * Utility method to join a list of strings using a comma.
-   * 
+   *
    * @param strings the list of strings
-   * 
+   *
    * @return the resulting string, never <code>null</code>
    */
   private static String join(List<String> strings) {
