@@ -20,8 +20,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.topologi.diffx.xml.XMLStringWriter;
-import com.topologi.diffx.xml.XMLWriter;
+import org.pageseeder.xmlwriter.XMLStringWriter;
+import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
  * Handles XML for services returning comments.

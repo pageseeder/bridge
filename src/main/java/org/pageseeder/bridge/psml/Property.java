@@ -9,8 +9,8 @@ package org.pageseeder.bridge.psml;
 
 import java.io.IOException;
 
-import com.topologi.diffx.xml.XMLWritable;
-import com.topologi.diffx.xml.XMLWriter;
+import org.pageseeder.xmlwriter.XMLWritable;
+import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
  * A single PSML property.

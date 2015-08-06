@@ -5,7 +5,7 @@ package org.pageseeder.bridge.model;
 
 import java.util.Date;
 
-import org.weborganic.berlioz.util.ISO8601;
+import org.pageseeder.berlioz.util.ISO8601;
 
 /**
  * Options for resetting the password.

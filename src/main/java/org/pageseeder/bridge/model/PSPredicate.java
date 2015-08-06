@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.weborganic.berlioz.util.ISO8601;
+import org.pageseeder.berlioz.util.ISO8601;
 
 /**
  * A predicate for a search.

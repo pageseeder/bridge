@@ -7,7 +7,7 @@
  */
 package org.pageseeder.bridge.psml;
 
-import com.topologi.diffx.xml.XMLWritable;
+import org.pageseeder.xmlwriter.XMLWritable;
 
 /**
  * General interface for all PSML fragments.

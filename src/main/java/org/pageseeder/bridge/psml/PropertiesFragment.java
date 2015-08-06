@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.topologi.diffx.xml.XMLWriter;
+import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
  * A PSML properties fragment.

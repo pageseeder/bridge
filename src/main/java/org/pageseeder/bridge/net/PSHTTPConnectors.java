@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.pageseeder.berlioz.util.ISO8601;
 import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.InvalidEntityException;
 import org.pageseeder.bridge.PSConfig;
@@ -39,7 +40,6 @@ import org.pageseeder.bridge.model.PSThreadStatus;
 import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.model.PasswordResetOptions;
 import org.pageseeder.bridge.psml.PSMLFragment;
-import org.weborganic.berlioz.util.ISO8601;
 
 /**
  * A utility class to provide predefined connectors to PageSeeder via HTTP.
@@ -731,7 +731,7 @@ public final class PSHTTPConnectors {
    * @throws FailedPrecondition If member is not identifiable.
    */
   public static PSHTTPConnector listProjectsTree(PSMember member, String nameprefix, int maximum, boolean showGroup, boolean showAll) throws FailedPrecondition {
-    if (maximum < 1) { throw new IllegalArgumentException("maximum less than 1."); }
+    if (maximum < 1) throw new IllegalArgumentException("maximum less than 1.");
     Preconditions.isIdentifiable(member, "member");
     String service = Services.toProjectsTree(member.getUsername());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
@@ -808,8 +808,8 @@ public final class PSHTTPConnectors {
       throws FailedPrecondition {
     Preconditions.isNotEmpty(resource.getLocation(), "location");
     Preconditions.isIdentifiable(project, "project");
-    if (resource.isBinary()) { throw new FailedPrecondition("Only text content resource can be put on the project"); }
-    if (resource.getContent() == null) { throw new FailedPrecondition("Resource has no content"); }
+    if (resource.isBinary()) throw new FailedPrecondition("Only text content resource can be put on the project");
+    if (resource.getContent() == null) throw new FailedPrecondition("Resource has no content");
     String service = Services.toPutResource(project.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("location", resource.getLocation());
@@ -1397,7 +1397,7 @@ public final class PSHTTPConnectors {
     if (context.uri() != null) {
       Preconditions.isIdentifiable(context.uri(), "uri");
       Preconditions.isNotNull(groups, "group");
-      if (groups.isEmpty()) { throw new FailedPrecondition("At least one group must be specified when attaching a comment to a URI"); }
+      if (groups.isEmpty()) throw new FailedPrecondition("At least one group must be specified when attaching a comment to a URI");
     }
 
     String service = Services.toCreateCommentService(creator, context);
@@ -1642,7 +1642,7 @@ public final class PSHTTPConnectors {
     if (context.uri() != null) {
       Preconditions.isIdentifiable(context.uri(), "uri");
       Preconditions.isNotNull(groups, "group");
-      if (groups.isEmpty()) { throw new FailedPrecondition("At least one group must be specified when attaching a comment to a URI"); }
+      if (groups.isEmpty()) throw new FailedPrecondition("At least one group must be specified when attaching a comment to a URI");
     }
 
     String service = Services.toEditComment(editor.getIdentifier(), comment.getIdentifier());
@@ -2092,7 +2092,7 @@ public final class PSHTTPConnectors {
    * @throws FailedPrecondition If the group name if not specified.
    */
   public static PSHTTPConnector find(PSPredicate predicate, List<PSGroup> groups) throws FailedPrecondition {
-    if (groups.isEmpty()) { throw new FailedPrecondition("At one group must be specified"); }
+    if (groups.isEmpty()) throw new FailedPrecondition("At one group must be specified");
     String servlet = Servlets.GENERIC_SEARCH;
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, servlet);
     if (predicate != null) {

@@ -34,7 +34,7 @@ import org.pageseeder.bridge.xml.PSFragmentHandler;
 import org.pageseeder.bridge.xml.UploadHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.topologi.diffx.xml.XMLWriter;
+import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
  * A manager for documents and folders (based on PageSeeder URIs).

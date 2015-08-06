@@ -10,17 +10,16 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pageseeder.berlioz.xml.XMLCopy;
 import org.pageseeder.bridge.psml.PSMLFragment;
 import org.pageseeder.bridge.psml.PropertiesFragment;
 import org.pageseeder.bridge.psml.Property;
 import org.pageseeder.bridge.psml.StandardFragment;
-import org.weborganic.berlioz.xml.XMLCopy;
+import org.pageseeder.xmlwriter.XMLStringWriter;
+import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import com.topologi.diffx.xml.XMLStringWriter;
-import com.topologi.diffx.xml.XMLWriter;
 
 /**
  * Handles for PSML fragments.

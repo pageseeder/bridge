@@ -36,12 +36,13 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.pageseeder.berlioz.xml.XMLCopy;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
+import org.pageseeder.xmlwriter.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.weborganic.berlioz.xml.XMLCopy;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -49,8 +50,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-
-import com.topologi.diffx.xml.XMLWriter;
 
 /**
  * Wraps an HTTP connection to PageSeeder.
@@ -197,7 +196,7 @@ public final class PSHTTPConnection {
       this.out = new DataOutputStream(this._connection.getOutputStream());
     }
     try {
-      if (this._method != Method.MULTIPART) { throw new IOException("Cannot add XML part unless connection type is set to Multipart"); }
+      if (this._method != Method.MULTIPART) throw new IOException("Cannot add XML part unless connection type is set to Multipart");
 
       // Start with boundary
       write(this._boundary, this.out);
@@ -241,7 +240,7 @@ public final class PSHTTPConnection {
       this.out = new DataOutputStream(this._connection.getOutputStream());
     }
     try {
-      if (this._method != Method.MULTIPART) { throw new IOException("Cannot add file part unless connection type is set to Multipart"); }
+      if (this._method != Method.MULTIPART) throw new IOException("Cannot add file part unless connection type is set to Multipart");
 
       // Start with boundary
       write(this._boundary, this.out);
@@ -289,7 +288,7 @@ public final class PSHTTPConnection {
       this.out = new DataOutputStream(this._connection.getOutputStream());
     }
     try {
-      if (this._method != Method.MULTIPART) { throw new IOException("Cannot add parameter connection type is set to Multipart"); }
+      if (this._method != Method.MULTIPART) throw new IOException("Cannot add parameter connection type is set to Multipart");
 
       // Start with boundary
       write(this._boundary, this.out);
@@ -647,7 +646,7 @@ public final class PSHTTPConnection {
    *         <code>false</code> otherwise.
    */
   private static boolean isXML(String contentType) {
-    if (contentType == null) { return false; }
+    if (contentType == null) return false;
     return "text/xml".equals(contentType)
         || "application/xml".equals(contentType)
         || contentType.endsWith("+xml");

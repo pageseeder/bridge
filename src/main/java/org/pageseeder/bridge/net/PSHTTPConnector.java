@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.topologi.diffx.xml.XMLWriter;
+import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
  * Represents a request made to the PageSeeder Server.

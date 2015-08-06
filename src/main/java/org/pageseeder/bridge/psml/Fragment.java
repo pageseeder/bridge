@@ -9,7 +9,7 @@ package org.pageseeder.bridge.psml;
 
 import java.io.IOException;
 
-import com.topologi.diffx.xml.XMLWriter;
+import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
  * A simple PSML fragment.
