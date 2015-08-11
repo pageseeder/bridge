@@ -1,9 +1,17 @@
 /*
- * This file is part of the PageSeeder Bridge API.
+ * Copyright 2015 Allette Systems (Australia)
+ * http://www.allette.com.au
  *
- * For licensing information please see the file license.txt included in the release.
- * A copy of this licence can also be found at
- *   http://www.opensource.org/licenses/artistic-license-2.0.php
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.pageseeder.bridge.model;
 
@@ -123,7 +131,7 @@ public class PSGroup implements PSEntity {
    * @return the name of the parent or <code>null</code> if the name is <code>null</code> or does not include a dash.
    */
   public String getParentName() {
-    if (this.name == null) { return null; }
+    if (this.name == null) return null;
     int dash = this.name.lastIndexOf('-');
     return dash > 0 ? this.name.substring(0, dash) : null;
   }
@@ -136,7 +144,7 @@ public class PSGroup implements PSEntity {
    * @return the short name or <code>null</code> if the name is <code>null</code>.
    */
   public String getShortName() {
-    if (this.name == null) { return null; }
+    if (this.name == null) return null;
     int dash = this.name.lastIndexOf('-');
     return dash > 0 ? this.name.substring(dash + 1) : this.name;
   }
@@ -245,7 +253,7 @@ public class PSGroup implements PSEntity {
   /**
    * Set the style owner for this group.
    * <p>The style owner is the template folder for customizations </p>
-   * 
+   *
    * @param template the style owner for this group.
    */
   public void setTempate(String template) {
@@ -284,15 +292,14 @@ public class PSGroup implements PSEntity {
    */
   @Override
   public EntityValidity checkValid() {
-    if (this.name != null && this.name.length() > 60) { return EntityValidity.GROUP_NAME_IS_TOO_LONG; }
-    if (this.owner != null && this.owner.length() > 100) { return EntityValidity.GROUP_OWNER_IS_TOO_LONG; }
-    if (this.description != null && this.description.length() > 250) { return EntityValidity.GROUP_DESCRIPTION_IS_TOO_LONG; }
-    if (this.detailsType != null && this.detailsType.length() > 150) { return EntityValidity.GROUP_DETAILTYPE_IS_TOO_LONG; }
-    if (this.template != null && this.template.length() > 60) { return EntityValidity.GROUP_TEMPLATE_IS_TOO_LONG; }
+    if (this.name != null && this.name.length() > 60) return EntityValidity.GROUP_NAME_IS_TOO_LONG;
+    if (this.owner != null && this.owner.length() > 100) return EntityValidity.GROUP_OWNER_IS_TOO_LONG;
+    if (this.description != null && this.description.length() > 250) return EntityValidity.GROUP_DESCRIPTION_IS_TOO_LONG;
+    if (this.detailsType != null && this.detailsType.length() > 150) return EntityValidity.GROUP_DETAILTYPE_IS_TOO_LONG;
+    if (this.template != null && this.template.length() > 60) return EntityValidity.GROUP_TEMPLATE_IS_TOO_LONG;
 
-    if (!isValidGroupName(this.name)) { return EntityValidity.GROUP_NAME_IS_INVALID;
+    if (!isValidGroupName(this.name)) return EntityValidity.GROUP_NAME_IS_INVALID;
     // TODO Constraints on possible roles and notifications?
-    }
 
     return EntityValidity.OK;
   }
@@ -334,7 +341,7 @@ public class PSGroup implements PSEntity {
    *         <code>false</code> otherwise.
    */
   public static boolean isValidGroupName(String name) {
-    if (name == null || name.length() == 0) { return false; }
+    if (name == null || name.length() == 0) return false;
     String pjname = name;
     int dash = name.indexOf('-');
     if (dash != -1) {

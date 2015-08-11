@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 Allette Systems (Australia)
+ * http://www.allette.com.au
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.pageseeder.bridge.control;
 
 import org.pageseeder.bridge.APIException;
@@ -36,11 +51,11 @@ public final class ThreadManager extends Sessionful {
 
   /**
    * Check the progress of a process thread defined by the status provided.
-   * 
+   *
    * @param status the current status
-   * 
+   *
    * @return the new status
-   * 
+   *
    * @throws APIException If connecting to PageSeeder failed
    */
   public PSThreadStatus checkProgress(PSThreadStatus status) throws APIException {
@@ -56,11 +71,11 @@ public final class ThreadManager extends Sessionful {
   /**
    * Wait for a thread to complete.
    * Delay is 2 seconds and timeout is 10 seconds.
-   * 
+   *
    * @param currentStatus the current status of the thread
-   * 
+   *
    * @return the final status
-   * 
+   *
    * @throws APIException if there was an error polling the thread or the timeout was triggered
    */
   public PSThreadStatus completeThread(PSThreadStatus currentStatus) throws APIException {
@@ -69,13 +84,13 @@ public final class ThreadManager extends Sessionful {
 
   /**
    * Wait for a thread to complete.
-   * 
+   *
    * @param currentStatus the current status of the thread
    * @param delay         the delay between each thread progress poll
    * @param timeout       the timeout for the thread completion
-   * 
+   *
    * @return the final status
-   * 
+   *
    * @throws APIException if there was an error polling the thread or the timeout was triggered
    */
   public PSThreadStatus completeThread(PSThreadStatus currentStatus, int delay, int timeout) throws APIException {
@@ -90,9 +105,7 @@ public final class ThreadManager extends Sessionful {
       } catch (InterruptedException ex) {
         throw new APIException("Interrupted thread when waiting for group rename thread to complete", ex);
       }
-      if (System.currentTimeMillis() - started > timeoutInMS) {
-        throw new APIException("Failed to rename group in "+ (timeoutInMS / 1000) + " seconds");
-      }
+      if (System.currentTimeMillis() - started > timeoutInMS) throw new APIException("Failed to rename group in "+ (timeoutInMS / 1000) + " seconds");
       status = checkProgress(status);
     }
     return status;

@@ -1,5 +1,17 @@
 /*
- * Copyright (c) 2014 Allette Systems
+ * Copyright 2015 Allette Systems (Australia)
+ * http://www.allette.com.au
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.pageseeder.bridge.control;
 
@@ -222,7 +234,7 @@ public final class CommentManager extends Sessionful {
    *
    * @param id     The ID of the comment.
    * @param member The member who is trying to access the comment.
-   * 
+   *
    * @return the matching comment (<code>null</code> if not found)
    */
   public PSComment getComment(long id, PSMember member) throws APIException {
@@ -232,8 +244,9 @@ public final class CommentManager extends Sessionful {
       PSCommentHandler handler = new PSCommentHandler();
       connector.get(handler);
       comment = handler.getComment();
-      if (comment != null)
+      if (comment != null) {
         cache.put(comment);
+      }
     }
     return comment;
   }
@@ -246,7 +259,7 @@ public final class CommentManager extends Sessionful {
    * @param title  The comments title (can be <code>null</code>)
    * @param type   The comments type (can be <code>null</code>)
    * @param paths  A list of paths of URIs the comments must be attached to (can be <code>null</code>)
-   * 
+   *
    * @return the list of comments found (never <code>null</code>)
    */
   public List<PSComment> getCommentsByFilter(PSMember member, PSGroup group,
@@ -263,7 +276,7 @@ public final class CommentManager extends Sessionful {
    * @param type      The comments type (can be <code>null</code>)
    * @param statuses  A list of statuses the comments may have (can be <code>null</code>)
    * @param labels    A list of labels the comments must have (can be <code>null</code>)
-   * 
+   *
    * @return the list of comments found (never <code>null</code>)
    */
   public List<PSComment> getCommentsByFilter(PSMember member, PSGroup group, String title,
@@ -273,7 +286,9 @@ public final class CommentManager extends Sessionful {
     connector.get(handler);
     List<PSComment> comments = handler.listComments();
     // store them for later TODO??
-    for (PSComment comment : comments) cache.put(comment);
+    for (PSComment comment : comments) {
+      cache.put(comment);
+    }
     return comments;
   }
 

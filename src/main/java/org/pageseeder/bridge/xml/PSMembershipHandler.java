@@ -1,9 +1,17 @@
 /*
- * This file is part of the PageSeeder Bridge API.
+ * Copyright 2015 Allette Systems (Australia)
+ * http://www.allette.com.au
  *
- * For licensing information please see the file license.txt included in the release.
- * A copy of this licence can also be found at
- *   http://www.opensource.org/licenses/artistic-license-2.0.php
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.pageseeder.bridge.xml;
 
@@ -88,24 +96,27 @@ public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
 
     } else if ("member".equals(localName)) {
       PSMember member = PSEntityFactory.toMember(atts, this.member);
-      if (this.current != null)
+      if (this.current != null) {
         this.current.setMember(member);
-      else
+      } else {
         this.member = member;
+      }
 
     } else if ("group".equals(localName)) {
       PSGroup group = PSEntityFactory.toGroup(atts, this.group);
-      if (this.current != null)
+      if (this.current != null) {
         this.current.setGroup(group);
-      else
+      } else {
         this.group = group;
+      }
 
     } else if ("project".equals(localName)) {
       PSProject project = PSEntityFactory.toProject(atts, this.group);
-      if (this.current != null)
+      if (this.current != null) {
         this.current.setGroup(project);
-      else
+      } else {
         this.group = project;
+      }
 
     } else if ("details".equals(localName)) {
       PSDetails details = new PSDetails();
@@ -127,10 +138,12 @@ public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if ("membership".equals(localName)) {
       // Ensure that the group/member is added
-      if (this.current.getGroup() == null)
+      if (this.current.getGroup() == null) {
         this.current.setGroup(this.group);
-      if (this.current.getMember() == null)
+      }
+      if (this.current.getMember() == null) {
         this.current.setMember(this.member);
+      }
       this._items.add(this.current);
       this.current = null;
     } else if ("field".equals(localName)) {

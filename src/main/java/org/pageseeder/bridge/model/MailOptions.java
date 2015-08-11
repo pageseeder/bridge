@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 Allette Systems (Australia)
+ * http://www.allette.com.au
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.pageseeder.bridge.model;
 
 import java.util.ArrayList;
@@ -192,13 +207,12 @@ public final class MailOptions {
    * @param email the email address to add to the list of recipient.
    */
   public void addRecipients(String email) {
-    if (this.recipients == null)
+    if (this.recipients == null) {
       this.recipients = new ArrayList<String>();
+    }
     if (Rules.isEmail(email)) {
       this.recipients.add(email);
-    } else {
-      throw new IllegalArgumentException("Recipient is not a valid email address:"+email);
-    }
+    } else throw new IllegalArgumentException("Recipient is not a valid email address:"+email);
   }
 
   /**
@@ -229,8 +243,9 @@ public final class MailOptions {
    * @param url the URL to the attachment to add.
    */
   public void addAttachment(String url) {
-    if (this.attachments == null)
+    if (this.attachments == null) {
       this.attachments = new ArrayList<String>();
+    }
     // TODO check URL
     this.attachments.add(url);
   }
@@ -245,7 +260,9 @@ public final class MailOptions {
   private static String asString(List<String> list) {
     StringBuilder s = new StringBuilder();
     for (String item : list) {
-      if (s.length() > 0) s.append(',');
+      if (s.length() > 0) {
+        s.append(',');
+      }
       s.append(item);
     }
     return s.toString();

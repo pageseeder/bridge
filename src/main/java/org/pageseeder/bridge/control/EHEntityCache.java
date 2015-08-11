@@ -1,14 +1,27 @@
 /*
- * This file is part of the PageSeeder Bridge API.
+ * Copyright 2015 Allette Systems (Australia)
+ * http://www.allette.com.au
  *
- * For licensing information please see the file license.txt included in the release.
- * A copy of this licence can also be found at
- *   http://www.opensource.org/licenses/artistic-license-2.0.php
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.pageseeder.bridge.control;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.pageseeder.bridge.PSEntity;
+import org.pageseeder.bridge.PSEntityCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -21,11 +34,6 @@ import net.sf.ehcache.search.Attribute;
 import net.sf.ehcache.search.Query;
 import net.sf.ehcache.search.Result;
 import net.sf.ehcache.search.Results;
-
-import org.pageseeder.bridge.PSEntity;
-import org.pageseeder.bridge.PSEntityCache;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A cache for a PageSeeder entity backed by EHCache.
@@ -176,11 +184,8 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
     if (key == null)
       return null;
     Element element = this._cache.get(key);
-    if (element != null) {
-      return element.getVersion();
-    } else {
-      return null;
-    }
+    if (element != null) return element.getVersion();
+    else return null;
   }
 
   /**
@@ -233,8 +238,9 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @return A new cache wrapper instance.
    */
   protected static synchronized <E extends PSEntity> PSEntityCache<E> newInstance(String name, String... keys) {
-    if (manager == null)
+    if (manager == null) {
       manager = CacheManager.create();
+    }
     Ehcache cache = manager.getEhcache(name);
     if (cache == null) {
       CacheConfiguration config = new CacheConfiguration(name, 1000).eternal(true);

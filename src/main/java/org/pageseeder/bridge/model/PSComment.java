@@ -1,9 +1,17 @@
 /*
- * This file is part of the PageSeeder Bridge API.
+ * Copyright 2015 Allette Systems (Australia)
+ * http://www.allette.com.au
  *
- * For licensing information please see the file license.txt included in the release.
- * A copy of this licence can also be found at
- *   http://www.opensource.org/licenses/artistic-license-2.0.php
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.pageseeder.bridge.model;
 
@@ -156,7 +164,9 @@ public final class PSComment implements PSEntity {
    * @return the list of attachments
    */
   public List<Attachment> getAttachments() {
-    if (this.attachments == null) this.attachments = new ArrayList<Attachment>();
+    if (this.attachments == null) {
+      this.attachments = new ArrayList<Attachment>();
+    }
     return this.attachments;
   }
 
@@ -166,7 +176,9 @@ public final class PSComment implements PSEntity {
    * @param document The document to attach to the comment.
    */
   public void addAttachment(PSDocument document) {
-    if (this.attachments == null) this.attachments = new ArrayList<Attachment>();
+    if (this.attachments == null) {
+      this.attachments = new ArrayList<Attachment>();
+    }
     this.attachments.add(new Attachment(document));
   }
 
@@ -177,7 +189,9 @@ public final class PSComment implements PSEntity {
    * @param fragment The fragment ID of where the comment is attached (<code>null</code> for default fragment)
    */
   public void addAttachment(PSDocument document, String fragment) {
-    if (this.attachments == null) this.attachments = new ArrayList<Attachment>();
+    if (this.attachments == null) {
+      this.attachments = new ArrayList<Attachment>();
+    }
     this.attachments.add(new Attachment(document, fragment));
   }
 
@@ -211,7 +225,9 @@ public final class PSComment implements PSEntity {
   public String getLabelsAsString() {
     StringBuilder s = new StringBuilder();
     for (String label : this.labels) {
-      if (s.length() > 0) s.append(',');
+      if (s.length() > 0) {
+        s.append(',');
+      }
       s.append(label);
     }
     return s.toString();
@@ -249,7 +265,9 @@ public final class PSComment implements PSEntity {
    * @return the properties
    */
   public Map<String, String> getProperties() {
-    if (this.properties == null) this.properties = new HashMap<String, String>();
+    if (this.properties == null) {
+      this.properties = new HashMap<String, String>();
+    }
     return this.properties;
   }
 
@@ -260,7 +278,9 @@ public final class PSComment implements PSEntity {
     if (this.properties == null) return "";
     StringBuilder s = new StringBuilder();
     for (Entry<String, String> p : this.properties.entrySet()) {
-      if (s.length() > 0) s.append('|');
+      if (s.length() > 0) {
+        s.append('|');
+      }
       // TODO handle escaped pipes
       s.append(p.getKey()).append('=').append(p.getValue());
     }
@@ -287,13 +307,15 @@ public final class PSComment implements PSEntity {
         if (eq > 0) {
           String name = property.substring(0, eq);
           String value = property.substring(eq + 1);
-          if ("label".equals(name) == false)
+          if ("label".equals(name) == false) {
             p.put(name, value);
+          }
         }
         //Otherwise, just use the name without any value
         else if (eq == -1 && !property.isEmpty()) {
-          if ("label".equals(property) == false)
+          if ("label".equals(property) == false) {
             p.put(property, "");
+          }
         }
       }
     }
@@ -484,7 +506,7 @@ public final class PSComment implements PSEntity {
 
   @Override
   public String toString() {
-    return "C("+this.getId()+":"+this.getTitle()+")";
+    return "C("+getId()+":"+getTitle()+")";
   }
 
   // Inner classes

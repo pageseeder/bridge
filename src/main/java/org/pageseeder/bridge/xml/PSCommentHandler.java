@@ -1,9 +1,17 @@
 /*
- * This file is part of the PageSeeder Bridge API.
+ * Copyright 2015 Allette Systems (Australia)
+ * http://www.allette.com.au
  *
- * For licensing information please see the file license.txt included in the release.
- * A copy of this licence can also be found at
- *   http://www.opensource.org/licenses/artistic-license-2.0.php
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.pageseeder.bridge.xml;
 
@@ -16,12 +24,11 @@ import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.util.Rules;
+import org.pageseeder.xmlwriter.XMLStringWriter;
+import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import org.pageseeder.xmlwriter.XMLStringWriter;
-import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
  * Handles XML for services returning comments.
@@ -140,7 +147,9 @@ public final class PSCommentHandler extends DefaultHandler {
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if ("comment".equals(localName)) {
-      if (this.comment != null) this.comments.add(this.comment);
+      if (this.comment != null) {
+        this.comments.add(this.comment);
+      }
       this.comment = null;
 
     } else if ("title".equals(localName)) {
