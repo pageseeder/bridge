@@ -16,7 +16,7 @@ public final class SubscriptionHandlerTest {
 
   @Test
   public void testParse1() throws Exception {
-    File f = new File("test/data/org.pageseeder.bridge.xml/subscription-form1.xml");
+    File f = new File("src/test/resource/data/org.pageseeder.bridge.xml/subscription-form1.xml");
     SubscriptionFormHandler handler = new SubscriptionFormHandler();
     parse(f, handler);
 
@@ -43,7 +43,7 @@ public final class SubscriptionHandlerTest {
 
   @Test
   public void testParse2() throws Exception {
-    File f = new File("test/data/org.pageseeder.bridge.xml/subscription-form2.xml");
+    File f = new File("src/test/resource/data/org.pageseeder.bridge.xml/subscription-form2.xml");
     SubscriptionFormHandler handler = new SubscriptionFormHandler();
     parse(f, handler);
 
