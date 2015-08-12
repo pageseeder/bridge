@@ -18,6 +18,7 @@ package org.pageseeder.bridge.model;
 import java.util.Scanner;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSConfig;
@@ -26,7 +27,7 @@ import org.pageseeder.bridge.control.MemberManager;
 
 public final class MemberManagerTest {
 
-  @Test
+  @Test @Ignore("Requires user interaction")
   public void testLogin_Success() throws APIException {
     PSConfig config = PSConfig.newInstance("https://ps.allette.com.au", "http://ps.allette.com.au:8282");
     PSConfig.setDefault(config);
@@ -38,7 +39,7 @@ public final class MemberManagerTest {
     scanner.close();
     PSSession session = MemberManager.login(username, password);
     Assert.assertNotNull(session);
-    System.out.print(session);
+    System.out.println(session);
   }
 
   @Test
