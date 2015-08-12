@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.pageseeder.bridge</groupId>
   <artifactId>pso-bridge</artifactId>
-  <version>0.4.0</version>
+  <version>0.4.1-SNAPSHOT</version>
   <name>PageSeeder Bridge</name>
   <description>Java API to connect to a PageSeeder server</description>
   <url>https://www.pageseeder.org/projects/bridge.html</url>
@@ -27,7 +27,6 @@
     <connection>scm:git:git@github.com:pageseeder/bridge.git</connection>
     <developerConnection>scm:git:git@github.com:pageseeder/bridge.git</developerConnection>
     <url>git@github.com:pageseeder/bridge.git</url>
-    <tag>pso-bridge-0.4.0</tag>
   </scm>
 
   <organization>
