@@ -63,13 +63,21 @@ public final class UploadHandler extends DefaultHandler {
       // record the character data of the elements below
       if ("uri".equals(localName)) {
         this.inURI = true;
+        this.id = Long.valueOf(attributes.getValue("id") != null ? attributes.getValue("id") : null);
+        this.scheme = attributes.getValue("scheme");
+        this.host = attributes.getValue("host");
+        this.port = Integer.parseInt(attributes.getValue("port") != null ? attributes.getValue("port") : null);
+        this.path = attributes.getValue("path");
+        this.title = attributes.getValue("title");
+        this.mediatype = attributes.getValue("mediatype");
+      // for backward compatibility
       } else if (this.inURI && "id".equals(localName)
        || "type".equals(localName)
        || "scheme".equals(localName)
        || "host".equals(localName)
        || "port".equals(localName)
        || "path".equals(localName)
-       || "displaytitle".equals(localName)) {
+       || "usertitle".equals(localName)) {
         this.buffer.setLength(0);
         this.record = true;
       }
@@ -77,6 +85,7 @@ public final class UploadHandler extends DefaultHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
+      // for backward compatibility
       if (this.inURI) {
         if ("id".equals(localName)) {
           this.id = Long.valueOf(this.buffer.toString());
@@ -96,7 +105,7 @@ public final class UploadHandler extends DefaultHandler {
         } else if ("path".equals(localName)) {
           this.path = this.buffer.toString();
 
-        } else if ("displaytitle".equals(localName)) {
+        } else if ("usertitle".equals(localName)) {
           this.title = this.buffer.toString();
 
         } else if ("uri".equals(localName)) {
