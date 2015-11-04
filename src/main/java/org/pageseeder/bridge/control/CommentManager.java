@@ -185,7 +185,7 @@ public final class CommentManager extends Sessionful {
   public boolean save(PSComment comment, PSMember editor, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
     PSHTTPConnector connector = PSHTTPConnectors.editComment(comment, editor, notify, groups).using(this._session);
     PSCommentHandler handler = new PSCommentHandler(comment);
-    PSHTTPResponseInfo info = connector.post(handler);
+    PSHTTPResponseInfo info = connector.patch(handler);
     if (info.getStatus() != Status.SUCCESSFUL) return false;
     cache.put(comment);
     return true;

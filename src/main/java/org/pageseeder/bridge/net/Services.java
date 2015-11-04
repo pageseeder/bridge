@@ -1111,7 +1111,7 @@ public final class Services {
    * @return <code>/members/[member]/comments/[comment]/archive</code>.
    */
   public static String toEditComment(String member, String comment) {
-    return "/members/" + member + "/comments/" + comment + "/edit";
+    return "/members/" + member + "/comments/" + comment;
   }
 
   /**

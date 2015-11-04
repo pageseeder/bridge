@@ -57,7 +57,7 @@
     <dependency>
       <groupId>org.pageseeder.berlioz</groupId>
       <artifactId>pso-berlioz</artifactId>
-      <version>0.10.0</version>
+      <version>0.10.2</version>
     </dependency>
 
     <dependency>

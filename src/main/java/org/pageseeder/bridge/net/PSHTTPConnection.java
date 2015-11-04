@@ -92,7 +92,10 @@ public final class PSHTTPConnection {
     DELETE,
 
     /** A Form-Multipart request via POST. */
-    MULTIPART
+    MULTIPART,
+
+    /** For request using the HTTP PATCH method. */
+    PATCH
 
   };
 
@@ -679,11 +682,17 @@ public final class PSHTTPConnection {
    */
   protected static PSHTTPConnection connect(PSHTTPResource resource, Method type, PSCredentials credentials)
       throws IOException {
-    URL url = resource.toURL(credentials, type == Method.POST ? false : true);
+    URL url = resource.toURL(credentials, (type == Method.POST || type == Method.PATCH) ? false : true);
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setDoOutput(true);
     connection.setInstanceFollowRedirects(true);
-    connection.setRequestMethod(type == Method.MULTIPART ? "POST" : type.name());
+    // tunnel PATCH through POST
+    if (type == Method.PATCH) {
+      connection.setRequestMethod("POST");
+      connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+    } else {
+      connection.setRequestMethod(type == Method.MULTIPART ? "POST" : type.name());       
+    }   
     connection.setDefaultUseCaches(false);
     connection.setRequestProperty("X-Requester", "PS-Bridge-" + API_VERSION);
     if (credentials instanceof UsernamePassword) {
@@ -695,13 +704,13 @@ public final class PSHTTPConnection {
     PSHTTPConnection instance = null;
 
     // POST using "application/x-www-form-urlencoded"
-    if (type == Method.POST) {
+    if (type == Method.POST || type == Method.PATCH) {
       String parameters = resource.getPOSTFormURLEncodedContent();
       connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
       connection.setRequestProperty("Content-Length", Integer.toString(parameters.length()));
       connection.setDoInput(true);
       writePOSTData(connection, parameters);
-      instance = new PSHTTPConnection(connection, resource, type, session, null);
+      instance = new PSHTTPConnection(connection, resource, Method.POST, session, null);
 
       // POST using "multipart/form-data"
     } else if (type == Method.MULTIPART) {

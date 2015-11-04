@@ -270,6 +270,85 @@ public final class PSHTTPConnector {
   }
 
   /**
+   * Connect to PageSeeder via PATCH and discard the output.
+   *
+   * <p>Error messages will be captured.
+   *
+   * @throws APIException If an error occurs when trying to write the XML.
+   *
+   * @return The PageSeeder HTTP response metadata
+   */
+  public PSHTTPResponseInfo patch() throws APIException {
+    return handle(Method.PATCH, (DefaultHandler)null);
+  }
+
+  /**
+   * Connect to PageSeeder and fetch the XML using the PATCH method to be parsed by a handler.
+   *
+   * @param handler the handler for the XML returned by PageSeeder
+   *
+   * @throws APIException Wrap any error while communicating with PageSeeder or parsing the output
+   *
+   * @return The PageSeeder HTTP response metadata
+   */
+  public PSHTTPResponseInfo patch(DefaultHandler handler) throws APIException {
+    return handle(Method.PATCH, handler);
+  }
+
+  /**
+   * Connect to PageSeeder via PATCH and copy the output onto the specified XML writer.
+   *
+   * @param xml the XML to copy the output from PageSeeder
+   *
+   * @throws APIException Wrap any error while communicating with PageSeeder or writing the XML.
+   *
+   * @return The PageSeeder HTTP response metadata
+   */
+  public PSHTTPResponseInfo patch(XMLWriter xml) throws APIException {
+    return copy(Method.PATCH, xml);
+  }
+
+  /**
+   * Connect to PageSeeder via PATCH and transform the XML output using the specified templates.
+   *
+   * <p>Templates can be specified to transform the XML returned from PageSeeder. In that case,
+   * the XML written out is the result of the transformation.
+   *
+   * <p>If the templates are omitted, the XML writer received a copy of the output from PageSeeder.
+   *
+   * @param xml       The result of the transformation or source XML if no templates
+   * @param templates A set of templates to process the XML
+   *
+   * @throws APIException Wrap any error while communicating with PageSeeder, writing or transforming the XML.
+   *
+   * @return The PageSeeder HTTP response metadata
+   */
+  public PSHTTPResponseInfo patch(XMLWriter xml, Templates templates) throws APIException {
+    return transform(Method.PATCH, xml, templates, null);
+  }
+
+  /**
+   * Connect to PageSeeder via PATCH and transform the XML output using the specified templates.
+   *
+   * <p>Templates can be specified to transform the XML returned from PageSeeder. In that case,
+   * the XML written out is the result of the transformation.
+   *
+   * <p>If the templates are omitted, the XML writer received a copy of the output from PageSeeder.
+   *
+   * @param xml        The result of the transformation or source XML if no templates
+   * @param templates  A set of templates to process the XML
+   * @param parameters Parameters to send to the XSLT transformer (optional)
+   *
+   * @throws APIException Wrap any error while communicating with PageSeeder, writing or transforming the XML.
+   *
+   * @return The PageSeeder HTTP response metadata
+   */
+  public PSHTTPResponseInfo patch(XMLWriter xml, Templates templates, Map<String, String> parameters)
+      throws APIException {
+    return transform(Method.PATCH, xml, templates, parameters);
+  }
+
+  /**
    * Connect to PageSeeder via POST and discard the output.
    *
    * <p>Error messages will be captured.
