@@ -95,6 +95,15 @@ public final class PSHTTPConnector {
   }
 
   /**
+   * Factory method to create a new connector for service.
+   *
+   * @param service The service subpath (after the /ps/service)
+   */
+  public static PSHTTPConnector newService(String service) {
+    return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+  }
+
+  /**
    * Sets the session for this request as a chainable method.
    *
    * @param session the user for this request.
