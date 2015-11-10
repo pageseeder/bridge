@@ -340,13 +340,28 @@ public final class Services {
   }
 
   /**
-   * Returns the URL to edit a subgroup.
+   * Returns the URL to a subgroup.
    *
    * @param group the group name or id.
    * @param sub   the name or id of the subgroup
    *
    * @return <code>/groups/[group]/subgroups/[sub]/edit</code>.
    */
+  public static String toSubGroup(String group, String sub) {
+    return "/groups/" + group + "/subgroups/" + sub;
+  }
+
+  /**
+   * Returns the URL to edit a subgroup.
+   * 
+   * @deprecated Use {@link #toSubGroup(String, String)} with PATCH
+   *
+   * @param group the group name or id.
+   * @param sub   the name or id of the subgroup
+   *
+   * @return <code>/groups/[group]/subgroups/[sub]/edit</code>.
+   */
+  @Deprecated
   public static String toEditSubGroup(String group, String sub) {
     return "/groups/" + group + "/subgroups/" + sub + "/edit";
   }
@@ -391,17 +406,32 @@ public final class Services {
    * @return <code>/members/[member]/projects/create</code>.
    */
   public static String toCreateProject(String member) {
-    return "/members/" + member + "/projects/create";
+    return "/members/" + member + "/projects";
+  }
+
+  /**
+   * Returns the URL to a project.
+   *
+   * @param member  the member username or id
+   * @param project the project name or id
+   *
+   * @return <code>/members/[member]/projects/[project]</code>.
+   */
+  public static String toProject(String member, String project) {
+    return "/members/" + member + "/projects/" + project;
   }
 
   /**
    * Returns the URL to edit a project.
+   * 
+   * @deprecated Use {@link #toProject(String, String)} with PATCH
    *
    * @param member  the member username or id
    * @param project the project name or id
    *
    * @return <code>/members/[member]/projects/[project]/edit</code>.
    */
+  @Deprecated
   public static String toEditProject(String member, String project) {
     return "/members/" + member + "/projects/" + project + "/edit";
   }
@@ -441,19 +471,6 @@ public final class Services {
     return "/members/" + member + "/projectlist";
   }
 
-  /**
-   * Returns the URL to return the tree of projects a member belongs to.
-   *
-   * @deprecated Use {@link #toListProjects(String)} or {@link #toProjectsTree(String)} instead.
-   *
-   * @param member  the member username or id
-   *
-   * @return <code>/members/[member]/projects</code>.
-   */
-  @Deprecated
-  public static String toProjects(String member) {
-    return "/members/" + member + "/projects";
-  }
 
   /**
    * Returns the URL to return the results for a projects/groups search.
@@ -609,7 +626,7 @@ public final class Services {
 
   // Group Services
   // ----------------------------------------------------------------------------------------------
-
+  
   /**
    * Returns the URL to create a group.
    *
@@ -618,17 +635,32 @@ public final class Services {
    * @return <code>/members/[member]/groups/create</code>.
    */
   public static String toCreateGroup(String member) {
-    return "/members/" + member + "/groups/create";
+    return "/members/" + member + "/groups";
   }
 
   /**
-   * Returns the URL to edit a group.
+   * Returns the URL to a group.
    *
    * @param member the member name or id
    * @param group  the group name or id
    *
    * @return <code>/members/[member]/groups/[group]</code>.
    */
+  public static String toGroup(String member, String group) {
+    return "/members/" + member + "/groups/" + group;
+  }
+
+  /**
+   * Returns the URL to edit a group.
+   *
+   * @deprecated Use {@link #toGroup(String, String)} with PATCH
+   *
+   * @param member the member name or id
+   * @param group  the group name or id
+   *
+   * @return <code>/members/[member]/groups/[group]</code>.
+   */
+  @Deprecated
   public static String toEditGroup(String member, String group) {
     return "/members/" + member + "/groups/" + group + "/edit";
   }
@@ -1122,6 +1154,7 @@ public final class Services {
    *
    * @return <code>/members/[member]/comments/[comment]/edit</code>.
    */
+  @Deprecated
   public static String toEditComment(String member, String comment) {
     return "/members/" + member + "/comments/" + comment + "/edit";
   }
@@ -1257,28 +1290,24 @@ public final class Services {
 
   /**
    * Returns the URL to create a resource.
-   * 
-   * @deprecated Use {@link #toResource(String)} with POST
    *
    * @param project the project name or id where the resource should be put.
    *
    * @return <code>/groups/[project]/resources/create</code>.
    */
   public static String toCreateResource(String project) {
-    return "/groups/" + project + "/resources/create";
+    return "/groups/" + project + "/resources";
   }
 
   /**
    * Returns the URL to put a resource.
-   * 
-   * @deprecated Use {@link #toResource(String)} with GET
    *
    * @param project the project name or id where the resource should be put.
    *
    * @return <code>/groups/[project]/resources/get</code>.
    */
   public static String toGetResource(String project) {
-    return "/groups/" + project + "/resources/get";
+    return "/groups/" + project + "/resources";
   }
 
   /**
@@ -1290,6 +1319,7 @@ public final class Services {
    *
    * @return <code>/groups/[project]/resources</code>.
    */
+  @Deprecated
   public static String toPutResource(String project) {
     return "/groups/" + project + "/resources/put";
   }
@@ -1303,6 +1333,7 @@ public final class Services {
    *
    * @return <code>/groups/[project]/resources/delete</code>.
    */
+  @Deprecated
   public static String toDeleteResource(String project) {
     return "/groups/" + project + "/resources/delete";
   }
