@@ -1101,15 +1101,29 @@ public final class Services {
   // /uris/{uri:uri}/fragments/{fragment}/comments
 
   /**
-   * Returns the URL to edit a comment.
+   * Returns the URL to a comment.
    *
    * @param member  the username or ID of the member
    * @param comment the xlink ID of the comment to archive
    *
-   * @return <code>/members/[member]/comments/[comment]/archive</code>.
+   * @return <code>/members/[member]/comments/[comment]</code>.
+   */
+  public static String toComment(String member, String comment) {
+    return "/members/" + member + "/comments/" + comment;
+  }
+  
+  /**
+   * Returns the URL to edit a comment.
+   * 
+   * @deprecated Use {@link # toComment(String, String)} with PATCH
+   *
+   * @param member  the username or ID of the member
+   * @param comment the xlink ID of the comment to archive
+   *
+   * @return <code>/members/[member]/comments/[comment]/edit</code>.
    */
   public static String toEditComment(String member, String comment) {
-    return "/members/" + member + "/comments/" + comment;
+    return "/members/" + member + "/comments/" + comment + "/edit";
   }
 
   /**

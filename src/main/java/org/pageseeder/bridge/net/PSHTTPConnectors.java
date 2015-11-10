@@ -1653,7 +1653,7 @@ public final class PSHTTPConnectors {
       if (groups.isEmpty()) throw new FailedPrecondition("At least one group must be specified when attaching a comment to a URI");
     }
 
-    String service = Services.toEditComment(editor.getIdentifier(), comment.getIdentifier());
+    String service = Services.toComment(editor.getIdentifier(), comment.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
 
     // Core parameters
