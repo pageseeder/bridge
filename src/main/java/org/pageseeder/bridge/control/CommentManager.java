@@ -252,7 +252,7 @@ public final class CommentManager extends Sessionful {
   }
 
   /**
-   * Get a list of comments using filters.
+   * Find comments using criteria.
    *
    * @param member The member who is trying to access the comments.
    * @param group  The context group
@@ -262,26 +262,26 @@ public final class CommentManager extends Sessionful {
    *
    * @return the list of comments found (never <code>null</code>)
    */
-  public List<PSComment> getCommentsByFilter(PSMember member, PSGroup group,
+  public List<PSComment> findComments(PSMember member, PSGroup group,
       String title, String type, List<String> paths) throws APIException {
-    return getCommentsByFilter(member, group, title, type, null, paths);
+    return findComments(member, group, title, type, null, paths);
   }
 
   /**
-   * Get a list of comments using filters.
+   * Find comments using criteria.
    *
    * @param member    The member who is trying to access the comments.
    * @param group     The context group
    * @param title     The comments title (can be <code>null</code>)
    * @param type      The comments type (can be <code>null</code>)
-   * @param statuses  A list of statuses the comments may have (can be <code>null</code>)
-   * @param labels    A list of labels the comments must have (can be <code>null</code>)
+   * @param statuses  A list of statuses the comments must have (can be <code>null</code>)
+   * @param paths     A list of paths of URIs the comments must be attached to (can be <code>null</code>)
    *
    * @return the list of comments found (never <code>null</code>)
    */
-  public List<PSComment> getCommentsByFilter(PSMember member, PSGroup group, String title,
+  public List<PSComment> findComments(PSMember member, PSGroup group, String title,
       String type, List<String> statuses, List<String> paths) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.getCommentsByFilter(member, group, title, type, statuses, paths).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.findComments(member, group, title, type, statuses, paths).using(this._session);
     PSCommentHandler handler = new PSCommentHandler();
     connector.get(handler);
     List<PSComment> comments = handler.listComments();

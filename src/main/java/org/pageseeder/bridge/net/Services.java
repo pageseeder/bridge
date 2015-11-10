@@ -982,9 +982,9 @@ public final class Services {
   // Task Services
   // ----------------------------------------------------------------------------------------------
 
-  // /members/{member:member}/tasks/filter
+  // /members/{member:member}/tasks/find
 
-  // /tasks/filter
+  // /tasks/find
 
   // /members/{member:member}/tasks/{task}
 
@@ -1051,15 +1051,13 @@ public final class Services {
 
   // /discussions/{discussion}
 
-  // /members/{member:member}/comments/filter
-
   /**
-   * Returns the URL to load comments by filter.
+   * Returns the URL to find comments.
    *
-   * @return <code>/member/[userid]/comments/filter</code>.
+   * @return <code>/member/[userid]/comments/find</code>.
    */
-  public static String toGetCommentsByFilter(String member) {
-    return "/members/" + member + "/comments/filter";
+  public static String toFindComments(String member) {
+    return "/members/" + member + "/comments/find";
   }
 
   // /uris/{uri:uri}/discussions
@@ -1233,7 +1231,7 @@ public final class Services {
   // ----------------------------------------------------------------------------------------------
 
   /**
-   * Returns the URL to get a resource.
+   * Returns the URL to a resource.
    *
    * @param project the project name or id where the resource should be put.
    *
@@ -1245,6 +1243,8 @@ public final class Services {
 
   /**
    * Returns the URL to create a resource.
+   * 
+   * @deprecated Use {@link #toResource(String)} with POST
    *
    * @param project the project name or id where the resource should be put.
    *
@@ -1256,10 +1256,12 @@ public final class Services {
 
   /**
    * Returns the URL to put a resource.
+   * 
+   * @deprecated Use {@link #toResource(String)} with GET
    *
    * @param project the project name or id where the resource should be put.
    *
-   * @return <code>/groups/[project]/resources/put</code>.
+   * @return <code>/groups/[project]/resources/get</code>.
    */
   public static String toGetResource(String project) {
     return "/groups/" + project + "/resources/get";
@@ -1267,10 +1269,12 @@ public final class Services {
 
   /**
    * Returns the URL to put a resource.
+   * 
+   * @deprecated Use {@link #toResource(String)} with PUT
    *
    * @param project the project name or id where the resource should be put.
    *
-   * @return <code>/groups/[project]/resources/put</code>.
+   * @return <code>/groups/[project]/resources</code>.
    */
   public static String toPutResource(String project) {
     return "/groups/" + project + "/resources/put";
@@ -1278,10 +1282,12 @@ public final class Services {
 
   /**
    * Returns the URL to delete a resource.
+   * 
+   * @deprecated Use {@link #toResource(String)} with DELETE
    *
    * @param project the project name or id where the resource should be put.
    *
-   * @return <code>/groups/[project]/resources/put</code>.
+   * @return <code>/groups/[project]/resources/delete</code>.
    */
   public static String toDeleteResource(String project) {
     return "/groups/" + project + "/resources/delete";

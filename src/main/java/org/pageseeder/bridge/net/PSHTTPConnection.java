@@ -705,14 +705,14 @@ public final class PSHTTPConnection {
 
     // POST using "application/x-www-form-urlencoded"
     if (type == Method.POST || type == Method.PATCH) {
-      String parameters = resource.getPOSTFormURLEncodedContent();
+      byte[] parameters = resource.getPOSTFormURLEncodedContent().getBytes("utf-8");
       connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-      connection.setRequestProperty("Content-Length", Integer.toString(parameters.length()));
+      connection.setRequestProperty("Content-Length", Integer.toString(parameters.length));
       connection.setDoInput(true);
-      writePOSTData(connection, parameters);
+      writeData(connection, parameters);
       instance = new PSHTTPConnection(connection, resource, Method.POST, session, null);
 
-      // POST using "multipart/form-data"
+    // POST using "multipart/form-data"
     } else if (type == Method.MULTIPART) {
       String boundary = "--------------------" + Long.toString(Math.abs(random.nextLong()), 36);
       connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
@@ -724,8 +724,20 @@ public final class PSHTTPConnection {
           instance.addParameterPart(p.getKey(), p.getValue());
         }
       }
+    
+    // PUT using "text/plain"
+    } else if (type == Method.PUT) {
+      String body = resource.body();
+      if (body != null) {
+        byte[] data = body.getBytes("utf-8");
+        connection.setRequestProperty("Content-Type", "text/plain; charset=UTF-8");
+        connection.setRequestProperty("Content-Length", Integer.toString(body.length()));
+        connection.setDoInput(true);
+        writeData(connection, data);
+      }
+      instance = new PSHTTPConnection(connection, resource, type, session, null);
 
-      // GET, PUT and DELETE
+    // GET and DELETE
     } else {
       instance = new PSHTTPConnection(connection, resource, type, session, null);
     }
@@ -734,26 +746,26 @@ public final class PSHTTPConnection {
   }
 
   /**
-   * Write the POST content.
+   * Write the request body content.
    *
    * @param connection The URL connection
    * @param data       The data to write
    *
    * @throws IOException Should any error occur while writing.
    */
-  private static void writePOSTData(HttpURLConnection connection, String data) throws IOException {
+  private static void writeData(HttpURLConnection connection, byte[] data) throws IOException {
     OutputStream post = null;
     try {
       post = connection.getOutputStream();
-      post.write(data.getBytes(UTF8));
+      post.write(data);
       post.flush();
     } catch (IOException ex) {
-      LOGGER.error("An error occurred while writing POST data", ex);
+      LOGGER.error("An error occurred while writing data", ex);
       closeQuietly(post);
       throw ex;
     }
   }
-
+  
   // Processors
   // ----------------------------------------------------------------------------------------------
 

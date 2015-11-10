@@ -50,6 +50,11 @@ public final class PSHTTPResource {
   private final String _name;
 
   /**
+   * The body of the resource (used for PUT requests).
+   */
+  private final String _body;
+  
+  /**
    * The parameters to send.
    */
   private final Map<String, String> _parameters;
@@ -68,6 +73,7 @@ public final class PSHTTPResource {
   public PSHTTPResource(PSHTTPResourceType type, String name) {
     this._type = type;
     this._name = name;
+    this._body = null;
     this._parameters = Collections.emptyMap();
     this._includeErrorContent = this._type == PSHTTPResourceType.SERVICE;
   }
@@ -77,12 +83,14 @@ public final class PSHTTPResource {
    *
    * @param type       The type of resource.
    * @param name       The name of the resource to access (depends on the type of resource)
+   * @param body       The body of the resource (used for PUT requests).
    * @param parameters The parameters to access the resource.
    * @param include    Whether to include the response content.
    */
-  private PSHTTPResource(PSHTTPResourceType type, String name, Map<String, String> parameters, boolean include) {
+  private PSHTTPResource(PSHTTPResourceType type, String name, String body, Map<String, String> parameters, boolean include) {
     this._type = type;
     this._name = name;
+    this._body = body;
     this._parameters = parameters;
     this._includeErrorContent = include;
   }
@@ -113,6 +121,15 @@ public final class PSHTTPResource {
    */
   public String name() {
     return this._name;
+  }
+
+  /**
+   * Returns the body of the resource (used for PUT requests).
+   *
+   * @return the body of the resource.
+   */
+  public String body() {
+    return this._body;
   }
 
   /**
@@ -361,6 +378,11 @@ public final class PSHTTPResource {
     private String name;
 
     /**
+     * The body of the resource (used for PUT requests).
+     */
+    private String body;
+    
+    /**
      * Whether to include errors
      */
     private boolean includeError = false;
@@ -410,6 +432,16 @@ public final class PSHTTPResource {
     }
 
     /**
+     * Sets the body of the resource (used for PUT requests).
+     * @param body the body of the resource.
+     * @return this builder
+     */
+    public Builder body(String body) {
+      this.body = body;
+      return this;
+    }
+
+    /**
      * Indicates whether this resource should include the error content.
      *
      * @param include <code>true</code> to include the content of response even when the response code is greater than 400;
@@ -444,7 +476,7 @@ public final class PSHTTPResource {
       } else {
         parameters = new HashMap<String, String>(this._parameters);
       }
-      return new PSHTTPResource(this.type, this.name, parameters, this.includeError);
+      return new PSHTTPResource(this.type, this.name, this.body, parameters, this.includeError);
     }
 
   }

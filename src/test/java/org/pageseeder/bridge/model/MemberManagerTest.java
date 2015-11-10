@@ -42,7 +42,7 @@ public final class MemberManagerTest {
     System.out.println(session);
   }
 
-  @Test
+  @Test @Ignore("Requires external server")
   public void testLogin_Failure() throws APIException {
     PSConfig config = PSConfig.newInstance("https://ps.allette.com.au", "http://ps.allette.com.au:8282");
     PSConfig.setDefault(config);

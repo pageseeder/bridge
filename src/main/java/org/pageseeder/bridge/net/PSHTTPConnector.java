@@ -155,6 +155,15 @@ public final class PSHTTPConnector {
   }
 
   /**
+   * Set the body of the request (used for PUT)
+   *
+   * @param body  The body of the request
+   */
+  public void setBody(String body) {
+    this._resource.body(body);
+  }
+
+  /**
    * Sets whether this resource should include the error content.
    *
    * @param include <code>true</code> to include the content of response even when the response code
@@ -436,6 +445,19 @@ public final class PSHTTPConnector {
     return transform(Method.POST, xml, templates, parameters);
   }
 
+  /**
+   * Connect to PageSeeder via PUT and discard the output.
+   *
+   * <p>Error messages will be captured.
+   *
+   * @throws APIException If an error occurs when trying to write the XML.
+   *
+   * @return The PageSeeder HTTP response metadata
+   */
+  public PSHTTPResponseInfo put() throws APIException {
+    return handle(Method.PUT, (DefaultHandler)null);
+  }
+  
   /**
    * Connect to PageSeeder and fetch the XML using the PUT method to be parsed by a handler.
    *

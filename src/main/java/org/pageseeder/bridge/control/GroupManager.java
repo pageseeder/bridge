@@ -504,7 +504,7 @@ public final class GroupManager extends Sessionful {
   public void putResource(PSProject project, PSResource resource, boolean overwrite)
       throws FailedPrecondition, APIException {
     PSHTTPConnector connector = PSHTTPConnectors.putResource(project, resource, overwrite).using(this._session);
-    PSHTTPResponseInfo info = connector.post();
+    PSHTTPResponseInfo info = connector.put();
     if (info.getCode() >= 400) throw new APIException("Unable to put project resource on '" + project.getName() + "': " + info.getMessage());
   }
 

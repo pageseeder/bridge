@@ -818,11 +818,11 @@ public final class PSHTTPConnectors {
     Preconditions.isIdentifiable(project, "project");
     if (resource.isBinary()) throw new FailedPrecondition("Only text content resource can be put on the project");
     if (resource.getContent() == null) throw new FailedPrecondition("Resource has no content");
-    String service = Services.toPutResource(project.getIdentifier());
+    String service = Services.toResource(project.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("location", resource.getLocation());
-    connector.addParameter("content", resource.getContent());
     connector.addParameter("overwrite", Boolean.toString(overwrite));
+    connector.setBody(resource.getContent());
     return connector;
   }
 
@@ -1333,8 +1333,8 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition if conditions fail
    */
-  public static PSHTTPConnector getCommentsByFilter(PSMember member, PSGroup group, String title, String type, List<String> paths) throws FailedPrecondition {
-    return getCommentsByFilter(member, group, title, type, null, paths);
+  public static PSHTTPConnector findComments(PSMember member, PSGroup group, String title, String type, List<String> paths) throws FailedPrecondition {
+    return findComments(member, group, title, type, null, paths);
   }
 
   /**
@@ -1351,11 +1351,11 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition if conditions fail
    */
-  public static PSHTTPConnector getCommentsByFilter(PSMember member, PSGroup group, String title, String type,
+  public static PSHTTPConnector findComments(PSMember member, PSGroup group, String title, String type,
       List<String> statuses, List<String> paths) throws FailedPrecondition {
     Preconditions.isIdentifiable(member, "member");
     Preconditions.isNotNull(group, "group");
-    String service = Services.toGetCommentsByFilter(member.getIdentifier());
+    String service = Services.toFindComments(member.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("groups", group.getName());
     // title
