@@ -345,7 +345,7 @@ public final class Services {
    * @param group the group name or id.
    * @param sub   the name or id of the subgroup
    *
-   * @return <code>/groups/[group]/subgroups/[sub]/edit</code>.
+   * @return <code>/groups/[group]/subgroups/[sub]</code>.
    */
   public static String toSubGroup(String group, String sub) {
     return "/groups/" + group + "/subgroups/" + sub;
@@ -403,7 +403,7 @@ public final class Services {
    *
    * @param member the member username or id
    *
-   * @return <code>/members/[member]/projects/create</code>.
+   * @return <code>/members/[member]/projects</code>.
    */
   public static String toCreateProject(String member) {
     return "/members/" + member + "/projects";
@@ -439,13 +439,27 @@ public final class Services {
   /**
    * Returns the URL to get a project.
    *
+   * @param project the project name or id
+   *
+   * @return <code>/members/[member]/projects/[project]</code>.
+   */
+  public static String toGetProject(String project) {
+    return "/projects/" + project;
+  }
+
+  /**
+   * Returns the URL to get a project.
+   * 
+   * @deprecated Use {@link #toGetProject(String)}
+   *
    * @param member  the member username or id
    * @param project the project name or id
    *
    * @return <code>/members/[member]/projects/[project]</code>.
    */
+  @Deprecated
   public static String toGetProject(String member, String project) {
-    return "/members/" + member + "/projects/" + project;
+    return "/projects/" + project;
   }
 
   /**
@@ -477,10 +491,10 @@ public final class Services {
    *
    * @param member  the member username or id
    *
-   * @return <code>/members/[member]/projectsfind</code>.
+   * @return <code>/members/[member]/projects/find</code>.
    */
   public static String toProjectsFind(String member) {
-    return "/members/" + member + "/projectfind";
+    return "/members/" + member + "/projects/find";
   }
 
   /**
@@ -632,7 +646,7 @@ public final class Services {
    *
    * @param member the member username or id
    *
-   * @return <code>/members/[member]/groups/create</code>.
+   * @return <code>/members/[member]/groups</code>.
    */
   public static String toCreateGroup(String member) {
     return "/members/" + member + "/groups";
@@ -678,14 +692,17 @@ public final class Services {
 
   /**
    * Returns the URL to get a group.
+   * 
+   * @deprecated Use {@link #toGetGroup(String)}
    *
    * @param member the member name or id
    * @param group  the group name or id
    *
    * @return <code>/members/[member]/groups/[group]</code>.
    */
+  @Deprecated
   public static String toGetGroup(String member, String group) {
-    return "/members/" + member + "/groups/" + group;
+    return "/groups/" + group;
   }
 
   // /groups/{group:group}/size
@@ -1293,7 +1310,7 @@ public final class Services {
    *
    * @param project the project name or id where the resource should be put.
    *
-   * @return <code>/groups/[project]/resources/create</code>.
+   * @return <code>/groups/[project]/resources</code>.
    */
   public static String toCreateResource(String project) {
     return "/groups/" + project + "/resources";

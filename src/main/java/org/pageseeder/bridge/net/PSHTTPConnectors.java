@@ -600,7 +600,7 @@ public final class PSHTTPConnectors {
   public static PSHTTPConnector editGroup(PSGroup group, PSMember editor, GroupOptions options) throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
     Preconditions.isIdentifiable(editor, "editor");
-    String service = Services.toEditGroup(editor.getIdentifier(), group.getIdentifier());
+    String service = Services.toGroup(editor.getIdentifier(), group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     if (group.getDescription() != null) {
       connector.addParameter("description", group.getDescription());
@@ -618,7 +618,7 @@ public final class PSHTTPConnectors {
       connector.addParameter("defaultrole", group.getDefaultRole().toString());
     }
     if (group.getDefaultNotification() != null) {
-      connector.addParameter("defaultnotification", group.getDefaultNotification().toString());
+      connector.addParameter("defaultnotify", group.getDefaultNotification().toString());
     }
     if (options != null) {
       if (options.getVisibility() != null) {
@@ -1982,7 +1982,7 @@ public final class PSHTTPConnectors {
   public static PSHTTPConnector createGroupFolder(PSGroup group, String url, boolean isPublic) throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
     Preconditions.isNotEmpty(url, "url");
-    String service = Services.toCreateGroupFolder(group.getIdentifier());
+    String service = Services.toCreateGroupFolder2(group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("url", url);
     if (isPublic) {
@@ -2004,7 +2004,7 @@ public final class PSHTTPConnectors {
   public static PSHTTPConnector getGroupFolder(PSGroup group, String url) throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
     Preconditions.isNotEmpty(url, "url");
-    String service = Services.toGetGroupFolderForURL(group.getIdentifier());
+    String service = Services.toGetGroupFolderForURL2(group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("url", url);
     return connector;

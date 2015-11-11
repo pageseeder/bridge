@@ -166,6 +166,8 @@ public final class PSEntityFactory {
     String name = atts.getValue("name");
     String description = atts.getValue("description");
     String owner = atts.getValue("owner");
+    String detailstype = atts.getValue("detailstype");
+    String template = atts.getValue("template");
     PSRole defaultRole = PSHandlers.role(atts.getValue("defaultrole"));
     PSNotification defaultNotification = PSHandlers.notification(atts.getValue("defaultnotify"));
 
@@ -181,9 +183,14 @@ public final class PSEntityFactory {
     g.setId(PSHandlers.id(id));
     g.setName(name);
     g.setDescription(description);
-
     if (owner != null) {
       g.setOwner(owner);
+    }
+    if (detailstype != null) {
+      g.setDetailsType(detailstype);
+    }
+    if (template != null) {
+      g.setTemplate(template);
     }
     if (defaultRole != null) {
       g.setDefaultRole(defaultRole);

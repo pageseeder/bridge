@@ -293,7 +293,7 @@ public final class GroupManager extends Sessionful {
     if (editor == null) throw new NullPointerException("editor");
     PSHTTPConnector connector = PSHTTPConnectors.editGroup(group, editor, options).using(this._session);
     PSThreadHandler handler = new PSThreadHandler();
-    PSHTTPResponseInfo info = connector.post(handler);
+    PSHTTPResponseInfo info = connector.patch(handler);
     if (info.getCode() >= 400) throw new APIException("Unable to edit group '" + group.getName() + "': " + info.getMessage());
     // update cache
     cache.put(group);

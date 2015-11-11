@@ -256,7 +256,7 @@ public class PSGroup implements PSEntity {
    *
    * @param template the style owner for this group.
    */
-  public void setTempate(String template) {
+  public void setTemplate(String template) {
     this.template = template;
   }
 
