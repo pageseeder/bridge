@@ -445,7 +445,6 @@ public final class PSEntityFactory {
     String port = atts.getValue("port");
     String path = atts.getValue("path");
     boolean isExternal = "true".equals(atts.getValue("external"));
-    boolean isPublic = "true".equals(atts.getValue("public"));
 
     PSGroupFolder f = folder;
     if (f == null) {
@@ -462,7 +461,6 @@ public final class PSEntityFactory {
     f.setPort(PSHandlers.integer(port));
     f.setPath(path);
     f.setExternal(isExternal);
-    f.setPublic(isPublic);
     return f;
   }
 }

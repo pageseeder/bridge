@@ -1970,6 +1970,8 @@ public final class PSHTTPConnectors {
 
   /**
    * Returns the connector to create a group folder.
+   * 
+   * @deprecated Use {@link #createGroupFolder(PSGroup, String)} instead
    *
    * @param group    The group where the group folder should be created.
    * @param url      The URL of the group folder.
@@ -1980,14 +1982,25 @@ public final class PSHTTPConnectors {
    * @throws FailedPrecondition If the group is not identifiable or if the URL is empty.
    */
   public static PSHTTPConnector createGroupFolder(PSGroup group, String url, boolean isPublic) throws FailedPrecondition {
+    return createGroupFolder(group, url);
+  }
+  
+  /**
+   * Returns the connector to create a group folder.
+   *
+   * @param group    The group where the group folder should be created.
+   * @param url      The URL of the group folder.
+   *
+   * @return the corresponding connector
+   *
+   * @throws FailedPrecondition If the group is not identifiable or if the URL is empty.
+   */
+  public static PSHTTPConnector createGroupFolder(PSGroup group, String url) throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
     Preconditions.isNotEmpty(url, "url");
     String service = Services.toCreateGroupFolder2(group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("url", url);
-    if (isPublic) {
-      connector.addParameter("public", "true");
-    }
     return connector;
   }
 

@@ -37,9 +37,6 @@ public class PSGroupFolder extends PSAddressable implements PSEntity {
   /** Whether it points to an external location */
   private boolean isExternal = false;
 
-  /** Whether it is public */
-  private boolean isPublic = false;
-
   /**
    * Creates a new group folder from the specified URL.
    *
@@ -87,24 +84,10 @@ public class PSGroupFolder extends PSAddressable implements PSEntity {
   }
 
   /**
-   * @return the isPublic
-   */
-  public final boolean isPublic() {
-    return this.isPublic;
-  }
-
-  /**
    * @param isExternal the isExternal to set
    */
   public final void setExternal(boolean isExternal) {
     this.isExternal = isExternal;
-  }
-
-  /**
-   * @param isPublic the isPublic to set
-   */
-  public final void setPublic(boolean isPublic) {
-    this.isPublic = isPublic;
   }
 
   /**

@@ -149,17 +149,34 @@ public final class GroupManager extends Sessionful {
   }
 
   /**
-   * Creates the group folder.
+   * Returns the connector to create a group folder.
+   * 
+   * @deprecated Use {@link #createGroupFolder(PSGroup, String)} instead
    *
-   * @param group The group where the group folder should be created.
+   * @param group    The group where the group folder should be created.
+   * @param url      The URL of the group folder.
+   * @param isPublic <code>true</code> for a public group folder.
    *
    * @throws InvalidEntityException If the group is invalid.
    * @throws APIException If an error occurs while communicating with PageSeeder.
    */
-  public void createGroupFolder(PSGroup group, String url, boolean isPublic)
+  public void createGroupFolder(PSGroup group, String url, boolean isPublic) throws InvalidEntityException, APIException {
+    createGroupFolder(group, url);
+  }
+  
+  /**
+   * Creates the group folder.
+   *
+   * @param group   The group where the group folder should be created.
+   * @param url     The url of the group folder.
+   *
+   * @throws InvalidEntityException If the group is invalid.
+   * @throws APIException If an error occurs while communicating with PageSeeder.
+   */
+  public void createGroupFolder(PSGroup group, String url)
       throws InvalidEntityException, APIException {
     if (!group.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.createGroupFolder(group, url, isPublic).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.createGroupFolder(group, url).using(this._session);
     PSGroupFolderHandler handler = new PSGroupFolderHandler();
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getCode() >= 400) throw new APIException("Unable to create group folder '" + url + "': " + info.getMessage());
