@@ -151,7 +151,7 @@ public final class PSHTTPConnectors {
       throws FailedPrecondition, InvalidEntityException {
     Preconditions.isIdentifiable(member, "member");
     Preconditions.isValid(member, "member");
-    String service = Services.toMemberEdit(member.getIdentifier());
+    String service = Services.toMember(member.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("member-username", member.getUsername());
     connector.addParameter("firstname", member.getFirstname());
@@ -795,7 +795,7 @@ public final class PSHTTPConnectors {
       connector.addParameter("notification", notification.parameter());
     }
     if (role != null) {
-      connector.addParameter("role", role.parameterMixed());
+      connector.addParameter("role", role.parameter());
     }
     connector.addParameter("listed", Boolean.toString(listed));
     return connector;
@@ -871,7 +871,7 @@ public final class PSHTTPConnectors {
       connector.addParameter("notification", membership.getNotification().parameter());
     }
     if (membership.getRole() != null) {
-      connector.addParameter("role", membership.getRole().parameterMixed());
+      connector.addParameter("role", membership.getRole().parameter());
     }
 
     connector.addParameter("auto-activate", Boolean.toString(options.isAutoActivate()));
@@ -936,7 +936,7 @@ public final class PSHTTPConnectors {
     Preconditions.isNotEmpty(member.getSurname(), "surname");
     Preconditions.isNotEmpty(member.getUsername(), "email");
 
-    String url = Services.toEditMembership(group.getIdentifier(), member.getIdentifier());
+    String url = Services.toMembership(group.getIdentifier(), member.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, url);
     // Member details
     connector.addParameter("firstname", member.getFirstname());
@@ -950,7 +950,7 @@ public final class PSHTTPConnectors {
       connector.addParameter("notification", membership.getNotification().parameter());
     }
     if (membership.getRole() != null) {
-      connector.addParameter("role", membership.getRole().parameterMixed());
+      connector.addParameter("role", membership.getRole().parameter());
     }
 
     if (forceEmail) {
@@ -985,7 +985,7 @@ public final class PSHTTPConnectors {
     PSMember member = membership.getMember();
     Preconditions.isNotNull(membership.getGroup(), "group");
     Preconditions.isNotNull(membership.getMember(), "member");
-    String service = Services.toEditMembership(group.getIdentifier(), member.getIdentifier());
+    String service = Services.toMembership(group.getIdentifier(), member.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("member-password", password);
     return connector;
@@ -1004,20 +1004,24 @@ public final class PSHTTPConnectors {
   public static PSHTTPConnector inviteMembership(PSMembership membership, MemberOptions options) throws FailedPrecondition {
     PSGroup group = membership.getGroup();
     PSMember member = membership.getMember();
-    Preconditions.isNotNull(membership.getGroup(), "group");
-    Preconditions.isNotNull(membership.getMember(), "member");
-    Preconditions.isNotEmpty(member.getEmail(), "email");
+    Preconditions.isNotNull(group, "group");
+    Preconditions.isNotNull(member, "member");
+    Preconditions.isNotEmpty(member.getEmail() != null ? member.getEmail() : member.getUsername(), "email or username");
     String url = Services.toInviteMember(group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, url);
     // Member details
-    connector.addParameter("email", member.getEmail());
     connector.addParameter("listed", Boolean.toString(membership.isListed()));
-
+    if (member.getEmail() != null) {
+      connector.addParameter("email", member.getEmail());
+    }
+    if (member.getUsername() != null) {
+      connector.addParameter("member-username", member.getUsername());
+    }
     if (membership.getNotification() != null) {
       connector.addParameter("notification", membership.getNotification().parameter());
     }
     if (membership.getRole() != null) {
-      connector.addParameter("role", membership.getRole().parameterMixed());
+      connector.addParameter("role", membership.getRole().parameter());
     }
 
     connector.addParameter("welcome-email", Boolean.toString(options.hasWelcomeEmail()));
@@ -1058,7 +1062,7 @@ public final class PSHTTPConnectors {
       connector.addParameter("notification", membership.getNotification().parameter());
     }
     if (membership.getRole() != null) {
-      connector.addParameter("role", membership.getRole().parameterMixed());
+      connector.addParameter("role", membership.getRole().parameter());
     }
     connector.addParameter("register", "true");
 
@@ -1091,11 +1095,8 @@ public final class PSHTTPConnectors {
     PSGroup group = membership.getGroup();
     PSMember member = membership.getMember();
     Preconditions.isNotNull(membership.getGroup(), "group");
-    Preconditions.isNotNull(membership.getMember(), "member");
-    Preconditions.isNotEmpty(member.getUsername(), "username");
     Preconditions.isIdentifiable(group, "group");
-    Preconditions.isIdentifiable(member, "member");
-    String service = Services.toInviteSelf(group.getIdentifier(), member.getIdentifier());
+    String service = Services.toInviteSelf(group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     // Member details
     connector.addParameter("listed", Boolean.toString(membership.isListed()));

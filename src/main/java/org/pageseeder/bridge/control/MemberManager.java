@@ -144,7 +144,7 @@ public final class MemberManager extends Sessionful {
     // XXX Force email change set to true (requires Admin)
     PSHTTPConnector connector = PSHTTPConnectors.editMember(member, true).using(this._session);
     PSMemberHandler handler = new PSMemberHandler(member);
-    PSHTTPResponseInfo resp = connector.post(handler);
+    PSHTTPResponseInfo resp = connector.patch(handler);
     PSMember m = handler.get();
     if (m != null) {
       cache.put(m);

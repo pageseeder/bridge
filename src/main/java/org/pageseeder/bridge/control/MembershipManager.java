@@ -394,17 +394,18 @@ public final class MembershipManager extends Sessionful {
    *         or <code>null</code> if the member does not belong to the group
    */
   public PSMembership getAuto(String group, String emailOrUsername, boolean isManager) throws APIException {
-    // guess if the input value is email address
+    PSMember member = new PSMember();
+   // guess if the input value is email address
     if (emailOrUsername != null && emailOrUsername.contains("@")) {
-      PSMember member = new PSMember();
       member.setEmail(emailOrUsername);
-      PSMembership membership = new PSMembership(new PSGroup(group), member);
-      PSHTTPConnector connector = PSHTTPConnectors.findMembershipsForGroup(membership, isManager).using(this._session);
-      PSMembershipHandler handler = new PSMembershipHandler();
-      connector.get(handler);
-      return handler.get();
-    } else return get(group, emailOrUsername);
-
+    } else {
+      member.setUsername(emailOrUsername);
+    }
+    PSMembership membership = new PSMembership(new PSGroup(group), member);
+    PSHTTPConnector connector = PSHTTPConnectors.findMembershipsForGroup(membership, isManager).using(this._session);
+    PSMembershipHandler handler = new PSMembershipHandler();
+    connector.get(handler);
+    return handler.get();
   }
 
   /**
@@ -456,7 +457,7 @@ public final class MembershipManager extends Sessionful {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
     PSHTTPConnector connector = PSHTTPConnectors.editMembership(membership, forceEmail).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
-    PSHTTPResponseInfo info = connector.post(handler);
+    PSHTTPResponseInfo info = connector.patch(handler);
     Status status = info.getStatus();
     if (status != Status.SUCCESSFUL && status != Status.CLIENT_ERROR) throw new APIException(info.getMessage());
     return MembershipResult.forResponse(info);
@@ -467,7 +468,7 @@ public final class MembershipManager extends Sessionful {
    */
   public void updatePassword(PSMembership membership, String password) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.updatePassword(membership, password).using(this._session);
-    connector.post();
+    connector.patch();
   }
 
   /**
