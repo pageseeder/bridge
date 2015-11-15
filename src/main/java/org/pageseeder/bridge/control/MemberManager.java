@@ -111,9 +111,9 @@ public final class MemberManager extends Sessionful {
   }
 
   /**
-   * Returns the member for the specified username.
+   * Returns the specified member.
    *
-   * @param username The username of that member
+   * @param member The member (id or username must be set).
    *
    * @return the corresponding member
    *
@@ -136,8 +136,10 @@ public final class MemberManager extends Sessionful {
 
   /**
    * Saves the details of the specified member.
+   * 
+   * Cannot be used to change member.isActive(), use {@link #activate(String)} instead.
    *
-   * @param member The username of that member
+   * @param member The member to save
    */
   public boolean save(PSMember member) throws APIException {
     // TODO Verify
