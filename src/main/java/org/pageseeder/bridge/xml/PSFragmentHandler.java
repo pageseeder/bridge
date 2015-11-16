@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pageseeder.berlioz.xml.XMLCopy;
+import org.pageseeder.bridge.psml.Fragment;
 import org.pageseeder.bridge.psml.PSMLFragment;
 import org.pageseeder.bridge.psml.PropertiesFragment;
 import org.pageseeder.bridge.psml.Property;
-import org.pageseeder.bridge.psml.StandardFragment;
 import org.pageseeder.xmlwriter.XMLStringWriter;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.Attributes;
@@ -60,12 +60,12 @@ public final class PSFragmentHandler extends DefaultHandler {
   /**
    * A writer to store the fragment content.
    */
-  private XMLWriter fragXmlContent = new XMLStringWriter(false);
+  private XMLWriter fragXMLContent = new XMLStringWriter(false);
 
   /**
    * A handler to do the elements copy.
    */
-  private XMLCopy copy = new XMLCopy(this.fragXmlContent);
+  private XMLCopy copy = new XMLCopy(this.fragXMLContent);
 
   /**
    * Create a new handler for document belong to a specific group.
@@ -83,7 +83,7 @@ public final class PSFragmentHandler extends DefaultHandler {
     if ("fragment".equals(localName)) {
       String id = atts.getValue("id");
       String type = atts.getValue("type");
-      this.fragment = new StandardFragment(id, type);
+      this.fragment = new Fragment(id, type);
       this.copyAll = true;
 
     } else if ("properties-fragment".equals(localName)) {
@@ -116,9 +116,9 @@ public final class PSFragmentHandler extends DefaultHandler {
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if ("fragment".equals(localName)) {
       // store the content
-      if (this.fragment instanceof StandardFragment) {
-        StandardFragment frag = (StandardFragment) this.fragment;
-        frag.setContent(this.fragXmlContent.toString());
+      if (this.fragment instanceof Fragment) {
+        Fragment frag = (Fragment) this.fragment;
+        frag.setContent(this.fragXMLContent.toString());
         this.copyAll = false;
       }
 

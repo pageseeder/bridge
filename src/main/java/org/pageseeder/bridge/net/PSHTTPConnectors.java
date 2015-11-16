@@ -2053,8 +2053,6 @@ public final class PSHTTPConnectors {
   /**
    * Returns the connector to update a particular fragment using POST.
    * 
-   * @deprecated Use {@link # putFragment(PSDocument, PSGroup, PSMember, PSMLFragment)} instead
-   *
    * @param document The document the fragment belong to
    * @param group    The group the document belongs to
    * @param editor   The member wanting to view/edit the fragment
@@ -2066,7 +2064,6 @@ public final class PSHTTPConnectors {
    *                            or if the fragment is <code>null</code>;
    *                            or if the fragment ID is <code>null</code> or empty.
    */
-  @Deprecated
   public static PSHTTPConnector postFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment)
       throws FailedPrecondition {
     Preconditions.isIdentifiable(document, "document");
@@ -2103,7 +2100,9 @@ public final class PSHTTPConnectors {
     Preconditions.isNotEmpty(fragment.id(), "fragment id");
     String service = Services.toGetFragment(editor.getIdentifier(), group.getIdentifier(), Long.toString(document.getId()), fragment.id());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
-    connector.setBody(fragment.toPSML());
+    //connector.setBody(fragment.toPSML());
+    // TODO need to add content parameter due to bug in 5.8, fix for 5.9
+    connector.addParameter("content", fragment.toPSML());
     return connector;
   }
 

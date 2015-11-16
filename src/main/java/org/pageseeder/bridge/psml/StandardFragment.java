@@ -21,8 +21,8 @@ import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
  * A standard PSML fragment.
- *
- * <p>
+ * 
+ * @deprecated Use Fragment class instead.
  *
  * @author Ciber Cai
  * @version 22 January 2015

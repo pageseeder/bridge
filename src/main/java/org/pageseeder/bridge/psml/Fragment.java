@@ -20,16 +20,20 @@ import java.io.IOException;
 import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
- * A simple PSML fragment.
- *
- * <p>IMPORTANT: DO NOT USE THIS CLASS IS INCOMPLETE
+ * A PSML fragment.
  *
  * @author Christophe Lauret
+ * @author Philip Rutherford
  */
-public class Fragment extends FragmentBase implements PSMLFragment {
+public class Fragment extends StandardFragment implements PSMLFragment {
 
   /**
-   * Creates a new fragment with the specified ID.
+   * the xml content of fragment
+   */
+  private String content;
+  
+  /**
+   * Creates a new fragment.
    *
    * @param id The fragment ID.
    */
@@ -38,24 +42,33 @@ public class Fragment extends FragmentBase implements PSMLFragment {
   }
 
   /**
-   * Creates a new fragment with the specified ID.
-   *
-   * @param id   The fragment ID.
-   * @param type The fragment type.
+   * Creates a new fragment.
+   * 
+   * @param id the id of fragment
+   * @param type the type of fragment
    */
   public Fragment(String id, String type) {
     super(id, type);
   }
+  
+  /**
+   * @param content the xml content within fragment element.
+   */
+  public void setContent(String content) {
+    this.content = content;
+  }
 
   @Override
-  public void toXML(XMLWriter psml) throws IOException {
-    psml.openElement("fragment", true);
-    psml.attribute("id", id());
+  public void toXML(XMLWriter xml) throws IOException {
+    xml.openElement("fragment", true);
+    xml.attribute("id", id());
     if (type() != null) {
-      psml.attribute("type", type());
+      xml.attribute("type", type());
     }
-    // FIXME
-    psml.closeElement();
+    if (this.content != null) {
+      xml.writeXML(this.content);
+    }
+    xml.closeElement();
   }
 
 }
