@@ -39,7 +39,6 @@ import org.pageseeder.bridge.psml.PSMLFragment;
 import org.pageseeder.bridge.xml.PSDocumentBrowseHandler;
 import org.pageseeder.bridge.xml.PSDocumentHandler;
 import org.pageseeder.bridge.xml.PSFragmentHandler;
-import org.pageseeder.bridge.xml.UploadHandler;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -118,7 +117,7 @@ public final class DocumentManager extends Sessionful {
   public boolean editDocumentProperties(PSDocument document, PSGroup group, PSMember creator)
       throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.editDocumentProperties(document, group, creator).using(this._session);
-    PSHTTPResponseInfo info = connector.post();
+    PSHTTPResponseInfo info = connector.patch();
     // FIXME the return xml from "editDocumentProperties" is not a complete XML to create Document object.
     if (info.getStatus() == Status.SUCCESSFUL) {
       cache.remove(String.valueOf(document.getId()));
@@ -217,7 +216,7 @@ public final class DocumentManager extends Sessionful {
   public PSDocument upload(PSGroup group, String url, File file) throws APIException {
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, Servlets.UPLOAD_SERVLET).using(this._session);
-    UploadHandler handler = new UploadHandler();
+    PSDocumentHandler handler = new PSDocumentHandler();
     try {
       connector.addParameter("autoload", "true");
       connector.addParameter("group", group.getName());
@@ -255,7 +254,7 @@ public final class DocumentManager extends Sessionful {
   }
 
   /**
-   * Create the specified document in PageSeeder.
+   * Edit the specified fragment in PageSeeder by using PUT method.
    *
    * @param document The document to create
    * @param group    The group the document is part of
@@ -273,7 +272,9 @@ public final class DocumentManager extends Sessionful {
   }
 
   /**
-   * Create the specified document in PageSeeder by using POST method.
+   * Edit the specified fragment in PageSeeder by using POST method.
+   * 
+   * @deprecated Use {@link # putFragment(PSDocument, PSGroup, PSMember, PSMLFragment)} instead
    *
    * @param document The document to create
    * @param group    The group the document is part of
@@ -282,9 +283,10 @@ public final class DocumentManager extends Sessionful {
    *
    * @return the updated fragment.
    */
+  @Deprecated
   public PSMLFragment postFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment)
       throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.putFragment(document, group, editor, fragment).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.postFragment(document, group, editor, fragment).using(this._session);
     PSFragmentHandler handler = new PSFragmentHandler();
     connector.post(handler);
     return handler.getFragment();

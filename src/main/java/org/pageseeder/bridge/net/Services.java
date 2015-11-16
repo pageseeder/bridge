@@ -158,12 +158,15 @@ public final class Services {
 
   /**
    * Returns the URL to remove a member from a group.
+   * 
+   * @deprecated Use {@link # toMembership(String, String)} with DELETE
    *
    * @param group  the group name or id
    * @param member the member username or id
    *
    * @return <code>/groups/[group]/members/[member]/delete</code>.
    */
+  @Deprecated
   public static String toDeleteMembership(String group, String member) {
     return "/groups/" + prefixGroup(group) + "/members/" + prefixMember(member) + "/delete";
   }
@@ -1016,19 +1019,34 @@ public final class Services {
   // /members/{member:member}/groups/{group:group}/documents
 
   /**
-   * Returns the URL to get a document for a given URL.
+   * Returns the URL to create a document for a given URL.
    *
    * @param member the member username or id
    * @param group  the group name or id
    *
    * @return <code>/members/[member]/groups/[group]/documents/forurl</code>.
    */
-  public static String toGetDocumentForURL(String member, String group) {
+  public static String toCreateDocumentForURL(String member, String group) {
     return "/members/" + prefixMember(member) + "/groups/" + prefixGroup(group) + "/documents/forurl";
   }
 
   /**
-   * Returns the URL to saves the core properties of a URI..
+   * Returns the URL to edit the URI.
+   *
+   * @param member the member username or id
+   * @param group  the group name or id
+   * @param uri    the id of uri
+   *
+   * @return <code>/members/[member]/groups/[group]/uris/{uri} </code>.
+   */
+  public static String toEditURI(String member, String group, String uri) {
+    return "/members/" + prefixMember(member) + "/groups/" + prefixGroup(group) + "/uris/" + uri;
+  }
+  
+  /**
+   * Returns the URL to saves the core properties of a URI.
+   * 
+   * @deprecated Use {@link # toEditURI(String, String, String)} with PATCH
    *
    * @param member the member username or id
    * @param group  the group name or id
@@ -1036,6 +1054,7 @@ public final class Services {
    *
    * @return <code>/members/[member]/groups/[group]/uris/{uri}/properties </code>.
    */
+  @Deprecated
   public static String toSaveURIProperties(String member, String group, String uri) {
     return "/members/" + prefixMember(member) + "/groups/" + prefixGroup(group) + "/uris/" + uri + "/properties";
   }
@@ -1078,8 +1097,6 @@ public final class Services {
     return "/members/" + prefixMember(member) + "/groups/" + prefixGroup(group) + "/uris/" + uri + "/fragments/" + fragment;
   }
 
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/fragments/{fragment}/delete
-
   // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/fragments/{fragment}/revert
 
   // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/edits/{editid}/share
@@ -1088,15 +1105,11 @@ public final class Services {
 
   // /groups/{group:group}/uris/{uri:uri}/drafts
 
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/drafts/{editid}/delete
-
   // /groups/{group:group}/uris/{uri:uri}/fragments/{fragment}/drafts
 
   // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/move
 
   // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/archive
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/delete
 
   // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/foldervalidate
 

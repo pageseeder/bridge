@@ -1143,7 +1143,7 @@ public final class PSHTTPConnectors {
    * @throws FailedPrecondition Should any precondition fail.
    */
   public static PSHTTPConnector deleteMembership(String group, String member) throws FailedPrecondition {
-    String service = Services.toDeleteMembership(group, member);
+    String service = Services.toMembership(group, member);
     return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
   }
 
@@ -1852,7 +1852,7 @@ public final class PSHTTPConnectors {
     Preconditions.isNotEmpty(document.getTitle(), "title");
     Preconditions.isIdentifiable(group, "group");
     Preconditions.isIdentifiable(creator, "member");
-    String service = Services.toGetDocumentForURL(creator.getIdentifier(), group.getIdentifier());
+    String service = Services.toCreateDocumentForURL(creator.getIdentifier(), group.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
 
     // document properties
@@ -1899,7 +1899,7 @@ public final class PSHTTPConnectors {
     Preconditions.isIdentifiable(group, "group");
     Preconditions.isIdentifiable(creator, "member");
 
-    String service = Services.toSaveURIProperties(creator.getIdentifier(), group.getIdentifier(), document.getIdentifier());
+    String service = Services.toEditURI(creator.getIdentifier(), group.getIdentifier(), document.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     // document properties
     if (document.getTitle() != null) {
@@ -1913,6 +1913,9 @@ public final class PSHTTPConnectors {
     }
     if (document.getFilename() != null) {
       connector.addParameter("name", document.getFilename());
+    }
+    if (document.getDocid() != null) {
+      connector.addParameter("documentid", document.getDocid());
     }
     return connector;
   }
@@ -2048,6 +2051,36 @@ public final class PSHTTPConnectors {
   }
 
   /**
+   * Returns the connector to update a particular fragment using POST.
+   * 
+   * @deprecated Use {@link # putFragment(PSDocument, PSGroup, PSMember, PSMLFragment)} instead
+   *
+   * @param document The document the fragment belong to
+   * @param group    The group the document belongs to
+   * @param editor   The member wanting to view/edit the fragment
+   * @param fragment The fragment to update.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition If the document, group or member is not identifiable;
+   *                            or if the fragment is <code>null</code>;
+   *                            or if the fragment ID is <code>null</code> or empty.
+   */
+  @Deprecated
+  public static PSHTTPConnector postFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment)
+      throws FailedPrecondition {
+    Preconditions.isIdentifiable(document, "document");
+    Preconditions.isIdentifiable(group, "group");
+    Preconditions.isIdentifiable(editor, "member");
+    Preconditions.isNotNull(fragment, "fragment");
+    Preconditions.isNotEmpty(fragment.id(), "fragment id");
+    String service = Services.toGetFragment(editor.getIdentifier(), group.getIdentifier(), Long.toString(document.getId()), fragment.id());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    connector.addParameter("content", fragment.toPSML());
+    return connector;
+  }
+  
+  /**
    * Returns the connector to update a particular fragment.
    *
    * @param document The document the fragment belong to
@@ -2070,7 +2103,7 @@ public final class PSHTTPConnectors {
     Preconditions.isNotEmpty(fragment.id(), "fragment id");
     String service = Services.toGetFragment(editor.getIdentifier(), group.getIdentifier(), Long.toString(document.getId()), fragment.id());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
-    connector.addParameter("content", fragment.toPSML());
+    connector.setBody(fragment.toPSML());
     return connector;
   }
 

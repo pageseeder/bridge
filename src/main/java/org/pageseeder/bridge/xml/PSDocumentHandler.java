@@ -53,6 +53,21 @@ public final class PSDocumentHandler extends DefaultHandler {
   List<PSFolder> folders = new ArrayList<PSFolder>();
 
   /**
+   * State variable, when <code>true</code> the handler should capture character data on the text buffer.
+   */
+  private boolean record = false;
+
+  /**
+   * State variable, when <code>true</code> the handler is within a "uri" element.
+   */
+  private boolean inURI = false;
+
+  /**
+   * State variable, Text buffer.
+   */
+  private StringBuilder buffer = new StringBuilder();
+
+  /**
    * Create a new handler for documents.
    */
   public PSDocumentHandler() {
@@ -70,6 +85,7 @@ public final class PSDocumentHandler extends DefaultHandler {
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
     if ("uri".equals(localName)) {
+      this.inURI = true;
       String mediatype = atts.getValue("mediatype");
       if ("folder".equals(mediatype)) {
         PSFolder folder = PSEntityFactory.toFolder(atts, this.folder);
@@ -78,7 +94,11 @@ public final class PSDocumentHandler extends DefaultHandler {
         PSDocument document = PSEntityFactory.toDocument(atts, this.document);
         this.document = document;
       }
-
+    // record element content
+    } else if (this.inURI && "description".equals(localName)
+        || "labels".equals(localName)) {
+      this.buffer.setLength(0);
+      this.record = true;
     }
   }
 
@@ -91,6 +111,22 @@ public final class PSDocumentHandler extends DefaultHandler {
       if (this.folder != null) {
         this.folders.add(this.folder);
       }
+      this.inURI = false;
+    } else if (this.inURI) {
+      if ("description".equals(localName)) {
+        this.document.setDescription(this.buffer.toString());
+      } else if ("labels".equals(localName)) {
+        this.document.setLabels(this.buffer.toString());
+      }
+    }
+    // Stop recording when an element closes
+    this.record = false;
+  }
+
+  @Override
+  public void characters(char[] ch, int start, int length) throws SAXException {
+    if (this.record) {
+      this.buffer.append(ch, start, length);
     }
   }
 

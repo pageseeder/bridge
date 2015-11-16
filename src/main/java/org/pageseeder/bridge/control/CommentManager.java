@@ -253,6 +253,8 @@ public final class CommentManager extends Sessionful {
 
   /**
    * Find comments using criteria.
+   * 
+   * <p>This method was previously known as getCommentsByFilter.</p>
    *
    * @param member The member who is trying to access the comments.
    * @param group  The context group
@@ -269,6 +271,8 @@ public final class CommentManager extends Sessionful {
 
   /**
    * Find comments using criteria.
+   * 
+   * <p>This method was previously known as getCommentsByFilter.</p>
    *
    * @param member    The member who is trying to access the comments.
    * @param group     The context group

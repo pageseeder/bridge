@@ -435,7 +435,7 @@ public final class MembershipManager extends Sessionful {
   public void remove(String group, String member) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.deleteMembership(group, member).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler();
-    connector.post(handler);
+    connector.delete(handler);
   }
 
   /**
