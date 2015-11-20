@@ -138,6 +138,8 @@ public final class PSHTTPConnectors {
 
   /**
    * Returns the connector to edit the details of a member.
+   * 
+   * @deprecated Use {@link #patchMember(PSMember, boolean)} instead
    *
    * @param member     The member instance containing the new details.
    * @param forceEmail <code>true</code> to force the email address to be changed;
@@ -147,7 +149,27 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition If the member is not ientifiable.
    */
+  @Deprecated
   public static PSHTTPConnector editMember(PSMember member, boolean forceEmail)
+      throws FailedPrecondition, InvalidEntityException {
+    PSHTTPConnector connector = patchMember(member, forceEmail);
+    String service = Services.toMemberEdit(member.getIdentifier());
+    connector.setName(service);
+    return connector;
+  }
+  
+  /**
+   * Returns the connector to edit the details of a member.
+   *
+   * @param member     The member instance containing the new details.
+   * @param forceEmail <code>true</code> to force the email address to be changed;
+   *                   <code>false</code> to use default behaviour.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition If the member is not ientifiable.
+   */
+  public static PSHTTPConnector patchMember(PSMember member, boolean forceEmail)
       throws FailedPrecondition, InvalidEntityException {
     Preconditions.isIdentifiable(member, "member");
     Preconditions.isValid(member, "member");
@@ -589,6 +611,8 @@ public final class PSHTTPConnectors {
 
   /**
    * Edit an existing group in PageSeeder.
+   * 
+   * @deprecated Use {@link #patchGroup(PSGroup, PSMember, GroupOptions)} instead
    *
    * @param group   the group to edit
    * @param editor  the author of the edit
@@ -597,7 +621,25 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition
    */
+  @Deprecated
   public static PSHTTPConnector editGroup(PSGroup group, PSMember editor, GroupOptions options) throws FailedPrecondition {
+    PSHTTPConnector connector = patchGroup(group, editor, options);
+    String service = Services.toEditGroup(editor.getIdentifier(), group.getIdentifier());
+    connector.setName(service);
+    return connector;    
+  }
+  
+  /**
+   * Edit an existing group in PageSeeder.
+   *
+   * @param group   the group to edit
+   * @param editor  the author of the edit
+   *
+   * @return the connector
+   *
+   * @throws FailedPrecondition
+   */
+  public static PSHTTPConnector patchGroup(PSGroup group, PSMember editor, GroupOptions options) throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
     Preconditions.isIdentifiable(editor, "editor");
     String service = Services.toGroup(editor.getIdentifier(), group.getIdentifier());
@@ -920,6 +962,8 @@ public final class PSHTTPConnectors {
    * Returns the connector to save a membership.
    *
    * <p>Implementation: this connector cannot be used to modify the username.
+   * 
+   * @deprecated Use {@link #patchMembership(PSMembership, boolean)} instead
    *
    * @param membership The membership to save.
    *
@@ -927,7 +971,28 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
+  @Deprecated
   public static PSHTTPConnector editMembership(PSMembership membership, boolean forceEmail) throws FailedPrecondition {
+    PSGroup group = membership.getGroup();
+    PSMember member = membership.getMember();
+    PSHTTPConnector connector = patchMembership(membership, forceEmail);
+    String service = Services.toEditMembership(group.getIdentifier(), member.getIdentifier());
+    connector.setName(service);
+    return connector;
+  }
+  
+  /**
+   * Returns the connector to save a membership.
+   *
+   * <p>Implementation: this connector cannot be used to modify the username.
+   *
+   * @param membership The membership to save.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition Should any precondition fail.
+   */
+  public static PSHTTPConnector patchMembership(PSMembership membership, boolean forceEmail) throws FailedPrecondition {
     PSGroup group = membership.getGroup();
     PSMember member = membership.getMember();
     Preconditions.isNotNull(membership.getGroup(), "group");
@@ -1625,6 +1690,8 @@ public final class PSHTTPConnectors {
 
   /**
    * Edit an existing comment in PageSeeder.
+   * 
+   * @deprecated Use {@link #patchComment(PSComment, PSMember, PSNotify, List<PSGroup>)} instead
    *
    * @param comment The comment
    * @param notify  Notifications
@@ -1634,7 +1701,26 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition
    */
+  @Deprecated
   public static PSHTTPConnector editComment(PSComment comment, PSMember editor, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition {
+    PSHTTPConnector connector = patchComment(comment, editor, notify, groups);
+    String service = Services.toEditComment(editor.getIdentifier(), comment.getIdentifier());
+    connector.setName(service);
+    return connector;
+  }
+
+  /**
+   * Edit an existing comment in PageSeeder.
+   *
+   * @param comment The comment
+   * @param notify  Notifications
+   * @param groups  The groups the comment is posted on
+   *
+   * @return the connector
+   *
+   * @throws FailedPrecondition
+   */
+  public static PSHTTPConnector patchComment(PSComment comment, PSMember editor, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition {
     // The author and context determine the service
     Author author = comment.getAuthor();
     Context context = comment.getContext();
@@ -1883,6 +1969,8 @@ public final class PSHTTPConnectors {
 
   /**
    * Edit a document properties.
+   * 
+   * @deprecated Use {@link #patchDocumentProperties(PSDocument, PSGroup, PSMember)} instead
    *
    * @param document   the document to edit
    * @param group      the group where the document store.
@@ -1892,7 +1980,26 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
+  @Deprecated
   public static PSHTTPConnector editDocumentProperties(PSDocument document, PSGroup group, PSMember creator) throws FailedPrecondition {
+    PSHTTPConnector connector = patchDocumentProperties(document, group, creator);
+    String service = Services.toSaveURIProperties(creator.getIdentifier(), group.getIdentifier(), document.getIdentifier());
+    connector.setName(service);
+    return connector;
+  }
+  
+  /**
+   * Edit a document properties.
+   *
+   * @param document   the document to edit
+   * @param group      the group where the document store.
+   * @param creator    the member who edit the document.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition Should any precondition fail.
+   */
+  public static PSHTTPConnector patchDocumentProperties(PSDocument document, PSGroup group, PSMember creator) throws FailedPrecondition {
     Preconditions.isNotNull(document, "document");
     Preconditions.isNotEmpty(document.getFilename(), "filename");
     Preconditions.isNotEmpty(document.getTitle(), "title");

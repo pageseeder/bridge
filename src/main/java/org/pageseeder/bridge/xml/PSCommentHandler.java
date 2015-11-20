@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pageseeder.bridge.model.PSComment;
+import org.pageseeder.bridge.model.PSComment.Author;
 import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
@@ -83,6 +84,16 @@ public final class PSCommentHandler extends DefaultHandler {
     this.comment = comment;
   }
 
+  /**
+   * Whether inside author element
+   */
+  private boolean inAuthor = false;
+  
+  /**
+   * Author email (non member)
+   */
+  private String authorEmail = null;
+
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
     if (this.xmlContent != null) {
@@ -99,7 +110,7 @@ public final class PSCommentHandler extends DefaultHandler {
       PSComment comment = PSEntityFactory.toComment(atts, this.comment);
       this.comment = comment;
 
-    } else if ("title".equals(localName) || "labels".equals(localName)) {
+    } else if ("title".equals(localName) || "labels".equals(localName) || ("fullname".equals(localName) && inAuthor)) {
       this.buffer = new StringBuilder();
 
     } else if ("author".equals(localName)) {
@@ -108,9 +119,8 @@ public final class PSCommentHandler extends DefaultHandler {
         PSMember member = PSEntityFactory.toMember(atts, null);
         this.comment.setAuthor(member);
       } else {
-        String name = atts.getValue("name");
-        String email = atts.getValue("email");
-        this.comment.setAuthor(name, email);
+        this.inAuthor = true;
+        this.authorEmail = atts.getValue("email");
       }
 
     } else if ("assignedto".equals(localName)) {
@@ -159,6 +169,13 @@ public final class PSCommentHandler extends DefaultHandler {
     } else if ("labels".equals(localName)) {
       this.comment.setLabels(this.buffer.toString());
       this.buffer = null;
+
+    } else if (("fullname".equals(localName)  && inAuthor)) {
+      this.comment.setAuthor(this.buffer.toString(), this.authorEmail);
+      this.buffer = null;
+
+    } else if ("author".equals(localName)) {
+      this.inAuthor = false;
 
     } else if ("content".equals(localName)) {
       this.comment.setContent(this.xmlContent == null ? this.buffer.toString() : this.xmlContent.toString());

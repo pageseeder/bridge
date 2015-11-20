@@ -308,7 +308,7 @@ public final class GroupManager extends Sessionful {
   public void editGroup(PSGroup group, PSMember editor, GroupOptions options) throws FailedPrecondition, APIException {
     if (group == null) throw new NullPointerException("group");
     if (editor == null) throw new NullPointerException("editor");
-    PSHTTPConnector connector = PSHTTPConnectors.editGroup(group, editor, options).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.patchGroup(group, editor, options).using(this._session);
     PSThreadHandler handler = new PSThreadHandler();
     PSHTTPResponseInfo info = connector.patch(handler);
     if (info.getCode() >= 400) throw new APIException("Unable to edit group '" + group.getName() + "': " + info.getMessage());

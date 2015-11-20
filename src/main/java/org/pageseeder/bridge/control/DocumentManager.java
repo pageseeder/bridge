@@ -116,7 +116,7 @@ public final class DocumentManager extends Sessionful {
    */
   public boolean editDocumentProperties(PSDocument document, PSGroup group, PSMember creator)
       throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.editDocumentProperties(document, group, creator).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.patchDocumentProperties(document, group, creator).using(this._session);
     PSHTTPResponseInfo info = connector.patch();
     // FIXME the return xml from "editDocumentProperties" is not a complete XML to create Document object.
     if (info.getStatus() == Status.SUCCESSFUL) {
@@ -275,6 +275,8 @@ public final class DocumentManager extends Sessionful {
 
   /**
    * Edit the specified fragment in PageSeeder by using POST method.
+   * 
+   * @deprecated Use {@link #putFragment(PSDocument, PSGroup, PSMember, PSMLFragment)} instead.
    * 
    * @param document The document to create
    * @param group    The group the document is part of

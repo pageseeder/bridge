@@ -159,7 +159,7 @@ public final class Services {
   /**
    * Returns the URL to remove a member from a group.
    * 
-   * @deprecated Use {@link # toMembership(String, String)} with DELETE
+   * @deprecated Use {@link #toMembership(String, String)} with DELETE
    *
    * @param group  the group name or id
    * @param member the member username or id

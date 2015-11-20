@@ -15,8 +15,10 @@
  */
 package org.pageseeder.bridge.xml;
 
+import java.text.ParseException;
 import java.util.Date;
 
+import org.pageseeder.berlioz.util.ISO8601;
 import org.pageseeder.bridge.PSEntityCache;
 import org.pageseeder.bridge.control.CommentManager;
 import org.pageseeder.bridge.control.DocumentManager;
@@ -268,6 +270,9 @@ public final class PSEntityFactory {
    */
   public static PSDocument toDocument(Attributes atts, PSDocument document) {
     String id = atts.getValue("id");
+    String scheme = atts.getValue("scheme");
+    String host = atts.getValue("host");
+    String port = atts.getValue("port");
     String path = atts.getValue("path");
     String description = atts.getValue("description");
     String docid = atts.getValue("docid");
@@ -286,7 +291,15 @@ public final class PSEntityFactory {
       PSEntityCache<PSDocument> cache = DocumentManager.getCache();
       d = cache.get(id);
       if (d == null) {
-        d = new PSDocument(path);
+        int portnum = 80;
+        if (port != null) {
+          try {
+            portnum = Integer.parseInt(port);
+          } catch (NumberFormatException ex) {
+            // should not happen
+          }
+        }
+        d = new PSDocument(scheme, host, portnum, path);
       }
     }
     d.setId(PSHandlers.id(id));
@@ -379,6 +392,14 @@ public final class PSEntityFactory {
     c.setLabels(labels);
     c.setStatus(status);
     c.setPriority(priority);
+    if (due != null) {
+      try {
+        c.setDue(ISO8601.parseAuto(due));
+      } catch (ParseException ex) {
+        // it should not happen
+      }
+
+    }
     c.setType(type);
     c.setProperties(properties);
     return c;

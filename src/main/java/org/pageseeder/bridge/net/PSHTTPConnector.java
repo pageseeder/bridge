@@ -164,6 +164,15 @@ public final class PSHTTPConnector {
   }
 
   /**
+   * Set the name (URL) of the request
+   *
+   * @param name  The name of the request
+   */
+  public void setName(String name) {
+    this._resource.name(name);
+  }
+
+  /**
    * Sets whether this resource should include the error content.
    *
    * @param include <code>true</code> to include the content of response even when the response code

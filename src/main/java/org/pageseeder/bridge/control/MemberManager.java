@@ -144,7 +144,7 @@ public final class MemberManager extends Sessionful {
   public boolean save(PSMember member) throws APIException {
     // TODO Verify
     // XXX Force email change set to true (requires Admin)
-    PSHTTPConnector connector = PSHTTPConnectors.editMember(member, true).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.patchMember(member, true).using(this._session);
     PSMemberHandler handler = new PSMemberHandler(member);
     PSHTTPResponseInfo resp = connector.patch(handler);
     PSMember m = handler.get();

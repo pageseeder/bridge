@@ -455,7 +455,7 @@ public final class MembershipManager extends Sessionful {
    */
   public MembershipResult save(PSMembership membership, boolean forceEmail) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.editMembership(membership, forceEmail).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.patchMembership(membership, forceEmail).using(this._session);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.patch(handler);
     Status status = info.getStatus();

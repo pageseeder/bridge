@@ -183,7 +183,7 @@ public final class CommentManager extends Sessionful {
    * @param groups  The groups the comment should be posted against
    */
   public boolean save(PSComment comment, PSMember editor, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.editComment(comment, editor, notify, groups).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.patchComment(comment, editor, notify, groups).using(this._session);
     PSCommentHandler handler = new PSCommentHandler(comment);
     PSHTTPResponseInfo info = connector.patch(handler);
     if (info.getStatus() != Status.SUCCESSFUL) return false;
@@ -253,8 +253,6 @@ public final class CommentManager extends Sessionful {
 
   /**
    * Find comments using criteria.
-   * 
-   * <p>This method was previously known as getCommentsByFilter.</p>
    *
    * @param member The member who is trying to access the comments.
    * @param group  The context group
@@ -271,8 +269,6 @@ public final class CommentManager extends Sessionful {
 
   /**
    * Find comments using criteria.
-   * 
-   * <p>This method was previously known as getCommentsByFilter.</p>
    *
    * @param member    The member who is trying to access the comments.
    * @param group     The context group
@@ -294,6 +290,45 @@ public final class CommentManager extends Sessionful {
       cache.put(comment);
     }
     return comments;
+  }
+
+  /**
+   * Find comments using criteria.
+   * 
+   * @deprecated Use {@link #findComments(PSMember, PSGroup,String, String, List<String>)} instead.
+   *
+   * @param member The member who is trying to access the comments.
+   * @param group  The context group
+   * @param title  The comments title (can be <code>null</code>)
+   * @param type   The comments type (can be <code>null</code>)
+   * @param paths  A list of paths of URIs the comments must be attached to (can be <code>null</code>)
+   *
+   * @return the list of comments found (never <code>null</code>)
+   */
+  @Deprecated
+  public List<PSComment> getCommentsByFilter(PSMember member, PSGroup group,
+      String title, String type, List<String> paths) throws APIException {
+    return findComments(member, group, title, type, paths);
+  }
+
+  /**
+   * Find comments using criteria.
+   * 
+   * @deprecated Use {@link #findComments(PSMember, PSGroup,String, String, List<String>, List<String>)} instead.
+   *
+   * @param member    The member who is trying to access the comments.
+   * @param group     The context group
+   * @param title     The comments title (can be <code>null</code>)
+   * @param type      The comments type (can be <code>null</code>)
+   * @param statuses  A list of statuses the comments must have (can be <code>null</code>)
+   * @param paths     A list of paths of URIs the comments must be attached to (can be <code>null</code>)
+   *
+   * @return the list of comments found (never <code>null</code>)
+   */
+  @Deprecated
+  public List<PSComment> getCommentsByFilter(PSMember member, PSGroup group,
+      String title, String type, List<String> statuses, List<String> paths) throws APIException {
+    return findComments(member, group, title, type, statuses, paths);
   }
 
   /**
