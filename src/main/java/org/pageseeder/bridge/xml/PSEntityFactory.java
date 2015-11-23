@@ -330,16 +330,18 @@ public final class PSEntityFactory {
    * created="2014-01-31T16:19:12+11:00"
    *
    * @param atts     The attributes the "uri" element
-   * @param document The PSDocument instance (may be <code>null</code>).
+   * @param document The PSExternalURI instance (may be <code>null</code>).
    *
    * @return The corresponding PSDocument.
    */
   public static PSExternalURI toExternalURI(Attributes atts, PSExternalURI externaluri) {
     String id = atts.getValue("id");
+    String scheme = atts.getValue("scheme");
+    String host = atts.getValue("host");
+    String port = atts.getValue("port");
     String path = atts.getValue("path");
     String description = atts.getValue("description");
     String docid = atts.getValue("docid");
-    String filename = atts.getValue("filename");
     String labels = atts.getValue("labels");
     String title = atts.getValue("title");
     String mediatype = atts.getValue("mediatype");
@@ -350,7 +352,15 @@ public final class PSEntityFactory {
       PSEntityCache<PSExternalURI> cache = ExternalURIManager.getCache();
       u = cache.get(id);
       if (u == null) {
-        u = new PSExternalURI(path);
+        int portnum = 80;
+        if (port != null) {
+          try {
+            portnum = Integer.parseInt(port);
+          } catch (NumberFormatException ex) {
+            // should not happen
+          }
+        }
+        u = new PSExternalURI(scheme, host, portnum, path);
       }
     }
     u.setId(PSHandlers.id(id));

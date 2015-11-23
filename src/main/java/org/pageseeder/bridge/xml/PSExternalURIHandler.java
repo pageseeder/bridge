@@ -18,7 +18,9 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSExternalURI;
+import org.pageseeder.bridge.model.PSFolder;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -43,6 +45,21 @@ public final class PSExternalURIHandler extends DefaultHandler {
   List<PSExternalURI> externaluris = new ArrayList<PSExternalURI>();
 
   /**
+   * State variable, when <code>true</code> the handler should capture character data on the text buffer.
+   */
+  private boolean record = false;
+
+  /**
+   * State variable, when <code>true</code> the handler is within a "uri" element.
+   */
+  private boolean inURI = false;
+
+  /**
+   * State variable, Text buffer.
+   */
+  private StringBuilder buffer = new StringBuilder();
+  
+  /**
    * Create a new handler for external URIs.
    */
   public PSExternalURIHandler() {
@@ -60,19 +77,38 @@ public final class PSExternalURIHandler extends DefaultHandler {
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
     if ("uri".equals(localName)) {
+      this.inURI = true;
       this.externaluri = PSEntityFactory.toExternalURI(atts, this.externaluri);
+    // record element content
+    } else if (this.inURI && "description".equals(localName)
+        || "labels".equals(localName)) {
+      this.buffer.setLength(0);
+      this.record = true;
     }
   }
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if ("uri".equals(localName)) {
-      if (this.externaluri != null) {
-        this.externaluris.add(this.externaluri);
+      this.externaluris.add(this.externaluri);
+      this.inURI = false;
+    } else if (this.inURI) {
+      if ("description".equals(localName)) {
+        this.externaluri.setDescription(this.buffer.toString());
+      } else if ("labels".equals(localName)) {
+        this.externaluri.setLabels(this.buffer.toString());
       }
     }
+    // Stop recording when an element closes
+    this.record = false;
   }
 
+  @Override
+  public void characters(char[] ch, int start, int length) throws SAXException {
+    if (this.record) {
+      this.buffer.append(ch, start, length);
+    }
+  }
   /**
    * @return the list of external URIs
    */

@@ -448,10 +448,12 @@ public final class GroupManager extends Sessionful {
 
   /**
    * Returns the list of projects and groups for the given member.
+   * This is less efficient than findGroups methods.
    *
    * @param member The member making the request.
    * @param nameprefix the prefix of project/group.
-   * @param max the maximum number of group to return.
+   * @param max the maximum number of projects/groups to return.
+   * 
    * @return the list of projects and groups for the given member.
    *
    * @throws APIException
@@ -462,12 +464,14 @@ public final class GroupManager extends Sessionful {
 
   /**
    * Returns the list of projects and groups for the given member.
+   * This is less efficient than findGroups methods.
    *
    * @param member The member making the request.
    * @param nameprefix the prefix of project/group.
-   * @param max the maximum number of group to return.
+   * @param max the maximum number of projects/groups to return.
    * @param showGroup whether to return groups
    * @param showAll Whether to return all projects/groups for server (Administrator only)
+   * 
    * @return the list of projects and groups for the given member.
    *
    * @throws APIException
@@ -483,14 +487,32 @@ public final class GroupManager extends Sessionful {
   }
 
   /**
-   * Returns the list of subgroups for the specified group.
+   * Returns the list of projects and groups (max 1000) for the given member.
+   * This is more efficient than listProjectTree methods.
    *
-   * @param group The group.
+   * @param member      The member
+   * @param nameprefix  The prefix of project/group.
+   * @param includeAll  Whether to return all projects/groups for server (Administrator only)
    *
    * @throws APIException
    */
   public List<PSGroup> findGroups(PSMember member, String prefix, boolean includeAll) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.findProjects(member, prefix, includeAll).using(this._session);
+    return findGroups(member, prefix, 1000, includeAll);
+  }
+
+  /**
+   * Returns the list of projects and groups for the given member.
+   * This is more efficient than listProjectTree methods.
+   *
+   * @param member      The member
+   * @param nameprefix  The prefix of project/group.
+   * @param max         The maximum number of projects/groups to return.
+   * @param includeAll  Whether to return all projects/groups for server (Administrator only)
+   *
+   * @throws APIException
+   */
+  public List<PSGroup> findGroups(PSMember member, String prefix, int max, boolean includeAll) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.findProjects(member, prefix, max, includeAll).using(this._session);
     PSGroupHandler handler = new PSGroupHandler();
     PSHTTPResponseInfo info = connector.get(handler);
     // TODO We should simply return null?

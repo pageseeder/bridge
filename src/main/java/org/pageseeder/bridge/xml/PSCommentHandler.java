@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pageseeder.bridge.model.PSComment;
-import org.pageseeder.bridge.model.PSComment.Author;
+import org.pageseeder.bridge.model.PSComment.Attachment;
 import org.pageseeder.bridge.model.PSDocument;
+import org.pageseeder.bridge.model.PSExternalURI;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
+import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.util.Rules;
 import org.pageseeder.xmlwriter.XMLStringWriter;
 import org.pageseeder.xmlwriter.XMLWriter;
@@ -43,6 +45,11 @@ public final class PSCommentHandler extends DefaultHandler {
    * The current comment being processed.
    */
   private PSComment comment = null;
+  
+  /**
+   * Attachments for current comment
+   */
+  private List<Attachment> attachments = new ArrayList<Attachment>();
 
   /**
    * The list of comments returned by the servlet.
@@ -70,6 +77,16 @@ public final class PSCommentHandler extends DefaultHandler {
   private String fragment = null;
 
   /**
+   * Whether inside author element
+   */
+  private boolean inAuthor = false;
+  
+  /**
+   * Author email (non member)
+   */
+  private String authorEmail = null;
+
+  /**
    * Create a new handler for comments.
    */
   public PSCommentHandler() {
@@ -83,16 +100,6 @@ public final class PSCommentHandler extends DefaultHandler {
   public PSCommentHandler(PSComment comment) {
     this.comment = comment;
   }
-
-  /**
-   * Whether inside author element
-   */
-  private boolean inAuthor = false;
-  
-  /**
-   * Author email (non member)
-   */
-  private String authorEmail = null;
 
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
@@ -136,6 +143,9 @@ public final class PSCommentHandler extends DefaultHandler {
         this.buffer = new StringBuilder();
       }
 
+    } else if ("context".equals(localName)) {
+      this.fragment = atts.getValue("fragment");
+
     } else if ("attachment".equals(localName)) {
       this.attachment = true;
       this.fragment = atts.getValue("fragment");
@@ -145,11 +155,19 @@ public final class PSCommentHandler extends DefaultHandler {
       this.comment.setContext(group);
 
     } else if ("uri".equals(localName)) {
-      PSDocument document = PSEntityFactory.toDocument(atts, null);
-      if (this.attachment) {
-        this.comment.addAttachment(document, this.fragment);
+      PSURI u = null;
+      if ("true".equals(atts.getValue("external"))) {
+        u = PSEntityFactory.toExternalURI(atts, null);
       } else {
-        this.comment.setContext(document);
+        u = PSEntityFactory.toDocument(atts, null);        
+      }
+      if (this.attachment) {
+        Attachment attach = new Attachment(u, this.fragment);
+        this.attachments.add(attach);
+      } else if ("true".equals(atts.getValue("external"))) {
+        this.comment.setContext((PSExternalURI)u, this.fragment);
+      } else {
+        this.comment.setContext((PSDocument)u, this.fragment);        
       }
     }
   }
@@ -158,6 +176,8 @@ public final class PSCommentHandler extends DefaultHandler {
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if ("comment".equals(localName)) {
       if (this.comment != null) {
+        this.comment.setAttachments(this.attachments);
+        this.attachments = null;
         this.comments.add(this.comment);
       }
       this.comment = null;
@@ -182,6 +202,8 @@ public final class PSCommentHandler extends DefaultHandler {
       this.buffer = null;
       this.xmlContent = null;
 
+    } else if ("context".equals(localName)) {
+      this.fragment = null;
     } else if ("attachment".equals(localName)) {
       this.attachment = false;
       this.fragment = null;

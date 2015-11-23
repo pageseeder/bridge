@@ -731,17 +731,20 @@ public final class PSHTTPConnectors {
   /**
    * List the projects for the specified member.
    *
-   * @param member  the member
-   * @param includeAll if <code>true</code>, all the projects are listed (only for admins)
+   * @param member       The member
+   * @param nameprefix   The prefix of project/group.
+   * @param max          The maximum number of projects/groups to return.
+   * @param includeAll   If <code>true</code>, all the projects are listed (only for admins)
    *
    * @return The corresponding connector
    *
    * @throws FailedPrecondition If either the member is not identifiable.
    */
-  public static PSHTTPConnector findProjects(PSMember member, String prefix, boolean includeAll) throws FailedPrecondition {
+  public static PSHTTPConnector findProjects(PSMember member, String prefix, int max, boolean includeAll) throws FailedPrecondition {
     Preconditions.isIdentifiable(member, "member");
     String service = Services.toProjectsFind(member.getIdentifier());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    connector.addParameter("pagesize", String.valueOf(max));
     if (prefix != null) {
       connector.addParameter("nameprefix", prefix);
     }
@@ -1548,11 +1551,11 @@ public final class PSHTTPConnectors {
           }
         } else {
           if (urls.length() > 0) {
-            uris.append(',');
+            urls.append(',');
           }
           urls.append(uri.getURL());
           if (attachment.fragment() != null) {
-            uris.append('#').append(attachment.fragment());
+            urls.append('#').append(attachment.fragment());
           }
         }
       }
@@ -1897,8 +1900,10 @@ public final class PSHTTPConnectors {
     // document properties
     String url = externaluri.getURL();
     connector.addParameter("url", url);
-    connector.addParameter("mediatype", externaluri.getMediaType());
     connector.addParameter("labels", externaluri.getLabelsAsString());
+    if (externaluri.getMediaType() != null) {
+      connector.addParameter("mediatype", externaluri.getMediaType());
+    }
     if (externaluri.getTitle() != null) {
       connector.addParameter("title", externaluri.getTitle());
     }

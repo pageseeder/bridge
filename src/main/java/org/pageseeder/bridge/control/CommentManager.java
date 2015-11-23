@@ -225,8 +225,11 @@ public final class CommentManager extends Sessionful {
    */
   public boolean replyToComment(PSComment comment, PSNotify notify, List<PSGroup> groups, long xlink) throws FailedPrecondition, APIException {
     PSHTTPConnector connector = PSHTTPConnectors.replyToComment(comment, notify, groups, xlink).using(this._session);
-    PSHTTPResponseInfo info = connector.post();
-    return info.getStatus() == Status.SUCCESSFUL;
+    PSCommentHandler handler = new PSCommentHandler(comment);
+    PSHTTPResponseInfo info = connector.post(handler);
+    if (info.getStatus() != Status.SUCCESSFUL) return false;
+    cache.put(comment);
+    return true;
   }
 
   /**

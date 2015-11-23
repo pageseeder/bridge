@@ -245,7 +245,7 @@ public final class PSComment implements PSEntity {
    */
   public void setLabels(String labels) {
     if (labels == null) return;
-    this.labels.clear();
+    this.labels = new ArrayList<String>();
     for (String label : labels.split(",")) {
       this.labels.add(label);
     }
@@ -417,6 +417,18 @@ public final class PSComment implements PSEntity {
    */
   public void setContext(PSDocument document, String fragment) {
     this.context = new Context(document, fragment);
+  }
+
+  /**
+   * Set the context as an external URI fragment.
+   *
+   * <p>Implementation note: This method creates a new context instance.
+   *
+   * @param externaluri The external URI to use as context
+   * @param fragment    The external URI fragment to use as context
+   */
+  public void setContext(PSExternalURI externaluri, String fragment) {
+    this.context = new Context(externaluri, fragment);
   }
 
   // Task attributes
