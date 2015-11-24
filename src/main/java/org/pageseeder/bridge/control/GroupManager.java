@@ -452,7 +452,7 @@ public final class GroupManager extends Sessionful {
    *
    * @param member The member making the request.
    * @param nameprefix the prefix of project/group.
-   * @param max the maximum number of projects/groups to return.
+   * @param max the maximum number of projects/groups to return (may be more results as ancestors are added).
    * 
    * @return the list of projects and groups for the given member.
    *
@@ -468,7 +468,7 @@ public final class GroupManager extends Sessionful {
    *
    * @param member The member making the request.
    * @param nameprefix the prefix of project/group.
-   * @param max the maximum number of projects/groups to return.
+   * @param max the maximum number of projects/groups to return (may be more results as ancestors are added).
    * @param showGroup whether to return groups
    * @param showAll Whether to return all projects/groups for server (Administrator only)
    * 

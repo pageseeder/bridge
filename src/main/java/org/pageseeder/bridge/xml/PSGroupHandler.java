@@ -48,8 +48,14 @@ public final class PSGroupHandler extends PSEntityHandler<PSGroup> {
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
     if ("group".equals(localName)) {
+      // save parent project (for tree)
+      if (this.tempGroup != null)
+        this._items.add(this.tempGroup);
       this.tempGroup = make(atts, this.current);
     } else if ("project".equals(localName)) {
+      // save parent project (for tree)
+      if (this.tempGroup != null)
+        this._items.add(this.tempGroup);
       this.tempGroup = PSEntityFactory.toProject(atts, this.current);
     }
   }
