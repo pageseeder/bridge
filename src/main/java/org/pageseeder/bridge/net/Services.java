@@ -982,10 +982,35 @@ public final class Services {
    * @param member the member id
    * @param group  the group name or id
    *
-   * @return <code>/groups/[group]/uris/[uri]</code>.
+   * @return <code>/members/[member]/groups/[group]/uris/[uri]</code>.
    */
   public static String toCreateExternalURIService(String member, String group) {
     return "/members/" + prefixMember(member) + "/groups/" + prefixGroup(group) + "/externaluris";
+  }
+
+  /**
+   * Returns the URL to create an XRef.
+   *
+   * @param member       the member id
+   * @param group        the group name or id
+   * @param sourceURIId  the source URI id
+   *
+   * @return <code>/members/[member]/groups/[group]/uris/[uri]/xrefs</code>.
+   */
+  public static String toCreateXRef(String member, String group, Long sourceURIId) {
+    return "/members/" + prefixMember(member) + "/groups/" + prefixGroup(group) + "/uris" + sourceURIId + "/xrefs";
+  }
+
+  /**
+   * Returns the URL to list XRefs.
+   *
+   * @param group        the group name or id
+   * @param uriid        the URI id
+   *
+   * @return <code>/groups/[group]/uris/[uri]/xrefs</code>.
+   */
+  public static String toListXRefs(String group, Long uriid) {
+    return "/groups/" + prefixGroup(group) + "/uris" + uriid + "/xrefs";
   }
 
   // /members/{member:member}/groups/{group:group}/externaluris/{uri:uri}

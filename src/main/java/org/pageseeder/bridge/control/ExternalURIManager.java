@@ -28,7 +28,7 @@ import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
 import org.pageseeder.bridge.xml.PSExternalURIHandler;
 
 /**
- * A manager for documents and folders (based on PageSeeder URIs).
+ * A manager for external URIs (based on PageSeeder URIs).
  *
  * @author Christophe Lauret
  * @author Jean-Baptiste Reure

@@ -46,6 +46,7 @@ import org.pageseeder.bridge.model.PSResource;
 import org.pageseeder.bridge.model.PSRole;
 import org.pageseeder.bridge.model.PSThreadStatus;
 import org.pageseeder.bridge.model.PSURI;
+import org.pageseeder.bridge.model.PSXRef;
 import org.pageseeder.bridge.model.PasswordResetOptions;
 import org.pageseeder.bridge.psml.PSMLFragment;
 
@@ -1916,6 +1917,60 @@ public final class PSHTTPConnectors {
     if (externaluri.isFolder()) {
       connector.addParameter("folder", "true");
     }
+    return connector;
+  }
+
+  // XRefs
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Create an XRef.
+   *
+   * @param xref        the XRef to create
+   * @param group       the group where it should be created
+   * @param creator     the member who creates it.
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition Should any precondition fail.
+   */
+  public static PSHTTPConnector createXRef(PSXRef xref, PSGroup group, PSMember creator)
+      throws FailedPrecondition {
+    Preconditions.isNotNull(xref, "xref");
+    Preconditions.isNotNull(xref.getSourceURIId(), "source URI Id");
+    Preconditions.isNotNull(xref.getTargetURIId(), "target URI Id");
+    Preconditions.isNotNull(xref.getDisplay(), "display");
+    Preconditions.isIdentifiable(group, "group");
+    Preconditions.isIdentifiable(creator, "member");
+    String service = Services.toCreateXRef(creator.getIdentifier(), group.getIdentifier(), xref.getSourceURIId());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+
+    // document properties
+    connector.addParameter("targeturi", Long.toString(xref.getTargetURIId()));
+    connector.addParameter("labels", xref.getLabelsAsString());
+    connector.addParameter("display", xref.getDisplay().toString());
+    if (xref.getTitle() != null) {
+      connector.addParameter("title", xref.getTitle());
+    }
+    return connector;
+  }
+
+  /**
+   * List XRefs for a URI.
+   *
+   * @param group       the group for xrefs
+   * @param uri         the URI
+   *
+   * @return The corresponding connector
+   *
+   * @throws FailedPrecondition Should any precondition fail.
+   */
+  public static PSHTTPConnector listXRefs(PSGroup group, PSURI uri)
+      throws FailedPrecondition {
+    Preconditions.isIdentifiable(group, "group");
+    Preconditions.isNotNull(uri.getId(), "uri id");
+    String service = Services.toListXRefs(group.getIdentifier(), uri.getId());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     return connector;
   }
 

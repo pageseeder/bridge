@@ -108,4 +108,9 @@ public enum EntityValidity {
    */
   DETAIL_FIELD_VALUE_IS_TOO_LONG,
 
+  /**
+   * The XRef of type IMAGE must target an image.
+   */
+  IMAGE_XREF_TARGET_NOT_IMAGE
+
 }
