@@ -1924,54 +1924,44 @@ public final class PSHTTPConnectors {
   // ----------------------------------------------------------------------------------------------
 
   /**
-   * Create an XRef.
-   *
-   * @param xref        the XRef to create
-   * @param group       the group where it should be created
-   * @param creator     the member who creates it.
-   *
-   * @return The corresponding connector
-   *
-   * @throws FailedPrecondition Should any precondition fail.
-   */
-  public static PSHTTPConnector createXRef(PSXRef xref, PSGroup group, PSMember creator)
-      throws FailedPrecondition {
-    Preconditions.isNotNull(xref, "xref");
-    Preconditions.isNotNull(xref.getSourceURIId(), "source URI Id");
-    Preconditions.isNotNull(xref.getTargetURIId(), "target URI Id");
-    Preconditions.isNotNull(xref.getDisplay(), "display");
-    Preconditions.isIdentifiable(group, "group");
-    Preconditions.isIdentifiable(creator, "member");
-    String service = Services.toCreateXRef(creator.getIdentifier(), group.getIdentifier(), xref.getSourceURIId());
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
-
-    // document properties
-    connector.addParameter("targeturi", Long.toString(xref.getTargetURIId()));
-    connector.addParameter("labels", xref.getLabelsAsString());
-    connector.addParameter("display", xref.getDisplay().toString());
-    if (xref.getTitle() != null) {
-      connector.addParameter("title", xref.getTitle());
-    }
-    return connector;
-  }
-
-  /**
    * List XRefs for a URI.
    *
-   * @param group       the group for xrefs
-   * @param uri         the URI
+   * @param group          the group for xrefs
+   * @param uri            the URI
+   * @param includetypes   list of types of XRef to includes (null means all)
+   * @param forward        whether to include forward XRefs
+   * @param reverse        whether to include reverse XRefs
+   * @param version        version of document (null means current)
+   * @param page           the page to load
+   * @param pagesize       the number of results per page
    *
    * @return The corresponding connector
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector listXRefs(PSGroup group, PSURI uri)
+  public static PSHTTPConnector listXRefs(PSGroup group, PSURI uri, List<PSXRef.TYPE> includetypes, 
+      boolean forward, boolean reverse, String version, int page, int pagesize)
       throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
     Preconditions.isNotNull(uri.getId(), "uri id");
     String service = Services.toListXRefs(group.getIdentifier(), uri.getId());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
-    return connector;
+    connector.addParameter("forward", Boolean.toString(forward));
+    connector.addParameter("reverse", Boolean.toString(reverse));
+    connector.addParameter("page", Integer.toString(page));
+    connector.addParameter("pagesize", Integer.toString(pagesize));
+    if (includetypes != null) {
+      String types = "";
+      for (int i = 0; i < includetypes.size(); i++) {
+        if (i != 0 ) types += ",";
+        types += includetypes.get(i).toString();
+      }
+      connector.addParameter("includetypes", types);
+    }
+    if (version != null) {
+      connector.addParameter("version", version);
+    }
+   return connector;
   }
 
   // Documents

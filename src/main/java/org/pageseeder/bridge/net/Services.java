@@ -989,19 +989,6 @@ public final class Services {
   }
 
   /**
-   * Returns the URL to create an XRef.
-   *
-   * @param member       the member id
-   * @param group        the group name or id
-   * @param sourceURIId  the source URI id
-   *
-   * @return <code>/members/[member]/groups/[group]/uris/[uri]/xrefs</code>.
-   */
-  public static String toCreateXRef(String member, String group, Long sourceURIId) {
-    return "/members/" + prefixMember(member) + "/groups/" + prefixGroup(group) + "/uris" + sourceURIId + "/xrefs";
-  }
-
-  /**
    * Returns the URL to list XRefs.
    *
    * @param group        the group name or id

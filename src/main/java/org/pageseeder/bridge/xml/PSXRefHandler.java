@@ -18,6 +18,9 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pageseeder.bridge.model.PSDocument;
+import org.pageseeder.bridge.model.PSFolder;
+import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.model.PSXRef;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -30,6 +33,11 @@ import org.xml.sax.helpers.DefaultHandler;
  * @version 0.8.1
  */
 public final class PSXRefHandler extends DefaultHandler {
+  
+  /**
+   * The context URI
+   */
+  private PSURI uri = null;
 
   /**
    * The current XRef being processed.
@@ -68,11 +76,21 @@ public final class PSXRefHandler extends DefaultHandler {
 
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
-    if ("xref".equals(localName) || "blockxref".equals(localName)) {
-      this.xref = PSEntityFactory.toXRef(atts, new PSXRef(PSXRef.ELEMENT.fromString(localName)));
+    if ("uri".equals(localName)) {
+      if ("true".equals(atts.getValue("external"))) {
+        this.uri = PSEntityFactory.toExternalURI(atts, null);
+      } else if ("folder".equals(atts.getValue("mediatype"))) {
+        this.uri = PSEntityFactory.toFolder(atts, null);
+      } else {
+        this.uri = PSEntityFactory.toDocument(atts, null);
+      }
+    } else if ("xref".equals(localName) || "blockxref".equals(localName)) {
+      this.xref = PSEntityFactory.toXRef(atts, this.uri, null);
       // record element content
       this.buffer.setLength(0);
       this.record = true;
+    } else if ("reversexref".equals(localName)) {
+      this.xref = PSEntityFactory.toReverseXRef(atts, this.uri, null);
     }
   }
 
@@ -80,6 +98,8 @@ public final class PSXRefHandler extends DefaultHandler {
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if ("xref".equals(localName) || "blockxref".equals(localName)) {
       this.xref.setContent(this.buffer.toString());
+      this.xrefs.add(this.xref);
+    } else if ("reversexref".equals(localName)) {
       this.xrefs.add(this.xref);
     }
     // Stop recording when an element closes

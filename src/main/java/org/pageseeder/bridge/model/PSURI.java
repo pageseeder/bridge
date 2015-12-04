@@ -15,6 +15,8 @@
  */
 package org.pageseeder.bridge.model;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -132,6 +134,26 @@ public abstract class PSURI extends PSAddressable {
     return this.title;
   }
 
+  /**
+   * The display title is the title if it's specified,
+   * otherwise the url if it's external or else the filename..
+   * 
+   * @return this URI's display title
+   */
+  public String getDisplayTitle() {
+    if (this.title != null && !this.title.trim().isEmpty())
+      return this.title;
+    String path = getPath();
+    if (path == null) return "";
+    try {
+      path = URLDecoder.decode(path, "utf-8");
+    } catch (UnsupportedEncodingException ex) {
+      // Should not happen
+    }
+    if (path.indexOf('/') == -1) return path;
+    return path.substring(path.lastIndexOf('/')+1);
+  }
+  
   /**
    * @return the created date
    */

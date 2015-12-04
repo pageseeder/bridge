@@ -54,32 +54,15 @@ public final class XRefManager extends Sessionful {
   }
 
   /**
-   * Create the specified XRef in PageSeeder.
-   *
-   * @param xref        The XRef to create
-   * @param group       The group the external URI is part of
-   * @param creator     The member creating the external URI
-   *
-   * @return <code>true</code> if the xref was created.
-   */
-  public boolean create(PSXRef xref, PSGroup group, PSMember creator)
-      throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createXRef(xref, group, creator).using(this._session);
-    PSXRefHandler handler = new PSXRefHandler(xref);
-    PSHTTPResponseInfo info = connector.post(handler);
-    return info.getStatus() == Status.SUCCESSFUL;
-  }
-
-  /**
-   * List forward XRefs for a URI.
+   * List forward XRefs for a URI (up to 1000).
    *
    * @param group     The context group
    * @param uri       The URI
    *
    * @return the list of XRefs found (never <code>null</code>)
    */
-  public List<PSXRef> findComments(PSGroup group, PSURI uri) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.listXRefs(group, uri).using(this._session);
+  public List<PSXRef> listXRefs(PSGroup group, PSURI uri) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.listXRefs(group, uri, null, true, false, null, 1, 1000).using(this._session);
     PSXRefHandler handler = new PSXRefHandler();
     connector.get(handler);
     List<PSXRef> xrefs = handler.listXRefs();
@@ -89,7 +72,35 @@ public final class XRefManager extends Sessionful {
     }
     return xrefs;
   }
-  
+
+  /**
+   * List XRefs for a URI.
+   *
+   * @param group          The context group
+   * @param uri            The URI
+   * @param includetypes   list of types of XRef to includes (null means all)
+   * @param forward        whether to include forward XRefs
+   * @param reverse        whether to include reverse XRefs
+   * @param version        version of document (null means current)
+   * @param page           the page to load
+   * @param pagesize       the number of results per page
+   * 
+   * @return the list of XRefs found (never <code>null</code>)
+   */
+  public List<PSXRef> listXRefs(PSGroup group, PSURI uri, List<PSXRef.TYPE> includetypes, 
+      boolean forward, boolean reverse, String version, int page, int pagesize) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.listXRefs(group, uri, includetypes, 
+        forward, reverse, version, page, pagesize).using(this._session);
+    PSXRefHandler handler = new PSXRefHandler();
+    connector.get(handler);
+    List<PSXRef> xrefs = handler.listXRefs();
+    // store them for later TODO??
+    for (PSXRef xref : xrefs) {
+      cache.put(xref);
+    }
+    return xrefs;
+  }
+
   /**
    * @return the internal cache used for the external URIs.
    */

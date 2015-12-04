@@ -16,7 +16,6 @@
 package org.pageseeder.bridge.xml;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 
 import org.pageseeder.berlioz.util.ISO8601;
@@ -39,6 +38,7 @@ import org.pageseeder.bridge.model.PSMembership;
 import org.pageseeder.bridge.model.PSNotification;
 import org.pageseeder.bridge.model.PSProject;
 import org.pageseeder.bridge.model.PSRole;
+import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.model.PSXRef;
 import org.xml.sax.Attributes;
 
@@ -501,28 +501,30 @@ public final class PSEntityFactory {
   /**
    * Generates the xref object from the attributes of an "xref" or "blockxref" element.
    *
-   * @param atts   the attributes of the element.
-   * @param xref   an existing xref instance to reuse.
+   * @param atts    the attributes of the element.
+   * @param source  the source URI.
+   * @param xref    an existing xref instance to reuse.
    *
    * @return The group folder instance.
    */
-  public static PSXRef toXRef(Attributes atts, PSXRef xref) {
+  public static PSXRef toXRef(Attributes atts, PSURI source, PSXRef xref) {
 
     String id = atts.getValue("id");
     String targetDocid      = atts.getValue("docid");
     String targetURIId      = atts.getValue("uriid");
     String targetFragment   = atts.getValue("frag");
+    String targetURITitle   = atts.getValue("urititle");
+    String targetMediaType  = atts.getValue("mediatype");
     PSXRef.TYPE type        = PSXRef.TYPE.fromString(atts.getValue("type"));
     boolean reverseLink     = !"false".equals(atts.getValue("reverselink"));
     String reverseTitle     = atts.getValue("reversetitle");
+    String sourceFragment   = atts.getValue("reversefrag");
     PSXRef.TYPE reverseType = PSXRef.TYPE.fromString(atts.getValue("reversetype"));
     String title            = atts.getValue("title");
     PSXRef.DISPLAY display  = PSXRef.DISPLAY.fromString(atts.getValue("display"));
     String labels           = atts.getValue("labels") == null ? "" : atts.getValue("labels");
     String level            = atts.getValue("level");
     String targetHref       = atts.getValue("href");
-    // strip starting './' and query string (anything after '?')
-    if (targetHref != null) targetHref = targetHref.replaceAll("(^\\./)|(\\?.*?$)", "");   
 
     PSXRef x = xref;
     if (x == null) {
@@ -534,8 +536,12 @@ public final class PSEntityFactory {
     }
 
     x.setId(PSHandlers.id(id));
+    x.setSourceURI(source);
+    x.setSourceFragment(sourceFragment);
     x.setTargetDocid(targetDocid);
     x.setTargetURIId(PSHandlers.id(targetURIId));
+    x.setTargetURITitle(targetURITitle);
+    x.setTargetMediaType(targetMediaType);
     x.setTargetFragment(targetFragment);
     x.setType(type);
     x.setReverseLink(reverseLink);
@@ -546,6 +552,63 @@ public final class PSEntityFactory {
     x.setLabels(labels);
     x.setLevel(level);
     x.setTargetHref(targetHref);
+    return x;
+  }
+
+  /**
+   * Generates the xref object from the attributes of a "reversexref" element.
+   *
+   * @param atts    the attributes of the element.
+   * @param target  the source URI.
+   * @param xref    an existing xref instance to reuse.
+   *
+   * @return The group folder instance.
+   */
+  public static PSXRef toReverseXRef(Attributes atts, PSURI target, PSXRef xref) {
+
+    String id = atts.getValue("id");
+    String sourceDocId      = atts.getValue("docid");    
+    String sourceURIId      = atts.getValue("uriid");    
+    String sourceFragment   = atts.getValue("frag");
+    String sourceURITitle   = atts.getValue("urititle");
+    String sourceMediaType  = atts.getValue("mediatype");
+    boolean reverseLink = true;
+    PSXRef.TYPE reverseType = PSXRef.TYPE.fromString(atts.getValue("type"));
+    String reverseTitle = atts.getValue("title");
+    PSXRef.TYPE type = PSXRef.TYPE.fromString(atts.getValue("forwardtype"));
+    String title            = atts.getValue("forwardtitle");
+    String targetFragment   = atts.getValue("forwardfrag");
+    PSXRef.DISPLAY display  = PSXRef.DISPLAY.fromString(atts.getValue("forwarddisplay"));
+    String labels           = atts.getValue("labels") == null ? "" : atts.getValue("labels");
+    String level            = atts.getValue("level");
+    String sourceHref      = atts.getValue("href");
+
+    PSXRef x = xref;
+    if (x == null) {
+      PSEntityCache<PSXRef> cache = XRefManager.getCache();
+      x = cache.get(id);
+      if (x == null) {
+        x = new PSXRef();
+      }
+    }
+
+    x.setId(PSHandlers.id(id));
+    x.setTargetURI(target);
+    x.setTargetFragment(targetFragment);
+    x.setSourceDocid(sourceDocId);
+    x.setSourceURIId(PSHandlers.id(sourceURIId));
+    x.setSourceURITitle(sourceURITitle);
+    x.setSourceMediaType(sourceMediaType);
+    x.setSourceFragment(sourceFragment);
+    x.setType(type);
+    x.setReverseLink(reverseLink);
+    x.setReverseTitle(reverseTitle);
+    x.setReverseType(reverseType);
+    x.setTitle(title);
+    x.setDisplay(display);
+    x.setLabels(labels);
+    x.setLevel(level);
+    x.setSourceHref(sourceHref);
     return x;
   }
 

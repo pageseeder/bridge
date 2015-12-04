@@ -15,6 +15,9 @@
  */
 package org.pageseeder.bridge.model;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.PSEntity;
 
@@ -63,6 +66,24 @@ public final class PSExternalURI extends PSURI implements PSEntity {
    */
   public PSExternalURI(String scheme, String host, int port, String path) {
     super(scheme, host, port, path);
+  }
+
+  /**
+   * The display title is the title if it's specified,
+   * otherwise the url if it's external or else the filename..
+   * 
+   * @return this URI's display title
+   */
+  public String getDisplayTitle() {
+    String title = getTitle();
+    if (title != null && !title.trim().isEmpty())
+      return title;   
+    try {
+      return URLDecoder.decode(getURL(), "utf-8");
+    } catch (UnsupportedEncodingException ex) {
+      // Should not happen
+    }
+    return "";
   }
 
   /**

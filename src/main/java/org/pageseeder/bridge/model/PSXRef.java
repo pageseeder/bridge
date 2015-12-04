@@ -33,47 +33,6 @@ public final class PSXRef implements PSEntity {
   private static final long serialVersionUID = 1L;
 
   /**
-   * XRef XML element.
-   */
-  public static enum ELEMENT {
-    /** xref */
-    XREF,
-    /** reversexref */
-    REVERSEXREF,
-    /** blockxref */
-    BLOCKXREF,
-    /** image */
-    IMAGE;
-    
-    /**
-     * Create the element from the PSML element.
-     * 
-     * @param name the element name
-     * @return the type
-     */
-    public static ELEMENT fromString(String name) {
-      if ("xref".equalsIgnoreCase(name))        return XREF;
-      if ("reversexref".equalsIgnoreCase(name)) return REVERSEXREF;
-      if ("blockxref".equalsIgnoreCase(name))   return BLOCKXREF;
-      if ("image".equalsIgnoreCase(name))       return IMAGE;
-      return XREF;
-    }
-    
-    /**
-     * Convert the type to the element name.
-     * 
-     * @return the element name
-     */
-    public String toString() {
-      if (this == BLOCKXREF)   return "blockxref";
-      if (this == XREF)        return "xref";
-      if (this == REVERSEXREF) return "reversexref";
-      if (this == IMAGE)       return "image";
-      return "xref"; // default to xref
-    }
-  };
-
-  /**
    * XRef titles to display.
    */
   public static enum DISPLAY {
@@ -124,7 +83,9 @@ public final class PSXRef implements PSEntity {
     /** embed */
     EMBED,
     /** transclude */
-    TRANSCLUDE;
+    TRANSCLUDE,
+    /** image **/
+    IMAGE;
     
     /**
      * Create the type from a string.
@@ -137,6 +98,7 @@ public final class PSXRef implements PSEntity {
       if ("none".equalsIgnoreCase(value))        return NONE;
       if ("embed".equalsIgnoreCase(value))       return EMBED;
       if ("transclude".equalsIgnoreCase(value))  return TRANSCLUDE;
+      if ("image".equalsIgnoreCase(value))       return IMAGE;
       return NONE;
     }
     
@@ -149,14 +111,10 @@ public final class PSXRef implements PSEntity {
       if (this == NONE)         return "none";
       if (this == EMBED)        return "embed";
       if (this == TRANSCLUDE)   return "transclude";
+      if (this == IMAGE)        return "image";
       return "none"; // default to document
     }
   };
-
-  /**
-   * The XML element for the XRef
-   */
-  private ELEMENT element;
 
   /**
    * The XRef ID
@@ -164,17 +122,12 @@ public final class PSXRef implements PSEntity {
   private Long id;
 
   /**
-   * The source document.
-   */
-  private PSURI sourceURI;
-
-  /**
    * The ID of the source document.
    */
   private Long sourceURIId;
 
   /**
-   * The fragment source.
+   * The source fragment.
    */
   private String sourceFragment;
 
@@ -184,9 +137,19 @@ public final class PSXRef implements PSEntity {
   private String sourceURITitle;
 
   /**
-   * The target document.
+   * The Document ID of the source document.
    */
-  private PSURI targetURI;
+  private String sourceDocid;
+
+  /**
+   * The source document media type
+   */
+  private String sourceMediaType;
+
+  /**
+   * The href pointing to the source document.
+   */
+  private String sourceHref;
 
   /**
    * The ID of the target document.
@@ -202,6 +165,11 @@ public final class PSXRef implements PSEntity {
    * The Document ID of the target document.
    */
   private String targetDocid;
+
+  /**
+   * The target document media type
+   */
+  private String targetMediaType;
 
   /**
    * The href pointing to the target document.
@@ -265,15 +233,6 @@ public final class PSXRef implements PSEntity {
   }
 
   /**
-   * Constructor
-   * 
-   * @type the xref element
-   */
-  public PSXRef(ELEMENT element) {
-    this.element = element;
-  }
-  
-  /**
    * @return the id
    */
   @Override
@@ -304,27 +263,11 @@ public final class PSXRef implements PSEntity {
   @Override
   public EntityValidity checkValid() {
     // image xrefs must point to an image
-    if (this.targetURI != null && this.element == ELEMENT.IMAGE) {
-      if (this.targetURI.getMediaType() == null || !this.targetURI.getMediaType().startsWith("image/")) {
-        return EntityValidity.IMAGE_XREF_TARGET_NOT_IMAGE;    
-      }      
-    }
+    if (this.type == TYPE.IMAGE && this.targetMediaType != null && !this.targetMediaType.startsWith("image/")) {
+      return EntityValidity.IMAGE_XREF_TARGET_NOT_IMAGE;
+    }      
     // TODO More constraints on xref type, etc.
     return EntityValidity.OK;
-  }
-  
-  /**
-   * @return the element for the XRef
-   */
-  public ELEMENT getElement() {
-    return this.element;
-  }
-  
-  /**
-   * @return the target URI.
-   */
-  public PSURI getTargetURI() {
-    return this.targetURI;
   }
 
   /**
@@ -342,10 +285,10 @@ public final class PSXRef implements PSEntity {
   }
 
   /**
-   * @return The source document.
+   * @return the target Media Type
    */
-  public PSURI getSourceURI() {
-    return this.sourceURI;
+  public String getTargetMediaType() {
+    return targetMediaType;
   }
 
   /**
@@ -360,6 +303,27 @@ public final class PSXRef implements PSEntity {
    */
   public String getSourceURITitle() {
     return this.sourceURITitle;
+  }
+
+  /**
+   * @return the source Media Type
+   */
+  public String getSourceMediaType() {
+    return sourceMediaType;
+  }
+
+  /**
+   * @return the sourceDocid
+   */
+  public String getSourceDocid() {
+    return sourceDocid;
+  }
+
+  /**
+   * @return the source Href
+   */
+  public String getSourceHref() {
+    return sourceHref;
   }
 
   /**
@@ -412,14 +376,14 @@ public final class PSXRef implements PSEntity {
   }
 
   /**
-   * @return the targetDocid
+   * @return the target Docid
    */
   public String getTargetDocid() {
     return targetDocid;
   }
 
   /**
-   * @return the targetHref
+   * @return the target Href
    */
   public String getTargetHref() {
     return targetHref;
@@ -468,10 +432,14 @@ public final class PSXRef implements PSEntity {
   }
 
   /**
-   * @param turi the new target URI
+   * @param targetURI  the new target URI
    */
-  public void setTargetURI(PSURI turi) {
-    this.targetURI = turi;
+  public void setTargetURI(PSURI targetURI) {
+    this.targetDocid = targetURI.getDocid();
+    this.targetURIId = targetURI.getId();
+    this.targetURITitle = targetURI.getDisplayTitle();
+    this.targetMediaType = targetURI.getMediaType();
+    this.targetHref = (targetURI instanceof PSExternalURI) ? targetURI.getURL() : targetURI.getPath();
   }
 
   /**
@@ -500,13 +468,6 @@ public final class PSXRef implements PSEntity {
   }
 
   /**
-   * @param element the element to set
-   */
-  public void setElement(ELEMENT element) {
-    this.element = element;
-  }
-
-  /**
    * @param id the id to set
    */
   public void setId(Long id) {
@@ -517,7 +478,11 @@ public final class PSXRef implements PSEntity {
    * @param sourceURI the source URI to set
    */
   public void setSourceURI(PSURI sourceURI) {
-    this.sourceURI = sourceURI;
+    this.sourceDocid = sourceURI.getDocid();
+    this.sourceURIId = sourceURI.getId();
+    this.sourceURITitle = sourceURI.getDisplayTitle();
+    this.sourceMediaType = sourceURI.getMediaType();
+    this.sourceHref = (sourceURI instanceof PSExternalURI) ? sourceURI.getURL() : sourceURI.getPath();
   }
 
   /**
@@ -539,6 +504,20 @@ public final class PSXRef implements PSEntity {
    */
   public void setSourceURITitle(String sourceURITitle) {
     this.sourceURITitle = sourceURITitle;
+  }
+
+  /**
+   * @param sourceDocid the source Docid to set
+   */
+  public void setSourceDocid(String sourceDocid) {
+    this.targetDocid = sourceDocid;
+  }
+
+  /**
+   * @param sourceHref the source Href to set
+   */
+  public void setSourceHref(String sourceHref) {
+    this.sourceHref = sourceHref;
   }
 
   /**
@@ -618,10 +597,30 @@ public final class PSXRef implements PSEntity {
     this.reverseType = reverseType;
   }
 
+  /**
+   * @param sourceMediaType the source Media Type to set
+   */
+  public void setSourceMediaType(String sourceMediaType) {
+    this.sourceMediaType = sourceMediaType;
+  }
+
+  /**
+   * @param targetMediaType the target Media Type to set
+   */
+  public void setTargetMediaType(String targetMediaType) {
+    this.targetMediaType = targetMediaType;
+  }
+
+  /**
+   * @param labels the labels to set
+   */
+  public void setLabels(List<String> labels) {
+    this.labels = labels;
+  }
+
   @Override
   public String toString() {
-    return (this.element)
-      + "(target_urititle = " + this.targetURITitle
+    return "XRef(target_urititle = " + this.targetURITitle
       + ", target_uriid = " + this.targetURIId
       + ", target_frag = " + this.targetFragment
       + ", target_docid = " + this.targetDocid
