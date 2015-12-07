@@ -67,10 +67,9 @@ public final class PSXRef implements PSEntity {
      */
     public String toString() {
       if (this == MANUAL)            return "manual";
-      if (this == DOCUMENT)          return "document";
       if (this == DOCUMENT_FRAGMENT) return "document+fragment";
       if (this == DOCUMENT_MANUAL)   return "document+manual";
-      return "document"; // default to document
+      return "document";
     }
   };
 
@@ -108,11 +107,10 @@ public final class PSXRef implements PSEntity {
      * @return the string
      */
     public String toString() {
-      if (this == NONE)         return "none";
       if (this == EMBED)        return "embed";
       if (this == TRANSCLUDE)   return "transclude";
       if (this == IMAGE)        return "image";
-      return "none"; // default to document
+      return "none";
     }
   };
 
@@ -220,11 +218,6 @@ public final class PSXRef implements PSEntity {
    * The XRef's labels.
    */
   private List<String> labels;
-
-  /**
-   * The content of the xref element.
-   */
-  private String content;
 
   /**
    * Constructor
@@ -428,7 +421,13 @@ public final class PSXRef implements PSEntity {
    * @return the content of the XRef.
    */
   public String getContent() {
-    return this.content;
+    if (this.display == DISPLAY.MANUAL)
+      return this.title;
+    if (this.display == DISPLAY.DOCUMENT_FRAGMENT)
+      return this.targetURITitle + ": " + this.targetFragment;
+    if (this.display == DISPLAY.DOCUMENT_MANUAL)
+      return this.targetURITitle + ": " + this.title;
+    return this.targetURITitle;
   }
 
   /**
@@ -447,13 +446,6 @@ public final class PSXRef implements PSEntity {
    */
   public void setTitle(String title) {
     this.title = "".equals(title) ? null : title;
-  }
-
-  /**
-   * @param cont the content to set
-   */
-  public void setContent(String cont) {
-    this.content = cont;
   }
 
   /**

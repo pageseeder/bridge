@@ -18,8 +18,6 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pageseeder.bridge.model.PSDocument;
-import org.pageseeder.bridge.model.PSFolder;
 import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.model.PSXRef;
 import org.xml.sax.Attributes;
@@ -48,16 +46,6 @@ public final class PSXRefHandler extends DefaultHandler {
    * The list of XRefs returned by the service.
    */
   List<PSXRef> xrefs = new ArrayList<PSXRef>();
-
-  /**
-   * State variable, when <code>true</code> the handler should capture character data on the text buffer.
-   */
-  private boolean record = false;
-
-  /**
-   * State variable, Text buffer.
-   */
-  private StringBuilder buffer = new StringBuilder();
   
   /**
    * Create a new handler for external URIs.
@@ -86,9 +74,6 @@ public final class PSXRefHandler extends DefaultHandler {
       }
     } else if ("xref".equals(localName) || "blockxref".equals(localName)) {
       this.xref = PSEntityFactory.toXRef(atts, this.uri, null);
-      // record element content
-      this.buffer.setLength(0);
-      this.record = true;
     } else if ("reversexref".equals(localName)) {
       this.xref = PSEntityFactory.toReverseXRef(atts, this.uri, null);
     }
@@ -97,21 +82,12 @@ public final class PSXRefHandler extends DefaultHandler {
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if ("xref".equals(localName) || "blockxref".equals(localName)) {
-      this.xref.setContent(this.buffer.toString());
       this.xrefs.add(this.xref);
     } else if ("reversexref".equals(localName)) {
       this.xrefs.add(this.xref);
     }
-    // Stop recording when an element closes
-    this.record = false;
   }
 
-  @Override
-  public void characters(char[] ch, int start, int length) throws SAXException {
-    if (this.record) {
-      this.buffer.append(ch, start, length);
-    }
-  }
   /**
    * @return the list of external URIs
    */
