@@ -997,7 +997,7 @@ public final class Services {
    * @return <code>/groups/[group]/uris/[uri]/xrefs</code>.
    */
   public static String toListXRefs(String group, Long uriid) {
-    return "/groups/" + prefixGroup(group) + "/uris" + uriid + "/xrefs";
+    return "/groups/" + prefixGroup(group) + "/uris/" + uriid + "/xrefs";
   }
 
   // /members/{member:member}/groups/{group:group}/externaluris/{uri:uri}

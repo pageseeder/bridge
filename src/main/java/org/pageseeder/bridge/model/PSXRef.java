@@ -15,6 +15,7 @@
  */
 package org.pageseeder.bridge.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.pageseeder.bridge.EntityValidity;
@@ -177,12 +178,12 @@ public final class PSXRef implements PSEntity {
   /**
    * The target fragment.
    */
-  private String targetFragment;
+  private String targetFragment = "default";
 
   /**
    * A flag specifying if the xref is a reverse link.
    */
-  private boolean reverseLink;
+  private boolean reverseLink = true;
 
   /**
    * The reverse title.
@@ -197,7 +198,7 @@ public final class PSXRef implements PSEntity {
   /**
    * The level of numbering.
    */
-  private String level;
+  private Integer level;
 
   /**
    * The display type.
@@ -217,7 +218,7 @@ public final class PSXRef implements PSEntity {
   /**
    * The XRef's labels.
    */
-  private List<String> labels;
+  private List<String> labels = new ArrayList<String>();
 
   /**
    * Constructor
@@ -364,7 +365,7 @@ public final class PSXRef implements PSEntity {
    /**
    * @return the numbering level
    */
-  public String getLevel() {
+  public Integer getLevel() {
     return this.level;
   }
 
@@ -407,6 +408,7 @@ public final class PSXRef implements PSEntity {
    * @return The labels as a comma-separated list.
    */
   public final String getLabelsAsString() {
+    if (this.labels == null) return "";
     StringBuilder s = new StringBuilder();
     for (String label : this.labels) {
       if (s.length() > 0) {
@@ -445,7 +447,7 @@ public final class PSXRef implements PSEntity {
    * @param title the new title to set
    */
   public void setTitle(String title) {
-    this.title = "".equals(title) ? null : title;
+    this.title = title;
   }
 
   /**
@@ -478,66 +480,10 @@ public final class PSXRef implements PSEntity {
   }
 
   /**
-   * @param sourceURIId the source URI Id to set
-   */
-  public void setSourceURIId(Long sourceURIId) {
-    this.sourceURIId = sourceURIId;
-  }
-
-  /**
    * @param sourceFragment the source Fragment to set
    */
   public void setSourceFragment(String sourceFragment) {
     this.sourceFragment = sourceFragment;
-  }
-
-  /**
-   * @param sourceURITitle the source URI Title to set
-   */
-  public void setSourceURITitle(String sourceURITitle) {
-    this.sourceURITitle = sourceURITitle;
-  }
-
-  /**
-   * @param sourceDocid the source Docid to set
-   */
-  public void setSourceDocid(String sourceDocid) {
-    this.targetDocid = sourceDocid;
-  }
-
-  /**
-   * @param sourceHref the source Href to set
-   */
-  public void setSourceHref(String sourceHref) {
-    this.sourceHref = sourceHref;
-  }
-
-  /**
-   * @param targetURIId the target URI Id to set
-   */
-  public void setTargetURIId(Long targetURIId) {
-    this.targetURIId = targetURIId;
-  }
-
-  /**
-   * @param targetURITitle the target URI Title to set
-   */
-  public void setTargetURITitle(String targetURITitle) {
-    this.targetURITitle = targetURITitle;
-  }
-
-  /**
-   * @param targetDocid the target Docid to set
-   */
-  public void setTargetDocid(String targetDocid) {
-    this.targetDocid = targetDocid;
-  }
-
-  /**
-   * @param targetHref the target Href to set
-   */
-  public void setTargetHref(String targetHref) {
-    this.targetHref = targetHref;
   }
 
   /**
@@ -564,7 +510,7 @@ public final class PSXRef implements PSEntity {
   /**
    * @param level the level to set
    */
-  public void setLevel(String level) {
+  public void setLevel(Integer level) {
     this.level = level;
   }
 
@@ -590,20 +536,6 @@ public final class PSXRef implements PSEntity {
   }
 
   /**
-   * @param sourceMediaType the source Media Type to set
-   */
-  public void setSourceMediaType(String sourceMediaType) {
-    this.sourceMediaType = sourceMediaType;
-  }
-
-  /**
-   * @param targetMediaType the target Media Type to set
-   */
-  public void setTargetMediaType(String targetMediaType) {
-    this.targetMediaType = targetMediaType;
-  }
-
-  /**
    * @param labels the labels to set
    */
   public void setLabels(List<String> labels) {
@@ -612,16 +544,25 @@ public final class PSXRef implements PSEntity {
 
   @Override
   public String toString() {
-    return "XRef(target_urititle = " + this.targetURITitle
+    return "XRef(id = " + this.id
+      + ", target_urititle = " + this.targetURITitle
       + ", target_uriid = " + this.targetURIId
       + ", target_frag = " + this.targetFragment
       + ", target_docid = " + this.targetDocid
       + ", target_href = " + this.targetHref
-      + ", target_display = " + this.display
+      + ", target_mediatype = " + this.targetMediaType
+      + ", title = " + this.title
+      + ", display = " + this.display
       + ", type = " + this.type
       + ", level = " + this.level
       + ", labels = " + getLabelsAsString()
       + ", reverselink = " + this.reverseLink
+      + ", source_urititle = " + this.sourceURITitle
+      + ", source_uriid = " + this.sourceURIId
+      + ", source_frag = " + this.sourceFragment
+      + ", source_docid = " + this.sourceDocid
+      + ", source_href = " + this.sourceHref
+      + ", source_mediatype = " + this.sourceMediaType
       + ", reverse_title = " + this.reverseTitle
       + ", reverse_type = " + this.reverseType + ")";
   }

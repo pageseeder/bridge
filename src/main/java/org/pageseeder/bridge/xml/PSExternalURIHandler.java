@@ -91,6 +91,7 @@ public final class PSExternalURIHandler extends DefaultHandler {
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if ("uri".equals(localName)) {
       this.externaluris.add(this.externaluri);
+      this.externaluri = null;
       this.inURI = false;
     } else if (this.inURI) {
       if ("description".equals(localName)) {

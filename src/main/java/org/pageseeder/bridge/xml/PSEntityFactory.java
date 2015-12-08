@@ -525,6 +525,7 @@ public final class PSEntityFactory {
     String labels           = atts.getValue("labels") == null ? "" : atts.getValue("labels");
     String level            = atts.getValue("level");
     String targetHref       = atts.getValue("href");
+    boolean external        = "true".equals(atts.getValue("external"));
 
     PSXRef x = xref;
     if (x == null) {
@@ -538,10 +539,12 @@ public final class PSEntityFactory {
     x.setId(PSHandlers.id(id));
     x.setSourceURI(source);
     x.setSourceFragment(sourceFragment);
-    x.setTargetDocid(targetDocid);
-    x.setTargetURIId(PSHandlers.id(targetURIId));
-    x.setTargetURITitle(targetURITitle);
-    x.setTargetMediaType(targetMediaType);
+    PSURI target = external ? new PSExternalURI(targetHref) : new PSDocument(targetHref);
+    target.setDocid(targetDocid);
+    target.setId(PSHandlers.id(targetURIId));
+    target.setTitle(targetURITitle);
+    target.setMediaType(targetMediaType);
+    x.setTargetURI(target);
     x.setTargetFragment(targetFragment);
     x.setType(type);
     x.setReverseLink(reverseLink);
@@ -550,8 +553,8 @@ public final class PSEntityFactory {
     x.setTitle(title);
     x.setDisplay(display);
     x.setLabels(labels);
-    x.setLevel(level);
-    x.setTargetHref(targetHref);
+    if (level != null)
+      x.setLevel(PSHandlers.integer(level));
     return x;
   }
 
@@ -567,7 +570,7 @@ public final class PSEntityFactory {
   public static PSXRef toReverseXRef(Attributes atts, PSURI target, PSXRef xref) {
 
     String id = atts.getValue("id");
-    String sourceDocId      = atts.getValue("docid");    
+    String sourceDocid      = atts.getValue("docid");    
     String sourceURIId      = atts.getValue("uriid");    
     String sourceFragment   = atts.getValue("frag");
     String sourceURITitle   = atts.getValue("urititle");
@@ -582,7 +585,8 @@ public final class PSEntityFactory {
     String labels           = atts.getValue("labels") == null ? "" : atts.getValue("labels");
     String level            = atts.getValue("level");
     String sourceHref      = atts.getValue("href");
-
+    boolean external        = "true".equals(atts.getValue("external"));
+    
     PSXRef x = xref;
     if (x == null) {
       PSEntityCache<PSXRef> cache = XRefManager.getCache();
@@ -595,10 +599,12 @@ public final class PSEntityFactory {
     x.setId(PSHandlers.id(id));
     x.setTargetURI(target);
     x.setTargetFragment(targetFragment);
-    x.setSourceDocid(sourceDocId);
-    x.setSourceURIId(PSHandlers.id(sourceURIId));
-    x.setSourceURITitle(sourceURITitle);
-    x.setSourceMediaType(sourceMediaType);
+    PSURI source = external ? new PSExternalURI(sourceHref) : new PSDocument(sourceHref);
+    source.setDocid(sourceDocid);
+    source.setId(PSHandlers.id(sourceURIId));
+    source.setTitle(sourceURITitle);
+    source.setMediaType(sourceMediaType);
+    x.setSourceURI(source);
     x.setSourceFragment(sourceFragment);
     x.setType(type);
     x.setReverseLink(reverseLink);
@@ -607,8 +613,8 @@ public final class PSEntityFactory {
     x.setTitle(title);
     x.setDisplay(display);
     x.setLabels(labels);
-    x.setLevel(level);
-    x.setSourceHref(sourceHref);
+    if (level != null)
+      x.setLevel(PSHandlers.integer(level));
     return x;
   }
 

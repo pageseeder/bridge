@@ -19,10 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pageseeder.berlioz.xml.XMLCopy;
+import org.pageseeder.bridge.model.PSDocument;
+import org.pageseeder.bridge.model.PSURI;
+import org.pageseeder.bridge.model.PSXRef;
 import org.pageseeder.bridge.psml.Fragment;
 import org.pageseeder.bridge.psml.PSMLFragment;
 import org.pageseeder.bridge.psml.PropertiesFragment;
 import org.pageseeder.bridge.psml.Property;
+import org.pageseeder.bridge.psml.XRefFragment;
 import org.pageseeder.xmlwriter.XMLStringWriter;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.Attributes;
@@ -30,13 +34,19 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Handles for PSML fragments.
+ * Handler for PSML fragments.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ * @author Philip Rutherford
+ * @version 0.8.1
  */
 public final class PSFragmentHandler extends DefaultHandler {
 
+  /**
+   * The containing uri
+   */
+  private PSURI fraguri = null;
+  
   /**
    * The current document being processed.
    */
@@ -68,9 +78,13 @@ public final class PSFragmentHandler extends DefaultHandler {
   private XMLCopy copy = new XMLCopy(this.fragXMLContent);
 
   /**
-   * Create a new handler for document belong to a specific group.
+   * Create a new fragment handler for document.
+   * 
+   * @param document  the document containing the fragment
    */
-  public PSFragmentHandler() {}
+  public PSFragmentHandler(PSDocument document) {
+    this.fraguri = document;
+  }
 
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
@@ -88,10 +102,13 @@ public final class PSFragmentHandler extends DefaultHandler {
 
     } else if ("properties-fragment".equals(localName)) {
       String id = atts.getValue("id");
-      this.fragment = new PropertiesFragment(id);
+      String type = atts.getValue("type");
+      this.fragment = new PropertiesFragment(id, type);
 
     } else if ("xref-fragment".equals(localName)) {
-      // TODO
+      String id = atts.getValue("id");
+      String type = atts.getValue("type");
+      this.fragment = new XRefFragment(id, type);
 
     } else if ("media-fragment".equals(localName)) {
       // TODO
@@ -107,6 +124,10 @@ public final class PSFragmentHandler extends DefaultHandler {
       p.setValue(value);
       p.setTitle(title);
       f.add(p);
+    } else if ("blockxref".equals(localName) && this.fragment instanceof XRefFragment) {
+      XRefFragment f = (XRefFragment) this.fragment;
+      PSXRef xref = PSEntityFactory.toXRef(atts, fraguri, null);
+      f.add(xref);
     } else {
       this.buffer.setLength(0);
     }

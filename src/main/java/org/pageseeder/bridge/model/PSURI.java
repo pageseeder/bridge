@@ -224,6 +224,7 @@ public abstract class PSURI extends PSAddressable {
    * @return The labels as a comma-separated list.
    */
   public final String getLabelsAsString() {
+    if (this.labels == null) return "";
     StringBuilder s = new StringBuilder();
     for (String label : this.labels) {
       if (s.length() > 0) {

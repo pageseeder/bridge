@@ -107,9 +107,11 @@ public final class PSDocumentHandler extends DefaultHandler {
     if ("uri".equals(localName)) {
       if (this.document != null) {
         this.documents.add(this.document);
+        this.document = null;
       }
       if (this.folder != null) {
         this.folders.add(this.folder);
+        this.folder = null;
       }
       this.inURI = false;
     } else if (this.inURI) {

@@ -83,8 +83,10 @@ public final class PSXRefHandler extends DefaultHandler {
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if ("xref".equals(localName) || "blockxref".equals(localName)) {
       this.xrefs.add(this.xref);
+      this.xref = null;
     } else if ("reversexref".equals(localName)) {
       this.xrefs.add(this.xref);
+      this.xref = null;
     }
   }
 

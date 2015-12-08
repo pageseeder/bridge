@@ -54,6 +54,7 @@ public class PSGroupFolderHandler extends PSEntityHandler<PSGroupFolder> {
   public void endElement(String uri, String localName, String qName) throws SAXException {
     if ("groupfolder".equals(localName) && this.current != null) {
       this._items.add(current());
+      this.current = null;
     }
   }
 

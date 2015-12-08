@@ -223,6 +223,7 @@ public final class PSComment implements PSEntity {
    * @return The labels as a comma-separated list.
    */
   public String getLabelsAsString() {
+    if (this.labels == null) return "";
     StringBuilder s = new StringBuilder();
     for (String label : this.labels) {
       if (s.length() > 0) {

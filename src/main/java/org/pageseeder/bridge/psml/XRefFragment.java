@@ -115,8 +115,9 @@ public class XRefFragment extends FragmentBase implements PSMLFragment {
         psml.attribute("reversetitle", x.getReverseTitle());
       if (x.getReverseType() != null)
         psml.attribute("reversetype", x.getReverseType().toString());
-    } else
+    } else {
       psml.attribute("reverselink", "false");
+    }
     if (x.getTitle() != null)
       psml.attribute("title", x.getTitle());
     if (x.getDisplay() != null)
@@ -125,7 +126,7 @@ public class XRefFragment extends FragmentBase implements PSMLFragment {
       psml.attribute("type", x.getType().toString());
     if (x.getLevel() != null)
       psml.attribute("level", x.getLevel());
-    if (x.getLabels().size() > 0)
+    if (x.getLabels() != null && x.getLabels().size() > 0)
       psml.attribute("labels", x.getLabelsAsString());
     psml.closeElement();    
   }

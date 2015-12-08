@@ -248,7 +248,7 @@ public final class DocumentManager extends Sessionful {
   public PSMLFragment getFragment(PSDocument document, PSGroup group, PSMember editor, String fragment)
       throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.getFragment(document, group, editor, fragment).using(this._session);
-    PSFragmentHandler handler = new PSFragmentHandler();
+    PSFragmentHandler handler = new PSFragmentHandler(document);
     connector.get(handler);
     return handler.getFragment();
   }
@@ -266,7 +266,7 @@ public final class DocumentManager extends Sessionful {
   public PSMLFragment putFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment)
       throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.putFragment(document, group, editor, fragment).using(this._session);
-    PSFragmentHandler handler = new PSFragmentHandler();
+    PSFragmentHandler handler = new PSFragmentHandler(document);
     //connector.put(handler);
     // TODO changed to post due to bug in 5.8, fix for 5.9
     connector.post(handler);
@@ -288,7 +288,7 @@ public final class DocumentManager extends Sessionful {
   public PSMLFragment postFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment)
       throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.postFragment(document, group, editor, fragment).using(this._session);
-    PSFragmentHandler handler = new PSFragmentHandler();
+    PSFragmentHandler handler = new PSFragmentHandler(document);
     connector.post(handler);
     return handler.getFragment();
   }
