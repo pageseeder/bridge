@@ -31,7 +31,7 @@ import org.pageseeder.bridge.PSEntity;
 public final class Preconditions {
 
   /** Utility class. */
-  private Preconditions(){}
+  private Preconditions() {}
 
   /**
    * Precondition requiring the specified entity to be identifiable.
@@ -43,7 +43,7 @@ public final class Preconditions {
    * @throws FailedPrecondition If the the {@link PSEntity#isIdentifiable()} method returns <code>false</code>.
    */
   static void isIdentifiable(PSEntity entity, String name) throws FailedPrecondition {
-    if (!entity.isIdentifiable()) throw new FailedPrecondition(name+" must be identifiable");
+    if (!entity.isIdentifiable()) throw new FailedPrecondition(name + " must be identifiable");
   }
 
   /**
@@ -60,6 +60,18 @@ public final class Preconditions {
   }
 
   /**
+   * Precondition requiring the specified number to greater than 0 number.
+   *
+   * @param n    The number to check
+   * @param name The name of the object to generate the message.
+   *
+   * @throws FailedPrecondition If the pre-condition failed.
+   */
+  static void isPositiveNumber(int n, String name) throws FailedPrecondition {
+    if (n <= 0) throw new FailedPrecondition(name + " must be greater than 0.");
+  }
+
+  /**
    * Precondition requiring the specified string to be non-null and at least 1 character long.
    *
    * @param s    The string to check
@@ -68,7 +80,7 @@ public final class Preconditions {
    * @throws FailedPrecondition If the pre-condition failed.
    */
   static void isNotEmpty(String s, String name) throws FailedPrecondition {
-    if (s == null || s.length() == 0) throw new FailedPrecondition(name+" must not be empty");
+    if (s == null || s.length() == 0) throw new FailedPrecondition(name + " must not be empty");
   }
 
   /**
@@ -80,7 +92,7 @@ public final class Preconditions {
    * @throws FailedPrecondition If the pre-condition failed.
    */
   static void isNotNull(Object o, String name) throws FailedPrecondition {
-    if (o == null) throw new FailedPrecondition(name+" must not be null");
+    if (o == null) throw new FailedPrecondition(name + " must not be null");
   }
 
   /**
@@ -93,7 +105,7 @@ public final class Preconditions {
    * @throws FailedPrecondition If the pre-condition failed.
    */
   static void includesDash(String s, String name) throws FailedPrecondition {
-    if (s.indexOf('-') < 0) throw new FailedPrecondition(name+" must include a '-'");
+    if (s.indexOf('-') < 0) throw new FailedPrecondition(name + " must include a '-'");
   }
 
 }

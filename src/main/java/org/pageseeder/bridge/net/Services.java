@@ -54,12 +54,12 @@ public final class Services {
    * Utility class.
    */
   private Services() {}
-  
+
   /**
-   * If member is not a number then add "~" prefix and URL encode it. 
-   * 
+   * If member is not a number then add "~" prefix and URL encode it.
+   *
    * @param member  the member id or username
-   * 
+   *
    * @return the member id or prefixed username
    */
   public static String prefixMember(String member) {
@@ -67,20 +67,20 @@ public final class Services {
       Long.parseLong(member);
     } catch (NumberFormatException ex1) {
       try {
-        member = "~" + URLEncoder.encode(member, "UTF-8").replace("+","%20");
+        member = "~" + URLEncoder.encode(member, "UTF-8").replace("+", "%20");
       } catch (UnsupportedEncodingException ex) {
         // shouldn't happen
         ex.printStackTrace();
-      }     
+      }
     }
     return member;
   }
 
   /**
-   * If group is not a number then add "~" prefix. 
-   * 
+   * If group is not a number then add "~" prefix.
+   *
    * @param group  the group id or name
-   * 
+   *
    * @return the group id or prefixed name
    */
   public static String prefixGroup(String group) {
@@ -158,7 +158,7 @@ public final class Services {
 
   /**
    * Returns the URL to remove a member from a group.
-   * 
+   *
    * @deprecated Use {@link #toMembership(String, String)} with DELETE
    *
    * @param group  the group name or id
@@ -196,7 +196,7 @@ public final class Services {
 
   /**
    * Returns the URL for a member to ivite himself to a group.
-   * 
+   *
    * @deprecated Use {@link #toInviteSelf(String)} instead
    *
    * @param group  the group name or id
@@ -204,6 +204,7 @@ public final class Services {
    *
    * @return <code>/groups/[group]/members/[member]/inviteself</code>.
    */
+  @Deprecated
   public static String toInviteSelf(String group, String member) {
     return "/groups/" + prefixGroup(group) + "/members/inviteself";
   }
@@ -262,10 +263,10 @@ public final class Services {
   protected static String toMember(String member) {
     return "/members/" + prefixMember(member);
   }
-  
+
   /**
    * Returns the URL to edit the details of a member.
-   * 
+   *
    * @deprecated Use {@link #toMember(String)} with PATCH
    *
    * @param member the member username or id
@@ -424,7 +425,7 @@ public final class Services {
 
   /**
    * Returns the URL to edit a subgroup.
-   * 
+   *
    * @deprecated Use {@link #toSubGroup(String, String)} with PATCH
    *
    * @param group the group name or id.
@@ -494,7 +495,7 @@ public final class Services {
 
   /**
    * Returns the URL to edit a project.
-   * 
+   *
    * @deprecated Use {@link #toProject(String, String)} with PATCH
    *
    * @param member  the member username or id
@@ -520,7 +521,7 @@ public final class Services {
 
   /**
    * Returns the URL to get a project.
-   * 
+   *
    * @deprecated Use {@link #toGetProject(String)}
    *
    * @param member  the member username or id
@@ -555,7 +556,6 @@ public final class Services {
   public static String toListProjects(String member) {
     return "/members/" + prefixMember(member) + "/projectlist";
   }
-
 
   /**
    * Returns the URL to return the results for a projects/groups search.
@@ -711,7 +711,7 @@ public final class Services {
 
   // Group Services
   // ----------------------------------------------------------------------------------------------
-  
+
   /**
    * Returns the URL to create a group.
    *
@@ -763,7 +763,7 @@ public final class Services {
 
   /**
    * Returns the URL to get a group.
-   * 
+   *
    * @deprecated Use {@link #toGetGroup(String)}
    *
    * @param member the member name or id
@@ -842,10 +842,10 @@ public final class Services {
   public static String toMembership(String group, String member) {
     return "/groups/" + prefixGroup(group) + "/members/" + prefixMember(member);
   }
-  
+
   /**
    * Returns the URL to invoke the group member edit service.
-   * 
+   *
    * @deprecated Use {@link # toMembership(String, String)} with PATCH
    *
    * @param group  the group name or id
@@ -954,6 +954,17 @@ public final class Services {
   // /groups/{group:group}/externaluris/{uri:uri}/externaluris
 
   /**
+   * Returns the URL to list URIs for a given URL.
+   *
+   * @param group  the group name or id
+   *
+   * @return <code>/groups/[group]/uris/forurl/uris</code>.
+   */
+  public static String tolistURIsForURL(String group) {
+    return "/groups/" + prefixGroup(group) + "/uris/forurl/uris";
+  }
+
+  /**
    * Returns the URL to get a URI for a given URL.
    *
    * @param group  the group name or id
@@ -1054,10 +1065,10 @@ public final class Services {
   public static String toEditURI(String member, String group, String uri) {
     return "/members/" + prefixMember(member) + "/groups/" + prefixGroup(group) + "/uris/" + uri;
   }
-  
+
   /**
    * Returns the URL to saves the core properties of a URI.
-   * 
+   *
    * @deprecated Use {@link # toEditURI(String, String, String)} with PATCH
    *
    * @param member the member username or id
@@ -1266,10 +1277,10 @@ public final class Services {
   public static String toComment(String member, String comment) {
     return "/members/" + prefixMember(member) + "/comments/" + comment;
   }
-  
+
   /**
    * Returns the URL to edit a comment.
-   * 
+   *
    * @deprecated Use {@link # toComment(String, String)} with PATCH
    *
    * @param member  the username or ID of the member
@@ -1435,7 +1446,7 @@ public final class Services {
 
   /**
    * Returns the URL to put a resource.
-   * 
+   *
    * @deprecated Use {@link #toResource(String)} with PUT
    *
    * @param project the project name or id where the resource should be put.
@@ -1449,7 +1460,7 @@ public final class Services {
 
   /**
    * Returns the URL to delete a resource.
-   * 
+   *
    * @deprecated Use {@link #toResource(String)} with DELETE
    *
    * @param project the project name or id where the resource should be put.

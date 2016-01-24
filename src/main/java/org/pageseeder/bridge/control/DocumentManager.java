@@ -203,6 +203,21 @@ public final class DocumentManager extends Sessionful {
   }
 
   /**
+   * List the documents in the specified group in PageSeeder by given parent URL.
+   *
+   * @param max the maximum number of return documents.
+   * @param url the parent URL
+   * @param group The group instance.
+   * @return The corresponding instance.
+   */
+  public List<PSDocument> listDocuments(int max, String url, PSGroup group) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.listDocumentsInGroup(max, url, group).using(this._session);
+    PSDocumentHandler handler = new PSDocumentHandler();
+    connector.get(handler);
+    return handler.listDocuments();
+  }
+
+  /**
    * Uploads a file on the server at the specified URL.
    *
    * @param group The group the file should be uploaded to
@@ -263,8 +278,7 @@ public final class DocumentManager extends Sessionful {
    *
    * @return the updated fragment.
    */
-  public PSMLFragment putFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment)
-      throws APIException {
+  public PSMLFragment putFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.putFragment(document, group, editor, fragment).using(this._session);
     PSFragmentHandler handler = new PSFragmentHandler(document);
     //connector.put(handler);
@@ -275,9 +289,9 @@ public final class DocumentManager extends Sessionful {
 
   /**
    * Edit the specified fragment in PageSeeder by using POST method.
-   * 
+   *
    * @deprecated Use {@link #putFragment(PSDocument, PSGroup, PSMember, PSMLFragment)} instead.
-   * 
+   *
    * @param document The document to create
    * @param group    The group the document is part of
    * @param editor   The member editing the document
@@ -285,7 +299,8 @@ public final class DocumentManager extends Sessionful {
    *
    * @return the updated fragment.
    */
-  public PSMLFragment postFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment)
+  @Deprecated
+  public PSMLFragment postFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment) 
       throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.postFragment(document, group, editor, fragment).using(this._session);
     PSFragmentHandler handler = new PSFragmentHandler(document);

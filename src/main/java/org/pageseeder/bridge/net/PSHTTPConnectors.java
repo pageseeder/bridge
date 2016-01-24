@@ -139,7 +139,7 @@ public final class PSHTTPConnectors {
 
   /**
    * Returns the connector to edit the details of a member.
-   * 
+   *
    * @deprecated Use {@link #patchMember(PSMember, boolean)} instead
    *
    * @param member     The member instance containing the new details.
@@ -158,7 +158,7 @@ public final class PSHTTPConnectors {
     connector.setName(service);
     return connector;
   }
-  
+
   /**
    * Returns the connector to edit the details of a member.
    *
@@ -349,8 +349,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition if the key is not specified.
    */
-  private static void addPasswordResetParameters(PSHTTPConnector connector, PasswordResetOptions options)
-      throws FailedPrecondition {
+  private static void addPasswordResetParameters(PSHTTPConnector connector, PasswordResetOptions options) throws FailedPrecondition {
     Preconditions.isNotEmpty(options.getKey(), "key");
     connector.addParameter("key", options.getKey());
     if (options.getSignificantDate() != null) {
@@ -612,7 +611,7 @@ public final class PSHTTPConnectors {
 
   /**
    * Edit an existing group in PageSeeder.
-   * 
+   *
    * @deprecated Use {@link #patchGroup(PSGroup, PSMember, GroupOptions)} instead
    *
    * @param group   the group to edit
@@ -627,9 +626,9 @@ public final class PSHTTPConnectors {
     PSHTTPConnector connector = patchGroup(group, editor, options);
     String service = Services.toEditGroup(editor.getIdentifier(), group.getIdentifier());
     connector.setName(service);
-    return connector;    
+    return connector;
   }
-  
+
   /**
    * Edit an existing group in PageSeeder.
    *
@@ -784,7 +783,8 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition If member is not identifiable.
    */
-  public static PSHTTPConnector listProjectsTree(PSMember member, String nameprefix, int maximum, boolean showGroup, boolean showAll) throws FailedPrecondition {
+  public static PSHTTPConnector listProjectsTree(PSMember member, String nameprefix, int maximum, boolean showGroup, boolean showAll) 
+      throws FailedPrecondition {
     if (maximum < 1) throw new IllegalArgumentException("maximum less than 1.");
     Preconditions.isIdentifiable(member, "member");
     String service = Services.toProjectsTree(member.getUsername());
@@ -886,8 +886,8 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector createMembership(PSMembership membership, String password, MemberOptions options)
-      throws FailedPrecondition, InvalidEntityException {
+  public static PSHTTPConnector createMembership(PSMembership membership, String password,
+      MemberOptions options) throws FailedPrecondition, InvalidEntityException {
     PSGroup group = membership.getGroup();
     PSMember member = membership.getMember();
     Preconditions.isNotNull(group, "group");
@@ -966,7 +966,7 @@ public final class PSHTTPConnectors {
    * Returns the connector to save a membership.
    *
    * <p>Implementation: this connector cannot be used to modify the username.
-   * 
+   *
    * @deprecated Use {@link #patchMembership(PSMembership, boolean)} instead
    *
    * @param membership The membership to save.
@@ -984,7 +984,7 @@ public final class PSHTTPConnectors {
     connector.setName(service);
     return connector;
   }
-  
+
   /**
    * Returns the connector to save a membership.
    *
@@ -1403,7 +1403,8 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition if conditions fail
    */
-  public static PSHTTPConnector findComments(PSMember member, PSGroup group, String title, String type, List<String> paths) throws FailedPrecondition {
+  public static PSHTTPConnector findComments(PSMember member, PSGroup group, String title, String type, List<String> paths) 
+      throws FailedPrecondition {
     return findComments(member, group, title, type, null, paths);
   }
 
@@ -1694,7 +1695,7 @@ public final class PSHTTPConnectors {
 
   /**
    * Edit an existing comment in PageSeeder.
-   * 
+   *
    * @deprecated Use {@link #patchComment(PSComment, PSMember, PSNotify, List<PSGroup>)} instead
    *
    * @param comment The comment
@@ -1953,7 +1954,7 @@ public final class PSHTTPConnectors {
     if (includetypes != null) {
       String types = "";
       for (int i = 0; i < includetypes.size(); i++) {
-        if (i != 0 ) types += ",";
+        if (i != 0) types += ",";
         types += includetypes.get(i).toString();
       }
       connector.addParameter("includetypes", types);
@@ -1961,7 +1962,7 @@ public final class PSHTTPConnectors {
     if (version != null) {
       connector.addParameter("version", version);
     }
-   return connector;
+    return connector;
   }
 
   // Documents
@@ -2019,7 +2020,7 @@ public final class PSHTTPConnectors {
 
   /**
    * Edit a document properties.
-   * 
+   *
    * @deprecated Use {@link #patchDocumentProperties(PSDocument, PSGroup, PSMember)} instead
    *
    * @param document   the document to edit
@@ -2037,7 +2038,7 @@ public final class PSHTTPConnectors {
     connector.setName(service);
     return connector;
   }
-  
+
   /**
    * Edit a document properties.
    *
@@ -2049,7 +2050,8 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector patchDocumentProperties(PSDocument document, PSGroup group, PSMember creator) throws FailedPrecondition {
+  public static PSHTTPConnector patchDocumentProperties(PSDocument document, PSGroup group, PSMember creator) 
+      throws FailedPrecondition {
     Preconditions.isNotNull(document, "document");
     Preconditions.isNotEmpty(document.getFilename(), "filename");
     Preconditions.isNotEmpty(document.getTitle(), "title");
@@ -2130,8 +2132,27 @@ public final class PSHTTPConnectors {
   }
 
   /**
+   * @param max the maximum number of documents to return
+   * @param url the parent URL
+   * @param group The group
+   * @return the corresponding connector
+   * @throws FailedPrecondition
+   */
+  public static PSHTTPConnector listDocumentsInGroup(int max, String url, PSGroup group) throws FailedPrecondition {
+    Preconditions.isNotNull(url, "url");
+    Preconditions.isNotNull(group, "group");
+    Preconditions.isPositiveNumber(max, "max");
+
+    String service = Services.tolistURIsForURL(group.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    connector.addParameter("pagesize", String.valueOf(max));
+    connector.addParameter("url", url);
+    return connector;
+  }
+
+  /**
    * Returns the connector to create a group folder.
-   * 
+   *
    * @deprecated Use {@link #createGroupFolder(PSGroup, String)} instead
    *
    * @param group    The group where the group folder should be created.
@@ -2142,10 +2163,11 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition If the group is not identifiable or if the URL is empty.
    */
+  @Deprecated
   public static PSHTTPConnector createGroupFolder(PSGroup group, String url, boolean isPublic) throws FailedPrecondition {
     return createGroupFolder(group, url);
   }
-  
+
   /**
    * Returns the connector to create a group folder.
    *
@@ -2209,7 +2231,7 @@ public final class PSHTTPConnectors {
 
   /**
    * Returns the connector to update a particular fragment using POST.
-   * 
+   *
    * @param document The document the fragment belong to
    * @param group    The group the document belongs to
    * @param editor   The member wanting to view/edit the fragment
@@ -2233,7 +2255,7 @@ public final class PSHTTPConnectors {
     connector.addParameter("content", fragment.toPSML());
     return connector;
   }
-  
+
   /**
    * Returns the connector to update a particular fragment.
    *
