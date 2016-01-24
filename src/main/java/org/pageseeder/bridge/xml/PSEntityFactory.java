@@ -306,6 +306,7 @@ public final class PSEntityFactory {
       }
     }
     d.setId(PSHandlers.id(id));
+    d.setPath(path);
     d.setDescription(description);
     d.setDocid(docid);
     if (filename != null) {
@@ -497,7 +498,7 @@ public final class PSEntityFactory {
     f.setExternal(isExternal);
     return f;
   }
-  
+
   /**
    * Generates the xref object from the attributes of an "xref" or "blockxref" element.
    *
@@ -510,22 +511,22 @@ public final class PSEntityFactory {
   public static PSXRef toXRef(Attributes atts, PSURI source, PSXRef xref) {
 
     String id = atts.getValue("id");
-    String targetDocid      = atts.getValue("docid");
-    String targetURIId      = atts.getValue("uriid");
-    String targetFragment   = atts.getValue("frag");
-    String targetURITitle   = atts.getValue("urititle");
-    String targetMediaType  = atts.getValue("mediatype");
-    PSXRef.TYPE type        = PSXRef.TYPE.fromString(atts.getValue("type"));
-    boolean reverseLink     = !"false".equals(atts.getValue("reverselink"));
-    String reverseTitle     = atts.getValue("reversetitle");
-    String sourceFragment   = atts.getValue("reversefrag");
+    String targetDocid = atts.getValue("docid");
+    String targetURIId = atts.getValue("uriid");
+    String targetFragment = atts.getValue("frag");
+    String targetURITitle = atts.getValue("urititle");
+    String targetMediaType = atts.getValue("mediatype");
+    PSXRef.TYPE type = PSXRef.TYPE.fromString(atts.getValue("type"));
+    boolean reverseLink = !"false".equals(atts.getValue("reverselink"));
+    String reverseTitle = atts.getValue("reversetitle");
+    String sourceFragment = atts.getValue("reversefrag");
     PSXRef.TYPE reverseType = PSXRef.TYPE.fromString(atts.getValue("reversetype"));
-    String title            = atts.getValue("title");
-    PSXRef.DISPLAY display  = PSXRef.DISPLAY.fromString(atts.getValue("display"));
-    String labels           = atts.getValue("labels") == null ? "" : atts.getValue("labels");
-    String level            = atts.getValue("level");
-    String targetHref       = atts.getValue("href");
-    boolean external        = "true".equals(atts.getValue("external"));
+    String title = atts.getValue("title");
+    PSXRef.DISPLAY display = PSXRef.DISPLAY.fromString(atts.getValue("display"));
+    String labels = atts.getValue("labels") == null ? "" : atts.getValue("labels");
+    String level = atts.getValue("level");
+    String targetHref = atts.getValue("href");
+    boolean external = "true".equals(atts.getValue("external"));
 
     PSXRef x = xref;
     if (x == null) {
@@ -570,23 +571,23 @@ public final class PSEntityFactory {
   public static PSXRef toReverseXRef(Attributes atts, PSURI target, PSXRef xref) {
 
     String id = atts.getValue("id");
-    String sourceDocid      = atts.getValue("docid");    
-    String sourceURIId      = atts.getValue("uriid");    
-    String sourceFragment   = atts.getValue("frag");
-    String sourceURITitle   = atts.getValue("urititle");
-    String sourceMediaType  = atts.getValue("mediatype");
+    String sourceDocid = atts.getValue("docid");
+    String sourceURIId = atts.getValue("uriid");
+    String sourceFragment = atts.getValue("frag");
+    String sourceURITitle = atts.getValue("urititle");
+    String sourceMediaType = atts.getValue("mediatype");
     boolean reverseLink = true;
     PSXRef.TYPE reverseType = PSXRef.TYPE.fromString(atts.getValue("type"));
     String reverseTitle = atts.getValue("title");
     PSXRef.TYPE type = PSXRef.TYPE.fromString(atts.getValue("forwardtype"));
-    String title            = atts.getValue("forwardtitle");
-    String targetFragment   = atts.getValue("forwardfrag");
-    PSXRef.DISPLAY display  = PSXRef.DISPLAY.fromString(atts.getValue("forwarddisplay"));
-    String labels           = atts.getValue("labels") == null ? "" : atts.getValue("labels");
-    String level            = atts.getValue("level");
-    String sourceHref      = atts.getValue("href");
-    boolean external        = "true".equals(atts.getValue("external"));
-    
+    String title = atts.getValue("forwardtitle");
+    String targetFragment = atts.getValue("forwardfrag");
+    PSXRef.DISPLAY display = PSXRef.DISPLAY.fromString(atts.getValue("forwarddisplay"));
+    String labels = atts.getValue("labels") == null ? "" : atts.getValue("labels");
+    String level = atts.getValue("level");
+    String sourceHref = atts.getValue("href");
+    boolean external = "true".equals(atts.getValue("external"));
+
     PSXRef x = xref;
     if (x == null) {
       PSEntityCache<PSXRef> cache = XRefManager.getCache();
