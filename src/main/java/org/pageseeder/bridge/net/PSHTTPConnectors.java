@@ -2113,6 +2113,9 @@ public final class PSHTTPConnectors {
   }
 
   /**
+   * Returns the connector to list documents in a group.
+   * 
+   * @deprecated Use {@link #listDocumentsInGroup(PSGroup, String, int)} instead
    *
    * @param group
    *
@@ -2120,6 +2123,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
+  @Deprecated
   public static PSHTTPConnector listDocumentsInGroup(PSGroup group) throws FailedPrecondition {
     Preconditions.isNotNull(group, "group");
     Preconditions.isNotNull(group.getId(), "group id");
@@ -2132,13 +2136,17 @@ public final class PSHTTPConnectors {
   }
 
   /**
-   * @param max the maximum number of documents to return
-   * @param url the parent URL
-   * @param group The group
+   * Returns the connector to list documents in a group.
+   * 
+   * @param group  the group
+   * @param url    the parent URL
+   * @param max    the maximum number of documents to return
+   * 
    * @return the corresponding connector
+   * 
    * @throws FailedPrecondition
    */
-  public static PSHTTPConnector listDocumentsInGroup(int max, String url, PSGroup group) throws FailedPrecondition {
+  public static PSHTTPConnector listDocumentsInGroup(PSGroup group, String url, int max) throws FailedPrecondition {
     Preconditions.isNotNull(url, "url");
     Preconditions.isNotNull(group, "group");
     Preconditions.isPositiveNumber(max, "max");
@@ -2147,6 +2155,31 @@ public final class PSHTTPConnectors {
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     connector.addParameter("pagesize", String.valueOf(max));
     connector.addParameter("url", url);
+    connector.addParameter("type", "document");
+    return connector;
+  }
+
+  /**
+   * Returns the connector to list folders in a group.
+   * 
+   * @param group  the group
+   * @param url    the parent URL
+   * @param max    the maximum number of documents to return
+   * 
+   * @return the corresponding connector
+   * 
+   * @throws FailedPrecondition
+   */
+  public static PSHTTPConnector listFoldersInGroup(PSGroup group, String url, int max) throws FailedPrecondition {
+    Preconditions.isNotNull(url, "url");
+    Preconditions.isNotNull(group, "group");
+    Preconditions.isPositiveNumber(max, "max");
+
+    String service = Services.tolistURIsForURL(group.getIdentifier());
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
+    connector.addParameter("pagesize", String.valueOf(max));
+    connector.addParameter("url", url);
+    connector.addParameter("type", "folder");
     return connector;
   }
 

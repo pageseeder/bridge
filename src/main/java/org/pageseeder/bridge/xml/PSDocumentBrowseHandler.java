@@ -25,6 +25,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * A handler for generating documents from the "DocumentBrowse" servlet.
+ * 
+ * @deprecated
  *
  * @author Christophe Lauret
  * @version 0.1.0

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Allette Systems (Australia)
+ * Copyright 2015-16 Allette Systems (Australia)
  * http://www.allette.com.au
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,10 +17,12 @@ package org.pageseeder.bridge.control;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
 import org.pageseeder.bridge.APIException;
+import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSEntityCache;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.model.PSDocument;
@@ -36,7 +38,6 @@ import org.pageseeder.bridge.net.PSHTTPResponseInfo;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
 import org.pageseeder.bridge.net.Servlets;
 import org.pageseeder.bridge.psml.PSMLFragment;
-import org.pageseeder.bridge.xml.PSDocumentBrowseHandler;
 import org.pageseeder.bridge.xml.PSDocumentHandler;
 import org.pageseeder.bridge.xml.PSFragmentHandler;
 import org.pageseeder.xmlwriter.XMLWriter;
@@ -45,8 +46,9 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * A manager for documents and folders (based on PageSeeder URIs).
  *
+ * @author Philip Rutherford
  * @author Christophe Lauret
- * @version 0.3.0
+ * @version 0.8.2
  * @since 0.2.0
  */
 public final class DocumentManager extends Sessionful {
@@ -190,31 +192,88 @@ public final class DocumentManager extends Sessionful {
   }
 
   /**
-   * List the documents in the specified group in PageSeeder.
+   * List the documents in the specified group in PageSeeder at the top level (maximum returned 200).
    *
    * @param group The group instance.
-   * @return The corresponding instance.
+   * @return the documents
    */
   public List<PSDocument> listDocuments(PSGroup group) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.listDocumentsInGroup(group).using(this._session);
-    PSDocumentBrowseHandler handler = new PSDocumentBrowseHandler();
+    PSConfig p = PSConfig.getDefault();
+    String url = p.getScheme() + "://" + p.getHost() + p.getSitePrefix() + "/" + group.getName().replace('-', '/');
+    PSHTTPConnector connector = PSHTTPConnectors.listDocumentsInGroup(group, url, 200).using(this._session);
+    PSDocumentHandler handler = new PSDocumentHandler();
     connector.get(handler);
     return handler.listDocuments();
   }
 
   /**
-   * List the documents in the specified group in PageSeeder by given parent URL.
+   * List the documents in the specified group in PageSeeder under a folder.
    *
-   * @param max the maximum number of return documents.
-   * @param url the parent URL
-   * @param group The group instance.
-   * @return The corresponding instance.
+   * @param group    the group
+   * @param folder   the relative folder path (e.g. documents/myfolder)
+   * @param max      the maximum number of return documents.
+   * 
+   * @return the documents/folders.
    */
-  public List<PSDocument> listDocuments(int max, String url, PSGroup group) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.listDocumentsInGroup(max, url, group).using(this._session);
+  public List<PSDocument> listDocuments(PSGroup group, String folder, int max) throws APIException {
+    PSConfig p = PSConfig.getDefault();
+    String url = p.getScheme() + "://" + p.getHost() + p.getSitePrefix() + "/" + group.getName().replace('-', '/')
+        + "/" + folder;
+    PSHTTPConnector connector = PSHTTPConnectors.listDocumentsInGroup(group, url, max).using(this._session);
     PSDocumentHandler handler = new PSDocumentHandler();
     connector.get(handler);
     return handler.listDocuments();
+  }
+
+  /**
+   * List the folders in the specified group in PageSeeder under a folder.
+   *
+   * @param group    the group
+   * @param folder   the relative folder path (e.g. documents/myfolder)
+   * @param max      the maximum number of return documents.
+   * 
+   * @return the folders.
+   */
+  public List<PSFolder> listFolders(PSGroup group, String folder, int max) throws APIException {
+    PSConfig p = PSConfig.getDefault();
+    String url = p.getScheme() + "://" + p.getHost() + p.getSitePrefix() + "/" + group.getName().replace('-', '/')
+        + "/" + folder;
+    PSHTTPConnector connector = PSHTTPConnectors.listFoldersInGroup(group, url, max).using(this._session);
+    PSDocumentHandler handler = new PSDocumentHandler();
+    connector.get(handler);
+    return handler.listFolders();
+  }
+
+  /**
+   * List the documents in the specified group in PageSeeder under a parent URL.
+   *
+   * @param group the group
+   * @param url   the parent URL
+   * @param max   the maximum number of return documents.
+   * 
+   * @return the documents/folders.
+   */
+  public List<PSDocument> listDocumentsForURL(PSGroup group, String url, int max) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.listDocumentsInGroup(group, url, max).using(this._session);
+    PSDocumentHandler handler = new PSDocumentHandler();
+    connector.get(handler);
+    return handler.listDocuments();
+  }
+
+  /**
+   * List the folders in the specified group in PageSeeder under a parent URL.
+   *
+   * @param group the group
+   * @param url   the parent URL
+   * @param max   the maximum number of return documents.
+   * 
+   * @return the documents/folders.
+   */
+  public List<PSFolder> listFoldersForURL(PSGroup group, String url, int max) throws APIException {
+    PSHTTPConnector connector = PSHTTPConnectors.listFoldersInGroup(group, url, max).using(this._session);
+    PSDocumentHandler handler = new PSDocumentHandler();
+    connector.get(handler);
+    return handler.listFolders();
   }
 
   /**
@@ -240,6 +299,40 @@ public final class DocumentManager extends Sessionful {
       // Attach part
       PSHTTPConnection connection = connector.connect(Method.MULTIPART);
       connection.addPart(file);
+
+      // Process
+      connection.process(response, handler);
+
+    } catch (IOException ex) {
+      throw new APIException(ex);
+    }
+    return handler.getDocument();
+  }
+
+  /**
+   * Uploads a file on the server at the specified URL.
+   *
+   * @param group       The group the file should be uploaded to
+   * @param url         The URL of the folder receiving the file
+   * @param in          The input stream for file content
+   * @param filename    The filename for the file
+   *
+   * @return The uploaded document.
+   *
+   * @throws APIException
+   */
+  public PSDocument upload(PSGroup group, String url, InputStream in, String filename) throws APIException {
+    PSHTTPResponseInfo response = new PSHTTPResponseInfo();
+    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, Servlets.UPLOAD_SERVLET).using(this._session);
+    PSDocumentHandler handler = new PSDocumentHandler();
+    try {
+      connector.addParameter("autoload", "true");
+      connector.addParameter("group", group.getName());
+      connector.addParameter("url", url);
+
+      // Attach part
+      PSHTTPConnection connection = connector.connect(Method.MULTIPART);
+      connection.addPart(in, filename);
 
       // Process
       connection.process(response, handler);

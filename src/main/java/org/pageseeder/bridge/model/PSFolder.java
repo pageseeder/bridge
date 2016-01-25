@@ -48,6 +48,13 @@ public final class PSFolder extends PSURI implements PSEntity {
   }
 
   /**
+   * @return the foldername
+   */
+  public String getFoldername() {
+    return getFoldername(getPath());
+  }
+
+  /**
    * Known constraints on Member are based on SQL definition:
    *
    * <pre>
@@ -80,5 +87,21 @@ public final class PSFolder extends PSURI implements PSEntity {
   @Override
   public String toString() {
     return "F("+getId()+":"+getURL()+")";
+  }
+
+  // Convenience methods
+  // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Returns the foldername from the path or URL.
+   *
+   * @param url The path or URL
+   *
+   * @return the text after the last '/' in the path or URL
+   */
+  public static String getFoldername(String url) {
+    if (url == null) return null;
+    int solidus = url.lastIndexOf('/');
+    return url.substring(solidus+1);
   }
 }

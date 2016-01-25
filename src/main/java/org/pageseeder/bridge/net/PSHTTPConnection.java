@@ -240,13 +240,25 @@ public final class PSHTTPConnection {
   }
 
   /**
-   * Add a part to the request from a file(write the contents directly to the stream).
+   * Add a part to the request from a file (write the contents directly to the stream).
    *
-   * @param part    The encoding to specify in the Part's header
+   * @param part    File for part
    *
    * @throws IOException Should any error occur while writing
    */
   public void addPart(File part) throws IOException {
+    addPart(new FileInputStream(part), part.getName());
+  }
+
+  /**
+   * Add a part to the request from input stream (write the contents directly to the stream).
+   *
+   * @param in          Input stream for part content
+   * @param filename    The filename for the part
+   *
+   * @throws IOException Should any error occur while writing
+   */
+  public void addPart(InputStream in, String filename) throws IOException {
     if (this.out == null) {
       this.out = new DataOutputStream(this._connection.getOutputStream());
     }
@@ -258,9 +270,9 @@ public final class PSHTTPConnection {
       writeCRLF(this.out);
 
       // Write headers
-      write("Content-Disposition: form-data; name=\"file-1\"; filename=\"" + part.getName() + "\"", this.out);
+      write("Content-Disposition: form-data; name=\"file-1\"; filename=\"" + filename + "\"", this.out);
       writeCRLF(this.out);
-      write("Content-Type: " + URLConnection.guessContentTypeFromName(part.getName()), this.out);
+      write("Content-Type: " + URLConnection.guessContentTypeFromName(filename), this.out);
       writeCRLF(this.out);
       write("Content-Transfer-Encoding: binary", this.out);
       writeCRLF(this.out);
@@ -268,12 +280,10 @@ public final class PSHTTPConnection {
       this.out.flush();
 
       // Copy binary file content
-      FileInputStream fis = null;
       try {
-        fis = new FileInputStream(part);
-        copy(fis, this.out);
+        copy(in, this.out);
       } finally {
-        closeQuietly(fis);
+        closeQuietly(in);
       }
 
       writeCRLF(this.out);
@@ -479,8 +489,8 @@ public final class PSHTTPConnection {
         updateSession(this._connection);
 
       } else {
-        LOGGER.info("PageSeeder returned {}: {}", status, this._connection.getResponseMessage());
         parseError(this._connection, response);
+        LOGGER.info("PageSeeder returned {} {}: {} {}", status, this._connection.getResponseMessage(), response.getErrorID(), response.getMessage());
       }
 
       // Could not connect to the server
