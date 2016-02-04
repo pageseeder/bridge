@@ -55,6 +55,9 @@ public abstract class PSURI extends PSAddressable {
   /** The created date */
   private Date created;
 
+  /** The modified date */
+  private Date modified;
+
   /** List of labels on the document */
   private List<String> labels = new ArrayList<String>();
 
@@ -137,7 +140,7 @@ public abstract class PSURI extends PSAddressable {
   /**
    * The display title is the title if it's specified,
    * otherwise the url if it's external or else the filename..
-   * 
+   *
    * @return this URI's display title
    */
   public String getDisplayTitle() {
@@ -153,13 +156,21 @@ public abstract class PSURI extends PSAddressable {
     if (path.indexOf('/') == -1) return path;
     return path.substring(path.lastIndexOf('/')+1);
   }
-  
+
   /**
    * @return the created date
    */
   public final Date getCreatedDate() {
     return this.created;
   }
+
+  /**
+   * @return the modified date
+   */
+  public final Date getModifiedDate () {
+    return this.modified;
+  }
+
 
   /**
    * @return the labels
@@ -215,6 +226,13 @@ public abstract class PSURI extends PSAddressable {
    */
   public final void setCreatedDate(String date) {
     this.created = toDate(date);
+  }
+
+  /**
+  * @param date the ISO8601 date
+  */
+  public final void setModifiedDate(String date) {
+    this.modified = toDate(date);
   }
 
   // Convenience methods

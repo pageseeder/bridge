@@ -288,6 +288,7 @@ public final class PSEntityFactory {
     }
     String mediatype = atts.getValue("mediatype");
     String created = atts.getValue("created");
+    String modified = atts.getValue("modified");
 
     PSDocument d = document;
     if (d == null) {
@@ -317,6 +318,9 @@ public final class PSEntityFactory {
     d.setType(type);
     d.setMediaType(mediatype);
     d.setCreatedDate(created);
+    if (modified != null) {
+      d.setModifiedDate(modified);
+    }
     return d;
   }
 
