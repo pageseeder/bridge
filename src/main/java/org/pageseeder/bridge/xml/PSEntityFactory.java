@@ -318,8 +318,11 @@ public final class PSEntityFactory {
     d.setType(type);
     d.setMediaType(mediatype);
     d.setCreatedDate(created);
+    // set the last modified date to created date if not found.
     if (modified != null) {
       d.setModifiedDate(modified);
+    } else {
+      d.setModifiedDate(created);
     }
     return d;
   }
