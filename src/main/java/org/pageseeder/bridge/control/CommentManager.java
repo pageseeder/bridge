@@ -166,7 +166,7 @@ public final class CommentManager extends Sessionful {
    *
    * @param comment The comment to save
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
-   * @param group   The group the comment should be posted against
+   * @param groups  The groups the comment should be posted against
    */
   public boolean save(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
     if (comment.getAuthor() == null || comment.getAuthor().member() == null)
@@ -298,7 +298,7 @@ public final class CommentManager extends Sessionful {
   /**
    * Find comments using criteria.
    * 
-   * @deprecated Use {@link #findComments(PSMember, PSGroup,String, String, List<String>)} instead.
+   * @deprecated Use {@link #findComments(PSMember, PSGroup,String, String, List)} instead.
    *
    * @param member The member who is trying to access the comments.
    * @param group  The context group
@@ -317,7 +317,7 @@ public final class CommentManager extends Sessionful {
   /**
    * Find comments using criteria.
    * 
-   * @deprecated Use {@link #findComments(PSMember, PSGroup,String, String, List<String>, List<String>)} instead.
+   * @deprecated Use {@link #findComments(PSMember, PSGroup,String, String, List, List)} instead.
    *
    * @param member    The member who is trying to access the comments.
    * @param group     The context group

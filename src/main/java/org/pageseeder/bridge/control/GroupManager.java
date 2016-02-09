@@ -208,7 +208,7 @@ public final class GroupManager extends Sessionful {
    *
    * <p>Renaming a group is an asynchronous operation on PageSeeder so this method returns a {@link PSThreadStatus} object.
    *
-   * <p>The {@link groupIsRenamed(group)} must be called when the thread is completed successfully.
+   * <p>The {@link #groupIsRenamed(PSGroup)} must be called when the thread is completed successfully.
    *
    * @param group   The group to rename
    * @param editor  The member making the request
@@ -246,7 +246,7 @@ public final class GroupManager extends Sessionful {
    *
    * <p>Archiving a group is an asynchronous operation on PageSeeder so this method returns a {@link PSThreadStatus} object.
    *
-   * <p>The {@link groupIsArchived(group)} must be called when the thread is completed successfully.
+   * <p>The {@link #groupIsArchived(PSGroup)} must be called when the thread is completed successfully.
    *
    * @param group   The group to archive
    * @param editor  The member making the request
@@ -278,10 +278,10 @@ public final class GroupManager extends Sessionful {
   }
 
   /**
-   * Edit the specified group in PageSeeder (name not included, use {@link renameGroup()} to rename a group).
+   * Edit the specified group in PageSeeder (name not included, use {@link #renameGroup(PSGroup, PSMember, String)} to rename a group).
    *
    * @param group   The group to edit
-   * @param creator The member making the request
+   * @param editor  The member making the request
    *
    * @throws FailedPrecondition   Should a precondition fail to edit the group
    * @throws APIException         If an error occurs while communicating with PageSeeder.
@@ -292,13 +292,13 @@ public final class GroupManager extends Sessionful {
   }
 
   /**
-   * Edit the specified group in PageSeeder (name not included, use {@link renameGroup()} to rename a group).
+   * Edit the specified group in PageSeeder (name not included, use {@link #renameGroup(PSGroup, PSMember, String)} to rename a group).
    *
    * <p>The optional group options parameters can be used to specify additional options to edit the group
    * or set some group properties.
    *
    * @param group   The group to edit
-   * @param creator The member making the request
+   * @param editor  The member making the request
    * @param options The group creation options (including group properties)
    *
    * @throws FailedPrecondition   Should a precondition fail to edit the group
@@ -491,7 +491,7 @@ public final class GroupManager extends Sessionful {
    * This is more efficient than listProjectTree methods.
    *
    * @param member      The member
-   * @param nameprefix  The prefix of project/group.
+   * @param prefix      The prefix of project/group name
    * @param includeAll  Whether to return all projects/groups for server (Administrator only)
    *
    * @throws APIException
@@ -505,7 +505,7 @@ public final class GroupManager extends Sessionful {
    * This is more efficient than listProjectTree methods.
    *
    * @param member      The member
-   * @param nameprefix  The prefix of project/group.
+   * @param prefix      The prefix of project/group name
    * @param max         The maximum number of projects/groups to return.
    * @param includeAll  Whether to return all projects/groups for server (Administrator only)
    *

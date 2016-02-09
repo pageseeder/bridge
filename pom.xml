@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.pageseeder.bridge</groupId>
   <artifactId>pso-bridge</artifactId>
-  <version>0.8.3-SNAPSHOT</version>
+  <version>0.8.3</version>
   <name>PageSeeder Bridge</name>
   <description>Java API to connect to a PageSeeder server</description>
   <url>https://www.pageseeder.org/projects/bridge.html</url>
@@ -158,4 +158,32 @@
     
   </build>
 
+  <reporting>
+  
+    <plugins>
+    
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.3</version>
+        <configuration>
+          <show>private</show>
+          <nohelp>true</nohelp>
+          <links>
+            <link>http://commons.apache.org/dbcp/apidocs/</link>
+            <link>http://commons.apache.org/fileupload/apidocs/</link>
+          </links>
+          <javaApiLinks>
+            <property>
+              <name>api_1.7</name>
+              <value>http://download.java.net/jdk7/docs/api/</value>
+            </property>
+          </javaApiLinks>
+        </configuration>
+      </plugin>
+      
+    </plugins>
+
+  </reporting>
+  
 </project>

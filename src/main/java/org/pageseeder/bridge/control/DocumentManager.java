@@ -415,7 +415,7 @@ public final class DocumentManager extends Sessionful {
   /**
    * Write the content of the specified document onto the XML writer.
    *
-   * @param docid   The document ID to find
+   * @param uri     The URI ID to find
    * @param handler The handler to handle the content
    */
   public void getContent(Long uri, DefaultHandler handler) throws APIException {

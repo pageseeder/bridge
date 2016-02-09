@@ -346,11 +346,13 @@ public final class MemberManager extends Sessionful {
   /**
    * Allow members to confirm a change of email address by supplying a confirmation key.
    *
-   * @param username
-   * @param email
-   * @param key
-   * @return
-   * @throws APIException
+   * @param username the member's username
+   * @param email    the new email address
+   * @param key      the key (emailed to the new email address)
+   * 
+   * @return <code>true</code> if successful.
+   * 
+   * @throws APIException If an error occurs while connecting to PageSeeder.
    */
   public boolean confirmEmailChange(String username, String email, String key) throws APIException {
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, "com.pageseeder.ChangeDetailsForm");

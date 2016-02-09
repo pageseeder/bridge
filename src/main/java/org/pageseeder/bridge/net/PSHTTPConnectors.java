@@ -364,10 +364,9 @@ public final class PSHTTPConnectors {
   // ----------------------------------------------------------------------------------------------
 
   /**
-   * Add the appropriate parameter to identify the member depending on whether it is the username or email.
+   * Returns the connector to check thread progress.
    *
-   * @param connector the connector to add the parameter to
-   * @param options password reset options.
+   * @param status  the thread status object
    *
    * @throws FailedPrecondition if the thread ID is missing from the status.
    */
@@ -732,7 +731,7 @@ public final class PSHTTPConnectors {
    * List the projects for the specified member.
    *
    * @param member       The member
-   * @param nameprefix   The prefix of project/group.
+   * @param prefix       The prefix of project/group name
    * @param max          The maximum number of projects/groups to return.
    * @param includeAll   If <code>true</code>, all the projects are listed (only for admins)
    *
@@ -804,17 +803,16 @@ public final class PSHTTPConnectors {
    * List the groups.
    *
    * @param member    The Member
-   * @param nameprefix The prefix of the group/project
-   * @param maximum  The maximum groups return
-   * @param showGroup Whether to return groups
-   * @param showAll Whether to return all projects/groups for server (Administrator only)
+   * @param prefix    The prefix of the group/project name
+   * @param maximum   The maximum groups return
+   * @param showAll   Whether to return all projects/groups for server (Administrator only)
    *
    * @return Returns the list of projects and groups for the given member.
    *
    * @throws FailedPrecondition If member is not identifiable.
    */
-  public static PSHTTPConnector listProjectsTree(PSMember member, String nameprefix, int maximum, boolean showAll) throws FailedPrecondition {
-    return listProjectsTree(member, nameprefix, maximum, true, showAll);
+  public static PSHTTPConnector listProjectsTree(PSMember member, String prefix, int maximum, boolean showAll) throws FailedPrecondition {
+    return listProjectsTree(member, prefix, maximum, true, showAll);
   }
 
   /**
@@ -1456,7 +1454,7 @@ public final class PSHTTPConnectors {
    * @param notify  Notifications
    * @param groups  The groups the comment is posted on
    *
-   * @return
+   * @return the corresponding connector
    *
    * @throws FailedPrecondition
    */
@@ -1585,7 +1583,7 @@ public final class PSHTTPConnectors {
    * @param notify  Notifications
    * @param groups  The groups the comment is posted on
    *
-   * @return
+   * @return the corresponding connector
    *
    * @throws FailedPrecondition
    */
@@ -1696,7 +1694,7 @@ public final class PSHTTPConnectors {
   /**
    * Edit an existing comment in PageSeeder.
    *
-   * @deprecated Use {@link #patchComment(PSComment, PSMember, PSNotify, List<PSGroup>)} instead
+   * @deprecated Use {@link #patchComment(PSComment, PSMember, PSNotify, List)} instead
    *
    * @param comment The comment
    * @param notify  Notifications
@@ -2098,9 +2096,10 @@ public final class PSHTTPConnectors {
   }
 
   /**
+   * Get URI
    *
-   * @param url
-   * @param group
+   * @param uriid  the URI ID
+   * @param group  the group for the URI
    *
    * @return The corresponding connector
    *

@@ -119,7 +119,7 @@ public final class GroupOptions {
 
   /**
    *
-   * @return
+   * @return <code>true</code> if creator will be added to group
    */
   public boolean doAddCreatorAsMember() {
     return this.addmember;

@@ -186,7 +186,6 @@ public final class Services {
    * Returns the URL for a member to ivite himself to a group.
    *
    * @param group  the group name or id
-   * @param member the member username or id
    *
    * @return <code>/groups/[group]/members/[member]/inviteself</code>.
    */
@@ -846,7 +845,7 @@ public final class Services {
   /**
    * Returns the URL to invoke the group member edit service.
    *
-   * @deprecated Use {@link # toMembership(String, String)} with PATCH
+   * @deprecated Use {@link #toMembership(String, String)} with PATCH
    *
    * @param group  the group name or id
    * @param member the member username or id
@@ -1069,7 +1068,7 @@ public final class Services {
   /**
    * Returns the URL to saves the core properties of a URI.
    *
-   * @deprecated Use {@link # toEditURI(String, String, String)} with PATCH
+   * @deprecated Use {@link #toEditURI(String, String, String)} with PATCH
    *
    * @param member the member username or id
    * @param group  the group name or id
@@ -1281,7 +1280,7 @@ public final class Services {
   /**
    * Returns the URL to edit a comment.
    *
-   * @deprecated Use {@link # toComment(String, String)} with PATCH
+   * @deprecated Use {@link #toComment(String, String)} with PATCH
    *
    * @param member  the username or ID of the member
    * @param comment the xlink ID of the comment to archive

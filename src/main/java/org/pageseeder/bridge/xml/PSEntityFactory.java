@@ -340,8 +340,8 @@ public final class PSEntityFactory {
    * mediatype="folder"
    * created="2014-01-31T16:19:12+11:00"
    *
-   * @param atts     The attributes the "uri" element
-   * @param document The PSExternalURI instance (may be <code>null</code>).
+   * @param atts         The attributes the "uri" element
+   * @param externaluri  The PSExternalURI instance (may be <code>null</code>).
    *
    * @return The corresponding PSDocument.
    */

@@ -55,9 +55,7 @@ public final class PSDocumentBrowseHandler extends DefaultHandler {
 
 
   /**
-   * Create a new handler for document belong to a specific group.
-   *
-   * @param group The group the documents belong to.
+   * Create a new handler for document.
    */
   public PSDocumentBrowseHandler() {
   }

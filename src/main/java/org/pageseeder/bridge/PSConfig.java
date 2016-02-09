@@ -196,7 +196,7 @@ public final class PSConfig {
   /**
    * To configure the bridge manually.
    *
-   * @deprecated Use {@link #setDefault()} instead if no provider is available.
+   * @deprecated Use {@link #setDefault(PSConfig)} instead if no provider is available.
    *
    * @param p The properties to use to configure the bridge manually.
    */
@@ -277,7 +277,7 @@ public final class PSConfig {
    * @param p
    * @param start
    * @param fallback
-   * @return
+   * @return the URL
    * @throws MalformedURLException
    */
   private static URL toBaseURL(Properties p, String start, URI fallback) throws MalformedURLException {
