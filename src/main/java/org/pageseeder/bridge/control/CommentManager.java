@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.FailedPrecondition;
+import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSEntityCache;
-import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.model.PSComment;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
@@ -49,10 +49,10 @@ public final class CommentManager extends Sessionful {
   /**
    * Creates a new manager for PageSeeder comments.
    *
-   * @param session A valid session to connect to PageSeeder.
+   * @param credentials A valid session to connect to PageSeeder.
    */
-  public CommentManager(PSSession session) {
-    super(session);
+  public CommentManager(PSCredentials credentials) {
+    super(credentials);
   }
 
   /**
@@ -128,7 +128,7 @@ public final class CommentManager extends Sessionful {
    * @param groups  The group the comment should be posted against
    */
   public boolean createComment(PSComment comment, PSMember creator, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, creator, notify, groups).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, creator, notify, groups).using(this._credentials);
     PSCommentHandler handler = new PSCommentHandler(comment);
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getStatus() != Status.SUCCESSFUL) return false;
@@ -183,7 +183,7 @@ public final class CommentManager extends Sessionful {
    * @param groups  The groups the comment should be posted against
    */
   public boolean save(PSComment comment, PSMember editor, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.patchComment(comment, editor, notify, groups).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.patchComment(comment, editor, notify, groups).using(this._credentials);
     PSCommentHandler handler = new PSCommentHandler(comment);
     PSHTTPResponseInfo info = connector.patch(handler);
     if (info.getStatus() != Status.SUCCESSFUL) return false;
@@ -198,7 +198,7 @@ public final class CommentManager extends Sessionful {
    * @param member  The member archiving the comment
    */
   public boolean archiveComment(PSComment comment, PSMember member) throws FailedPrecondition, APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.archiveComment(comment, member).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.archiveComment(comment, member).using(this._credentials);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
   }
@@ -210,7 +210,7 @@ public final class CommentManager extends Sessionful {
    * @param member  The member archiving the comment
    */
   public boolean unarchiveComment(PSComment comment, PSMember member) throws FailedPrecondition, APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.unarchiveComment(comment, member).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.unarchiveComment(comment, member).using(this._credentials);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
   }
@@ -224,7 +224,7 @@ public final class CommentManager extends Sessionful {
    * @param xlink   The comment to reply to
    */
   public boolean replyToComment(PSComment comment, PSNotify notify, List<PSGroup> groups, long xlink) throws FailedPrecondition, APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.replyToComment(comment, notify, groups, xlink).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.replyToComment(comment, notify, groups, xlink).using(this._credentials);
     PSCommentHandler handler = new PSCommentHandler(comment);
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getStatus() != Status.SUCCESSFUL) return false;
@@ -243,7 +243,7 @@ public final class CommentManager extends Sessionful {
   public PSComment getComment(long id, PSMember member) throws APIException {
     PSComment comment = cache.get(Long.valueOf(id));
     if (comment == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getComment(member, id).using(this._session);
+      PSHTTPConnector connector = PSHTTPConnectors.getComment(member, id).using(this._credentials);
       PSCommentHandler handler = new PSCommentHandler();
       connector.get(handler);
       comment = handler.getComment();
@@ -284,7 +284,7 @@ public final class CommentManager extends Sessionful {
    */
   public List<PSComment> findComments(PSMember member, PSGroup group, String title,
       String type, List<String> statuses, List<String> paths) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.findComments(member, group, title, type, statuses, paths).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.findComments(member, group, title, type, statuses, paths).using(this._credentials);
     PSCommentHandler handler = new PSCommentHandler();
     connector.get(handler);
     List<PSComment> comments = handler.listComments();
@@ -297,7 +297,7 @@ public final class CommentManager extends Sessionful {
 
   /**
    * Find comments using criteria.
-   * 
+   *
    * @deprecated Use {@link #findComments(PSMember, PSGroup,String, String, List)} instead.
    *
    * @param member The member who is trying to access the comments.
@@ -316,7 +316,7 @@ public final class CommentManager extends Sessionful {
 
   /**
    * Find comments using criteria.
-   * 
+   *
    * @deprecated Use {@link #findComments(PSMember, PSGroup,String, String, List, List)} instead.
    *
    * @param member    The member who is trying to access the comments.

@@ -19,8 +19,8 @@ import java.util.List;
 
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.InvalidEntityException;
+import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSEntityCache;
-import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.model.MemberOptions;
 import org.pageseeder.bridge.model.MemberOptions.Invitation;
 import org.pageseeder.bridge.model.PSGroup;
@@ -135,10 +135,10 @@ public final class MembershipManager extends Sessionful {
   /**
    * Creates a new manager for membership using the specified session.
    *
-   * @param session The session used to connect to PageSeeder.
+   * @param credentials The session used to connect to PageSeeder.
    */
-  public MembershipManager(PSSession session) {
-    super(session);
+  public MembershipManager(PSCredentials credentials) {
+    super(credentials);
   }
 
   /**
@@ -152,7 +152,7 @@ public final class MembershipManager extends Sessionful {
    */
   public MembershipResult create(PSMembership membership) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, null, true).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, null, true).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
@@ -171,7 +171,7 @@ public final class MembershipManager extends Sessionful {
    * @throws APIException if the operation is not successful or caused by client.
    */
   public MembershipResult create(PSMembership membership, String password) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, password, true).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, password, true).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
@@ -191,7 +191,7 @@ public final class MembershipManager extends Sessionful {
    * @throws APIException if the operation is not successful or caused by client.
    */
   public MembershipResult create(PSMembership membership, String password, MemberOptions options) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, password, options).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.createMembership(membership, password, options).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
@@ -229,7 +229,7 @@ public final class MembershipManager extends Sessionful {
    */
   public MembershipResult add(PSMembership membership, MemberOptions options) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
@@ -251,7 +251,7 @@ public final class MembershipManager extends Sessionful {
    */
   public MembershipResult invite(PSMembership membership) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, new MemberOptions()).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, new MemberOptions()).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
@@ -274,7 +274,7 @@ public final class MembershipManager extends Sessionful {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
     MemberOptions options = new MemberOptions();
     options.setWelcomeEmail(email);
-    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
@@ -296,7 +296,7 @@ public final class MembershipManager extends Sessionful {
    */
   public MembershipResult invite(PSMembership membership, MemberOptions options) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.inviteMembership(membership, options).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
@@ -317,7 +317,7 @@ public final class MembershipManager extends Sessionful {
    */
   public MembershipResult inviteSelf(PSMembership membership) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.inviteSelf(membership, true).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.inviteSelf(membership, true).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
@@ -340,7 +340,7 @@ public final class MembershipManager extends Sessionful {
    */
   public MembershipResult inviteSelf(PSMembership membership, boolean email) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.inviteSelf(membership, email).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.inviteSelf(membership, email).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
@@ -359,7 +359,7 @@ public final class MembershipManager extends Sessionful {
    */
   public MembershipResult register(PSMembership membership) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.registerMembership(membership).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.registerMembership(membership).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.post(handler);
     Status status = info.getStatus();
@@ -377,7 +377,7 @@ public final class MembershipManager extends Sessionful {
    *         or <code>null</code> if the member does not belong to the group
    */
   public PSMembership get(String group, String member) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(group, member).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(group, member).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler();
     connector.get(handler);
     return handler.get();
@@ -402,7 +402,7 @@ public final class MembershipManager extends Sessionful {
       member.setUsername(emailOrUsername);
     }
     PSMembership membership = new PSMembership(new PSGroup(group), member);
-    PSHTTPConnector connector = PSHTTPConnectors.findMembershipsForGroup(membership, isManager).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.findMembershipsForGroup(membership, isManager).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler();
     connector.get(handler);
     return handler.get();
@@ -420,7 +420,7 @@ public final class MembershipManager extends Sessionful {
   public PSMembership get(PSGroup group, PSMember member) throws APIException {
     if (!group.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
     if (!member.isValid()) throw new InvalidEntityException(PSMember.class, member.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(group.getName(), member.getUsername()).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(group.getName(), member.getUsername()).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(group);
     connector.get(handler);
     return handler.get();
@@ -433,7 +433,7 @@ public final class MembershipManager extends Sessionful {
    * @param member The username of the member
    */
   public void remove(String group, String member) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.deleteMembership(group, member).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.deleteMembership(group, member).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler();
     connector.delete(handler);
   }
@@ -455,7 +455,7 @@ public final class MembershipManager extends Sessionful {
    */
   public MembershipResult save(PSMembership membership, boolean forceEmail) throws APIException {
     if (!membership.isValid()) throw new InvalidEntityException(PSMembership.class, membership.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.patchMembership(membership, forceEmail).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.patchMembership(membership, forceEmail).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(membership);
     PSHTTPResponseInfo info = connector.patch(handler);
     Status status = info.getStatus();
@@ -467,7 +467,7 @@ public final class MembershipManager extends Sessionful {
    * Updates the password of the member.
    */
   public void updatePassword(PSMembership membership, String password) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.updatePassword(membership, password).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.updatePassword(membership, password).using(this._credentials);
     connector.patch();
   }
 
@@ -476,7 +476,7 @@ public final class MembershipManager extends Sessionful {
    */
   public List<PSMembership> listForMember(PSMember member) throws APIException {
     if (!member.isValid()) throw new InvalidEntityException(PSMember.class, member.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(member.getIdentifier()).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(member.getIdentifier()).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(member);
     connector.get(handler);
     return handler.list();
@@ -488,7 +488,7 @@ public final class MembershipManager extends Sessionful {
    * @param username the member username
    */
   public List<PSMembership> listForMember(String username) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(username).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(username).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler();
     connector.get(handler);
     return handler.list();
@@ -515,7 +515,7 @@ public final class MembershipManager extends Sessionful {
    */
   public List<PSMembership> listForGroup(PSGroup group, boolean includeSubgroups) throws APIException {
     if (!group.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForGroup(group.getName(), includeSubgroups).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForGroup(group.getName(), includeSubgroups).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(group);
     connector.get(handler);
     return handler.list();
@@ -530,7 +530,7 @@ public final class MembershipManager extends Sessionful {
    * @return the list of memberships.
    */
   public List<PSMembership> find(PSMembership membership, boolean isManager) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.findMembershipsForGroup(membership, isManager).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.findMembershipsForGroup(membership, isManager).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(membership.getGroup());
     connector.get(handler);
     return handler.list();

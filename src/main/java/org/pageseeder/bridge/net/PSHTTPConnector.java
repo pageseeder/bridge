@@ -106,12 +106,14 @@ public final class PSHTTPConnector {
   /**
    * Sets the session for this request as a chainable method.
    *
-   * @param session the user for this request.
+   * @param credentials the user for this request.
    * @return this connector
    */
-  public PSHTTPConnector using(PSSession session) {
-    this.credentials = session;
-    this.session = session;
+  public PSHTTPConnector using(PSCredentials credentials) {
+    this.credentials = credentials;
+    if (credentials instanceof PSSession) {
+      this.session = (PSSession)credentials;
+    }
     return this;
   }
 
@@ -466,7 +468,7 @@ public final class PSHTTPConnector {
   public PSHTTPResponseInfo put() throws APIException {
     return handle(Method.PUT, (DefaultHandler)null);
   }
-  
+
   /**
    * Connect to PageSeeder and fetch the XML using the PUT method to be parsed by a handler.
    *

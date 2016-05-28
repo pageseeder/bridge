@@ -15,7 +15,9 @@
  */
 package org.pageseeder.bridge.control;
 
+import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.PSToken;
 
 /**
  * A base class for all the core object managers.
@@ -23,7 +25,7 @@ import org.pageseeder.bridge.PSSession;
  * <p>All managers should specify a user to connect to PageSeeder.
  *
  * @author Christophe Lauret
- * @version 0.2.0
+ * @version 0.9.0
  * @since 0.2.0
  */
 abstract class Sessionful {
@@ -31,22 +33,29 @@ abstract class Sessionful {
   /**
    * The user connecting to the server.
    */
-  protected final PSSession _session;
+  protected final PSCredentials _credentials;
 
   /**
-   * Create a new manager using the specified user.
+   * Create a new manager using the specified user session.
    *
-   * @param user the using making the connections.
+   * @param session the user session using making the connections.
    */
-  public Sessionful(PSSession user) {
-    this._session = user;
+  public Sessionful(PSCredentials credentials) {
+    this._credentials = credentials;
   }
 
   /**
    * @return the session used by the class.
    */
   public PSSession session() {
-    return this._session;
+    return (this._credentials instanceof PSSession)? (PSSession)this._credentials : null;
+  }
+
+  /**
+   * @return the session used by the class.
+   */
+  public PSToken token() {
+    return (this._credentials instanceof PSToken)? (PSToken)this._credentials : null;
   }
 
 }

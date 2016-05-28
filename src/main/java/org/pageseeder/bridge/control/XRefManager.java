@@ -18,16 +18,13 @@ package org.pageseeder.bridge.control;
 import java.util.List;
 
 import org.pageseeder.bridge.APIException;
+import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSEntityCache;
-import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.model.PSGroup;
-import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.model.PSXRef;
 import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
-import org.pageseeder.bridge.net.PSHTTPResponseInfo;
-import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
 import org.pageseeder.bridge.xml.PSXRefHandler;
 
 /**
@@ -47,10 +44,10 @@ public final class XRefManager extends Sessionful {
   /**
    * Creates a new manager for PageSeeder XRefs.
    *
-   * @param user The user that can connect to PageSeeder.
+   * @param credentials The user that can connect to PageSeeder.
    */
-  public XRefManager(PSSession user) {
-    super(user);
+  public XRefManager(PSCredentials credentials) {
+    super(credentials);
   }
 
   /**
@@ -62,7 +59,7 @@ public final class XRefManager extends Sessionful {
    * @return the list of XRefs found (never <code>null</code>)
    */
   public List<PSXRef> listXRefs(PSGroup group, PSURI uri) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.listXRefs(group, uri, null, true, false, null, 1, 1000).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.listXRefs(group, uri, null, true, false, null, 1, 1000).using(this._credentials);
     PSXRefHandler handler = new PSXRefHandler();
     connector.get(handler);
     List<PSXRef> xrefs = handler.listXRefs();
@@ -84,13 +81,13 @@ public final class XRefManager extends Sessionful {
    * @param version        version of document (null means current)
    * @param page           the page to load
    * @param pagesize       the number of results per page
-   * 
+   *
    * @return the list of XRefs found (never <code>null</code>)
    */
-  public List<PSXRef> listXRefs(PSGroup group, PSURI uri, List<PSXRef.TYPE> includetypes, 
+  public List<PSXRef> listXRefs(PSGroup group, PSURI uri, List<PSXRef.TYPE> includetypes,
       boolean forward, boolean reverse, String version, int page, int pagesize) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.listXRefs(group, uri, includetypes, 
-        forward, reverse, version, page, pagesize).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.listXRefs(group, uri, includetypes,
+        forward, reverse, version, page, pagesize).using(this._credentials);
     PSXRefHandler handler = new PSXRefHandler();
     connector.get(handler);
     List<PSXRef> xrefs = handler.listXRefs();

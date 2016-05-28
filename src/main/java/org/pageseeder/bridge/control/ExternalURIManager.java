@@ -16,8 +16,8 @@
 package org.pageseeder.bridge.control;
 
 import org.pageseeder.bridge.APIException;
+import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSEntityCache;
-import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.model.PSExternalURI;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
@@ -46,10 +46,10 @@ public final class ExternalURIManager extends Sessionful {
   /**
    * Creates a new manager for PageSeeder groups.
    *
-   * @param user The user that can connect to PageSeeder.
+   * @param credentials The user that can connect to PageSeeder.
    */
-  public ExternalURIManager(PSSession user) {
-    super(user);
+  public ExternalURIManager(PSCredentials credentials) {
+    super(credentials);
   }
 
   /**
@@ -63,7 +63,7 @@ public final class ExternalURIManager extends Sessionful {
    */
   public boolean create(PSExternalURI externaluri, PSGroup group, PSMember creator)
       throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createExternalURI(externaluri, group, creator).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.createExternalURI(externaluri, group, creator).using(this._credentials);
     PSExternalURIHandler handler = new PSExternalURIHandler(externaluri);
     PSHTTPResponseInfo info = connector.post(handler);
     return info.getStatus() == Status.SUCCESSFUL;
@@ -80,7 +80,7 @@ public final class ExternalURIManager extends Sessionful {
   public PSExternalURI getExternalURI(long id, PSGroup group) throws APIException {
     PSExternalURI externaluri = cache.get(Long.valueOf(id));
     if (externaluri == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getURI(id, group).using(this._session);
+      PSHTTPConnector connector = PSHTTPConnectors.getURI(id, group).using(this._credentials);
       PSExternalURIHandler handler = new PSExternalURIHandler();
       connector.get(handler);
       externaluri = handler.getExternalURI();
@@ -102,7 +102,7 @@ public final class ExternalURIManager extends Sessionful {
   public PSExternalURI getExternalURI(String url, PSGroup group) throws APIException {
     PSExternalURI externaluri = cache.get(url);
     if (externaluri == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group).using(this._session);
+      PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group).using(this._credentials);
       PSExternalURIHandler handler = new PSExternalURIHandler();
       connector.get(handler);
       externaluri = handler.getExternalURI();

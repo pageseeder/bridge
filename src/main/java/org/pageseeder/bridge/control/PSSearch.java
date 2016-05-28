@@ -18,7 +18,7 @@ package org.pageseeder.bridge.control;
 import java.util.List;
 
 import org.pageseeder.bridge.APIException;
-import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSPredicate;
 import org.pageseeder.bridge.model.PSResult;
@@ -43,8 +43,8 @@ public final class PSSearch extends Sessionful {
    *
    * @param session The session used to connect to PageSeeder.
    */
-  public PSSearch(PSSession session) {
-    super(session);
+  public PSSearch(PSCredentials credentials) {
+    super(credentials);
   }
 
   /**
@@ -56,7 +56,7 @@ public final class PSSearch extends Sessionful {
    * @return The search results.
    */
   public List<PSResult> find(PSPredicate predicate, PSGroup group) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, group).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, group).using(this._credentials);
     PSResultHandler handler = new PSResultHandler();
     connector.get(handler);
     return handler.listResults();
@@ -72,7 +72,7 @@ public final class PSSearch extends Sessionful {
 
    */
   public List<PSResult> find(PSPredicate predicate, List<PSGroup> groups) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, groups).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, groups).using(this._credentials);
     PSResultHandler handler = new PSResultHandler();
     connector.get(handler);
     return handler.listResults();

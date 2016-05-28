@@ -16,7 +16,7 @@
 package org.pageseeder.bridge.control;
 
 import org.pageseeder.bridge.APIException;
-import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.model.PSThreadStatus;
 import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
@@ -43,10 +43,10 @@ public final class ThreadManager extends Sessionful {
   public final static int DEFAULT_THREAD_TIMEOUT_SECONDS = 10;
 
   /**
-   * @param session the session to use for PS connections
+   * @param credentials the session to use for PS connections
    */
-  public ThreadManager(PSSession session) {
-    super(session);
+  public ThreadManager(PSCredentials credentials) {
+    super(credentials);
   }
 
   /**
@@ -60,7 +60,7 @@ public final class ThreadManager extends Sessionful {
    */
   public PSThreadStatus checkProgress(PSThreadStatus status) throws APIException {
     if (status == null) throw new NullPointerException("status");
-    PSHTTPConnector connector = PSHTTPConnectors.checkThreadProgress(status).using(this._session);
+    PSHTTPConnector connector = PSHTTPConnectors.checkThreadProgress(status).using(this._credentials);
     PSThreadHandler handler = new PSThreadHandler();
     PSHTTPResponseInfo info = connector.get(handler);
     if (info.getCode() >= 400)

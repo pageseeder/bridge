@@ -47,6 +47,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.pageseeder.berlioz.xml.XMLCopy;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.PSToken;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.slf4j.Logger;
@@ -701,15 +702,18 @@ public final class PSHTTPConnection {
       connection.setRequestMethod("POST");
       connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
     } else {
-      connection.setRequestMethod(type == Method.MULTIPART ? "POST" : type.name());       
-    }   
+      connection.setRequestMethod(type == Method.MULTIPART ? "POST" : type.name());
+    }
     connection.setDefaultUseCaches(false);
     connection.setRequestProperty("X-Requester", "PS-Bridge-" + API_VERSION);
     if (credentials instanceof UsernamePassword) {
       // Use Basic Auth (5.6+)
       connection.addRequestProperty("Authorization", ((UsernamePassword) credentials).toBasicAuthorization());
     }
-
+    if (credentials instanceof PSToken) {
+      // Use OAuth bearer token (5.9+)
+      connection.addRequestProperty("Authorization", "Bearer "+((PSToken) credentials).token());
+    }
     PSSession session = credentials instanceof PSSession ? (PSSession) credentials : null;
     PSHTTPConnection instance = null;
 
@@ -734,7 +738,7 @@ public final class PSHTTPConnection {
           instance.addParameterPart(p.getKey(), p.getValue());
         }
       }
-    
+
     // PUT using "text/plain"
     } else if (type == Method.PUT) {
       String body = resource.body();
@@ -775,7 +779,7 @@ public final class PSHTTPConnection {
       throw ex;
     }
   }
-  
+
   // Processors
   // ----------------------------------------------------------------------------------------------
 
