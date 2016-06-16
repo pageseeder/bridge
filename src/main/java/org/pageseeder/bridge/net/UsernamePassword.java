@@ -34,7 +34,7 @@ public final class UsernamePassword implements PSCredentials {
   /**
    * The user ID.
    */
-  private final String _userid;
+  private final String _username;
 
   /**
    * The password.
@@ -42,14 +42,17 @@ public final class UsernamePassword implements PSCredentials {
   private final String _password;
 
   /**
-   * Creates a new user id and password set of credentials.
+   * Creates a new username and password set of credentials.
    *
-   * @param userid   The user id
+   * @param username The username
    * @param password The password
+   *
+   * @throws NullPointerException if either argument is <code>null</code>
+   * @throws IllegalArgumentException if either argument is considered invalid.
    */
-  public UsernamePassword(String userid, String password) {
-    if (userid == null || password == null) throw new NullPointerException();
-    this._userid = userid;
+  public UsernamePassword(String username, String password) {
+    if (username == null || password == null) throw new NullPointerException();
+    this._username = username;
     this._password = password;
   }
 
@@ -57,13 +60,13 @@ public final class UsernamePassword implements PSCredentials {
    * @return The username (cannot be <code>null</code>).
    */
   public String username() {
-    return this._userid;
+    return this._username;
   }
 
   /**
    * @return The password (cannot be <code>null</code>).
    */
-  protected String password() {
+  public String password() {
     return this._password;
   }
 
@@ -71,7 +74,8 @@ public final class UsernamePassword implements PSCredentials {
    * @return The basic authorization string
    */
   public String toBasicAuthorization() {
-    byte[] bc = (this._userid+":"+new String(this._password)).getBytes(StandardCharsets.UTF_8);
+    byte[] bc = (this._username+":"+this._password).getBytes(StandardCharsets.UTF_8);
     return "Basic "+DatatypeConverter.printBase64Binary(bc);
   }
+
 }
