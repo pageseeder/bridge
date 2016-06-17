@@ -95,21 +95,33 @@ public final class PSConfig {
     return this._api.getProtocol();
   }
 
+  /**
+   * The host for the API.
+   *
+   * @return the site prefix used by PageSeeder.
+   */
   public String getAPIHost() {
     return this._api.getHost();
   }
 
+  /**
+   * The port used to communicate with the API.
+   *
+   * @return the site prefix used by PageSeeder.
+   */
   public int getAPIPort() {
     return getActualPort(this._api);
   }
 
+  /**
+   * The site prefix.
+   *
+   * <p>Default is <code>/ps</code>.
+   *
+   * @return the site prefix used by PageSeeder.
+   */
   public String getSitePrefix() {
     return this._sitePrefix;
-  }
-
-  @Deprecated
-  public String getServletPrefix() {
-    return this._sitePrefix+"/servlet";
   }
 
   // Builders
@@ -184,29 +196,6 @@ public final class PSConfig {
     return singleton;
   }
 
-  /**
-   * @deprecated Use {@link #getDefault()} instead.
-   * @return the default config to use.
-   */
-  @Deprecated
-  public static PSConfig singleton() {
-    return getDefault();
-  }
-
-  /**
-   * To configure the bridge manually.
-   *
-   * @deprecated Use {@link #setDefault(PSConfig)} instead if no provider is available.
-   *
-   * @param p The properties to use to configure the bridge manually.
-   */
-  @Deprecated
-  public static void configure(PSConfig p) {
-    if (singleton != null) {
-      singleton = p;
-    }
-  }
-
   // Factory methods
   // ----------------------------------------------------------------------------------------------
 
@@ -252,8 +241,43 @@ public final class PSConfig {
     }
   }
 
+  /**
+   * For use by service providers to create a new PSConfig instance.
+   *
+   * @param url The URL to use for both documents and the API.
+   *
+   * @return The corresponding configuration instance.
+   *
+   * @throws IllegalArgumentException If any or the properties yield to an malformed URL
+   */
+  public static PSConfig newInstance(String url) {
+    try {
+      // Compute URL
+      URL u = new URL(url);
+      URL a = new URL(url);
+      return new PSConfig(u, a, DEFAULT_PREFIX);
+    } catch (MalformedURLException ex) {
+      throw new IllegalArgumentException("PageSeeder configuration URLs are not configured properly");
+    }
+  }
+
   // private helpers
   // ----------------------------------------------------------------------------------------------
+
+  /**
+   * Compute the base URL
+   *
+   * @param p
+   * @param start
+   * @param fallback
+   * @return the URL
+   * @throws MalformedURLException
+   */
+  private static URL toBaseURL(Properties p, String start, URI fallback) throws MalformedURLException {
+    if (p.containsKey(start+"-url")) return new URL(p.getProperty(start+"-url"));
+    if (p.containsKey("url")) return new URL(p.getProperty("url"));
+    return fallback.toURL();
+  }
 
   /**
    * Load the configuration instance to providers using a service loaders.
@@ -269,41 +293,6 @@ public final class PSConfig {
       config = provider.getConfig();
     }
     return config;
-  }
-
-  /**
-   * Compute the base URL
-   *
-   * @param p
-   * @param start
-   * @param fallback
-   * @return the URL
-   * @throws MalformedURLException
-   */
-  private static URL toBaseURL(Properties p, String start, URI fallback) throws MalformedURLException {
-    if (p.containsKey(start+"-url")) return new URL(p.getProperty(start+"-url"));
-    // Compute default URI from unqualified properties first
-    String defaultScheme = p.getProperty("scheme", fallback.getScheme());
-    String defaultHost = p.getProperty("host", fallback.getHost());
-    int defaultPort = p.containsKey("port")? Integer.parseInt(p.getProperty("port")) : fallback.getPort();
-    // Then get the qualified one
-    String scheme = p.getProperty(start+"scheme", defaultScheme);
-    String host = p.getProperty(start+"host", defaultHost);
-    int port = p.containsKey(start+"port")? Integer.parseInt(p.getProperty(start+"port")) : defaultPort;
-    return toBaseURL(scheme, host, port);
-  }
-
-  /**
-   * Generate a base URL from the protocol, host and port.
-   *
-   *
-   */
-  private static URL toBaseURL(String protocol, String host, int port) throws IllegalArgumentException {
-    try {
-      return new URL(protocol, host, port, "/");
-    } catch (MalformedURLException ex) {
-      throw new IllegalArgumentException(ex);
-    }
   }
 
   /**
