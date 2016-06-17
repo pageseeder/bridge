@@ -56,24 +56,46 @@ public final class TokenResponse {
   /** Logger for this class */
   private static final Logger LOGGER = LoggerFactory.getLogger(TokenResponse.class);
 
+  /**
+   * The access token if the response was successful.
+   */
   private PSToken token;
 
+  /**
+   * The member if the request was using open ID.
+   */
   private PSMember member;
 
+  /**
+   * The HTTP response code.
+   */
   private final int _responseCode;
 
+  /**
+   * The actual response as a string.
+   */
   private String _response;
 
+  /**
+   * The parsed JSON values.
+   */
   private Map<String, String> _json;
 
-  public TokenResponse(int responseCode, String response, Map<String, String> json) {
-    this._responseCode = responseCode;
+  /**
+   * Creates a new token response.
+   *
+   * @param code     The HTTP code
+   * @param response The actual response.
+   * @param json     A map of JSON elements.
+   */
+  TokenResponse(int code, String response, Map<String, String> json) {
+    this._responseCode = code;
     this._response = response;
     this._json = json;
   }
 
   /**
-   * Returns the access token if the response is successful.
+   * Returns the access token issued by the authorization server if the response is successful.
    *
    * @return the access token if the response is successful or <code>null</code>
    */
@@ -82,7 +104,7 @@ public final class TokenResponse {
   }
 
   /**
-   * Returns the PageSeeder member if the response is successful and the scope included open profile.
+   * Returns the PageSeeder member if the response is successful and the scope included 'openid profile'.
    *
    * @return the PageSeeder member or <code>null</code>
    */
@@ -94,9 +116,11 @@ public final class TokenResponse {
    * Indicates whether the response was successful.
    *
    * @return <code>true</code> if the response code is 200.
+   *
+   * @see <a href="http://tools.ietf.org/html/rfc6749#section-5.1"> OAuth 2.0 - 5.1. Successful Response</a>
    */
   public boolean isSuccessful() {
-    return this._responseCode >= 200 && this._responseCode < 300;
+    return this._responseCode == 200;
   }
 
   /**
@@ -114,6 +138,11 @@ public final class TokenResponse {
   }
 
   /**
+   * Returns the refresh token, which can be used to obtain new
+   * access tokens using the same authorization grant.
+   *
+   * <p>Corresponds to the <code>refresh_token</code> parameter.
+   *
    * @return The refresh token
    */
   public String getRefreshToken() {
@@ -121,16 +150,64 @@ public final class TokenResponse {
   }
 
   /**
-   * @return The refresh token
+   * Returns the scope of the access token.
+   *
+   * <p>It may not be returned if identical to the scope requested by the
+   * client.
+   *
+   * @return The scope
    */
   public String getScope() {
     return this._json.get("scope");
   }
 
   /**
-   * @return A JSON value from the response.
+   * Returns a ASCII error code if the response is not successful.
+   *
+   * <p>It should be one of:
+   * <ul>
+   *   <li>invalid_request</li>
+   *   <li>invalid_client</li>
+   *   <li>invalid_grant</li>
+   *   <li>unauthorized_client</li>
+   *   <li>unsupported_grant_type</li>
+   *   <li>invalid_scope</li>
+   * </ul>
+   *
+   * @return The error
+   *
+   * @see <a href="http://tools.ietf.org/html/rfc6749#section-5.2">OAuth 2.0 - 5.2 Error Response</a>
    */
-  public String getJSONValue(String name) {
+  public String getError() {
+    return this._json.get("error");
+  }
+
+  /**
+   * Returns a human-readable ASCII text providing additional information,
+   * used to assist the client developer in understanding the error that
+   * occurred.
+   *
+   * @return The error description
+   */
+  public String getErrorDescription() {
+    return this._json.get("error_description");
+  }
+
+  /**
+   * A URI identifying a human-readable web page with information about the
+   * error, used to provide the client developer with additional information
+   * about the error.
+   *
+   * @return The error URI
+   */
+  public String getErrorURI() {
+    return this._json.get("error_uri");
+  }
+
+  /**
+   * @return A OAuth parameter from the JSON response.
+   */
+  public String getParameter(String name) {
     return this._json.get(name);
   }
 
@@ -149,7 +226,7 @@ public final class TokenResponse {
     try (InputStream in = HTTP.stream(connection)) {
       String raw = toString(in, connection.getContentLength());
       LOGGER.debug("JSON response: {}", raw);
-      Map<String, String> json = JSON.parse(raw);
+      Map<String, String> json = JSONParameter.parse(raw);
       TokenResponse response = new TokenResponse(responseCode, raw, json);
       if (response.isSuccessful()) {
         response.token = extractToken(json, time);

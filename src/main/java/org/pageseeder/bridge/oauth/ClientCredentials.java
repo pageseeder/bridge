@@ -62,7 +62,7 @@ public final class ClientCredentials {
    */
   public ClientCredentials(String client, String secret) {
     if (client == null || secret == null) throw new NullPointerException();
-    if (VALID_CLIENT_ID.matcher(client).matches())
+    if (!VALID_CLIENT_ID.matcher(client).matches())
       throw new IllegalArgumentException("Client ID is invalid");
     if (secret.length() == 0)
       throw new IllegalArgumentException("Client secret is empty");

@@ -79,7 +79,7 @@ public final class AuthorizationRequest {
    *
    * @return the authorization request.
    */
-  public AuthorizationRequest newAuthorization(String clientId) {
+  public static AuthorizationRequest newAuthorization(String clientId) {
     Objects.requireNonNull(clientId, "The client_id parameter is required for an authorization");
     // Constructs OAuth2 redirect
     String state = UUID.randomUUID().toString().substring(0, 12);
@@ -91,6 +91,9 @@ public final class AuthorizationRequest {
     return new AuthorizationRequest(url, parameters);
   }
 
+  // GETTERS (return String)
+  // --------------------------------------------------------------------------
+
   /**
    * @return the state parameter
    */
@@ -98,8 +101,43 @@ public final class AuthorizationRequest {
     return this._parameters.get("state");
   }
 
+  /**
+   * @return The client ID used in this request.
+   */
   public String clientId() {
     return this._parameters.get("client_id");
+  }
+
+  /**
+   * @return the scope used for this request.
+   */
+  public String scope() {
+    return this._parameters.get("scope");
+  }
+
+  /**
+   * @param name  The name of the parameter
+   *
+   * @return the corresponding value or <code>null</code>.
+   */
+  public String parameter(String name) {
+    Objects.requireNonNull(name, "The parameter name cannot be null");
+    return this._parameters.get(name);
+  }
+
+  // SETTERS (return AuthorizationRequest)
+  // --------------------------------------------------------------------------
+
+  /**
+   * Create a new token request with the specified state.
+   *
+   * @param scope The scope
+   *
+   * @return a new token request.
+   */
+  public AuthorizationRequest state(String state) {
+    Objects.requireNonNull(state, "The state parameter cannot be null");
+    return parameter("state", state);
   }
 
   /**
@@ -111,7 +149,7 @@ public final class AuthorizationRequest {
    */
   public AuthorizationRequest redirectURI(String url) {
     Objects.requireNonNull(url, "The redirect_uri parameter cannot be null");
-    return addParameter("redirect_uri", url);
+    return parameter("redirect_uri", url);
   }
 
   /**
@@ -123,7 +161,7 @@ public final class AuthorizationRequest {
    */
   public AuthorizationRequest scope(String scope) {
     Objects.requireNonNull(scope, "The scope parameter cannot be null");
-    return addParameter("scope", scope);
+    return parameter("scope", scope);
   }
 
   /**
@@ -134,7 +172,7 @@ public final class AuthorizationRequest {
    *
    * @return a new token request.
    */
-  public AuthorizationRequest addParameter(String name, String value) {
+  public AuthorizationRequest parameter(String name, String value) {
     Objects.requireNonNull(name, "The parameter name cannot be null");
     Objects.requireNonNull(value, "The parameter value cannot be null");
     Map<String, String> p = new LinkedHashMap<>(this._parameters);
@@ -158,6 +196,11 @@ public final class AuthorizationRequest {
    */
   public static String toBaseURL(PSConfig config) {
     return config.buildHostURL().append(config.getSitePrefix()).append(TOKEN_ENDPOINT).toString();
+  }
+
+  @Override
+  public String toString() {
+    return toURLString();
   }
 
 }

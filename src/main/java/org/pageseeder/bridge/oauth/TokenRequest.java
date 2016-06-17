@@ -104,30 +104,8 @@ public final class TokenRequest {
     this._client = client;
   }
 
-  /**
-   * Make the request and returns the corresponding response.
-   *
-   * @return The corresponding response.
-   */
-  public TokenResponse execute() throws IOException {
-    // Create connection to URL using client credentials
-    URL url = new URL(this._url);
-    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-    String authorization = this._client.toBasicAuthorization();
-    connection.addRequestProperty("Authorization", authorization);
-    connection.setRequestMethod("POST");
-
-    // Write the parameters
-    byte[] parameters = HTTP.encodeParameters(this._parameters).getBytes(StandardCharsets.UTF_8);
-    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-    connection.setRequestProperty("Content-Length", Integer.toString(parameters.length));
-    connection.setDoInput(true);
-    try (OutputStream post = connection.getOutputStream()) {
-      post.write(parameters);
-      post.flush();
-    }
-    return TokenResponse.consume(connection, this._client);
-  }
+  // Factory methods
+  // --------------------------------------------------------------------------
 
   /**
    * Construct a token request for the "authorization_code" credential grant.
@@ -198,6 +176,43 @@ public final class TokenRequest {
     return new TokenRequest(url, parameters, client);
   }
 
+  // Getters (return String)
+  // --------------------------------------------------------------------------
+
+  /**
+   * @return the grant type
+   */
+  public String grantType() {
+    return this._parameters.get("grant_type");
+  }
+
+  /**
+   * @return the scope used for this request.
+   */
+  public String scope() {
+    return this._parameters.get("scope");
+  }
+
+  /**
+   * @return The redirect URI used in this request.
+   */
+  public String redirectURI() {
+    return this._parameters.get("client_id");
+  }
+
+  /**
+   * @param name  The name of the parameter
+   *
+   * @return the corresponding value or <code>null</code>.
+   */
+  public String parameter(String name) {
+    Objects.requireNonNull(name, "The parameter name cannot be null");
+    return this._parameters.get(name);
+  }
+
+  // Setters (return TokenRequest)
+  // --------------------------------------------------------------------------
+
   /**
    * Create a new token request with the specified redirect URI.
    *
@@ -207,7 +222,7 @@ public final class TokenRequest {
    */
   public TokenRequest redirectURI(String url) {
     Objects.requireNonNull(url, "The redirect_uri must not be null");
-    return addParameter("redirect_uri", url);
+    return parameter("redirect_uri", url);
   }
 
   /**
@@ -219,7 +234,7 @@ public final class TokenRequest {
    */
   public TokenRequest scope(String scope) {
     Objects.requireNonNull(scope, "The scope must not be null");
-    return addParameter("scope", scope);
+    return parameter("scope", scope);
   }
 
   /**
@@ -230,7 +245,7 @@ public final class TokenRequest {
    *
    * @return a new token request.
    */
-  public TokenRequest addParameter(String name, String value) {
+  public TokenRequest parameter(String name, String value) {
     Objects.requireNonNull(name, "The parameter name cannot be null");
     Objects.requireNonNull(value, "The parameter value cannot be null");
     Map<String, String> p = new LinkedHashMap<>(this._parameters);
@@ -238,6 +253,31 @@ public final class TokenRequest {
     return new TokenRequest(this._url, p, this._client);
   }
 
+  /**
+   * Make the request using POST method and returns the corresponding response.
+   *
+   * @return The corresponding response.
+   */
+  public TokenResponse post() throws IOException {
+    // Create connection to URL using client credentials
+    URL url = new URL(this._url);
+    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+    String authorization = this._client.toBasicAuthorization();
+    connection.addRequestProperty("Authorization", authorization);
+    connection.setRequestMethod("POST");
+
+    // Write the parameters
+    byte[] parameters = HTTP.encodeParameters(this._parameters).getBytes(StandardCharsets.UTF_8);
+    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+    connection.setRequestProperty("Content-Length", Integer.toString(parameters.length));
+    connection.setDoInput(true);
+    connection.setDoOutput(true);
+    try (OutputStream post = connection.getOutputStream()) {
+      post.write(parameters);
+      post.flush();
+    }
+    return TokenResponse.consume(connection, this._client);
+  }
 
   /**
    * Utility method returning the URL of the token request for the specified PageSeeder configuration.
@@ -248,6 +288,11 @@ public final class TokenRequest {
    */
   public static String toBaseURL(PSConfig config) {
     return config.buildHostURL().append(config.getSitePrefix()).append(TOKEN_ENDPOINT).toString();
+  }
+
+  @Override
+  public String toString() {
+    return "POST "+this._url+"?"+HTTP.encodeParameters(this._parameters).replaceAll("password=([^&]+)", "password=******");
   }
 
 }

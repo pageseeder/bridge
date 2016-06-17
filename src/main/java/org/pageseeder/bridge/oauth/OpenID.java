@@ -49,7 +49,7 @@ final class OpenID {
       return null;
     }
     // Check header
-    Map<String, String> header = JSON.parse(Base64.decodeURL(segments[0], StandardCharsets.UTF_8));
+    Map<String, String> header = JSONParameter.parse(Base64.decodeURL(segments[0], StandardCharsets.UTF_8));
     boolean isValidHeader = "JWT".equals(header.get("typ")) && "HS256".equals(header.get("alg"));
     if (!isValidHeader) {
       LOGGER.error("Invalid ID token: unsupported JWT header");
@@ -72,7 +72,7 @@ final class OpenID {
 
     // Check Payload
     try {
-      Map<String,String> payload = JSON.parse(Base64.decodeURL(segments[1], StandardCharsets.UTF_8));
+      Map<String,String> payload = JSONParameter.parse(Base64.decodeURL(segments[1], StandardCharsets.UTF_8));
       Long id = Long.valueOf(payload.get("sub"));
       String username = payload.get("preferred_username");
       String firstname = payload.get("given_name");
@@ -83,6 +83,7 @@ final class OpenID {
       member.setFirstname(firstname);
       member.setSurname(surname);
       member.setUsername(username);
+      LOGGER.debug("Found member {} ({}) via Open ID", username, id);
       return member;
     } catch (Exception ex) {
       LOGGER.error("Invalid ID token: unable to parse payload", ex);
