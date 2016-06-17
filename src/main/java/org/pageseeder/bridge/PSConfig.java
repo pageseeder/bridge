@@ -79,24 +79,44 @@ public final class PSConfig {
   // Getters
   // ---------------------------------------------------------------------------------------------
 
+  /**
+   * The scheme for the Website and documents.
+   *
+   * @return the site prefix used by PageSeeder.
+   */
   public String getScheme() {
     return this._uri.getProtocol();
   }
 
+  /**
+   * The hostname for the Website and documents.
+   *
+   * @return the site prefix used by PageSeeder.
+   */
   public String getHost() {
     return this._uri.getHost();
   }
 
+  /**
+   * The port used for the Website and documents.
+   *
+   * @return the site prefix used by PageSeeder.
+   */
   public int getPort() {
     return getActualPort(this._uri);
   }
 
+  /**
+   * The scheme for the API.
+   *
+   * @return the site prefix used by PageSeeder.
+   */
   public String getAPIScheme() {
     return this._api.getProtocol();
   }
 
   /**
-   * The host for the API.
+   * The hostname for the API.
    *
    * @return the site prefix used by PageSeeder.
    */
@@ -215,7 +235,7 @@ public final class PSConfig {
       URL uri = toBaseURL(p, "uri", DEFAULT_WEBSITE);
       URL api = toBaseURL(p, "api", DEFAULT_API);
       return new PSConfig(uri, api, prefix);
-    } catch (MalformedURLException | NumberFormatException ex) {
+    } catch (MalformedURLException ex) {
       throw new IllegalArgumentException("PageSeeder properties are not configured properly", ex);
     }
   }
@@ -233,8 +253,8 @@ public final class PSConfig {
   public static PSConfig newInstance(String uri, String api) {
     try {
       // Compute URL
-      URL u = new URL(uri);
-      URL a = new URL(api);
+      URL u = toBaseURL(uri);
+      URL a = toBaseURL(api);
       return new PSConfig(u, a, DEFAULT_PREFIX);
     } catch (MalformedURLException ex) {
       throw new IllegalArgumentException("PageSeeder configuration URLs are not configured properly");
@@ -251,14 +271,7 @@ public final class PSConfig {
    * @throws IllegalArgumentException If any or the properties yield to an malformed URL
    */
   public static PSConfig newInstance(String url) {
-    try {
-      // Compute URL
-      URL u = new URL(url);
-      URL a = new URL(url);
-      return new PSConfig(u, a, DEFAULT_PREFIX);
-    } catch (MalformedURLException ex) {
-      throw new IllegalArgumentException("PageSeeder configuration URLs are not configured properly");
-    }
+    return newInstance(url, url);
   }
 
   // private helpers
@@ -274,9 +287,22 @@ public final class PSConfig {
    * @throws MalformedURLException
    */
   private static URL toBaseURL(Properties p, String start, URI fallback) throws MalformedURLException {
-    if (p.containsKey(start+"-url")) return new URL(p.getProperty(start+"-url"));
-    if (p.containsKey("url")) return new URL(p.getProperty("url"));
+    if (p.containsKey(start+"-url")) return toBaseURL(p.getProperty(start+"-url"));
+    if (p.containsKey("url")) return toBaseURL(p.getProperty("url"));
     return fallback.toURL();
+  }
+
+  /**
+   * Compute the base URL from the specfied string
+   *
+   * @param p
+   * @param start
+   * @param fallback
+   * @return the URL
+   * @throws MalformedURLException
+   */
+  private static URL toBaseURL(String url) throws MalformedURLException {
+    return URI.create(url).resolve("/").toURL();
   }
 
   /**
@@ -324,4 +350,5 @@ public final class PSConfig {
     int port = url.getPort();
     return port != -1? port : url.getDefaultPort();
   }
+
 }
