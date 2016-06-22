@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -42,6 +45,34 @@ public final class HTTP {
       ex.printStackTrace();
     }
     return q.toString();
+  }
+
+  /**
+   * Returns the string to write the parameters sent via POST as <code>application/x-www-form-urlencoded</code>.
+   *
+   * @return the string to write the parameters sent via POST.
+   */
+  public static Map<String, String> decodeParameters(String query) {
+    String[] pair = query.split("&");
+    if (pair.length == 0) return Collections.emptyMap();
+    Map<String, String> parameters = new LinkedHashMap<>(pair.length);
+    try {
+      for (String p : pair) {
+        int e = p.indexOf('=');
+        if (e < 0) {
+          String name = URLDecoder.decode(p.substring(0, e), "utf-8");
+          parameters.put(name, "");
+        } else {
+          String name = URLDecoder.decode(p.substring(0, e), "utf-8");
+          String value = URLDecoder.decode(p.substring(e+1), "utf-8");
+          parameters.put(name, value);
+        }
+      }
+    } catch (UnsupportedEncodingException ex) {
+      // Should never happen as UTF-8 is always supported
+      ex.printStackTrace();
+    }
+    return parameters;
   }
 
   /**

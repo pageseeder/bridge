@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016 Allette Systems (Australia)
+ * http://www.allette.com.au
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.pageseeder.bridge.http;
 
 import java.io.Closeable;
@@ -17,8 +32,7 @@ import java.util.Random;
 
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
-import org.pageseeder.bridge.PSToken;
-import org.pageseeder.bridge.net.UsernamePassword;
+import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
 
 /**
  * Simple fluent class to define HTTP multipart requests to PageSeeder.
@@ -33,7 +47,7 @@ import org.pageseeder.bridge.net.UsernamePassword;
  *                    .using(token)
  *                    .addPart(file1)
  *                    .addPart(file2)
- *                    .execute();
+ *                    .response();
  * </pre>
  *
  * @author Christophe Lauret
@@ -75,6 +89,7 @@ public final class MultipartRequest extends BasicRequest {
   public MultipartRequest(String path) {
     super(Method.POST, path);
     this._boundary = newBoundary();
+    this._headers.add(new Header("Content-Type", "multipart/form-data; boundary=" + this._boundary));
   }
 
   /**
@@ -86,6 +101,7 @@ public final class MultipartRequest extends BasicRequest {
   public MultipartRequest(Servlet servlet) {
     super(Method.POST, servlet);
     this._boundary = newBoundary();
+    this._headers.add(new Header("Content-Type", "multipart/form-data; boundary=" + this._boundary));
   }
 
   // Setters (return Request)
@@ -103,8 +119,9 @@ public final class MultipartRequest extends BasicRequest {
    */
   @Override
   public MultipartRequest header(String name, String value) {
-    if (this.connection != null) throw new IllegalStateException("Too late to add headers to this multipart request!");
-    return (MultipartRequest)super.header(name, value);
+    if (this.connection != null) throw new IllegalStateException("Too late to set headers to this multipart request!");
+    super.setHeader(name, value);
+    return this;
   }
 
   /**
@@ -121,7 +138,7 @@ public final class MultipartRequest extends BasicRequest {
    */
   @Override
   public MultipartRequest parameter(String name, String value) {
-    if (this.connection != null) throw new IllegalStateException("Too late to add headers to this multipart request!");
+    if (this.connection != null) throw new IllegalStateException("Too late to set parameters for this multipart request!");
     return (MultipartRequest)super.parameter(name, value);
   }
 
@@ -304,7 +321,7 @@ public final class MultipartRequest extends BasicRequest {
   // --------------------------------------------------------------------------
 
   /**
-   * Create a PageSeeder connection for the specified URL and method.
+   * Returns the response to this multipart request.
    *
    * <p>The connection is configured to:
    * <ul>
@@ -313,20 +330,20 @@ public final class MultipartRequest extends BasicRequest {
    *   <li>Ignore cache by default</li>
    * </ul>
    *
-   * @param resource    The resource to connect to.
-   * @param type        The type of connection.
-   * @param credentials The user login to use (optional).
-   *
-   * @return A newly opened connection to the specified URL
-   * @throws IOException Should an exception be returns while opening the connection
+   * @return The response
    */
-  public Response done() throws IOException {
-    endMultipart();
-    PSSession session = null;
-    if (this.credentials instanceof PSSession) {
-      session = (PSSession)this.credentials;
+  @Override
+  public Response response() {
+    try {
+      endMultipart();
+      PSSession session = null;
+      if (this.credentials instanceof PSSession) {
+        session = (PSSession)this.credentials;
+      }
+      return new Response(this.connection, session);
+    } catch (IOException ex) {
+      return new Response(Status.CONNECTION_ERROR, ex.getMessage());
     }
-    return new Response(this.connection, session);
   }
 
   // Private
@@ -338,23 +355,20 @@ public final class MultipartRequest extends BasicRequest {
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setDoOutput(true);
     connection.setInstanceFollowRedirects(true);
+    if (this.timeout >= 0) {
+      connection.setConnectTimeout(this.timeout);
+    }
 
     // Multipart is always POST
     connection.setRequestMethod("POST");
     connection.setDefaultUseCaches(false);
-    connection.setRequestProperty("X-Requester", "PS-Bridge-" + API_VERSION);
 
-    // Handling of credentials
-    if (this.credentials instanceof PSToken) {
-      // Use OAuth bearer token (PageSeeder 5.9+)
-      connection.addRequestProperty("Authorization", "Bearer "+((PSToken) this.credentials).token());
-    } else if (this.credentials instanceof UsernamePassword) {
-      // Basic authorization (PageSeeder 5.6+)
-      connection.addRequestProperty("Authorization", ((UsernamePassword) this.credentials).toBasicAuthorization());
+    // Set the headers
+    for (Header h : this._headers) {
+      connection.addRequestProperty(h.name(), h.value());
     }
 
     // Prepare the connection for
-    connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + this._boundary);
     connection.setDoInput(true);
     this.out = new DataOutputStream(connection.getOutputStream());
 
