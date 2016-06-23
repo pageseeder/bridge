@@ -32,7 +32,6 @@ import java.util.Random;
 
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
-import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
 
 /**
  * Simple fluent class to define HTTP multipart requests to PageSeeder.
@@ -340,9 +339,9 @@ public final class MultipartRequest extends BasicRequest {
       if (this.credentials instanceof PSSession) {
         session = (PSSession)this.credentials;
       }
-      return new Response(this.connection, session);
+      return new Response(this.connection, this.connection.getResponseCode(), session);
     } catch (IOException ex) {
-      return new Response(Status.CONNECTION_ERROR, ex.getMessage());
+      return new Response(ex.getMessage());
     }
   }
 

@@ -26,13 +26,14 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -45,7 +46,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.pageseeder.berlioz.xml.XMLCopy;
 import org.pageseeder.bridge.PSSession;
-import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +60,22 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * The response to a connection to PageSeeder.
  *
+ * <p>The response is a stateful object. The state of this response affects
+ * the availability of the content for consumption.
+ * <ul>
+ *   <li>If the connection resulted in a response, then this response is "available".</li>
+ *   <li>If the connection failed, this response is in a "failed" state.</li>
+ *   <li>Once the response have been consumed, it is in a "consumed" state.</li>
+ * </ul>
+ *
+ * <p>To simplify the task of error handling, consumer methods only return runtime exceptions.
+ * <ul>
+ *   <li><code>IllegalArgumentException</code> for preventable errors based on the state of the
+ *   response (if content is not available or not XML)</li>
+ *   <li><code>ContentException</code> if an error occurred while processing the content.
+ *   these will generally wrap an I/O exception, SAX and transform exception.</li>
+ * </ul>
+ *
  * @author Christophe Lauret
  * @version 0.9.1
  * @since 0.9.1
@@ -67,29 +83,74 @@ import org.xml.sax.helpers.DefaultHandler;
 public final class Response {
 
   /**
+   * State of this response.
+   */
+  private enum State {
+
+    /**
+     * The response is available and can be consumed.
+     *
+     * <p>Calling any of the consume methods will change the state to 'consumed'
+     */
+    available,
+
+    /**
+     * The connection failed, and not content can be read from it.
+     */
+    failed,
+
+    /**
+     * The response has already been consumed and the content is no longer available.
+     */
+    consumed;
+  }
+
+  /**
    * Logger for this class.
    */
   private static final Logger LOGGER = LoggerFactory.getLogger(Response.class);
 
   /**
-   * Holds the connection.
+   * Holds the underlying connection.
    */
   private final HttpURLConnection _connection;
 
   /**
-   * The HTTP response code.
-   */
-  private int responseCode;
-
-  /**
+   * The HTTP status code.
    *
+   * NB. "status code" is the preferred term in HTTP/1.1 RFC 7230.
    */
-  private boolean includeError = false;
+  private final int _statusCode;
 
   /**
    * Session from request or updated by 'Set-Cookie' header.
    */
-  private PSSession session;
+  private final PSSession _session;
+
+  /**
+   * The media type returned by PageSeeder.
+   */
+  private final String _mediaType;
+
+  /**
+   * The list of HTTP response headers.
+   */
+  private final List<Header> _headers;
+
+  /**
+   * The character set detected in the response.
+   */
+  private final Charset _charset;
+
+  /**
+   * The state of response.
+   */
+  private State state = State.available;
+
+  /**
+   * Indicates whether the error stream should be consumed or not.
+   */
+  private boolean consumeError = false;
 
   /**
    * The message returned by PageSeeder.
@@ -97,87 +158,114 @@ public final class Response {
   private String message = "";
 
   /**
-   * The media type returned by PageSeeder.
-   */
-  private String mediaType = "";
-
-  /**
    * The error ID returned by PageSeeder (services only)
    */
   private String errorID = "";
 
-  /**
-   * The status of response.
-   */
-  private Status status = Status.UNKNOWN;
+  // Constructors
+  // ----------------------------------------------------------------------------------------------
 
   /**
-   * The list of HTTP response headers.
-   */
-  private List<Header> headers = new ArrayList<>();
-
-  /**
-   * Construct a new response wrapping a HTTP URL connection.
+   * Construct a new response wrapping a HTTP URL connection without a session.
    *
-   * @param connection
-   * @throws IOException
+   * <p>The status code, must be supplied as the response object should not constructed
+   * with a connection if the connection failed.
+   *
+   * @param connection The underlying HTTP URL connection.
+   * @param statusCode The response status code for that connection
    */
-  Response(HttpURLConnection connection) throws IOException{
-    this(connection, null);
+  Response(HttpURLConnection connection, int statusCode) {
+    this(connection, statusCode, null);
   }
 
   /**
    * Construct a new response wrapping a HTTP URL connection.
    *
-   * @param connection
-   * @throws IOException
+   * <p>The status code, must be supplied as the response object should not constructed
+   * with a connection if the connection failed.
+   *
+   * @param connection The underlying HTTP URL connection.
+   * @param statusCode The response status code for that connection
+   * @param session    The session used to make the request.
    */
-  Response(HttpURLConnection connection, PSSession session) throws IOException {
+  Response(HttpURLConnection connection, int statusCode, PSSession session) {
     this._connection = connection;
-    this.session = session;
-    init();
+    this._statusCode = statusCode;
+    this._session = updateSession(connection, session);
+    this._headers = extractHeaders(connection);
+    this._mediaType = getMediaType(connection);
+    this._charset = detectCharset(connection);
+    try {
+      this.message = this._connection.getResponseMessage();
+    } catch (IOException ex) {
+      throw new IllegalStateException("Connection failed");
+    }
   }
 
   /**
    * Construct a new response in an error state.
+   *
+   * @param message the explanation for the error.
    */
-  Response(Status status, String message) {
+  Response(String message) {
     this._connection = null;
-    this.status = status;
+    this._statusCode = -1;
+    this._headers = Collections.emptyList();
+    this._session = null;
+    this._mediaType = null;
+    this._charset = null;
+    this.state = State.failed;
     this.message = message;
   }
 
   // Getters
   // ----------------------------------------------------------------------------------------------
 
+  /**
+   * Return the response status code from this request.
+   *
+   * @return the status code from this request.
+   */
   public int code() {
-    return this.responseCode;
+    return this._statusCode;
   }
 
+  /**
+   * Return the reason string.
+   *
+   * @return the reason string.
+   */
   public String message() {
     return this.message;
   }
 
   /**
-   * Returns the value of the
+   * Returns the value of the specified header.
    *
    * @param name The name of the header (case insensitive)
    *
-   * @return The correponding value or <code>null</code>;
+   * @return The corresponding value or <code>null</code>;
    */
   public String header(String name) {
-    for (Header h : this.headers) {
+    for (Header h : this._headers) {
       if (h.name().equalsIgnoreCase(name)) return h.value();
     }
     return null;
   }
 
   /**
-   * Returns the value of "Content-Length" response header.
+   * Returns the unwrapped value of "Etag" response header.
    *
-   * <pre><code>ETag: 5.8908</code></pre>
+   * <p>This method removes the quotes and weak etag flag if any, to expose the actual etag.
    *
-   * @return the value of "Content-Length" response header.
+   * <p>For example, if the header is <code>ETag: W/"123456789"</code>, this method
+   * will return the string "<code>123456789</code>" (without quotes).
+   *
+   * <p>Note: PageSeeder only uses strong etags.
+   *
+   * @see #unwrapEtag(String)
+   *
+   * @return the etag of the response derived from the "Etag" response header.
    */
   public String etag() {
     return unwrapEtag(header("Etag"));
@@ -187,8 +275,8 @@ public final class Response {
    * Removes the quotes around the etag
    *
    * <pre>
-   *  "123456789"   – A strong ETag validator
-   *  W/"123456789" – A weak ETag validator
+   *  "123456789"   – A strong ETag
+   *  W/"123456789" – A weak ETag
    * </pre>
    *
    * @param etag The value of the "ETag" header
@@ -261,82 +349,171 @@ public final class Response {
   }
 
   /**
-   * @return the session.
+   * Returns the value of media type of response content.
+   *
+   * <p>The media type is derived from the value of the "Content-Type" response
+   * header without the additional parameters (e.g. charset).
+   *
+   * <p>For example, this method will return "application/xml" for the header
+   * below:
+   * <pre><code>Content-Type: application/xml;charset=utf-8</code></pre>
+   *
+   * @return the media type of the response content.
    */
-  public PSSession session() {
-    return this.session;
+  public String mediaType() {
+    return this._mediaType;
   }
 
   /**
+   * Returns the character set used for character-based content and derived
+   * from the "Content-Type" response header.
    *
+   * <p>NB. The HTTP header "Content-Encoding" has nothing to do with character
+   * encoding, do not use it for that purpose!
+   *
+   * @return the charset used in the response if detected and applicable.
    */
-  public InputStream getInputStream() {
-    if (this._connection == null) return null;
-    try {
-      if (isOK(this._connection.getResponseCode()))
-        return this._connection.getInputStream();
-      else
-        return this._connection.getErrorStream();
-    } catch (IOException ex) {
-      throw new IllegalStateException("Too late content has already been consumed");
-    }
+  public Charset charset() {
+    return this._charset;
+  }
+
+  /**
+   * Returns the session;
+   *
+   * @return the session.
+   */
+  public PSSession session() {
+    return this._session;
   }
 
   // State
-  // ----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
 
   /**
    * Indicates whether the response is XML based on the content type.
    *
-   * <p>It is considered XML the mediatype is equal to "text/xml" or "application/xml" or
-   * ends with "+xml".
+   * <p>It is considered XML the mediatype is equal to "text/xml" or
+   * "application/xml" or ends with "+xml".
    *
    * @return <code>true</code> if XML;
    *         <code>false</code> otherwise.
    */
   public boolean isXML() {
-    return isXML(this.mediaType);
+    return isXML(this._mediaType);
   }
-
-  public boolean isSuccessful() {
-    return isOK(this.responseCode);
-  }
-
-  // Processors
-  // ----------------------------------------------------------------------------------------------
 
   /**
-   * Consumes the output of the response.
+   * Indicates whether the response was successful based on the HTTP code.
    *
-   * @param out Where the output should be copied.
+   * <p>When this method is called BEFORE a consumer, this generally imply
+   * that the content is <i>available</i>.
    *
-   * @throws IOException If an error occurs when processing the content
+   * @return <code>true</code> if the code is between 200 and 299 (included);
+   *         <code>false</code>.
    */
-  public void consumeBytes(OutputStream out) throws IOException {
+  public boolean isSuccessful() {
+    return isSuccessful(this._statusCode);
+  }
+
+  /**
+   * Indicates whether the response is in a state that would allow it to
+   * consume the content.
+   *
+   * <p>This method returns <code>false</code> if the content has already been
+   * consumed or if the connection failed and there is no content to process.
+   *
+   * @return <code>true</code> if the connection can ;
+   *         <code>false</code>.
+   */
+  public boolean isAvailable() {
+    return this.state == State.available;
+  }
+
+  // Consumers
+  // --------------------------------------------------------------------------
+
+  /**
+   * Returns the InputStream on the response content.
+   *
+   * <p>Even though method does not strictly consume the content, it assumes that caller will, so
+   * after calling this method the response content will no longer be available.
+   *
+   * <p>The input stream is NOT buffered.
+   *
+   * @throws IOException If the thrown by the underlying connection.
+   * @throws IllegalStateException If the response is not available.
+   */
+  public InputStream getInputStream() throws IOException {
+    requireAvailable();
+    if (this._connection == null) return null;
     try {
-      if (processContent()) {
-        copy(this._connection, out);
+      return toInputStream(this._connection);
+    } finally {
+      this.state = State.consumed;
+    }
+  }
 
-      } else {
-        LOGGER.info("PageSeeder returned {}: {}", this.status, this._connection.getResponseMessage());
-        parseError(this._connection, this);
-      }
-
-    } catch (IOException ex) {
-      LOGGER.warn("Unable to connect to PageSeeder: {}", this.message);
-      setStatus(Status.CONNECTION_ERROR, Objects.toString(ex.getMessage(), "Unable to connect"));
-      throw ex;
+  /**
+   * Returns the Reader on the response content using the detected character set.
+   *
+   * <p>Do not use this method unless this class was able to detect the character set.
+   *
+   * <p>Even though method does not strictly consume the content, it assumes that caller will, so
+   * after calling this method the response content will no longer be available.
+   *
+   * @throws IOException If the thrown by the underlying connection.
+   * @throws IllegalStateException If the response is not available.
+   */
+  public Reader getReader() throws IOException {
+    requireAvailable();
+    if (this._connection == null) return null;
+    try {
+      return new InputStreamReader(toInputStream(this._connection), this._charset);
+    } finally {
+      this.state = State.consumed;
     }
   }
 
   /**
    * Consumes the output of the response.
    *
-   * @return the output content as a byte array.
+   * <p>After calling this method the response content will no longer be available.
+   *
+   * @param out Where the output should be copied.
    *
    * @throws IOException If an error occurs when processing the content
+   *
+   * @throws IllegalStateException If the response is not available.
+   * @throws ContentException If an error occurred while consuming the content.
    */
-  public byte[] consumeBytes() throws IOException {
+  public void consumeBytes(OutputStream out) {
+    requireAvailable();
+    try {
+      if (processContent()) {
+        int length = this._connection.getContentLength();
+        try (BufferedInputStream in = new BufferedInputStream(toInputStream(this._connection))){
+          copy(in, out, length);
+        }
+      } else {
+        handleError(this);
+      }
+    } catch (IOException ex) {
+      throw new ContentException("Unable to consume bytes", ex);
+    } finally {
+      this.state = State.consumed;
+    }
+  }
+
+  /**
+   * Short-hand method to consume the output of the response and return a byte array.
+   *
+   * <p>After calling this method the response content will no longer be available.
+   *
+   * @return the output content as a byte array.
+   *
+   * @throws ContentException If an error occurred while consuming the content.
+   */
+  public byte[] consumeBytes() {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     consumeBytes(bytes);
     return bytes.toByteArray();
@@ -345,35 +522,45 @@ public final class Response {
   /**
    * Consumes the output of the response.
    *
+   * <p>After calling this method the response content will no longer be available.
+   *
    * @param out Where the output should be written to.
    *
    * @throws IOException If an error occurs when processing the content
+   *
+   * @throws IllegalStateException If the response is not available.
+   * @throws ContentException If an error occurred while consuming the content.
    */
-  public void consumeChars(Writer out) throws IOException {
+  public void consumeChars(Writer out) {
+    requireAvailable();
     try {
       if (processContent()) {
-        copy(this._connection, out);
-
+        int length = (int)length();
+        Charset charset = charset();
+        try (Reader r = new InputStreamReader(new BufferedInputStream(toInputStream(this._connection)), charset)) {
+          copy(r, out, length);
+        }
       } else {
-        LOGGER.info("PageSeeder returned {}: {}", this.status, this._connection.getResponseMessage());
-        parseError(this._connection, this);
+        handleError(this);
       }
-
     } catch (IOException ex) {
-      LOGGER.warn("Unable to connect to PageSeeder: {}", this.message);
-      setStatus(Status.CONNECTION_ERROR, Objects.toString(ex.getMessage(), "Unable to connect"));
-      throw ex;
+      throw new ContentException("Unable to consume bytes", ex);
+    } finally {
+      this.state = State.consumed;
     }
   }
 
   /**
-   * Consumes the output of the response.
+   * Short-hand method to consume the output of the response and return a string.
+   *
+   * <p>After calling this method the response content will no longer be available.
    *
    * @returns the output as a string.
    *
    * @throws IOException If an error occurs when processing the content
+   * @throws ContentException If an error occurred while consuming the content.
    */
-  public String consumeString() throws IOException {
+  public String consumeString() throws ContentException {
     StringWriter out = new StringWriter();
     consumeChars(out);
     return out.toString();
@@ -382,31 +569,31 @@ public final class Response {
   /**
    * Consumes the output of the response using a SAX handler.
    *
+   * <p>The SAX Parser is non-validating and namespace aware:
+   * <pre>
+   *   factory.setValidating(false);
+   *   factory.setNamespaceAware(true);
+   * </pre>
+   *
+   * <p>After calling this method the response content will no longer be available.
+   *
    * @param handler The SAX handler for the XML
    *
-   * @throws IOException If an error occurs when processing the content
+   * @throws ContentException If an error occurred while consuming the content.
    */
-  public void consumeSAX(DefaultHandler handler) throws IOException {
+  public void consumeXML(DefaultHandler handler) throws ContentException {
+    requireAvailable();
+    requireXML();
     try {
       if (processContent()) {
-
-        // Return content is XML try to parse it
-        if (isXML(this.mediaType)) {
-          handleXML(this._connection, this, handler, false);
-        } else {
-          setStatus(Status.PROCESS_ERROR, "Unable to parse non-XML media type");
-        }
-
+        handleXML(this, handler, false);
       } else {
-        parseError(this._connection, this);
-        LOGGER.info("PageSeeder returned {} {}: {} {}", this.status, this._connection.getResponseMessage(), this.errorID, this.message);
+        handleError(this);
       }
-
-      // Could not connect to the server
-    } catch (ConnectException ex) {
-      LOGGER.warn("Unable to connect to PageSeeder: {}", this.message);
-      setStatus(Status.CONNECTION_ERROR, Objects.toString(ex.getMessage(), "Unable to connect"));
-      throw ex;
+    } catch (IOException ex) {
+      throw new ContentException("Unable to consume XML", ex);
+    } finally {
+      this.state = State.consumed;
     }
   }
 
@@ -414,12 +601,14 @@ public final class Response {
    * Consumes the output of the response using a handler and returns the collection
    * of objects from it.
    *
+   * <p>After calling this method the response content will no longer be available.
+   *
    * @param handler The object handler for the XML
    *
-   * @throws IOException If an error occurs when processing the content
+   * @throws ContentException If an error occurred while consuming the content.
    */
-  public <T> List<T> consumeCollection(Handler<T> handler) throws IOException {
-    consumeSAX(handler);
+  public <T> List<T> consumeList(Handler<T> handler) throws ContentException {
+    consumeXML(handler);
     return handler.list();
   }
 
@@ -427,152 +616,96 @@ public final class Response {
    * Consumes the output of the response using a handler and returns a single
    * object from it.
    *
+   * <p>After calling this method the response content will no longer be available.
+   *
    * @param handler The object handler for the XML
    *
-   * @throws IOException If an error occurs when trying to write the XML.
+   * @throws ContentException If an error occurred while consuming the content.
    */
-  public <T> T consumeItem(Handler<T> handler) throws IOException {
-    consumeSAX(handler);
+  public <T> T consumeItem(Handler<T> handler) throws ContentException {
+    consumeXML(handler);
     return handler.get();
   }
 
   /**
-   * Process the specified PageSeeder connection.
+   * Consumes the output of the response and copies it to the specified XML writer.
    *
-   * <p>The xml writer receives a copy of the PageSeeder XML.
+   * <p>After calling this method the response content will no longer be available.
    *
-   * @param response The response object.
-   * @param xml      The XML to copy from PageSeeder
+   * <p>The XML writer receives a copy of the PageSeeder XML.
    *
-   * @throws IOException If an error occurs when trying to write the XML.
+   * @param xml The XML to copy from PageSeeder
+   *
+   * @throws ContentException If an error occurred while consuming the content.
    */
-  public void consumeXML(XMLWriter xml) throws IOException {
+  public void consumeXML(XMLWriter xml) throws ContentException {
+    requireAvailable();
+    requireXML();
     try {
       if (processContent()) {
-
-        // Return content is XML try to parse it
-        if (isXML(this.mediaType)) {
-          // Parse with the XML Copy Handler
-          XMLCopy handler = new XMLCopy(xml);
-          handleXML(this._connection, this, handler, true);
-        } else {
-          setStatus(Status.PROCESS_ERROR, "Unable to copy non-XML media type");
-        }
-
+        // Parse with the XML Copy Handler
+        XMLCopy handler = new XMLCopy(xml);
+        handleXML(this, handler, true);
       } else {
-        LOGGER.info("PageSeeder returned {}: {}", this.status, this._connection.getResponseMessage());
-        parseError(this._connection, this);
+        handleError(this);
       }
-
-      // Could not connect to the server
-    } catch (ConnectException ex) {
-      LOGGER.warn("Unable to connect to PageSeeder: {}", this.message);
-      setStatus(Status.CONNECTION_ERROR, Objects.toString(ex.getMessage(), "Unable to connect"));
-      throw ex;
-    }
-  }
-
-  /**
-   * Process the specified PageSeeder connection.
-   *
-   * <p>Templates can be specified to transform the XML.
-   *
-   * @param response  The PageSeeder response metadata to update
-   * @param xml       The XML to copy from PageSeeder
-   * @param templates A set of templates to process the XML (optional)
-   *
-   * @throws IOException If an error occurs when trying to write the XML.
-   *
-   * @return The updated response metadata.
-   */
-  public void consumeAndTransform(XMLWriter xml, Templates templates) throws IOException {
-    consumeAndTransform(xml, templates, null);
-  }
-
-  /**
-   * Process the specified PageSeeder connection.
-   *
-   * <p>Templates can be specified to transform the XML.
-   *
-   * @param response  The PageSeeder response metadata to update
-   * @param xml        The XML to copy from PageSeeder
-   * @param templates  A set of templates to process the XML (optional)
-   * @param parameters Parameters to send to the XSLT transformer (optional)
-   *
-   * @throws IOException If an error occurs when trying to write the XML.
-   *
-   * @return The updated response metadata.
-   */
-  public void consumeAndTransform(XMLWriter xml, Templates templates, Map<String, String> parameters)
-      throws IOException {
-    try {
-      if (processContent()) {
-
-        // Return content is XML try to parse it
-        if (isXML(this.mediaType)) {
-          transformXML(this._connection, this, xml, templates, parameters);
-        } else {
-          setStatus(Status.PROCESS_ERROR, "Unable to copy non-XML media type");
-        }
-
-      } else {
-        LOGGER.info("PageSeeder returned {}: {}", this.status, this._connection.getResponseMessage());
-        parseError(this._connection, this);
-      }
-
-      // Could not connect to the server
-    } catch (ConnectException ex) {
-      LOGGER.warn("Unable to connect to PageSeeder: {}", this.message);
-      setStatus(Status.CONNECTION_ERROR, Objects.toString(ex.getMessage(), "Unable to connect"));
-      throw ex;
-    }
-  }
-
-  // Private helpers
-  // ----------------------------------------------------------------------------------------------
-
-  private void init() {
-    try {
-      this.responseCode = this._connection.getResponseCode();
-      this.message = this._connection.getResponseMessage();
-      setCodeAndStatus(this.responseCode);
-
-      // Extract the mediatype
-      this.mediaType = getMediaType(this._connection);
-
-      // Extract the other headers
-      for (Entry<String, List<String>> h : this._connection.getHeaderFields().entrySet()) {
-        String name = h.getKey();
-        if (name != null) {
-          for (String value : h.getValue()) {
-            this.headers.add(new Header(name, value));
-          }
-        }
-      }
-
-      // Update the session
-      updateSession(this._connection);
-
     } catch (IOException ex) {
-      this.responseCode = -1;
-      // TODO
+      throw new ContentException("Unable to copy XML", ex);
     } finally {
-      LOGGER.info("{} [{}] -> {}", this._connection.getURL(), this._connection.getRequestMethod(), this.responseCode);
+      this.state = State.consumed;
     }
   }
 
   /**
-   * @param status the status of the response
-   * @param message the message to set
+   * Consumes the output of the response, transforms it directly with XSLT and
+   * writes the results of the transformation to the XML writer.
+   *
+   * <p>Templates must be specified to transform the XML.
+   *
+   * <p>After calling this method the response content will no longer be available.
+   *
+   * @param xml       The XML to copy from PageSeeder
+   * @param templates A set of templates to process the XML
+   *
+   * @throws ContentException If an error occurred while consuming the content.
    */
-  private void setStatus(Status status, String message) {
-    this.status = status;
-    this.message = message;
+  public void consumeXML(XMLWriter xml, Templates templates) throws ContentException {
+    consumeXML(xml, templates, null);
   }
 
-  private boolean processContent() {
-    return isOK(this.responseCode) || (this.includeError && isError(this.responseCode));
+  /**
+   * Consumes the output of the response, transforms it directly with XSLT and
+   * writes the results of the transformation to the XML writer.
+   *
+   * <p>Templates must be specified to transform the XML. The parameters are
+   * transmitted to the XSLT tranformer.
+   *
+   * <p>After calling this method the response content will no longer be available.
+   *
+   * @param xml       The XML to copy from PageSeeder
+   * @param templates A set of templates to process the XML
+   *
+   * @throws ContentException If an error occurred while consuming the content.
+   */
+  public void consumeXML(XMLWriter xml, Templates templates, Map<String, String> parameters)
+      throws ContentException {
+    requireAvailable();
+    requireXML();
+    try {
+      if (processContent()) {
+        transformXML(this, xml, templates, parameters);
+      } else {
+        handleError(this);
+      }
+    } catch (IOException ex) {
+      throw new ContentException("Unable to transform XML", ex);
+    } finally {
+      this.state = State.consumed;
+    }
   }
+
+  // Extractors
+  // ----------------------------------------------------------------------------------------------
 
   /**
    * Returns the media type from the HTTP response stripped of its charset sub-declaration.
@@ -592,47 +725,105 @@ public final class Response {
   /**
    * Updates the user session ID and last connection time from the HTTP response headers.
    *
-   * @param connection the HTTP connection
-   */
-  private void updateSession(HttpURLConnection connection) {
-    // Updating the session
-    if (this.session != null) {
-      this.session.update();
-    } else {
-      String cookie = connection.getHeaderField("Set-Cookie");
-      this.session = PSSession.parseSetCookieHeader(cookie);
-    }
-  }
-
-  /**
-   * Indicates if the content type corresponds to XML content.
+   * <p>This method returns the new session is the response contains the "Set-Cookie" header.
    *
-   * @param contentType The content type
-   * @return <code>true</code> if equal to "text/xml" or "application/xml" or end with "+xml";
-   *         <code>false</code> otherwise.
+   * <p>Otherwise, if a session was supplied, it is updated.
+   *
+   * <p>This method returns <code>null</code> if no session was specified via a
+   * "Set-Cookie" header or provided as an argument.
+   *
+   * @param connection The HTTP connection
+   * @param session    The original session from the request if any
+   *
+   * @return a new session, the updated session or <code>null</code>
    */
-  private static boolean isXML(String mediaType) {
-    if (mediaType == null) return false;
-    return "text/xml".equals(mediaType)
-        || "application/xml".equals(mediaType)
-        || mediaType.endsWith("+xml");
+  private static PSSession updateSession(HttpURLConnection connection, PSSession session) {
+    String cookie = connection.getHeaderField("Set-Cookie");
+    // A new session has been created.
+    if (cookie != null)
+      return PSSession.parseSetCookieHeader(cookie);
+    else if (session != null) {
+      // Update the n
+      session.update();
+      return session;
+    } else return null;
   }
 
   /**
-   * @param code the code to set
+   * Extract the headers from the connection
+   *
+   * @param connection The HTTP connection to use
+   *
+   * @return a new list of headers
    */
-  void setCodeAndStatus(int code) {
-    if (code >= HttpURLConnection.HTTP_INTERNAL_ERROR) {
-      this.status = Status.SERVER_ERROR;
-    } else if (code >= HttpURLConnection.HTTP_BAD_REQUEST) {
-      this.status = Status.CLIENT_ERROR;
-    } else if (code >= HttpURLConnection.HTTP_MULT_CHOICE) {
-      this.status = Status.REDIRECT;
-    } else if (code >= HttpURLConnection.HTTP_OK) {
-      this.status = Status.SUCCESSFUL;
-    } else {
-      this.status = Status.UNKNOWN;
+  private static final List<Header> extractHeaders(HttpURLConnection connection) {
+    Map<String, List<String>> headerFields = connection.getHeaderFields();
+    // Length is 1 less than headers from connection as we discard the status line
+    List<Header> headers = new ArrayList<>(headerFields.size()-1);
+    for (Entry<String, List<String>> h : headerFields.entrySet()) {
+      String name = h.getKey();
+      if (name != null) {
+        if ("content-length".equalsIgnoreCase(name)) {
+          headers.add(new Header(name, connection.getContentLengthLong()));
+        }
+        for (String value : h.getValue()) {
+          headers.add(new Header(name, value));
+        }
+      }
     }
+    return headers;
+  }
+
+  /**
+   * Detect the character set from the "Content-Type" response header.
+   *
+   * @param connection The HTTP connection to use
+   *
+   * @return a new list of headers
+   */
+  private static final Charset detectCharset(HttpURLConnection connection) {
+    String contentType = connection.getHeaderField("Content-Type");
+    if (contentType == null) return null;
+    int x = contentType.indexOf("charset=");
+    if (x > 0) {
+      String name = contentType.substring(x).replaceAll("^charset=([a-zA-Z0-8_-]+).*", "$1");
+      Charset.forName(name);
+    } else if (contentType.indexOf("xml") > 0) return StandardCharsets.UTF_8;
+    return null;
+  }
+
+  // Private helpers
+  // ----------------------------------------------------------------------------------------------
+
+  private boolean processContent() {
+    return isSuccessful() || (this.consumeError && isError(this._statusCode));
+  }
+
+  /**
+   * Check if this response is ready to be consumed.
+   *
+   * @throws IllegalStateException if that isn't the case.
+   */
+  private void requireAvailable() {
+    switch (this.state) {
+      case available: return;
+      case failed:
+        throw new IllegalArgumentException("This response cannot be consumed because the connection failed.");
+      case consumed:
+        throw new IllegalArgumentException("This response has already been consumed!");
+      default:
+        throw new IllegalArgumentException("This response is not available");
+    }
+  }
+
+  /**
+   * Check that the content is XML otherwise throw an Illegal state exception.
+   *
+   * @throws IllegalStateException if the media type is not XML.
+   */
+  private void requireXML() {
+    if (!isXML())
+      throw new IllegalStateException("Unable to parse non-XML media type");
   }
 
   /**
@@ -645,23 +836,23 @@ public final class Response {
    *
    * @throws IOException If an error occurs while writing the XML.
    */
-  private static void handleXML(HttpURLConnection connection, Response response, DefaultHandler handler, boolean duplex)
+  private static void handleXML(Response response, DefaultHandler handler, boolean duplex)
       throws IOException {
+
+    // Setup the factory
     SAXParserFactory factory = SAXParserFactory.newInstance();
     factory.setValidating(false);
     factory.setNamespaceAware(true);
 
-    InputStream in = null;
-    try {
-      // Get the source as input stream
-      in = isOK(connection.getResponseCode()) ? connection.getInputStream() : connection.getErrorStream();
+    HttpURLConnection connection = response._connection;
+    try (InputStream in = toInputStream(connection)) {
       InputSource source = new InputSource(in);
       source.setSystemId(connection.getURL().toString());
 
-      // Ensure the encoding is correct
-      String encoding = connection.getContentEncoding();
-      if (encoding != null) {
-        source.setEncoding(encoding);
+      // Ensure the character encoding is correct
+      Charset charset = response._charset;
+      if (charset != null) {
+        source.setEncoding(charset.name());
       }
 
       // And parse!
@@ -670,20 +861,10 @@ public final class Response {
       dispatcher.setDuplex(duplex);
       parser.parse(source, dispatcher);
 
-    } catch (IOException ex) {
-      LOGGER.warn("Error while parsing XML data from URL", ex);
-      response.setStatus(Status.IO_ERROR, ex.getMessage());
-
     } catch (ParserConfigurationException ex) {
-      LOGGER.warn("Error while configuring parser for PageSeeder data", ex);
-      response.setStatus(Status.PROCESS_ERROR, ex.getMessage());
-
+      throw new ContentException("Error while configuring XML parser", ex);
     } catch (SAXException ex) {
-      LOGGER.info("Error parsing XML response!", ex);
-      response.setStatus(Status.PROCESS_ERROR, ex.getMessage());
-
-    } finally {
-      closeQuietly(in);
+      throw new ContentException("Error while parsing XML", ex);
     }
   }
 
@@ -701,16 +882,14 @@ public final class Response {
    *
    * @throws IOException If an error occurs while writing the XML.
    */
-  private static boolean transformXML(HttpURLConnection connection, Response response, XMLWriter xml,
+  private static boolean transformXML(Response response, XMLWriter xml,
       Templates templates, Map<String, String> parameters) throws IOException {
     boolean ok = true;
 
     // Create an XML Buffer
     StringWriter buffer = new StringWriter();
-
-    InputStream in = null;
-    try {
-      in = isOK(connection.getResponseCode()) ? connection.getInputStream() : connection.getErrorStream();
+    HttpURLConnection connection = response._connection;
+    try (InputStream in = toInputStream(connection)) {
 
       // Setup the source
       StreamSource source = new StreamSource(in);
@@ -733,15 +912,7 @@ public final class Response {
       transformer.transform(source, result);
 
     } catch (TransformerException ex) {
-      LOGGER.warn("Error while transforming XML data from URL", ex);
-      response.setStatus(Status.PROCESS_ERROR, ex.getMessageAndLocation());
-
-    } catch (IOException ex) {
-      LOGGER.warn("Error while parsing XML data from URL", ex);
-      response.setStatus(Status.PROCESS_ERROR, ex.getMessage());
-
-    } finally {
-      closeQuietly(in);
+      throw new ContentException("Error while transforming XML data", ex);
     }
 
     // Write as XML
@@ -750,56 +921,21 @@ public final class Response {
     return ok;
   }
 
-  /**
-   * Parse the response as text.
-   *
-   * @param connection The HTTP URL connection.
-   * @param out        Where the raw output should be copied to.
-   *
-   * @return <code>true</code> if the data was parsed without error;
-   *         <code>false</code> otherwise.
-   *
-   * @throws IOException If an error occurs while writing the XML.
-   */
-  private static boolean copy(HttpURLConnection connection, OutputStream out) throws IOException {
-    // Get the source as input stream
-    boolean ok = true;
-    int length = connection.getContentLength();
-    try (BufferedInputStream in = new BufferedInputStream(toInputStream(connection))){
-      copy(in, out, length);
-    } catch (IOException ex) {
-      LOGGER.warn("Error while parsing text data from URL", ex);
-      ok = false;
-    }
-    return ok;
-  }
+  // I/O utility methods
+  // --------------------------------------------------------------------------
 
   /**
-   * Parse the response as text.
+   * Indicates if the content type corresponds to XML content.
    *
-   * @param connection The HTTP URL connection.
-   * @param out        Where the raw output should be copied to.
-   *
-   * @return <code>true</code> if the data was parsed without error;
+   * @param mediaType The media type
+   * @return <code>true</code> if equal to "text/xml" or "application/xml" or end with "+xml";
    *         <code>false</code> otherwise.
-   *
-   * @throws IOException If an error occurs while writing the XML.
    */
-  private static boolean copy(HttpURLConnection connection, Writer out) throws IOException {
-    boolean ok = true;
-    String encoding = connection.getContentEncoding();
-    if (encoding == null) {
-      encoding = "utf-8";
-    }
-    int length = connection.getContentLength();
-    try (Reader r = new InputStreamReader(new BufferedInputStream(toInputStream(connection)), encoding)) {
-      copy(r, out, length);
-
-    } catch (IOException ex) {
-      LOGGER.warn("Error while parsing text data from URL", ex);
-      ok = false;
-    }
-    return ok;
+  private static boolean isXML(String mediaType) {
+    if (mediaType == null) return false;
+    return "text/xml".equals(mediaType)
+        || "application/xml".equals(mediaType)
+        || mediaType.endsWith("+xml");
   }
 
   /**
@@ -809,7 +945,7 @@ public final class Response {
    * @return <code>true</code> if the code is between 200 and 299 (included);
    *         <code>false</code>.
    */
-  private static boolean isOK(int code) {
+  private static boolean isSuccessful(int code) {
     return code >= HttpURLConnection.HTTP_OK && code < HttpURLConnection.HTTP_MULT_CHOICE;
   }
 
@@ -824,8 +960,17 @@ public final class Response {
     return code >= HttpURLConnection.HTTP_BAD_REQUEST;
   }
 
+  /**
+   * Returns the appropriate input stream
+   *
+   * @param connection The URL connection
+   *
+   * @return the input stream on the response content
+   *
+   * @throws IOException If the thrown by the underlying connection.
+   */
   private static InputStream toInputStream(HttpURLConnection connection) throws IOException {
-    if (isOK(connection.getResponseCode()))
+    if (isSuccessful(connection.getResponseCode()))
       return connection.getInputStream();
     else
       return connection.getErrorStream();
@@ -834,26 +979,25 @@ public final class Response {
   /**
    * Adds the attributes for when error occurs
    *
-   * @param connection The PS Connection.
-   * @param info       The response info.
+   * @param response The response
    *
    * @throws IOException If thrown while writing the XML.
    */
-  private static void parseError(HttpURLConnection connection, Response info) throws IOException {
-    try (InputStream err = getErrorStream(connection)) {
+  private static void handleError(Response response) throws IOException {
+    try (InputStream err = getErrorStream(response._connection)) {
 
       // Setup the input source
       InputSource source = new InputSource(err);
-      String encoding = connection.getContentEncoding();
-      if (encoding != null) {
-        source.setEncoding(encoding);
+      source.setSystemId(response._connection.getURL().toString());
+
+      // Set the character set
+      Charset charset = response.charset();
+      if (charset != null) {
+        source.setEncoding(charset.name());
       }
 
       // And parse!
-      PSErrorHandler.parseError(source, info);
-
-    } catch (IOException ex) {
-      ex.printStackTrace();
+      PSErrorHandler.parseError(source, response);
     }
   }
 
@@ -903,7 +1047,7 @@ public final class Response {
   }
 
   /**
-   * Copy the input stream to the output stream as UTF-8 using a buffer of 4096 bytes.
+   * Copy the input stream to the output stream as UTF-8 using a buffer of at most 4096 bytes.
    *
    * @param input  The data to copy
    * @param output The output

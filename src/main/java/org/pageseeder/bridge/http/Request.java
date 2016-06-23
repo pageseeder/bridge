@@ -17,6 +17,7 @@ package org.pageseeder.bridge.http;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -27,7 +28,8 @@ import java.util.Map.Entry;
 
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
-import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple fluent class to define HTTP requests to PageSeeder.
@@ -77,6 +79,11 @@ import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
  * @since 0.9.1
  */
 public final class Request extends BasicRequest {
+
+  /**
+   * Logger for this class.
+   */
+  private static final Logger LOGGER = LoggerFactory.getLogger(Request.class);
 
   /**
    * Used for POST and PATCH request.
@@ -244,6 +251,7 @@ public final class Request extends BasicRequest {
    */
   @Override
   public Response response() {
+    int status = -1;
     try {
       URL url = toURL();
 
@@ -283,9 +291,18 @@ public final class Request extends BasicRequest {
         session = (PSSession)this.credentials;
       }
 
-      return new Response(connection, session);
+      // Trigger the connection
+      status = connection.getResponseCode();
+
+      // Create the response object after requesting status
+      return new Response(connection, status, session);
+
+    } catch (ConnectException ex) {
+      return new Response(ex.getMessage());
     } catch (IOException ex) {
-      return new Response(Status.CONNECTION_ERROR, ex.getMessage());
+      return new Response(ex.getMessage());
+    } finally {
+      LOGGER.info("{} [{}] -> {}", toURLString(this._path), this._method, status);
     }
   }
 

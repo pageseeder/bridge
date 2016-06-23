@@ -19,7 +19,12 @@ import java.util.List;
 
 import org.xml.sax.helpers.DefaultHandler;
 
-
+/**
+ *
+ * @author clauret
+ *
+ * @param <T>
+ */
 public abstract class Handler<T> extends DefaultHandler {
 
   public abstract List<T> list();
