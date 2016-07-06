@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
 import org.slf4j.Logger;
@@ -172,6 +173,11 @@ public final class Request extends BasicRequest {
   @Override
   public Request timeout(int timeout) {
     return (Request)super.timeout(timeout);
+  }
+
+  @Override
+  public Request config(PSConfig config) {
+    return (Request)super.config(config);
   }
 
   /**

@@ -191,12 +191,24 @@ abstract class BasicRequest {
   /**
    * Sets the time out
    *
-   * @param timeout the time
+   * @param timeout the time out
    *
    * @return This request
    */
   public BasicRequest timeout(int timeout) {
     this.timeout = timeout;
+    return this;
+  }
+
+  /**
+   * Sets the PageSeeder configuration to use.
+   *
+   * @param config the time
+   *
+   * @return This request
+   */
+  public BasicRequest config(PSConfig config) {
+    this.config = config;
     return this;
   }
 
@@ -301,13 +313,11 @@ abstract class BasicRequest {
    * @return the URL to access this resource.
    */
   public String toURLString() {
-    PSConfig ps = PSConfig.getDefault();
-
     // Start building the URL
-    StringBuilder url = ps.buildAPIURL();
+    StringBuilder url = this.config.buildAPIURL();
 
     // Path
-    url.append(ps.getSitePrefix()).append(this._path);
+    url.append(this.config.getSitePrefix()).append(this._path);
 
     // If the session ID is available
     if (this.credentials instanceof PSSession) {
