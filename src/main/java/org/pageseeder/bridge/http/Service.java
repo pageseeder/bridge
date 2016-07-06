@@ -19,7 +19,7 @@ package org.pageseeder.bridge.http;
  * A enumeration of all services in PageSeeder.
  *
  * @author Christophe Lauret
- * @version 0.9.1
+ * @version 0.9.2
  * @since 0.9.1
  */
 public enum Service {
@@ -1571,7 +1571,7 @@ public enum Service {
    * @see ServicePath#toPath(Object...)
    */
   public String toPath(Object... variables) {
-    return "/service"+this._path.toPath(variables);
+    return this._path.toPath(variables);
   }
 
 }

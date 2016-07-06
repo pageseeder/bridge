@@ -32,7 +32,7 @@ import org.pageseeder.bridge.net.UsernamePassword;
  * Base class for HTTP requests to PageSeeder.
  *
  * @author Christophe Lauret
- * @version 0.9.1
+ * @version 0.9.2
  * @since 0.9.1
  */
 abstract class BasicRequest {
@@ -78,6 +78,11 @@ abstract class BasicRequest {
    * Any credentials used when making the request.
    */
   protected PSCredentials credentials;
+
+  /**
+   * The PageSeeder configuration to use.
+   */
+  protected PSConfig config = PSConfig.getDefault();
 
   /**
    * The connect timeout on the request.
@@ -246,6 +251,15 @@ abstract class BasicRequest {
   }
 
   /**
+   * Returns the PageSeeder configuration is use.
+   *
+   * @return
+   */
+  public PSConfig config() {
+    return this.config;
+  }
+
+  /**
    * Returns the string to write the parameters sent via POST as <code>application/x-www-form-urlencoded</code>.
    *
    * @return the string to write the parameters sent via POST.
@@ -350,7 +364,19 @@ abstract class BasicRequest {
    */
   public static String toURLString(String path) {
     PSConfig ps = PSConfig.getDefault();
-    return ps.buildAPIURL().append(ps.getSitePrefix()).append(path).toString();
+    return toURLString(ps, path);
+  }
+
+  /**
+   * Returns the full URL for a path on PageSeeder
+   *
+   * @param config The PageSeeder configuration
+   * @param path   The path to the request resource.
+   *
+   * @return the full URL to access this resource.
+   */
+  public static String toURLString(PSConfig config, String path) {
+    return config.buildAPIURL().append(config.getSitePrefix()).append(path).toString();
   }
 
   // Protected methods (for use by implementations)

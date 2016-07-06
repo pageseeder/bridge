@@ -28,7 +28,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +45,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.pageseeder.berlioz.xml.XMLCopy;
 import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.xml.Handler;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +77,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * </ul>
  *
  * @author Christophe Lauret
- * @version 0.9.1
+ * @version 0.9.2
  * @since 0.9.1
  */
 public final class Response {
@@ -465,10 +465,29 @@ public final class Response {
    * @throws IllegalStateException If the response is not available.
    */
   public Reader getReader() throws IOException {
+    if (this._charset == null)
+      throw new IllegalStateException("Unable to determine the charset for this resource.");
+    return getReader(this._charset);
+  }
+
+  /**
+   * Returns the Reader on the response content using the detected character set.
+   *
+   * <p>Do not use this method unless this class was able to detect the character set.
+   *
+   * <p>Even though method does not strictly consume the content, it assumes that caller will, so
+   * after calling this method the response content will no longer be available.
+   *
+   * @param charset The charset to use to read the content
+   *
+   * @throws IOException If the thrown by the underlying connection.
+   * @throws IllegalStateException If the response is not available.
+   */
+  public Reader getReader(Charset charset) throws IOException {
     requireAvailable();
     if (this._connection == null) return null;
     try {
-      return new InputStreamReader(toInputStream(this._connection), this._charset);
+      return new InputStreamReader(toInputStream(this._connection), charset);
     } finally {
       this.state = State.consumed;
     }
@@ -708,18 +727,15 @@ public final class Response {
   // ----------------------------------------------------------------------------------------------
 
   /**
-   * Returns the media type from the HTTP response stripped of its charset sub-declaration.
+   * Returns the media type from the HTTP response stripped of its charset sub-declaration or
+   * any content type parameter.
    *
    * @param connection The HTTP connection
    * @return the media type from the HTTP response stripped of its charset sub-declaration.
    */
   private static String getMediaType(HttpURLConnection connection) {
-    String mediaType = connection.getContentType();
-    // Strip ";charset" declaration if any
-    if (mediaType != null && mediaType.indexOf(";charset=") > 0) {
-      mediaType = mediaType.substring(0, mediaType.indexOf(";charset="));
-    }
-    return mediaType;
+    String contentType = connection.getContentType();
+    return Header.toMediaType(contentType);
   }
 
   /**
@@ -783,13 +799,7 @@ public final class Response {
    */
   private static final Charset detectCharset(HttpURLConnection connection) {
     String contentType = connection.getHeaderField("Content-Type");
-    if (contentType == null) return null;
-    int x = contentType.indexOf("charset=");
-    if (x > 0) {
-      String name = contentType.substring(x).replaceAll("^charset=([a-zA-Z0-8_-]+).*", "$1");
-      Charset.forName(name);
-    } else if (contentType.indexOf("xml") > 0) return StandardCharsets.UTF_8;
-    return null;
+    return Header.toCharset(contentType);
   }
 
   // Private helpers

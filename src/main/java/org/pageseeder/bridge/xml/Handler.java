@@ -13,22 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.pageseeder.bridge.http;
+package org.pageseeder.bridge.xml;
 
 import java.util.List;
 
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
+ * A handler is a SAX handler which can be supplied to a response in order to
+ * retrieve an object or a list of objects directly from the PageSeeder XML
+ * response.
  *
- * @author clauret
- *
- * @param <T>
+ * @param <T> the type of object this handler will return.
  */
 public abstract class Handler<T> extends DefaultHandler {
 
+  /**
+   * @return The list of item that have been processed.
+   */
   public abstract List<T> list();
 
+  /**
+   * @return the last item that was processed and added to the list.
+   */
   public abstract T get();
 
 }

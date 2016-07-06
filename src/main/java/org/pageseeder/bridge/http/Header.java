@@ -15,6 +15,10 @@
  */
 package org.pageseeder.bridge.http;
 
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.StandardCharsets;
+import java.nio.charset.UnsupportedCharsetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -122,6 +126,52 @@ public final class Header {
     SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
     format.setTimeZone(TimeZone.getTimeZone("GMT"));
     return format.parse(date);
+  }
+
+
+  /**
+   * Returns the type and subtype of the value of the "content-type" header.
+   *
+   * <p>For example, it will return "application/xml" for "application/xml; charset=utf-8".
+   *
+   * @param contentType The value of the "Content-Type" header.
+   *
+   * @return the corresponding mediatype.
+   */
+  public static String toMediaType(String contentType) {
+    // Strip any content type parameter ";" if any
+    if (contentType != null && contentType.indexOf(";") > 0) return contentType.substring(0, contentType.indexOf(";")).trim();
+    return contentType;
+  }
+
+  /**
+   * Returns the character set used based on the value of the "content-type" header.
+   *
+   * <p>This method will first try the charset parameeter.
+   * <p>For example, it will return "iso-8859-1" for "text/html; charset=iso-8859-1".
+   *
+   * <p>If there is no charset parameter, but the subtype is xml, it will assume UTF-8.
+   * <p>For example, it will return "utf-8" for "application/xml".
+   *
+   * @param contentType The value of the "Content-Type" header.
+   *
+   * @return the corresponding charset instance or <code>null</code>
+   *
+   * @throws IllegalCharsetNameException
+   * @throws UnsupportedCharsetException
+   */
+  public static Charset toCharset(String contentType) {
+    if (contentType == null) return null;
+    Charset charset = null;
+    String lc = contentType.toLowerCase();
+    int charsetParameter = lc.indexOf("charset=");
+    if (charsetParameter > 0) {
+      String name = lc.substring(charsetParameter).replaceAll("^charset=([a-zA-Z0-9_-]+).*", "$1");
+      charset = Charset.forName(name);
+    } else if (lc.indexOf("xml") > 0) {
+      charset = StandardCharsets.UTF_8;
+    }
+    return charset;
   }
 
 }

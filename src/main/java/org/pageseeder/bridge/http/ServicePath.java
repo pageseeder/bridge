@@ -33,7 +33,7 @@ import org.pageseeder.bridge.model.PSURI;
  * Computes the path of a PageSeeder service from a URI template.
  *
  * @author Christophe Lauret
- * @version 0.9.1
+ * @version 0.9.2
  * @since 0.9.1
  */
 public final class ServicePath {
@@ -109,9 +109,12 @@ public final class ServicePath {
   /**
    * Computes the path from the list of variables.
    *
+   * <p>Warning: incompatible change since version 0.9.1, the path is now
+   * systematically prefixed by "/service".
+   *
    * @param variables The URI variables.
    *
-   * @return The computed path.
+   * @return The computed path prefixed by "/service"
    *
    * @throws IllegalArgumentException If the expected number of variables does not match the argument
    */
@@ -119,7 +122,7 @@ public final class ServicePath {
     Objects.requireNonNull(variables, "Variables must not be null");
     if (this._count != variables.length)
       throw new IllegalArgumentException("Expected "+this._count+" variables but got "+variables.length);
-    StringBuilder url = new StringBuilder();
+    StringBuilder url = new StringBuilder("/service");
     int i = 0;
     // URI | member | group
     List<Token> tokens = toTokens(this._template, this._count);
