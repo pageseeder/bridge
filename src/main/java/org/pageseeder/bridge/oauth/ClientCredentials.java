@@ -81,7 +81,7 @@ public final class ClientCredentials {
   /**
    * @return The secret (cannot be <code>null</code>).
    */
-  protected String secret() {
+  public String secret() {
     return this._secret;
   }
 
