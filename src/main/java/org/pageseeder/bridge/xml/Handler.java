@@ -25,6 +25,11 @@ import org.xml.sax.helpers.DefaultHandler;
  * response.
  *
  * @param <T> the type of object this handler will return.
+ *
+ * @author Christophe Lauret
+ *
+ * @version 0.9.2
+ * @since 0.9.2
  */
 public abstract class Handler<T> extends DefaultHandler {
 

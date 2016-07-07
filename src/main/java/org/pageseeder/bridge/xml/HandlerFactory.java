@@ -22,6 +22,11 @@ import org.xml.sax.Attributes;
 
 /**
  * Factory for handlers.
+ *
+ * @author Christophe Lauret
+ *
+ * @version 0.9.2
+ * @since 0.9.2
  */
 public final class HandlerFactory {
 

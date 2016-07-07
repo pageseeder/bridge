@@ -6,11 +6,13 @@ import org.xml.sax.SAXException;
  * Extends the basic handler by providing methods to create immutable objects.
  *
  *
+ * @param <T> The type of object to retrieve
+ * @param <B> The builder for the type of objects to retrieve
  *
  * @author Christophe Lauret
  *
- * @param <T> The type of object to retrieve
- * @param <B> The builder for the type of objects to retrieve
+ * @version 0.9.2
+ * @since 0.9.2
  */
 public abstract class BuildableHandler<T, B> extends BasicHandler<T> {
 

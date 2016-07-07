@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -45,15 +46,15 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.pageseeder.berlioz.xml.XMLCopy;
 import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.xml.DuplexHandler;
 import org.pageseeder.bridge.xml.Handler;
+import org.pageseeder.bridge.xml.ServiceErrorHandler;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -77,6 +78,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * </ul>
  *
  * @author Christophe Lauret
+ *
  * @version 0.9.2
  * @since 0.9.1
  */
@@ -143,24 +145,19 @@ public final class Response {
   private final Charset _charset;
 
   /**
+   * The message returned by PageSeeder.
+   */
+  private final String _message;
+
+  /**
    * The state of response.
    */
   private State state = State.available;
 
   /**
-   * Indicates whether the error stream should be consumed or not.
+   * A service error instance if an error occurred while invoking a service.
    */
-  private boolean consumeError = false;
-
-  /**
-   * The message returned by PageSeeder.
-   */
-  private String message = "";
-
-  /**
-   * The error ID returned by PageSeeder (services only)
-   */
-  private String errorID = "";
+  private ServiceError error = null;
 
   // Constructors
   // ----------------------------------------------------------------------------------------------
@@ -196,7 +193,7 @@ public final class Response {
     this._mediaType = getMediaType(connection);
     this._charset = detectCharset(connection);
     try {
-      this.message = this._connection.getResponseMessage();
+      this._message = this._connection.getResponseMessage();
     } catch (IOException ex) {
       throw new IllegalStateException("Connection failed");
     }
@@ -214,8 +211,8 @@ public final class Response {
     this._session = null;
     this._mediaType = null;
     this._charset = null;
+    this._message = message;
     this.state = State.failed;
-    this.message = message;
   }
 
   // Getters
@@ -236,7 +233,7 @@ public final class Response {
    * @return the reason string.
    */
   public String message() {
-    return this.message;
+    return this._message;
   }
 
   /**
@@ -508,13 +505,9 @@ public final class Response {
   public void consumeBytes(OutputStream out) {
     requireAvailable();
     try {
-      if (processContent()) {
-        int length = this._connection.getContentLength();
-        try (BufferedInputStream in = new BufferedInputStream(toInputStream(this._connection))){
-          copy(in, out, length);
-        }
-      } else {
-        handleError(this);
+      int length = this._connection.getContentLength();
+      try (BufferedInputStream in = new BufferedInputStream(toInputStream(this._connection))){
+        copy(in, out, length);
       }
     } catch (IOException ex) {
       throw new ContentException("Unable to consume bytes", ex);
@@ -553,14 +546,10 @@ public final class Response {
   public void consumeChars(Writer out) {
     requireAvailable();
     try {
-      if (processContent()) {
-        int length = (int)length();
-        Charset charset = charset();
-        try (Reader r = new InputStreamReader(new BufferedInputStream(toInputStream(this._connection)), charset)) {
-          copy(r, out, length);
-        }
-      } else {
-        handleError(this);
+      int length = (int)length();
+      Charset charset = charset();
+      try (Reader r = new InputStreamReader(new BufferedInputStream(toInputStream(this._connection)), charset)) {
+        copy(r, out, length);
       }
     } catch (IOException ex) {
       throw new ContentException("Unable to consume bytes", ex);
@@ -576,7 +565,7 @@ public final class Response {
    *
    * @returns the output as a string.
    *
-   * @throws IOException If an error occurs when processing the content
+   * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
   public String consumeString() throws ContentException {
@@ -598,17 +587,14 @@ public final class Response {
    *
    * @param handler The SAX handler for the XML
    *
+   * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
   public void consumeXML(DefaultHandler handler) throws ContentException {
     requireAvailable();
     requireXML();
     try {
-      if (processContent()) {
-        handleXML(this, handler, false);
-      } else {
-        handleError(this);
-      }
+      handleXML(this, handler);
     } catch (IOException ex) {
       throw new ContentException("Unable to consume XML", ex);
     } finally {
@@ -624,6 +610,7 @@ public final class Response {
    *
    * @param handler The object handler for the XML
    *
+   * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
   public <T> List<T> consumeList(Handler<T> handler) throws ContentException {
@@ -639,6 +626,7 @@ public final class Response {
    *
    * @param handler The object handler for the XML
    *
+   * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
   public <T> T consumeItem(Handler<T> handler) throws ContentException {
@@ -655,19 +643,16 @@ public final class Response {
    *
    * @param xml The XML to copy from PageSeeder
    *
+   * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
   public void consumeXML(XMLWriter xml) throws ContentException {
     requireAvailable();
     requireXML();
     try {
-      if (processContent()) {
-        // Parse with the XML Copy Handler
-        XMLCopy handler = new XMLCopy(xml);
-        handleXML(this, handler, true);
-      } else {
-        handleError(this);
-      }
+      // Parse with the XML Copy Handler
+      XMLCopy handler = new XMLCopy(xml);
+      handleXML(this, handler);
     } catch (IOException ex) {
       throw new ContentException("Unable to copy XML", ex);
     } finally {
@@ -686,10 +671,11 @@ public final class Response {
    * @param xml       The XML to copy from PageSeeder
    * @param templates A set of templates to process the XML
    *
+   * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
   public void consumeXML(XMLWriter xml, Templates templates) throws ContentException {
-    consumeXML(xml, templates, null);
+    consumeXML(xml, templates, Collections.<String,String>emptyMap());
   }
 
   /**
@@ -704,6 +690,7 @@ public final class Response {
    * @param xml       The XML to copy from PageSeeder
    * @param templates A set of templates to process the XML
    *
+   * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
   public void consumeXML(XMLWriter xml, Templates templates, Map<String, String> parameters)
@@ -711,16 +698,49 @@ public final class Response {
     requireAvailable();
     requireXML();
     try {
-      if (processContent()) {
-        transformXML(this, xml, templates, parameters);
-      } else {
-        handleError(this);
-      }
+      transformXML(this, xml, templates, parameters);
     } catch (IOException ex) {
       throw new ContentException("Unable to transform XML", ex);
     } finally {
       this.state = State.consumed;
     }
+  }
+
+  /**
+   * Consumes the output of the response and returns the corresponding
+   * <code>ServiceError</code> if the response was an error.
+   *
+   * <p>After calling this method the response content will no longer be available.
+   *
+   * @return The service error details.
+   *
+   * @throws ContentException If an error occurred while consuming the content.
+   * @throws IllegalStateException If the response is not available.
+   */
+  public ServiceError consumeServiceError() {
+    this.error = consumeItem(new ServiceErrorHandler());
+    return this.error;
+  }
+
+  /**
+   * Returns the <code>ServiceError</code> instance if the response was an error.
+   *
+   * <p>If the response has already been consumed, any service error instance
+   * will be returned if already processed by an XML handler.
+   *
+   * <p>If the response is still available, it will be consumed to get the error,
+   * details, and the response content will no longer be available.
+   *
+   * @return The service error details.
+   *
+   * @throws ContentException If an error occurred while consuming the content.
+   * @throws IllegalStateException If the response is in a failed state.
+   */
+  public ServiceError getServiceError() {
+    if (this.state == State.consumed)
+      return this.error;
+    else
+      return consumeItem(new ServiceErrorHandler());
   }
 
   // Extractors
@@ -805,10 +825,6 @@ public final class Response {
   // Private helpers
   // ----------------------------------------------------------------------------------------------
 
-  private boolean processContent() {
-    return isSuccessful() || (this.consumeError && isError(this._statusCode));
-  }
-
   /**
    * Check if this response is ready to be consumed.
    *
@@ -846,7 +862,7 @@ public final class Response {
    *
    * @throws IOException If an error occurs while writing the XML.
    */
-  private static void handleXML(Response response, DefaultHandler handler, boolean duplex)
+  private static void handleXML(Response response, DefaultHandler handler)
       throws IOException {
 
     // Setup the factory
@@ -867,9 +883,9 @@ public final class Response {
 
       // And parse!
       SAXParser parser = factory.newSAXParser();
-      HandlerDispatcher dispatcher = new HandlerDispatcher(parser.getXMLReader(), response, handler);
-      dispatcher.setDuplex(duplex);
+      HandlerDispatcher dispatcher = new HandlerDispatcher(parser.getXMLReader(), handler);
       parser.parse(source, dispatcher);
+      response.error = dispatcher.getServiceError();
 
     } catch (ParserConfigurationException ex) {
       throw new ContentException("Error while configuring XML parser", ex);
@@ -960,17 +976,6 @@ public final class Response {
   }
 
   /**
-   * Indicates whether the response failed based on the HTTP code.
-   *
-   * @param code the HTTP status code.
-   * @return <code>true</code> if the code is greater than 400 (included);
-   *         <code>false</code>.
-   */
-  private static boolean isError(int code) {
-    return code >= HttpURLConnection.HTTP_BAD_REQUEST;
-  }
-
-  /**
    * Returns the appropriate input stream
    *
    * @param connection The URL connection
@@ -981,64 +986,39 @@ public final class Response {
    */
   private static InputStream toInputStream(HttpURLConnection connection) throws IOException {
     if (isSuccessful(connection.getResponseCode()))
-      return connection.getInputStream();
+      return debugStream(connection.getInputStream(), connection.getContentLength(), System.out);
     else
-      return connection.getErrorStream();
+      return debugStream(connection.getErrorStream(), connection.getContentLength(), System.err);
   }
 
   /**
-   * Adds the attributes for when error occurs
-   *
-   * @param response The response
-   *
-   * @throws IOException If thrown while writing the XML.
-   */
-  private static void handleError(Response response) throws IOException {
-    try (InputStream err = getErrorStream(response._connection)) {
-
-      // Setup the input source
-      InputSource source = new InputSource(err);
-      source.setSystemId(response._connection.getURL().toString());
-
-      // Set the character set
-      Charset charset = response.charset();
-      if (charset != null) {
-        source.setEncoding(charset.name());
-      }
-
-      // And parse!
-      PSErrorHandler.parseError(source, response);
-    }
-  }
-
-  /**
-   * Returns the error stream to parse.
+   * Returns the input stream.
    *
    * <p>If debug is enabled, the content of the error stream is printed onto the System error stream.
    *
-   * @param connection HTTP connection.
+   * @param in     The input stream
+   * @param length The content length
    *
-   * @return the error stream.
+   * @return the input stream
    *
-   * @throws IOException If thrown while writing the XML.
+   * @throws IOException If thrown while processing the stream
    */
-  private static InputStream getErrorStream(HttpURLConnection connection) throws IOException {
-    InputStream err = null;
+  private static InputStream debugStream(InputStream in, int length, PrintStream out) throws IOException {
+    InputStream actual = null;
     if (LOGGER.isDebugEnabled()) {
-      InputStream tmp = connection.getErrorStream();
-      int length = connection.getContentLength();
+      InputStream tmp = in;
       try {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         copy(tmp, buffer, length);
-        buffer.writeTo(System.err);
-        err = new ByteArrayInputStream(buffer.toByteArray());
+        buffer.writeTo(out);
+        actual = new ByteArrayInputStream(buffer.toByteArray());
       } finally {
         closeQuietly(tmp);
       }
     } else {
-      err = connection.getErrorStream();
+      actual = in;
     }
-    return err;
+    return actual;
   }
 
   /**
@@ -1094,11 +1074,8 @@ public final class Response {
   }
 
   /**
-   * A handler that wraps a specified handler but will automatically dispatch to different handler
-   * if an error is detected.
-   *
-   * @author Christophe Lauret
-   * @version 0.1.0
+   * A handler that wraps a specified handler but will automatically dispatch
+   * to the service error handler if an error is detected.
    */
   private static class HandlerDispatcher extends DefaultHandler {
 
@@ -1108,242 +1085,50 @@ public final class Response {
     /** XML Reader in use to do the dispatching */
     private final XMLReader reader;
 
-    /** Response to forward to error handler in case of an error only */
-    private final Response response;
-
-    /**
-     * In duplex mode, both
-     */
-    private boolean duplex = false;
+    /** Service error handler will be set if an error is detected */
+    private ServiceErrorHandler seHandler = null;
 
     /**
      * @param reader   The XML currently processing
      * @param response The response metadata
      * @param handler  THe handler to use unless an error is detected.
      */
-    public HandlerDispatcher(XMLReader reader, Response response, DefaultHandler handler) {
+    public HandlerDispatcher(XMLReader reader, DefaultHandler handler) {
       this.reader = reader;
       this.handler = handler != null ? handler : new DefaultHandler();
-      this.response = response;
-    }
-
-    /**
-     * Whether to use duplex mode or not.
-     *
-     * @param duplex <code>true</code> to dispatch to a duplex handler;
-     *               <code>false</code> to dispatch to single handler.
-     */
-    public void setDuplex(boolean duplex) {
-      this.duplex = duplex;
     }
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
       DefaultHandler actual = this.handler;
-      // If the first element is "error" we dispatch to error handler.
+      // If the first element is "error" we capture the details with the different handler in duplex mode.
       if ("error".equals(localName) || "error".equals(qName)) {
-        if (this.duplex) {
-          actual = new DuplexHandler(new PSErrorHandler(this.response), actual);
-        } else {
-          actual = new PSErrorHandler(this.response);
-        }
+        ServiceErrorHandler error = new ServiceErrorHandler();
+        actual = new DuplexHandler(error, actual);
+        this.seHandler = error;
       }
+      // Update the reader
       this.reader.setContentHandler(actual);
+      this.reader.setErrorHandler(actual);
+      this.reader.setDTDHandler(actual);
+      this.reader.setErrorHandler(actual);
+      // Start actual parsing
       actual.startDocument();
       actual.startElement(uri, localName, qName, attributes);
     }
 
-  }
-
-  /**
-   * Extracts the error message from the "message" element in the XML response returned by PageSeeder.
-   *
-   * @author Christophe Lauret
-   * @version 0.1.0
-   */
-  private static class PSErrorHandler extends DefaultHandler {
-
-    /** Name of the error element. */
-    private static final String ERROR_ELEMENT = "error";
-
-    /** Name of the message element. */
-    private static final String MESSAGE_ELEMENT = "message";
-
-    /** The error message. */
-    private final StringBuilder message = new StringBuilder();
-
-    /** The response to update */
-    private Response response;
-
-    /** State: Within "message" element. */
-    private boolean isMessage = false;
-
-    public PSErrorHandler(Response response) {
-      this.response = response;
-    }
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
-      if (ERROR_ELEMENT.equals(localName) || ERROR_ELEMENT.equals(qName)) {
-        this.response.errorID = attributes.getValue("id");
-      } else if (MESSAGE_ELEMENT.equals(localName) || MESSAGE_ELEMENT.equals(qName)) {
-        this.isMessage = true;
-      }
-    }
-
-    @Override
-    public void endElement(String uri, String localName, String qName) {
-      if (MESSAGE_ELEMENT.equals(localName) || MESSAGE_ELEMENT.equals(qName)) {
-        this.isMessage = false;
-        this.response.message = this.message.toString();
-      }
-    }
-
-    @Override
-    public void characters(char[] ch, int start, int length) {
-      if (this.isMessage) {
-        this.message.append(ch, start, length);
-      }
-    }
-
     /**
-     * Returns the error message found in the specified XML Input Source.
+     * Returns the service error instance if an error was detected and the
+     * {@link ServiceErrorHandler} was triggered.
      *
-     * @param source the XML input source to parse.
-     *
-     * @throws IOException If unable to parse response due to IO error.
+     * @return the service error instance or <code>null</code>
      */
-    public static void parseError(InputSource source, Response response) throws IOException {
-      try {
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setValidating(false);
-        factory.setNamespaceAware(false);
-
-        // And parse!
-        SAXParser parser = factory.newSAXParser();
-        PSErrorHandler handler = new PSErrorHandler(response);
-        parser.parse(source, handler);
-      } catch (SAXException ex) {
-        LOGGER.warn("Unable to parse error message from PS Response", ex);
-      } catch (ParserConfigurationException ex) {
-        LOGGER.warn("Unable to parse error message from PS Response", ex);
-      }
+    public ServiceError getServiceError() {
+      if (this.seHandler != null) return this.seHandler.get();
+      else return null;
     }
 
-  }
 
-  /**
-   * Forwards to two separate handlers as once.
-   *
-   * @author Christophe Lauret
-   */
-  private static class DuplexHandler extends DefaultHandler {
-
-    private final DefaultHandler a;
-
-    private final DefaultHandler b;
-
-    public DuplexHandler(DefaultHandler a, DefaultHandler b) {
-      this.a = a;
-      this.b = b;
-    }
-
-    @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
-      this.a.characters(ch, start, length);
-      this.b.characters(ch, start, length);
-    }
-
-    @Override
-    public void endDocument() throws SAXException {
-      this.a.endDocument();
-      this.b.endDocument();
-    }
-
-    @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
-      this.a.endElement(uri, localName, qName);
-      this.b.endElement(uri, localName, qName);
-    }
-
-    @Override
-    public void endPrefixMapping(String prefix) throws SAXException {
-      this.a.endPrefixMapping(prefix);
-      this.b.endPrefixMapping(prefix);
-    }
-
-    @Override
-    public void error(SAXParseException ex) throws SAXException {
-      this.a.error(ex);
-      this.b.error(ex);
-    }
-
-    @Override
-    public void fatalError(SAXParseException e) throws SAXException {
-      this.a.fatalError(e);
-      this.b.fatalError(e);
-    }
-
-    @Override
-    public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-      this.a.ignorableWhitespace(ch, start, length);
-      this.b.ignorableWhitespace(ch, start, length);
-    }
-
-    @Override
-    public void notationDecl(String name, String publicId, String systemId) throws SAXException {
-      this.a.notationDecl(name, publicId, systemId);
-      this.b.notationDecl(name, publicId, systemId);
-    }
-
-    @Override
-    public void processingInstruction(String target, String data) throws SAXException {
-      this.a.processingInstruction(target, data);
-      this.b.processingInstruction(target, data);
-    }
-
-    @Override
-    public void setDocumentLocator(Locator locator) {
-      this.a.setDocumentLocator(locator);
-      this.b.setDocumentLocator(locator);
-    }
-
-    @Override
-    public void skippedEntity(String name) throws SAXException {
-      this.a.skippedEntity(name);
-      this.b.skippedEntity(name);
-    }
-
-    @Override
-    public void startDocument() throws SAXException {
-      this.a.startDocument();
-      this.b.startDocument();
-    }
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-      this.a.startElement(uri, localName, qName, attributes);
-      this.b.startElement(uri, localName, qName, attributes);
-    }
-
-    @Override
-    public void startPrefixMapping(String prefix, String uri) throws SAXException {
-      this.a.startPrefixMapping(prefix, uri);
-      this.b.startPrefixMapping(prefix, uri);
-    }
-
-    @Override
-    public void unparsedEntityDecl(String name, String publicId, String systemId, String notationName)
-        throws SAXException {
-      this.a.unparsedEntityDecl(name, publicId, systemId, notationName);
-      this.b.unparsedEntityDecl(name, publicId, systemId, notationName);
-    }
-
-    @Override
-    public void warning(SAXParseException ex) throws SAXException {
-      this.a.warning(ex);
-      this.b.warning(ex);
-    }
   }
 
 }

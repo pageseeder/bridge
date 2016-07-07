@@ -19,6 +19,7 @@ package org.pageseeder.bridge.http;
  * HTTP Methods that can be used to make request on PageSeeder using the Bridge.
  *
  * @author Christophe Lauret
+ *
  * @version 0.9.1
  * @since 0.9.1
  */

@@ -20,9 +20,12 @@ import org.xml.sax.SAXException;
  * is sufficient for retrieving most objects from PageSeeder responses, but is not intended
  * as a general purpose SAX handler.
  *
+ * @param <T> The type of object to retrieve
+ *
  * @author Christophe Lauret
  *
- * @param <T> The type of object to retrieve
+ * @version 0.9.2
+ * @since 0.9.2
  */
 public abstract class SimpleHandler<T> extends BasicHandler<T> {
 
