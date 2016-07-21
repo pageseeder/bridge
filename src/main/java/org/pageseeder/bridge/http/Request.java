@@ -76,7 +76,7 @@ import org.slf4j.LoggerFactory;
  * </pre>
  *
  * @author Christophe Lauret
- * @version 0.9.1
+ * @version 0.9.3
  * @since 0.9.1
  */
 public final class Request extends BasicRequest {
@@ -135,6 +135,20 @@ public final class Request extends BasicRequest {
    */
   public Request(Method method, Servlet servlet) {
     super(method, servlet);
+  }
+
+  /**
+   * Creates a new request to a PageSeeder service.
+   *
+   * <p>This method will automatically constructs the correct URL for the requested
+   * service using the URI variables.
+   *
+   * @param method   The HTTP method
+   * @param template The PageSeeder service URL template to use
+   * @param variable The variables to inject in the URL path.
+   */
+  public Request newService(Method method, String template, Object... variables) {
+    return new Request(method, ServicePath.newPath(template, variables));
   }
 
   // Setters (return Request)
