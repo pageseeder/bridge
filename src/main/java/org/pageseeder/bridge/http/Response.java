@@ -77,12 +77,22 @@ import org.xml.sax.helpers.DefaultHandler;
  *   these will generally wrap an I/O exception, SAX and transform exception.</li>
  * </ul>
  *
+ * <p>This object is <code>AutoCloseable</code>, it is a good idea to close the
+ * response. The {@link #close()} method ensures that the response content is
+ * fully read and that the stream is closed so that the underlying can be reused
+ * as soon as possible for persistent connections.
+ *
+ * <p>To help debug the output, the response can copy the output to
+ * <code>System.out</code> (for successful responses) or <code>System.err</code>
+ * for errors. To enable response debug set the <code>bridge.http.responseDebug</code>
+ * to <code>true</code> or use the static method.
+ *
  * @author Christophe Lauret
  *
- * @version 0.9.2
+ * @version 0.9.3
  * @since 0.9.1
  */
-public final class Response {
+public final class Response implements AutoCloseable {
 
   /**
    * State of this response.
@@ -111,6 +121,17 @@ public final class Response {
    * Logger for this class.
    */
   private static final Logger LOGGER = LoggerFactory.getLogger(Response.class);
+
+  /**
+   * Ensures this is enabled only once.
+   */
+  private static volatile boolean debugEnabled = false;
+  static {
+    // If the system property "bridge.http.responseDebug" is set to "true"
+    if ("true".equals(System.getProperty("bridge.http.responseDebug", "false"))) {
+      debugEnabled = true;
+    }
+  }
 
   /**
    * Holds the underlying connection.
@@ -532,6 +553,32 @@ public final class Response {
   }
 
   /**
+   * Simply consumes the output of the response.
+   *
+   * <p>After calling this method the response content will no longer be available.
+   *
+   * @throws IOException If an error occurs when processing the content
+   *
+   * @throws IllegalStateException If the response is not available.
+   * @throws ContentException If an error occurred while consuming the content.
+   */
+  public void consume() {
+    requireAvailable();
+    try {
+      try (InputStream in = toInputStream(this._connection)){
+        while (-1 != in.read()) {
+          // do nothing
+        }
+      }
+    } catch (IOException ex) {
+      throw new ContentException("Unable to consume response content", ex);
+    } finally {
+      this.state = State.consumed;
+    }
+  }
+
+
+  /**
    * Consumes the output of the response.
    *
    * <p>After calling this method the response content will no longer be available.
@@ -741,6 +788,31 @@ public final class Response {
       return this.error;
     else
       return consumeItem(new ServiceErrorHandler());
+  }
+
+  @Override
+  public void close() {
+    if (this.state == State.available) {
+      consume();
+    }
+  }
+
+  /**
+   * Enable response content debug, causing response content to be copied
+   * to <code>System.out</code> or <code>System.err</code>.
+   *
+   * <p>Response content debug is disabled by default, unless the
+   * <code>bridge.http.responseDebug</code> was set to <code>true</code>.
+   */
+  public static final void enableDebug() {
+    debugEnabled = true;
+  }
+
+  /**
+   * Disable response content debug.
+   */
+  public static final void disableDebug() {
+    debugEnabled = false;
   }
 
   // Extractors
@@ -998,6 +1070,7 @@ public final class Response {
    *
    * @param in     The input stream
    * @param length The content length
+   * @param out    Where the output should go.
    *
    * @return the input stream
    *
@@ -1005,7 +1078,7 @@ public final class Response {
    */
   private static InputStream debugStream(InputStream in, int length, PrintStream out) throws IOException {
     InputStream actual = null;
-    if (LOGGER.isDebugEnabled()) {
+    if (debugEnabled) {
       InputStream tmp = in;
       try {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
