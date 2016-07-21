@@ -67,7 +67,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    *
    * @param element The name of the element.
    */
-  public abstract void endElement(String element);
+  public void endElement(String element) {};
 
   // SAX implementations
   // ---------------------------------------------------------------------------
