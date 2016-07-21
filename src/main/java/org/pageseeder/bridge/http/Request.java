@@ -147,7 +147,7 @@ public final class Request extends BasicRequest {
    * @param template The PageSeeder service URL template to use
    * @param variable The variables to inject in the URL path.
    */
-  public Request newService(Method method, String template, Object... variables) {
+  public static Request newService(Method method, String template, Object... variables) {
     return new Request(method, ServicePath.newPath(template, variables));
   }
 
