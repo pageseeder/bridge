@@ -33,7 +33,7 @@ import org.pageseeder.bridge.model.PSURI;
  * Computes the path of a PageSeeder service from a URI template.
  *
  * @author Christophe Lauret
- * @version 0.9.2
+ * @version 0.9.3
  * @since 0.9.1
  */
 public final class ServicePath {
@@ -83,6 +83,25 @@ public final class ServicePath {
     if (!VALID_TEMPLATE.matcher(template).matches())
       throw new IllegalArgumentException("not a valid template: "+template);
     return new ServicePath(template);
+  }
+
+  /**
+   * Convenience method to generate the service path from the URI template
+   * directly.
+   *
+   * <p>It will return the equivalent of:
+   * <pre>
+   *   new ServicePath(template).toPath(variables);
+   * </pre>
+   *
+   * @param template The URI template path for the service.
+   *
+   * @throws IllegalArgumentException If the template path is invalid.
+   */
+  public static String newPath(String template, Object... variables) {
+    if (!VALID_TEMPLATE.matcher(template).matches())
+      throw new IllegalArgumentException("not a valid template: "+template);
+    return new ServicePath(template).toPath(variables);
   }
 
   // Class methods
