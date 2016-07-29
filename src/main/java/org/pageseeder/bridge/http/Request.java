@@ -151,6 +151,41 @@ public final class Request extends BasicRequest {
     return new Request(method, ServicePath.newPath(template, variables));
   }
 
+  /**
+   * Creates a new request to a PageSeeder document with the specified URI ID.
+   *
+   * @param method The HTTP method
+   *
+   * @throws IllegalArgumentException If the URI ID is not a positive long value.
+   */
+  public static Request newDocument(long uri) {
+    if (uri <= 0) throw new IllegalArgumentException("URI ID must be strictly positive.");
+    return new Request(Method.GET, "/uri/"+uri);
+  }
+
+  /**
+   * Creates a new request to a PageSeeder document with the specified path.
+   *
+   * @param path The HTTP method
+   */
+  public static Request newDocument(String path) {
+    return new Request(Method.GET, path);
+  }
+
+  /**
+   * Creates a new request to a PageSeeder service.
+   *
+   * <p>This method will automatically constructs the correct URL for the requested
+   * service using the URI variables.
+   *
+   * @param method   The HTTP method
+   * @param template The PageSeeder service URL template to use
+   * @param variable The variables to inject in the URL path.
+   */
+  public static Request newDocument(String group, String path) {
+    return new Request(Method.GET, DocumentPath.newLocalPath(group, path).path());
+  }
+
   // Setters (return Request)
   // --------------------------------------------------------------------------
 
