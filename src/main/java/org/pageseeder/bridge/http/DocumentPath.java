@@ -194,4 +194,9 @@ public final class DocumentPath {
     return true;
   }
 
+  @Override
+  public String toString() {
+    return path();
+  }
+
 }

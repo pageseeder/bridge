@@ -272,6 +272,15 @@ public final class Response implements AutoCloseable {
   }
 
   /**
+   * Returns the list of headers
+   *
+   * @return The corresponding value or <code>null</code>;
+   */
+  public List<Header> headers() {
+    return Collections.unmodifiableList(this._headers);
+  }
+
+  /**
    * Returns the unwrapped value of "Etag" response header.
    *
    * <p>This method removes the quotes and weak etag flag if any, to expose the actual etag.
@@ -293,8 +302,8 @@ public final class Response implements AutoCloseable {
    * Removes the quotes around the etag
    *
    * <pre>
-   *  "123456789"   – A strong ETag
-   *  W/"123456789" – A weak ETag
+   *  "123456789"   A strong ETag
+   *  W/"123456789" A weak ETag
    * </pre>
    *
    * @param etag The value of the "ETag" header
