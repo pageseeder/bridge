@@ -344,8 +344,10 @@ abstract class BasicRequest {
   }
 
   /**
+   * Implementations must generate the response object by connecting to PageSeeder
+   * and returning an instantiated response that includes the status of the response.
    *
-   * @return
+   * @return The response corresponding to this request.
    */
   public abstract Response response();
 

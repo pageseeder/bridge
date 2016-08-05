@@ -357,7 +357,7 @@ public final class Request extends BasicRequest {
     } catch (IOException ex) {
       return new Response(ex.getMessage());
     } finally {
-      LOGGER.info("{} [{}] -> {}", toURLString(this._path), this._method, status);
+      LOGGER.info("{} [{}] -> {}", toURLString(this.config, this._path), this._method, status);
     }
   }
 
