@@ -28,7 +28,7 @@ import org.pageseeder.bridge.spi.ConfigProvider;
  *
  * @author Christophe Lauret
  *
- * @version 0.3.1
+ * @version 0.9.5
  * @since 0.1.0
  */
 public final class PSConfig {
@@ -59,6 +59,11 @@ public final class PSConfig {
    * Prefix of the PageSeeder Web application (usually "/ps")
    */
   private final String _sitePrefix;
+
+  /**
+   * The PageSeeder version for this configuration.
+   */
+  private volatile Version version;
 
   // Constructors
   // ---------------------------------------------------------------------------------------------
@@ -142,6 +147,19 @@ public final class PSConfig {
    */
   public String getSitePrefix() {
     return this._sitePrefix;
+  }
+
+  /**
+   * Return the PageSeeder version for the default config.
+   * 
+   * Implementation note: the version is lazily loaded and stored
+   * on this object once it has been retrieved.
+   */
+  public synchronized Version getVersion() {
+    if (this.version == null) {
+      this.version = Version.getVersion(this);
+    }
+    return this.version;
   }
 
   // Builders
