@@ -68,7 +68,7 @@ public class PSToken implements PSCredentials {
   }
 
   /**
-   * @return when the token expires in milliseconds.
+   * @return when the token expires in milliseconds since Epoch.
    */
   public long expiresMillis() {
     return this._expires;
