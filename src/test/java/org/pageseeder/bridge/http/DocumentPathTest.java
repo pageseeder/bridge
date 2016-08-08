@@ -72,15 +72,31 @@ public class DocumentPathTest {
   }
 
   @Test
-  public void testFilename() {
-    Assert.assertNull(new DocumentPath("").filename());
-    Assert.assertNull(new DocumentPath("/").filename());
-    Assert.assertEquals("folder", new DocumentPath("folder").filename());
-    Assert.assertEquals("folder", new DocumentPath("/folder").filename());
-    Assert.assertEquals("folder", new DocumentPath("/folder/").filename());
-    Assert.assertEquals("folder", new DocumentPath("folder/").filename());
-    Assert.assertEquals("file.xml", new DocumentPath("folder/file.xml").filename());
-    Assert.assertEquals("file.xml", new DocumentPath("folder/sub/file.xml").filename());
-    Assert.assertEquals("file.xml", new DocumentPath("/folder/sub/file.xml").filename());
+  public void testChild() {
+    Assert.assertEquals("/test",                new DocumentPath("/").child("test").path());
+    Assert.assertEquals("/folder/test.html",    new DocumentPath("/folder").child("test.html").path());
+    Assert.assertEquals("/folder/sub/file.xml", new DocumentPath("folder/sub").child("file.xml").path());
+    Assert.assertEquals("/folder/sub/file.xml", new DocumentPath("/folder/sub/").child("file.xml").path());
+    Assert.assertEquals("/folder/sub/file.xml", new DocumentPath("/folder/sub/").child("/file.xml").path());
+    Assert.assertEquals("/folder/sub/file.xml", new DocumentPath("/folder/").child("/sub/file.xml").path());
+    Assert.assertEquals("/folder/sub/file.xml", new DocumentPath("/folder").child("sub/file.xml").path());
+    Assert.assertEquals("/folder/sub/file.xml", new DocumentPath("folder/").child("/sub/file.xml").path());
+    Assert.assertEquals("/folder/sub/file.xml", new DocumentPath("folder").child("sub/file.xml/").path());
+    // dot notation
+    Assert.assertEquals("/folder", new DocumentPath("folder").child(".").path());
+    Assert.assertEquals("/folder", new DocumentPath("folder").child("").path());
+    Assert.assertEquals("/folder/sub/file.xml", new DocumentPath("folder").child("/sub/./file.xml").path());
+    Assert.assertEquals("/folder/file.xml", new DocumentPath("folder").child("/sub/../file.xml").path());
   }
+
+  @Test(expected = NullPointerException.class)
+  public void testChild_null() {
+    new DocumentPath("/").child(null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testChild_Illegal() {
+    new DocumentPath("/folder").child("..");
+  }
+
 }

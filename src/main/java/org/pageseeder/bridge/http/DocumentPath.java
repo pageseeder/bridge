@@ -18,6 +18,8 @@ package org.pageseeder.bridge.http;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.pageseeder.bridge.PSConfig;
+
 /**
  * Computes the path of a PageSeeder document.
  *
@@ -141,39 +143,38 @@ public final class DocumentPath {
   }
 
   /**
-   * Returns the parent document path.
+   * Returns a new document path for a single child step.
    *
-   * @return the path corresponding to the parent.
+   * @return the path corresponding to a child.
    */
   public DocumentPath child(String child) {
-    String[] current = this._steps;
-    String[] parent = Arrays.copyOf(current, current.length+1);
-    parent[parent.length-1] = child;
-    return new DocumentPath(parent);
+    String[] path;
+    if (child.indexOf('/') < 0 && child.length()> 0 && !".".equals(child) && !"..".equals(child)) {
+      path = childOf(this, child);
+    } else {
+      path = descendantOf(this, child);
+    }
+    return new DocumentPath(path);
   }
 
+  /**
+   * Returns the URL corresponding to this document path for the default config.
+   *
+   * @return The full URL corresponding to this document path for the default config.
+   */
+  public String toURL() {
+    PSConfig config = PSConfig.getDefault();
+    return toURL(config);
+  }
 
   /**
-   * Remove any empty values.
+   * Returns the URL corresponding to this document path for the specified config
    *
-   * @param array The array to normalize
-   *
-   * @return a new array without any empty values.
+   * @param config The PageSeeder config to use
+   * @return The full URL corresponding to this document path for the specified config.
    */
-  private static String[] normalize(String[] array) {
-    // We only copy non-empty steps
-    int actual = 0;
-    String[] steps = new String[array.length];
-    for (String element : array) {
-      if (element.length() > 0) {
-        steps[actual++] = element;
-      }
-    }
-    // Readjust the size of the array
-    if (actual < array.length) {
-      steps = Arrays.copyOf(steps, actual);
-    }
-    return steps;
+  public String toURL(PSConfig config) {
+    return config.buildHostURL().append(config.getSitePrefix()).append(path()).toString();
   }
 
   @Override
@@ -197,6 +198,58 @@ public final class DocumentPath {
   @Override
   public String toString() {
     return path();
+  }
+
+  // Private helpers
+  // --------------------------------------------------------------------------
+
+  /**
+   * Remove any empty values.
+   *
+   * @param array The array to normalize
+   *
+   * @return a new array without any empty values.
+   */
+  private static String[] normalize(String[] array) {
+    // We only copy non-empty steps
+    int actual = 0;
+    String[] steps = new String[array.length];
+    for (String element : array) {
+      if (element.length() > 0) {
+        if ("..".equals(element)) {
+          if (actual == 0) throw new IllegalArgumentException("No more parents!");
+          actual = actual-1;
+        } else if (!".".equals(element)) {
+          steps[actual++] = element;
+        }
+      }
+    }
+    // Readjust the size of the array
+    if (actual < array.length) {
+      steps = Arrays.copyOf(steps, actual);
+    }
+    return steps;
+  }
+
+  /**
+   * @return a single child of this path.
+   */
+  private String[] childOf(DocumentPath original, String child) {
+    String[] current = this._steps;
+    String[] path = Arrays.copyOf(current, current.length+1);
+    path[path.length-1] = child;
+    return path;
+  }
+
+  /**
+   * @return a single child of this path.
+   */
+  private String[] descendantOf(DocumentPath original, String subpath) {
+    String[] current = this._steps;
+    String[] children = normalize(subpath.split("/"));
+    String[] path = Arrays.copyOf(current, current.length+children.length);
+    System.arraycopy(children, 0, path, current.length, children.length);
+    return path;
   }
 
 }
