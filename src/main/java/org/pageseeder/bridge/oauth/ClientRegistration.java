@@ -213,7 +213,7 @@ public final class ClientRegistration {
    * @return The credentials for client.
    */
   public ClientCredentials register(UsernamePassword credentials, PSConfig config) {
-    String service = ServicePath.newPath("/service/oauth/members/{member}/clients", credentials.username());
+    String service = ServicePath.newPath("/oauth/members/{member}/clients", credentials.username());
     Request request = new Request(Method.POST, service).using(credentials).config(config);
     request.parameter("name", this._clientName);
     if (this.description != null) {
