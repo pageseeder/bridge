@@ -28,7 +28,7 @@ import org.pageseeder.bridge.spi.ConfigProvider;
  *
  * @author Christophe Lauret
  *
- * @version 0.9.5
+ * @version 0.9.6
  * @since 0.1.0
  */
 public final class PSConfig {
@@ -64,6 +64,16 @@ public final class PSConfig {
    * The PageSeeder version for this configuration.
    */
   private volatile Version version;
+
+  /**
+   * The PageSeeder version to use for Services.
+   */
+  private Version serviceUse;
+
+  /**
+   * Whether to use the strict mode for service requests.
+   */
+  private boolean serviceStrict;
 
   // Constructors
   // ---------------------------------------------------------------------------------------------
@@ -151,7 +161,7 @@ public final class PSConfig {
 
   /**
    * Return the PageSeeder version for the default config.
-   * 
+   *
    * Implementation note: the version is lazily loaded and stored
    * on this object once it has been retrieved.
    */
@@ -161,6 +171,59 @@ public final class PSConfig {
     }
     return this.version;
   }
+
+  /**
+   * Return which API version should be requested for the services
+   *
+   * @return which API version should be requested for the services
+   *       or <code>null</code> to use the current PageSeeder version.
+   */
+  public Version getServiceAPIVersion() {
+    return this.serviceUse;
+  }
+
+  /**
+   * Indicates whether the PageSeeder service API runs in strict mode,
+   * that is make service requests fails for deprecated services or services
+   * which have been introduced after the requested version.
+   *
+   * @return <code>true</code> when strict mode is enabled;
+   *         <code>false</code> otherwise.
+   */
+  public boolean getServiceAPIStrict() {
+    return this.serviceStrict;
+  }
+
+  /**
+   * Return which API version should be requested for the services
+   *
+   * <p>Updating this method will affect all request using this config and
+   * will cause request to services to include the <code>v</code> parameter
+   * with a value starting with the version.
+   *
+   * @param the API version should be requested for the services
+   *         or <code>null</code> to use the current PageSeeder version.
+   */
+  public void setServiceAPIVersion(Version version) {
+    this.serviceUse = version;
+  }
+
+  /**
+   * Sets whether the PageSeeder service API runs in strict mode,
+   * that is make service requests fails for deprecated services or services
+   * which have been introduced after the requested version.
+   *
+   * <p>Updating this method will affect all request using this config and
+   * will cause request to services to include the <code>v</code> parameter
+   * with a value ending in <code>;strict</code>
+   *
+   * @param strict <code>true</code> when strict mode is enabled;
+   *               <code>false</code> otherwise.
+   */
+  public void setServiceAPIStrict(boolean strict) {
+    this.serviceStrict = strict;
+  }
+
 
   // Builders
   // ---------------------------------------------------------------------------------------------
@@ -252,8 +315,15 @@ public final class PSConfig {
       // Compute URL
       URL uri = toBaseURL(p, "uri", DEFAULT_WEBSITE);
       URL api = toBaseURL(p, "api", DEFAULT_API);
-      return new PSConfig(uri, api, prefix);
-    } catch (MalformedURLException ex) {
+      PSConfig config = new PSConfig(uri, api, prefix);
+      if (p.containsKey("api-version")) {
+        config.setServiceAPIVersion(Version.parse(p.getProperty("api-version")));
+      }
+      if ("true".equals(p.getProperty("api-strict"))) {
+        config.setServiceAPIStrict(true);
+      }
+      return config;
+    } catch (MalformedURLException | IllegalArgumentException ex) {
       throw new IllegalArgumentException("PageSeeder properties are not configured properly", ex);
     }
   }
@@ -311,12 +381,12 @@ public final class PSConfig {
   }
 
   /**
-   * Compute the base URL from the specfied string
+   * Compute the base URL from the specified string
    *
-   * @param p
-   * @param start
-   * @param fallback
+   * @param url The URL
+   *
    * @return the URL
+   *
    * @throws MalformedURLException
    */
   private static URL toBaseURL(String url) throws MalformedURLException {

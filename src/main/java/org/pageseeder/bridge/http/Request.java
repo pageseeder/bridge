@@ -76,7 +76,7 @@ import org.slf4j.LoggerFactory;
  * </pre>
  *
  * @author Christophe Lauret
- * @version 0.9.3
+ * @version 0.9.6
  * @since 0.9.1
  */
 public final class Request extends BasicRequest {

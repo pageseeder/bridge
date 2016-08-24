@@ -28,7 +28,7 @@ import org.xml.sax.Attributes;
  *
  * @author Christophe Lauret
  *
- * @version 0.9.5
+ * @version 0.9.6
  * @since 0.9.5
  */
 public final class Version {
@@ -47,6 +47,18 @@ public final class Version {
    * The full string version of the build (e.g. '5.5900')
    */
   private final String _version;
+
+  /**
+   * Create a new version.
+   *
+   * @param major   The major version (e.g. '5')
+   * @param build   The build number for that version (e.g. '5900')
+   */
+  public Version(int major, int build) {
+    this._major = major;
+    this._build = build;
+    this._version = major+"."+String.format("%04d", build);
+  }
 
   /**
    * Create a new version
@@ -80,6 +92,36 @@ public final class Version {
    */
   public String version() {
     return this._version;
+  }
+
+  @Override
+  public String toString() {
+    return this._version;
+  }
+
+  /**
+   * Parse the PageSeeder version.
+   *
+   * <p>The expected version must be parsable as a float and the first 4 decimals will be used
+   * to represent the version:
+   * <pre>
+   *   parse("5") returns new Version(5, 0, "5.0000")
+   *   parse("5.9") returns new Version(5, 9000, "5.9000")
+   *   parse("5.91") return new Version(5, 9100, "5.9100")
+   *   parse("5.999999") returns new Version(5, 9999, "5.9999")
+   *   parse("") throws IllegalArgumentException
+   *   parse(null) returns null
+   * </pre>
+   *
+   * @return The corresponding version
+   *
+   * @throws IllegalArgumentException If the string
+   */
+  public static Version parse(String version) {
+    // Truncate to avoid rounding problems
+    String v = version.length() > 6? version.substring(0, 6) : version;
+    int i = Math.round((Float.parseFloat(v)*1_0000));
+    return new Version(i / 1_0000, i %1_0000);
   }
 
   /**

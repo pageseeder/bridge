@@ -26,13 +26,14 @@ import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.PSToken;
+import org.pageseeder.bridge.Version;
 import org.pageseeder.bridge.net.UsernamePassword;
 
 /**
  * Base class for HTTP requests to PageSeeder.
  *
  * @author Christophe Lauret
- * @version 0.9.2
+ * @version 0.9.6
  * @since 0.9.1
  */
 abstract class BasicRequest {
@@ -323,6 +324,22 @@ abstract class BasicRequest {
     if (this.credentials instanceof PSSession) {
       // Use the specified user if available
       url.append(";jsessionid=").append(this.credentials);
+    }
+
+    // Add the API version if necessary
+    if (!this._parameters.contains("v")) {
+      boolean strict = this.config.getServiceAPIStrict();
+      Version api = this.config.getServiceAPIVersion();
+      if (strict || api != null) {
+        StringBuilder value = new StringBuilder();
+        if (api != null) {
+          value.append(api.version());
+        }
+        if (strict) {
+          value.append(";strict");
+        }
+        this._parameters.add(new Parameter("v", value.toString()));
+      }
     }
 
     // When not using the "application/x-www-form-urlencoded"
