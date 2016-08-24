@@ -200,7 +200,7 @@ public final class PSHTTPConnector {
    */
   public PSHTTPConnection connect(Method type) throws IOException {
     PSHTTPResource r = this._resource.build();
-    return PSHTTPConnection.connect(r, type, this.session);
+    return PSHTTPConnection.connect(r, type, this.credentials);
   }
 
   // Shorthand requests
