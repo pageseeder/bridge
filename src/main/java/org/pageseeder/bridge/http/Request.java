@@ -21,6 +21,7 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +102,7 @@ public final class Request extends BasicRequest {
   /**
    * The body of the resource (used for PUT requests).
    */
-  private String body;
+  private byte[] body;
 
   /**
    * Creates a new request to PageSeeder.
@@ -243,12 +244,32 @@ public final class Request extends BasicRequest {
   /**
    * Set the body of the request (used for PUT)
    *
-   * <p>This is designed for small objects.
+   * <p>This is designed for small objects, this method will use UTF-8 encoding.
    *
    * @param body  The body of the request
+   *
+   * @return this request.
+   *
+   * @throws NullPointerException if the array is <code>null</code>
    */
   public Request body(String body) {
-    this.body = body;
+    this.body = body.getBytes(StandardCharsets.UTF_8);
+    return this;
+  }
+
+  /**
+   * Set the body of the request (used for PUT)
+   *
+   * <p>This method makes a copy the specified array.
+   *
+   * @param body The body of the request
+   *
+   * @return this request.
+   *
+   * @throws NullPointerException if the array is <code>null</code>
+   */
+  public Request body(byte[] body) {
+    this.body = Arrays.copyOf(body, body.length);
     return this;
   }
 
@@ -408,7 +429,7 @@ public final class Request extends BasicRequest {
       data = encodeParameters().getBytes(StandardCharsets.UTF_8);
       this._headers.add(CONTENT_FORM_URLENCODED_UTF8);
     } else if (this.body != null) {
-      data = this.body.getBytes(StandardCharsets.UTF_8);
+      data = this.body;
       if (getHeader("Content-Type") != null) {
         this._headers.add(CONTENT_TEXT_PLAIN_UTF8);
       }
