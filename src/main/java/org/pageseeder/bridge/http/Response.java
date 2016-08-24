@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -89,7 +90,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Christophe Lauret
  *
- * @version 0.9.3
+ * @version 0.9.6
  * @since 0.9.1
  */
 public final class Response implements AutoCloseable {
@@ -121,6 +122,11 @@ public final class Response implements AutoCloseable {
    * Logger for this class.
    */
   private static final Logger LOGGER = LoggerFactory.getLogger(Response.class);
+
+  /**
+   * Counts warnings to ensure that no more than 100 are returned.
+   */
+  private static final AtomicInteger WARNING_COUNTER = new AtomicInteger(0);
 
   /**
    * Ensures this is enabled only once.
@@ -882,6 +888,16 @@ public final class Response implements AutoCloseable {
       if (name != null) {
         if ("content-length".equalsIgnoreCase(name)) {
           headers.add(new Header(name, connection.getContentLengthLong()));
+        } else if ("warning".equalsIgnoreCase(name) && WARNING_COUNTER.get() < 100) {
+          // Report deprecation and other API warnings in the logs
+          for (String value : h.getValue()) {
+            if (WARNING_COUNTER.incrementAndGet() < 100) {
+              LOGGER.warn(value);
+            } else {
+              LOGGER.warn("Reached max 100 HTTP Warnings - no more warnings will be displayed");
+              break;
+            }
+          }
         }
         for (String value : h.getValue()) {
           headers.add(new Header(name, value));
