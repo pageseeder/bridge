@@ -14,7 +14,7 @@ It includes:
 
 ## PageSeeder service
 
-To call a service from PageSeeder
+Typical code to call a PageSeeder service:
 
 ```java
   PSMember member = null;
@@ -215,6 +215,83 @@ Provides a [`FileTypeDetector`](https://docs.oracle.com/javase/8/docs/api/java/n
 ## `org.pageseeder.bridge.oauth`
 
 A simple OAuth and OpenID client for PageSeeder (5.9+ only).
+
+### `AuthorizationRequest`
+
+This class provides a simple mechanism to build the URL to the authorization endpoint as part of the authorization code flow.
+
+Typical usage:
+```
+  String clientId = "1234abcd1234abcd";
+
+  // Create a new request with the specified client ID
+  AuthorizationRequest request = AuthorizationRequest.newAuthorization(clientId);
+
+  // Save the state used in request to compare with response from authorizer
+  String state = request.state();
+ 
+  // Use this URL to redirect the client
+  String url = request.toURLString();
+```
+
+### `TokenRequest`
+
+A request to the PageSeeder token endpoint.
+
+This class provides a factory for all server-side token requests:
+ * `authorization_code`
+ * `password`
+ * `client_credentials`
+ * `refresh_token`
+
+Example for authorization code flow:
+```
+  // Instantiate a new request using code returned from authorization end point
+  TokenRequest request = TokenRequest.newAuthorizationCode(code, clientCredentials);
+```
+
+Example for resource owner password flow:
+```
+  // Specify client credentials
+  UsernamePassword userCredentials = new UsernamePassword("ali_baba", "open sesame!");
+ 
+  // Instantiate a new request
+  TokenRequest request = TokenRequest.newPassword(userCredentials, clientCredentials);
+```
+
+Example for client credentials flow:
+```
+  // Instantiate a new request
+  TokenRequest request = TokenRequest.newClientCredentials(clientCredentials);
+```
+
+Example for token refresh flow:
+```
+  // Instantiate a new request using refresh token
+  TokenRequest request = TokenRequest.newRefreshToken(refreshToken, clientCredentials);
+```
+
+### `TokenResponse`
+
+The response from a token request.
+
+Typical usage:
+```
+  // Execute the request to get a new response
+  TokenResponse response = request.execute();
+  if (response.isSuccessful()) {
+    PSToken token = response.getToken();
+
+    // If grant type and client supports refresh tokens
+    String refreshToken = response.getRefreshToken();
+
+    // If using 'openid profile' scope
+     PSMember member = response.getMember();
+
+  } else {
+    // Handle error
+  }
+```
 
 ## `org.pageseeder.bridge.psml`
 
