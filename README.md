@@ -14,24 +14,24 @@ It includes:
 
 ## PageSeeder service
 
-Typical code to call a PageSeeder service:
+Example to call a PageSeeder service:
 
 ```java
   PSMember member = null;
   String service = ServicePath.newPath("/members/{member}", username);
   Response response = new Request(GET, service).using(credentials).response();
   if (response.isSuccessful()) {
-    // Parse the response into an account
+    // Parse the response into a member object
     member = response.consumeItem(handler);
   } else {
-    // Collect and log error, etc...
+    // Collect the error
     ServiceError error = response.consumeServiceError();
   }
 ```
 
 ## Via Manager
 
-The same operation as above can be done with a manager albeit with less control over how the returned content or errors are handled:
+The same operation as above can be done with a manager albeit with less control over how the returned content or errors are handled and less visibility of which service is used:
 
 ```java
   MemberManager manager = new MemberManager(credentials);
