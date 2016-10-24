@@ -27,7 +27,11 @@ import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSMembership;
 
-public final class SubscriptionHandlerTest {
+/**
+ * @deprecated SubscriptionForm no longer supported from PageSeeder 5.9
+ */
+@Deprecated
+public final class SubscriptionFormHandlerTest {
 
   @Test
   public void testParse1() throws Exception {

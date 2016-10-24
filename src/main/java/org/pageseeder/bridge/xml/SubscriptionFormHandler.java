@@ -33,7 +33,10 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Christophe Lauret
  * @version 0.3.7
  * @since 0.3.7
+ *
+ * @deprecated SubscriptionForm no longer supported from PageSeeder 5.9
  */
+@Deprecated
 public final class SubscriptionFormHandler extends DefaultHandler {
 
   /** Member element */
