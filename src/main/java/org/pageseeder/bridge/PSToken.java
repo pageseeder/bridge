@@ -1,5 +1,6 @@
 package org.pageseeder.bridge;
 
+import java.io.Serializable;
 import java.util.regex.Pattern;
 
 /**
@@ -9,7 +10,10 @@ import java.util.regex.Pattern;
  * @author Christophe Lauret
  */
 @Requires(minVersion = 59000)
-public class PSToken implements PSCredentials {
+public class PSToken implements PSCredentials, Serializable {
+
+  /** As required for Serializable */
+  private static final long serialVersionUID = 20161016L;
 
   /**
    * PageSeeder tokens normally use a base64 encoding with no padding.
