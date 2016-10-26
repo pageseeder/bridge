@@ -1,0 +1,14 @@
+<memberships>
+  <member id="123" firstname="John" surname="Smith" username="jsmith" email="jsmith@example.org" lastpasswordchange="2016-02-25T13:48:12+11:00" lastlogin="2016-10-26T14:05:55+11:00" status="activated">
+    <fullname>John Smith</fullname>
+  </member>
+  <membership id="101" email-listed="true" notification="immediate" status="normal" role="manager">
+    <project id="201" name="acme" description="ACME project" owner="acme" access="member" common="false"/>
+  </membership>
+  <membership id="102" email-listed="false" notification="immediate" status="normal" role="manager">
+    <group id="202" name="acme-info" description="Info group of the Amnesty project" owner="acme" access="member" common="false"/>
+  </membership>
+  <membership id="103" email-listed="true" notification="none" status="normal" role="manager" created="2015-01-07T13:49:39+11:00">
+    <group id="203" name="product-support" description="Support group for product" owner="Product" access="member" common="false" relatedurl="https://example.org"/>
+  </membership>
+</memberships>

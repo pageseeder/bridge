@@ -15,6 +15,25 @@
  */
 package org.pageseeder.bridge.xml;
 
-public class ServiceErrorHandlerTest {
+import org.junit.Assert;
+import org.junit.Test;
+import org.pageseeder.bridge.model.PSMember;
+
+/**
+ * Test the member handler
+ */
+public class PSMemberHandlerTest {
+
+  @Test
+  public void testParseOK() throws Exception {
+    PSMemberHandler handler = new PSMemberHandler();
+    HandlerTests.parse("member1.xml", handler);
+    PSMember member = handler.get();
+    Assert.assertEquals("jsmith@example.org", member.getEmail());
+    Assert.assertEquals("John", member.getFirstname());
+    Assert.assertEquals("Smith", member.getSurname());
+    Assert.assertEquals(123L, member.getId().longValue());
+    Assert.assertEquals("jsmith", member.getUsername());
+  }
 
 }
