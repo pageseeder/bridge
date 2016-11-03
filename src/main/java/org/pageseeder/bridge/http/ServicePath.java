@@ -272,7 +272,7 @@ public final class ServicePath {
           return member.getId().toString();
         else if (member.getUsername() != null)
           return '~'+encode(member.getUsername());
-        else if (member.getUsername() != null)
+        else if (member.getEmail() != null)
           return '~'+encode(member.getEmail());
         else throw new IllegalArgumentException("Member must have an id, username or email to be used as a variable");
       } else {
