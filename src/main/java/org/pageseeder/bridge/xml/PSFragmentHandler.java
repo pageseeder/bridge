@@ -18,7 +18,6 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pageseeder.berlioz.xml.XMLCopy;
 import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.model.PSXRef;
@@ -46,7 +45,7 @@ public final class PSFragmentHandler extends DefaultHandler {
    * The containing uri
    */
   private PSURI fraguri = null;
-  
+
   /**
    * The current document being processed.
    */
@@ -55,7 +54,7 @@ public final class PSFragmentHandler extends DefaultHandler {
   /**
    * The list of documents returned by the servlet.
    */
-  private List<PSMLFragment> fragments = new ArrayList<PSMLFragment>();
+  private List<PSMLFragment> fragments = new ArrayList<>();
 
   /**
    * A buffer for the characters in text nodes.
@@ -79,7 +78,7 @@ public final class PSFragmentHandler extends DefaultHandler {
 
   /**
    * Create a new fragment handler for document.
-   * 
+   *
    * @param document  the document containing the fragment
    */
   public PSFragmentHandler(PSDocument document) {
@@ -126,7 +125,7 @@ public final class PSFragmentHandler extends DefaultHandler {
       f.add(p);
     } else if ("blockxref".equals(localName) && this.fragment instanceof XRefFragment) {
       XRefFragment f = (XRefFragment) this.fragment;
-      PSXRef xref = PSEntityFactory.toXRef(atts, fraguri, null);
+      PSXRef xref = PSEntityFactory.toXRef(atts, this.fraguri, null);
       f.add(xref);
     } else {
       this.buffer.setLength(0);

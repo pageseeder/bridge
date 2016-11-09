@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.pageseeder.berlioz.util.ISO8601;
 import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.InvalidEntityException;
 import org.pageseeder.bridge.PSConfig;
@@ -49,6 +48,7 @@ import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.model.PSXRef;
 import org.pageseeder.bridge.model.PasswordResetOptions;
 import org.pageseeder.bridge.psml.PSMLFragment;
+import org.pageseeder.bridge.util.ISO8601;
 
 /**
  * A utility class to provide predefined connectors to PageSeeder via HTTP.
@@ -782,7 +782,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition If member is not identifiable.
    */
-  public static PSHTTPConnector listProjectsTree(PSMember member, String nameprefix, int maximum, boolean showGroup, boolean showAll) 
+  public static PSHTTPConnector listProjectsTree(PSMember member, String nameprefix, int maximum, boolean showGroup, boolean showAll)
       throws FailedPrecondition {
     if (maximum < 1) throw new IllegalArgumentException("maximum less than 1.");
     Preconditions.isIdentifiable(member, "member");
@@ -1401,7 +1401,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition if conditions fail
    */
-  public static PSHTTPConnector findComments(PSMember member, PSGroup group, String title, String type, List<String> paths) 
+  public static PSHTTPConnector findComments(PSMember member, PSGroup group, String title, String type, List<String> paths)
       throws FailedPrecondition {
     return findComments(member, group, title, type, null, paths);
   }
@@ -1938,7 +1938,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector listXRefs(PSGroup group, PSURI uri, List<PSXRef.TYPE> includetypes, 
+  public static PSHTTPConnector listXRefs(PSGroup group, PSURI uri, List<PSXRef.TYPE> includetypes,
       boolean forward, boolean reverse, String version, int page, int pagesize)
       throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
@@ -1952,7 +1952,9 @@ public final class PSHTTPConnectors {
     if (includetypes != null) {
       String types = "";
       for (int i = 0; i < includetypes.size(); i++) {
-        if (i != 0) types += ",";
+        if (i != 0) {
+          types += ",";
+        }
         types += includetypes.get(i).toString();
       }
       connector.addParameter("includetypes", types);
@@ -2048,7 +2050,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector patchDocumentProperties(PSDocument document, PSGroup group, PSMember creator) 
+  public static PSHTTPConnector patchDocumentProperties(PSDocument document, PSGroup group, PSMember creator)
       throws FailedPrecondition {
     Preconditions.isNotNull(document, "document");
     Preconditions.isNotEmpty(document.getFilename(), "filename");
@@ -2113,7 +2115,7 @@ public final class PSHTTPConnectors {
 
   /**
    * Returns the connector to list documents in a group.
-   * 
+   *
    * @deprecated Use {@link #listDocumentsInGroup(PSGroup, String, int)} instead
    *
    * @param group
@@ -2136,13 +2138,13 @@ public final class PSHTTPConnectors {
 
   /**
    * Returns the connector to list documents in a group.
-   * 
+   *
    * @param group  the group
    * @param url    the parent URL
    * @param max    the maximum number of documents to return
-   * 
+   *
    * @return the corresponding connector
-   * 
+   *
    * @throws FailedPrecondition
    */
   public static PSHTTPConnector listDocumentsInGroup(PSGroup group, String url, int max) throws FailedPrecondition {
@@ -2160,13 +2162,13 @@ public final class PSHTTPConnectors {
 
   /**
    * Returns the connector to list folders in a group.
-   * 
+   *
    * @param group  the group
    * @param url    the parent URL
    * @param max    the maximum number of documents to return
-   * 
+   *
    * @return the corresponding connector
-   * 
+   *
    * @throws FailedPrecondition
    */
   public static PSHTTPConnector listFoldersInGroup(PSGroup group, String url, int max) throws FailedPrecondition {

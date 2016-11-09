@@ -18,7 +18,6 @@ package org.pageseeder.bridge.xml;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.pageseeder.berlioz.util.ISO8601;
 import org.pageseeder.bridge.PSEntityCache;
 import org.pageseeder.bridge.control.CommentManager;
 import org.pageseeder.bridge.control.DocumentManager;
@@ -40,6 +39,7 @@ import org.pageseeder.bridge.model.PSProject;
 import org.pageseeder.bridge.model.PSRole;
 import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.model.PSXRef;
+import org.pageseeder.bridge.util.ISO8601;
 import org.xml.sax.Attributes;
 
 /**
@@ -561,8 +561,9 @@ public final class PSEntityFactory {
     x.setTitle(title);
     x.setDisplay(display);
     x.setLabels(labels);
-    if (level != null)
+    if (level != null) {
       x.setLevel(PSHandlers.integer(level));
+    }
     return x;
   }
 
@@ -621,8 +622,9 @@ public final class PSEntityFactory {
     x.setTitle(title);
     x.setDisplay(display);
     x.setLabels(labels);
-    if (level != null)
+    if (level != null) {
       x.setLevel(PSHandlers.integer(level));
+    }
     return x;
   }
 

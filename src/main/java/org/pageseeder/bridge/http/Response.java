@@ -45,11 +45,11 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.pageseeder.berlioz.xml.XMLCopy;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.xml.DuplexHandler;
 import org.pageseeder.bridge.xml.Handler;
 import org.pageseeder.bridge.xml.ServiceErrorHandler;
+import org.pageseeder.bridge.xml.XMLCopy;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

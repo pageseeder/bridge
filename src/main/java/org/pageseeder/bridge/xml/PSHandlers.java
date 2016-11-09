@@ -18,9 +18,9 @@ package org.pageseeder.bridge.xml;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.pageseeder.berlioz.util.ISO8601;
 import org.pageseeder.bridge.model.PSNotification;
 import org.pageseeder.bridge.model.PSRole;
+import org.pageseeder.bridge.util.ISO8601;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

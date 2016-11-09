@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.pageseeder.berlioz.util.ISO8601;
+import org.pageseeder.bridge.util.ISO8601;
 
 /**
  * A predicate for a search.
@@ -42,7 +42,7 @@ public final class PSPredicate implements Serializable {
   /**
    * Facets.
    */
-  private Map<String, String> facets = new HashMap<String, String>();
+  private Map<String, String> facets = new HashMap<>();
 
   /**
    * Facets.
@@ -168,7 +168,7 @@ public final class PSPredicate implements Serializable {
    * @return This predicate a as valid parameter for the Generic Search Servlet in PageSeeder.
    */
   public Map<String, String> toParameters() {
-    Map<String, String> parameters = new HashMap<String, String>();
+    Map<String, String> parameters = new HashMap<>();
     if (this.type != null) {
       parameters.put("types", this.type);
     }

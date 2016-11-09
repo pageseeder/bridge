@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.pageseeder.berlioz.util.ISO8601;
 import org.pageseeder.bridge.EntityValidity;
+import org.pageseeder.bridge.util.ISO8601;
 
 /**
  * The common base class for folders and documents.
@@ -59,7 +59,7 @@ public abstract class PSURI extends PSAddressable {
   private Date modified;
 
   /** List of labels on the document */
-  private List<String> labels = new ArrayList<String>();
+  private List<String> labels = new ArrayList<>();
 
   /**
    * Default constructor.

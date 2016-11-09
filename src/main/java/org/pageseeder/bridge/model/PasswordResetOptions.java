@@ -17,7 +17,7 @@ package org.pageseeder.bridge.model;
 
 import java.util.Date;
 
-import org.pageseeder.berlioz.util.ISO8601;
+import org.pageseeder.bridge.util.ISO8601;
 
 /**
  * Options for resetting the password.
