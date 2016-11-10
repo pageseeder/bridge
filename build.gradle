@@ -1,0 +1,127 @@
+plugins {
+    id "com.jfrog.bintray" version "1.7"
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+group = 'org.pageseeder.bridge'
+version = file('version.txt').text
+
+description = "PageSeeder Bridge"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  maven { url 'http://dl.bintray.com/pageseeder/maven' }
+  jcenter()
+}
+
+dependencies {
+
+  compile (
+    'org.slf4j:slf4j-api:1.7.12',
+    'org.pageseeder.xmlwriter:pso-xmlwriter:1.0.2',
+    'net.sf.ehcache:ehcache:2.8.6',
+    'javax.cache:cache-api:1.0.0',
+  )
+
+  testCompile (
+    'junit:junit:4.12',
+    'org.slf4j:slf4j-simple:1.7.12'
+  )
+
+}
+
+task sourceJar(type: Jar) {
+  from sourceSets.main.allJava
+}
+
+publishing {
+
+  publications {
+    mavenJava(MavenPublication) {
+      groupId "${project.group}"
+      artifactId "${project.name}"
+      version "${project.version}"
+
+      from components.java
+
+      artifact sourceJar {
+        classifier "sources"
+      }
+
+      pom.withXml {
+        asNode().appendNode('name', "${project.description}")     
+        asNode().appendNode('description', "$longDescription")
+        asNode().appendNode('url', "$url")
+      }
+
+    }
+  }
+}
+
+bintray {
+  user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+  key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+
+  // Reference to Maven config
+  publications = ['mavenJava'] 
+
+  //dryRun = true
+  publish = true
+
+  pkg {
+    repo = 'maven'
+    name = "${scmName}"
+    userOrg = 'pageseeder'
+    desc = "$longDescription"
+    websiteUrl = "$url"
+    issueTrackerUrl = "https://github.com/pageseeder/${scmName}/issues"
+    vcsUrl = "https://github.com/pageseeder/${scmName}.git"
+    licenses = ['Apache-2.0']
+    labels = ['java', 'pageseeder']
+
+    githubRepo = "pageseeder/${scmName}"
+    githubReleaseNotesFile = 'README.md'
+
+    version {
+      name = "${project.version}"
+    }
+  }
+
+}
+
+task createPom << {
+  pom {
+    project {
+      name "${project.description}"
+      description "$longDescription"
+      url "$url"
+
+      licenses {
+        license {
+          name 'The Apache Software License, Version 2.0'
+          url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+        }
+      }
+
+      organization {
+       name 'Allette Systems'
+       url 'http://www.allette.com.au'
+      }
+
+      scm {
+        connection "scm:git:git@github.com:pageseeder/${scmName}.git"
+        developerConnection "scm:git:git@github.com:pageseeder/${scmName}.git"
+        url "git@github.com:pageseeder/${scmName}.git"
+      }
+    }
+  }.writeTo("pom.xml")
+}
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '3.1'
+}
