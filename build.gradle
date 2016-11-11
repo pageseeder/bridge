@@ -1,9 +1,9 @@
 plugins {
-    id "com.jfrog.bintray" version "1.7"
+  // To publish to bintray
+  id "com.jfrog.bintray" version "1.7"
 }
 
 apply plugin: 'java'
-apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 group = 'org.pageseeder.bridge'
@@ -35,12 +35,7 @@ dependencies {
 
 }
 
-task sourceJar(type: Jar) {
-  from sourceSets.main.allJava
-}
-
 publishing {
-
   publications {
     mavenJava(MavenPublication) {
       groupId "${project.group}"
@@ -53,10 +48,36 @@ publishing {
         classifier "sources"
       }
 
+      artifact javadocJar {
+        classifier 'javadoc'
+      }
+
       pom.withXml {
-        asNode().appendNode('name', "${project.description}")     
-        asNode().appendNode('description', "$longDescription")
-        asNode().appendNode('url', "$url")
+        asNode().children().last() + {
+          resolveStrategy = Closure.DELEGATE_FIRST
+          name "${project.description}"
+          description "$longDescription"
+          url "$url"
+
+	      licenses {
+	        license {
+	          name 'The Apache Software License, Version 2.0'
+	          url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+	        }
+	      }
+
+	      organization {
+	       name 'Allette Systems'
+	       url 'https://www.allette.com.au'
+	      }
+	
+	      scm {
+	        connection "scm:git:git@github.com:pageseeder/${scmName}.git"
+	        developerConnection "scm:git:git@github.com:pageseeder/${scmName}.git"
+	        url "git@github.com:pageseeder/${scmName}.git"
+	      }
+
+        }
       }
 
     }
@@ -70,7 +91,7 @@ bintray {
   // Reference to Maven config
   publications = ['mavenJava'] 
 
-  //dryRun = true
+  dryRun = true
   publish = true
 
   pkg {
@@ -79,7 +100,6 @@ bintray {
     userOrg = 'pageseeder'
     desc = "$longDescription"
     websiteUrl = "$url"
-    issueTrackerUrl = "https://github.com/pageseeder/${scmName}/issues"
     vcsUrl = "https://github.com/pageseeder/${scmName}.git"
     licenses = ['Apache-2.0']
     labels = ['java', 'pageseeder']
@@ -94,34 +114,20 @@ bintray {
 
 }
 
-task createPom << {
-  pom {
-    project {
-      name "${project.description}"
-      description "$longDescription"
-      url "$url"
 
-      licenses {
-        license {
-          name 'The Apache Software License, Version 2.0'
-          url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-        }
-      }
+task sourceJar(type: Jar) {
+  description 'Packages up the source in a Jar for Maven publishing'
+  from sourceSets.main.allJava
+}
 
-      organization {
-       name 'Allette Systems'
-       url 'http://www.allette.com.au'
-      }
+javadoc.options.addStringOption('Xdoclint:none', '-quiet')
 
-      scm {
-        connection "scm:git:git@github.com:pageseeder/${scmName}.git"
-        developerConnection "scm:git:git@github.com:pageseeder/${scmName}.git"
-        url "git@github.com:pageseeder/${scmName}.git"
-      }
-    }
-  }.writeTo("pom.xml")
+task javadocJar (type: Jar, dependsOn: javadoc) {
+  description 'Packages up the javadoc in a Jar for Maven publishing'
+  from javadoc.destinationDir
 }
 
 task wrapper(type: Wrapper) {
   gradleVersion = '3.1'
+  description 'Generates the Gradle wrapper scripts'
 }
