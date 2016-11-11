@@ -37,40 +37,52 @@ public final class PSXRef implements PSEntity {
    * XRef titles to display.
    */
   public static enum DISPLAY {
+
     /** manual */
-    MANUAL,
+    MANUAL("manual"),
+
     /** document */
-    DOCUMENT,
+    DOCUMENT("document"),
+
     /** document+fragment */
-    DOCUMENT_FRAGMENT,
+    DOCUMENT_FRAGMENT("document+fragment"),
+
     /** document+manual. */
-    DOCUMENT_MANUAL;
-    
+    DOCUMENT_MANUAL("document+manual");
+
+    private final String _value;
+
+    private DISPLAY(String value) {
+      this._value = value;
+    }
+
+    public final String value(){
+      return this._value;
+    }
+
     /**
      * Create the display from a string.
-     * 
+     *
      * @param value the string value
-     * 
+     *
      * @return the display
      */
     public static DISPLAY fromString(String value) {
-      if ("manual".equalsIgnoreCase(value))            return MANUAL;
-      if ("document".equalsIgnoreCase(value))          return DOCUMENT;
-      if ("document+fragment".equalsIgnoreCase(value)) return DOCUMENT_FRAGMENT;
-      if ("document+manual".equalsIgnoreCase(value))   return DOCUMENT_MANUAL;
+      for (DISPLAY display : values()) {
+        if (display._value.equalsIgnoreCase(value)) return display;
+      }
+      // Fallback on document
       return DOCUMENT;
     }
-    
+
     /**
      * Convert the display to a string.
-     * 
+     *
      * @return the string
      */
+    @Override
     public String toString() {
-      if (this == MANUAL)            return "manual";
-      if (this == DOCUMENT_FRAGMENT) return "document+fragment";
-      if (this == DOCUMENT_MANUAL)   return "document+manual";
-      return "document";
+      return this._value;
     }
   };
 
@@ -86,12 +98,12 @@ public final class PSXRef implements PSEntity {
     TRANSCLUDE,
     /** image **/
     IMAGE;
-    
+
     /**
      * Create the type from a string.
-     * 
+     *
      * @param value the string value
-     * 
+     *
      * @return the type
      */
     public static TYPE fromString(String value) {
@@ -101,12 +113,13 @@ public final class PSXRef implements PSEntity {
       if ("image".equalsIgnoreCase(value))       return IMAGE;
       return NONE;
     }
-    
+
     /**
      * Convert the type to a string.
-     * 
+     *
      * @return the string
      */
+    @Override
     public String toString() {
       if (this == EMBED)        return "embed";
       if (this == TRANSCLUDE)   return "transclude";
@@ -159,7 +172,7 @@ public final class PSXRef implements PSEntity {
    * The target document tile
    */
   private String targetURITitle;
-  
+
   /**
    * The Document ID of the target document.
    */
@@ -218,7 +231,7 @@ public final class PSXRef implements PSEntity {
   /**
    * The XRef's labels.
    */
-  private List<String> labels = new ArrayList<String>();
+  private List<String> labels = new ArrayList<>();
 
   /**
    * Constructor
@@ -257,9 +270,7 @@ public final class PSXRef implements PSEntity {
   @Override
   public EntityValidity checkValid() {
     // image xrefs must point to an image
-    if (this.type == TYPE.IMAGE && this.targetMediaType != null && !this.targetMediaType.startsWith("image/")) {
-      return EntityValidity.IMAGE_XREF_TARGET_NOT_IMAGE;
-    }      
+    if (this.type == TYPE.IMAGE && this.targetMediaType != null && !this.targetMediaType.startsWith("image/")) return EntityValidity.IMAGE_XREF_TARGET_NOT_IMAGE;
     // TODO More constraints on xref type, etc.
     return EntityValidity.OK;
   }
@@ -282,7 +293,7 @@ public final class PSXRef implements PSEntity {
    * @return the target Media Type
    */
   public String getTargetMediaType() {
-    return targetMediaType;
+    return this.targetMediaType;
   }
 
   /**
@@ -303,21 +314,21 @@ public final class PSXRef implements PSEntity {
    * @return the source Media Type
    */
   public String getSourceMediaType() {
-    return sourceMediaType;
+    return this.sourceMediaType;
   }
 
   /**
    * @return the sourceDocid
    */
   public String getSourceDocid() {
-    return sourceDocid;
+    return this.sourceDocid;
   }
 
   /**
    * @return the source Href
    */
   public String getSourceHref() {
-    return sourceHref;
+    return this.sourceHref;
   }
 
   /**
@@ -373,14 +384,14 @@ public final class PSXRef implements PSEntity {
    * @return the target Docid
    */
   public String getTargetDocid() {
-    return targetDocid;
+    return this.targetDocid;
   }
 
   /**
    * @return the target Href
    */
   public String getTargetHref() {
-    return targetHref;
+    return this.targetHref;
   }
 
   /**
@@ -418,7 +429,7 @@ public final class PSXRef implements PSEntity {
     }
     return s.toString();
   }
-  
+
   /**
    * @return the content of the XRef.
    */
