@@ -109,6 +109,7 @@ bintray {
 task sourceJar(type: Jar) {
   description 'Packages up the source in a Jar for Maven publishing'
   from sourceSets.main.allJava
+  from sourceSets.main.resources
 }
 
 javadoc.options.addStringOption('Xdoclint:none', '-quiet')
