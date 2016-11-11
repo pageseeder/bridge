@@ -95,7 +95,6 @@ public final class MultipartRequest extends BasicRequest {
    * Creates a new multipart request to PageSeeder.
    *
    * @param servlet The PageSeeder servlet to use
-   * @param path    The path without the site prefix (e.g. <code>/ps</code>)
    */
   public MultipartRequest(Servlet servlet) {
     super(Method.POST, servlet);
@@ -163,6 +162,9 @@ public final class MultipartRequest extends BasicRequest {
    * Add a part to the request (write the contents directly to the stream).
    *
    * @param part The encoding to specify in the Part's header
+   *
+   * @return This multipart request for easy chaining
+   *
    * @throws IOException Should any error occur while writing the part on the output
    */
   public MultipartRequest addXMLPart(String part) throws IOException {
@@ -175,6 +177,8 @@ public final class MultipartRequest extends BasicRequest {
    *
    * @param part    The encoding to specify in the Part's header
    * @param headers A list of headers added to this XML Part ('content-type' header is ignored)
+   *
+   * @return This multipart request for easy chaining
    *
    * @throws IOException Should any error occur while writing
    */
@@ -217,7 +221,9 @@ public final class MultipartRequest extends BasicRequest {
   /**
    * Add a part to the request from a file (write the contents directly to the stream).
    *
-   * @param part    File for part
+   * @param part File for part
+   *
+   * @return This multipart request for easy chaining
    *
    * @throws IOException Should any error occur while writing
    */
@@ -231,6 +237,8 @@ public final class MultipartRequest extends BasicRequest {
    *
    * @param in          Input stream for part content
    * @param filename    The filename for the part
+   *
+   * @return This multipart request for easy chaining
    *
    * @throws IOException Should any error occur while writing
    */
@@ -277,6 +285,8 @@ public final class MultipartRequest extends BasicRequest {
    *
    * @param name  the name of the parameter
    * @param value the value of the parameter
+   *
+   * @return This multipart request for easy chaining
    *
    * @throws IOException Should any error occur while writing
    */

@@ -32,7 +32,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
   /**
    * The list of objects that have been retrieved from the XML.
    */
-  private List<T> list = new ArrayList<T>();
+  private List<T> list = new ArrayList<>();
 
   /**
    * The ancestry of element in the context.
@@ -122,6 +122,8 @@ public abstract class BasicHandler<T> extends Handler<T> {
   /**
    * Returns the content of the buffer as a string an optionally reset it.
    *
+   * @param clear <code>true</code> to clear the content of the buffer as well.
+   *
    * @return the content of the current buffer as a string.
    */
   protected final String buffer(boolean clear) {
@@ -135,7 +137,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
   /**
    * Appends content to the buffer.
    *
-   * @param The content to add.
+   * @param s The content to add.
    */
   protected final void append(String s) {
     if (this.buffer != null) {
@@ -196,6 +198,8 @@ public abstract class BasicHandler<T> extends Handler<T> {
    *   <li><code>ancestor(1)</code> is <code>parent()</code></li>
    * </ul>
    *
+   * @param i the level of ancestry (should be a positive integer including zero)
+   *
    * @return the name of the ancestor element or <code>null</code> if the
    * current element does not have any ancestor at that level.
    *
@@ -220,6 +224,8 @@ public abstract class BasicHandler<T> extends Handler<T> {
    * Indicates whether the specified name is the same as parent
    *
    * @param parent The name of the parent
+   *
+   * @return <code>true</code> is if the the specified name is the same as parent;
    *
    * @throws NullPointerException if parent is <code>null</code>.
    */
@@ -247,7 +253,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    * Indicates whether the current element name is equals to any of the
    * specified elements.
    *
-   * @param element the names of the elements to match the current.
+   * @param elements the names of the elements to match the current.
    *
    * @return <code>true</code> is it is the current element
    */

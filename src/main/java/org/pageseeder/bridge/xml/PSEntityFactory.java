@@ -255,6 +255,7 @@ public final class PSEntityFactory {
 
   /**
    *
+   * <pre>{@code
    * <uri id="2439"
    *  scheme="http"
    *    host="localhost"
@@ -265,6 +266,7 @@ public final class PSEntityFactory {
    *  folder="true"
    * mediatype="folder"
    * created="2014-01-31T16:19:12+11:00"
+   * }</pre>
    *
    * @param atts     The attributes the "uri" element
    * @param document The PSDocument instance (may be <code>null</code>).
@@ -329,6 +331,7 @@ public final class PSEntityFactory {
 
   /**
    *
+   *<pre>{@code
    * <uri id="2439"
    *  scheme="http"
    *    host="localhost"
@@ -339,6 +342,7 @@ public final class PSEntityFactory {
    *  folder="true"
    * mediatype="folder"
    * created="2014-01-31T16:19:12+11:00"
+   * }</pre>
    *
    * @param atts         The attributes the "uri" element
    * @param externaluri  The PSExternalURI instance (may be <code>null</code>).
@@ -428,6 +432,7 @@ public final class PSEntityFactory {
 
   /**
    *
+   * <pre>{@code
    * <uri id="2439"
    *  scheme="http"
    *    host="localhost"
@@ -438,6 +443,7 @@ public final class PSEntityFactory {
    *  folder="true"
    * mediatype="folder"
    * created="2014-01-31T16:19:12+11:00"
+   * }</pre>
    *
    * @param atts   The attributes of the "uri" element
    * @param folder The folder instance (may be <code>null</code>).

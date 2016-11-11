@@ -34,7 +34,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * Represents a request made to the PageSeeder Server.
  *
  * <p>By default the request is made anonymously. In order to make a request on behalf of a
- * PageSeeder user, use the {@link #using(PSSession)} method - this is required for any page
+ * PageSeeder user, use the {@link #using(PSCredentials)} method - this is required for any page
  * that needs login access.
  *
  * <p>For simple PageSeeder connections via GET or POST, this class provides convenience methods

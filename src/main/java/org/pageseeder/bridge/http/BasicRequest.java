@@ -257,7 +257,7 @@ abstract class BasicRequest {
   /**
    * Returns the credentials in use.
    *
-   * @return
+   * @return The credentials used by this request
    */
   public PSCredentials credentials() {
     return this.credentials;
@@ -266,7 +266,7 @@ abstract class BasicRequest {
   /**
    * Returns the PageSeeder configuration is use.
    *
-   * @return
+   * @return the configuration used by this request
    */
   public PSConfig config() {
     return this.config;
@@ -307,9 +307,6 @@ abstract class BasicRequest {
    *
    * <p>If the user is specified, its details will be included in the URL so that the resource can
    * be accessed on his behalf.
-   *
-   * @param credentials       PageSeeder credentials to generathe query string
-   * @param includeParameters Whether to include the parameters for POST requests.
    *
    * @return the URL to access this resource.
    */
@@ -353,8 +350,7 @@ abstract class BasicRequest {
   }
 
   /**
-   *
-   * @return
+   * @return The connection timeout on the request
    */
   public int timeout() {
     return this.timeout;
@@ -373,6 +369,8 @@ abstract class BasicRequest {
 
   /**
    * Compute the User Agent string as
+   *
+   * @return The "User-Agent" header string used by PageSeeder
    */
   public static String getUserAgentString() {
     Package p = Package.getPackage("org.pageseeder.bridge");
@@ -416,8 +414,6 @@ abstract class BasicRequest {
    *
    * @param name  The name of the HTTP header
    * @param value The value of the HTTP header.
-   *
-   * @return This request.
    */
   protected void setHeader(String name, String value) {
     removeHeader(name);
@@ -429,8 +425,6 @@ abstract class BasicRequest {
    *
    * @param name  The name of the HTTP header
    * @param value The value of the HTTP header.
-   *
-   * @return This request.
    */
   protected void setHeader(String name, int value) {
     removeHeader(name);
@@ -456,6 +450,8 @@ abstract class BasicRequest {
    * Removes the specified header.
    *
    * @param name the of the header to remove (not case sensitive)
+   *
+   * @return The header that was removed
    */
   protected Header getHeader(String name) {
     for (Header h : this._headers) {

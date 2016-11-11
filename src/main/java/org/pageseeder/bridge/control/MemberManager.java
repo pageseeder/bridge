@@ -48,7 +48,7 @@ public final class MemberManager extends Sessionful {
   /**
    * Creates a new member manager using the specified session.
    *
-   * @param session The session used to connect to PageSeeder.
+   * @param credentials The session used to connect to PageSeeder.
    */
   public MemberManager(PSCredentials credentials) {
     super(credentials);

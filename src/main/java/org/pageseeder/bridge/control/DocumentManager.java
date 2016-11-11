@@ -48,6 +48,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Philip Rutherford
  * @author Christophe Lauret
+ *
  * @version 0.8.2
  * @since 0.2.0
  */
@@ -66,7 +67,7 @@ public final class DocumentManager extends Sessionful {
   /**
    * Creates a new manager for PageSeeder groups.
    *
-   * @param user The user that can connect to PageSeeder.
+   * @param credentials The credentials to connect to PageSeeder.
    */
   public DocumentManager(PSCredentials credentials) {
     super(credentials);

@@ -205,6 +205,8 @@ public final class TokenResponse {
   }
 
   /**
+   * @param name The name of the JSON parameter
+   *
    * @return A OAuth parameter from the JSON response.
    */
   public String getParameter(String name) {
@@ -218,6 +220,8 @@ public final class TokenResponse {
    * @param credentials the client credentials (required for parsing Open ID tokens)
    *
    * @return a new Token response.
+   *
+   * @throws IOException If throws while reading the response from the connection.
    */
   public static TokenResponse consume(HttpURLConnection connection, ClientCredentials credentials) throws IOException {
     // Record time BEFORE connecting

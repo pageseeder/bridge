@@ -41,7 +41,7 @@ public enum PSRole {
   /** 'Approver' role PageSeeder. */
   approver("Approver"),
 
-  /** 'Mod & App' role PageSeeder. */
+  /** 'Mod &amp; App' role PageSeeder. */
   moderator_and_approver("Mod & App");
 
   /**

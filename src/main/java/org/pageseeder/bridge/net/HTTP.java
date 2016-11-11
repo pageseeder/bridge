@@ -11,16 +11,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Utility class for HTTP
  */
 public final class HTTP {
-
-  /** Logger for this class */
-  private static final Logger LOGGER = LoggerFactory.getLogger(HTTP.class);
 
   private HTTP() {
   }
@@ -84,7 +78,10 @@ public final class HTTP {
    *
    * @return the input stream
    *
-   * @throws IOException if thrown by {@link HttpURLConnection#getResponseCode()} or {@link HttpURLConnection#getInputStream().
+   * @throws IOException if thrown by {@link HttpURLConnection#getResponseCode()} or {@link HttpURLConnection#getInputStream()}.
+   *
+   * @see HttpURLConnection#getResponseCode()
+   * @see HttpURLConnection#getInputStream()
    */
   public static InputStream stream(HttpURLConnection connection) throws IOException {
     int responseCode = connection.getResponseCode();

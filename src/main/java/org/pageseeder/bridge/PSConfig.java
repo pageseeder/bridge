@@ -201,7 +201,7 @@ public final class PSConfig {
    * will cause request to services to include the <code>v</code> parameter
    * with a value starting with the version.
    *
-   * @param the API version should be requested for the services
+   * @param version the API version should be requested for the services
    *         or <code>null</code> to use the current PageSeeder version.
    */
   public void setServiceAPIVersion(Version version) {

@@ -120,9 +120,9 @@ public final class Request extends BasicRequest {
    * <p>This method will automatically constructs the correct URL for the requested
    * service using the URI variables.
    *
-   * @param method   The HTTP method
-   * @param service  The PageSeeder service to use
-   * @param variable The variables to inject in the URL path.
+   * @param method    The HTTP method
+   * @param service   The PageSeeder service to use
+   * @param variables The variables to inject in the URL path.
    */
   public Request(Method method, Service service, Object... variables) {
     super(method, service, variables);
@@ -146,7 +146,9 @@ public final class Request extends BasicRequest {
    *
    * @param method   The HTTP method
    * @param template The PageSeeder service URL template to use
-   * @param variable The variables to inject in the URL path.
+   * @param variables The variables to inject in the URL path.
+   *
+   * @return The corresponding request
    */
   public static Request newService(Method method, String template, Object... variables) {
     return new Request(method, ServicePath.newPath(template, variables));
@@ -155,7 +157,9 @@ public final class Request extends BasicRequest {
   /**
    * Creates a new request to a PageSeeder document with the specified URI ID.
    *
-   * @param method The HTTP method
+   * @param uri The document URI ID
+   *
+   * @return The corresponding request
    *
    * @throws IllegalArgumentException If the URI ID is not a positive long value.
    */
@@ -168,6 +172,8 @@ public final class Request extends BasicRequest {
    * Creates a new request to a PageSeeder document with the specified path.
    *
    * @param path The HTTP method
+   *
+   * @return The corresponding request
    */
   public static Request newDocument(String path) {
     return new Request(Method.GET, path);
@@ -179,9 +185,10 @@ public final class Request extends BasicRequest {
    * <p>This method will automatically constructs the correct URL for the requested
    * service using the URI variables.
    *
-   * @param method   The HTTP method
-   * @param template The PageSeeder service URL template to use
-   * @param variable The variables to inject in the URL path.
+   * @param group The PageSeeder group
+   * @param path  The URL path
+   *
+   * @return The corresponding request
    */
   public static Request newDocument(String group, String path) {
     return new Request(Method.GET, DocumentPath.newLocalPath(group, path).path());
@@ -318,12 +325,7 @@ public final class Request extends BasicRequest {
    *   <li>Ignore cache by default</li>
    * </ul>
    *
-   * @param resource    The resource to connect to.
-   * @param type        The type of connection.
-   * @param credentials The user login to use (optional).
-   *
-   * @return A newly opened connection to the specified URL
-   * @throws IOException Should an exception be returns while opening the connection
+   * @return A response objects from the newly opened connection to the specified URL
    */
   @Override
   public Response response() {
@@ -403,9 +405,9 @@ public final class Request extends BasicRequest {
    * <p>This method will automatically constructs the correct URL for the requested
    * service using the URI variables.
    *
-   * @param method   The HTTP method
-   * @param service  The PageSeeder service to use
-   * @param variable The variables to inject in the URL path.
+   * @param method    The HTTP method
+   * @param service   The PageSeeder service to use
+   * @param variables The variables to inject in the URL path.
    *
    * @return the corresponding response
    */

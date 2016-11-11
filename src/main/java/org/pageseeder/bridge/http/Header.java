@@ -121,13 +121,14 @@ public final class Header {
    * @return The corresponding string.
    *
    * @see <a href="https://tools.ietf.org/html/rfc7231#section-7.1.1.1">HTTP Date format</a>
+   *
+   * @throws ParseException If the date cannot be parsed as a HTTP date string.
    */
   public static Date parseHTTPDate(String date) throws ParseException {
     SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
     format.setTimeZone(TimeZone.getTimeZone("GMT"));
     return format.parse(date);
   }
-
 
   /**
    * Returns the type and subtype of the value of the "content-type" header.
@@ -157,8 +158,9 @@ public final class Header {
    *
    * @return the corresponding charset instance or <code>null</code>
    *
-   * @throws IllegalCharsetNameException
-   * @throws UnsupportedCharsetException
+   * @throws IllegalCharsetNameException If the given charset name is illegal
+   * @throws UnsupportedCharsetException If no support for the named charset is available
+   *         in this instance of the Java virtual machine
    */
   public static Charset toCharset(String contentType) {
     if (contentType == null) return null;

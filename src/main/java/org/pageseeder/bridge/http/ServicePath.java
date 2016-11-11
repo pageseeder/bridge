@@ -77,6 +77,8 @@ public final class ServicePath {
    *
    * @param template The URI template path for the service.
    *
+   * @return the corresponding service path.
+   *
    * @throws IllegalArgumentException If the template path is invalid.
    */
   public static ServicePath newServicePath(String template) {
@@ -94,7 +96,10 @@ public final class ServicePath {
    *   new ServicePath(template).toPath(variables);
    * </pre>
    *
-   * @param template The URI template path for the service.
+   * @param template  The URI template path for the service.
+   * @param variables The URI variables values for the templates.
+   *
+   * @return the corresponding service path.
    *
    * @throws IllegalArgumentException If the template path is invalid.
    */
@@ -171,7 +176,7 @@ public final class ServicePath {
     if (count == 0)
       return Collections.singletonList((Token)new Literal(template));
     // Parse
-    List<Token> tokens = new ArrayList<Token>();
+    List<Token> tokens = new ArrayList<>();
     Matcher m = VARIABLE.matcher(template);
     int start = 0;
     while (m.find()) {

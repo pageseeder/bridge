@@ -131,7 +131,7 @@ public final class AuthorizationRequest {
   /**
    * Create a new token request with the specified state.
    *
-   * @param scope The scope
+   * @param state The state
    *
    * @return a new token request.
    */

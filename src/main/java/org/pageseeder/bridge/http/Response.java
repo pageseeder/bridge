@@ -473,6 +473,8 @@ public final class Response implements AutoCloseable {
    *
    * <p>The input stream is NOT buffered.
    *
+   * @return An input stream on the connection response if any.
+   *
    * @throws IOException If the thrown by the underlying connection.
    * @throws IllegalStateException If the response is not available.
    */
@@ -493,6 +495,8 @@ public final class Response implements AutoCloseable {
    *
    * <p>Even though method does not strictly consume the content, it assumes that caller will, so
    * after calling this method the response content will no longer be available.
+   *
+   * @return A reader on the connection response if any.
    *
    * @throws IOException If the thrown by the underlying connection.
    * @throws IllegalStateException If the response is not available.
@@ -533,8 +537,6 @@ public final class Response implements AutoCloseable {
    *
    * @param out Where the output should be copied.
    *
-   * @throws IOException If an error occurs when processing the content
-   *
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
@@ -572,8 +574,6 @@ public final class Response implements AutoCloseable {
    *
    * <p>After calling this method the response content will no longer be available.
    *
-   * @throws IOException If an error occurs when processing the content
-   *
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
@@ -600,8 +600,6 @@ public final class Response implements AutoCloseable {
    *
    * @param out Where the output should be written to.
    *
-   * @throws IOException If an error occurs when processing the content
-   *
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
@@ -625,7 +623,7 @@ public final class Response implements AutoCloseable {
    *
    * <p>After calling this method the response content will no longer be available.
    *
-   * @returns the output as a string.
+   * @return the output as a string.
    *
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
@@ -671,6 +669,9 @@ public final class Response implements AutoCloseable {
    * <p>After calling this method the response content will no longer be available.
    *
    * @param handler The object handler for the XML
+   * @param <T> The type of object returned in the list.
+   *
+   * @return A list of items from the XML.
    *
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
@@ -687,6 +688,9 @@ public final class Response implements AutoCloseable {
    * <p>After calling this method the response content will no longer be available.
    *
    * @param handler The object handler for the XML
+   * @param <T> The type of object returned as the item.
+   *
+   * @return A single item from the parsed XML.
    *
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
@@ -749,8 +753,9 @@ public final class Response implements AutoCloseable {
    *
    * <p>After calling this method the response content will no longer be available.
    *
-   * @param xml       The XML to copy from PageSeeder
-   * @param templates A set of templates to process the XML
+   * @param xml        The XML to copy from PageSeeder
+   * @param templates  A set of templates to process the XML
+   * @param parameters Parameters to supply to the templates
    *
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
@@ -1225,7 +1230,6 @@ public final class Response implements AutoCloseable {
       if (this.seHandler != null) return this.seHandler.get();
       else return null;
     }
-
 
   }
 

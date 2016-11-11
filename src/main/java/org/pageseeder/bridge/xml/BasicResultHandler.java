@@ -39,8 +39,6 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
 
   /**
    * This method is called whenever a result document ends.
-   *
-   * @param group  The group this document is part of.
    */
   public abstract void endResult();
 
@@ -55,7 +53,7 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
   /**
    * This method is called for each score element on a document.
    *
-   * @score the score of the current document.
+   * @param score the score of the current document.
    */
   public void score(double score) {
   }

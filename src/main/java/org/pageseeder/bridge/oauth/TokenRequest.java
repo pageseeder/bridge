@@ -110,7 +110,7 @@ public final class TokenRequest {
   /**
    * Construct a token request for the "authorization_code" credential grant.
    *
-   * @param user   The username and password of the user.
+   * @param code   The authorization code.
    * @param client The client credentials
    *
    * @return the corresponding token request.
@@ -257,6 +257,8 @@ public final class TokenRequest {
    * Make the request using POST method and returns the corresponding response.
    *
    * @return The corresponding response.
+   *
+   * @throws IOException If an error occurs while consuming the response
    */
   public TokenResponse post() throws IOException {
     // Create connection to URL using client credentials

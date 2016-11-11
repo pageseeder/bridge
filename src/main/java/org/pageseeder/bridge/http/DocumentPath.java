@@ -49,7 +49,7 @@ public final class DocumentPath {
   /**
    * Creates a new document path.
    *
-   * @param steps The URI template used for this service.
+   * @param path The path to the document
    */
   public DocumentPath(String path) {
     String[] steps = path.split("/");
@@ -71,6 +71,8 @@ public final class DocumentPath {
    *
    * @param group The name of the group.
    * @param path  The path local to the group.
+   *
+   * @return The corresponding document path.
    *
    * @throws NullPointerException if either the group or path is <code>null</code>.
    */
@@ -144,6 +146,8 @@ public final class DocumentPath {
 
   /**
    * Returns a new document path for a single child step.
+   *
+   * @param child The child path from the current document path.
    *
    * @return the path corresponding to a child.
    */

@@ -47,7 +47,7 @@ public final class ServiceError {
   /**
    * Report a new service error.
    *
-   * @param id      The error code
+   * @param code    The error code
    * @param message The error message
    *
    * @throws NumberFormatException If the code is invalid.
@@ -91,6 +91,8 @@ public final class ServiceError {
 
   /**
    * Returns the error ID as an hexadecimal code with padding.
+   *
+   * @param id The error ID as a number
    *
    * @return the error ID as an hexadecimal code with padding.
    */

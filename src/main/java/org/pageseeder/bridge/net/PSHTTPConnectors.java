@@ -562,8 +562,6 @@ public final class PSHTTPConnectors {
    * @param identifier The name or id of the group
    *
    * @return The corresponding connector
-   *
-   * @throws FailedPrecondition If the group is not identifiable
    */
   @Requires(minVersion = 56000)
   public static PSHTTPConnector getGroup(String identifier) {

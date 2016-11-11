@@ -41,7 +41,7 @@ public final class PSSearch extends Sessionful {
   /**
    * Creates a new member manager using the specified session.
    *
-   * @param session The session used to connect to PageSeeder.
+   * @param credentials The credentials used to connect to PageSeeder.
    */
   public PSSearch(PSCredentials credentials) {
     super(credentials);
