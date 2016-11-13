@@ -17,6 +17,7 @@ package org.pageseeder.bridge.psml;
 
 import java.io.IOException;
 
+import org.pageseeder.xmlwriter.XML.NamespaceAware;
 import org.pageseeder.xmlwriter.XMLStringWriter;
 
 /**
@@ -74,7 +75,7 @@ public abstract class FragmentBase implements PSMLFragment {
   public String toPSML() {
     String psml = null;
     try {
-      XMLStringWriter xml = new XMLStringWriter(false);
+      XMLStringWriter xml = new XMLStringWriter(NamespaceAware.No);
       toXML(xml);
       psml = xml.toString();
     } catch (IOException ex) {

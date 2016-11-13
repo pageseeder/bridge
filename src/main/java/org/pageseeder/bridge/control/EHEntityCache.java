@@ -84,9 +84,9 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
     Element element = this._cache.get(key);
     if (element != null && !element.isExpired()) {
       try {
-        o = (E)element.getValue();
+        o = (E)element.getObjectValue();
       } catch (ClassCastException ex) {
-        LOGGER.warn("Element of type {} found in cache {}", element.getValue().getClass().getName(), this._cache.getName());
+        LOGGER.warn("Element of type {} found in cache {}", element.getObjectValue().getClass().getName(), this._cache.getName());
       }
     }
     return o;
@@ -165,7 +165,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
     query.addCriteria(byId.eq(value));
     Results results = query.execute();
     List<Result> all = results.all();
-    List<E> entities = new ArrayList<E>();
+    List<E> entities = new ArrayList<>();
     for (Result r : all) {
       entities.add((E)r.getValue());
     }
@@ -257,7 +257,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
       manager.addCache(new Cache(config));
       cache = manager.getEhcache(name);
     }
-    PSEntityCache<E> ocache = new EHEntityCache<E>(cache);
+    PSEntityCache<E> ocache = new EHEntityCache<>(cache);
     return ocache;
   }
 

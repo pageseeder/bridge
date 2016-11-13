@@ -18,9 +18,7 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSExternalURI;
-import org.pageseeder.bridge.model.PSFolder;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -42,7 +40,7 @@ public final class PSExternalURIHandler extends DefaultHandler {
   /**
    * The list of external URIs returned by the servlet.
    */
-  List<PSExternalURI> externaluris = new ArrayList<PSExternalURI>();
+  List<PSExternalURI> externaluris = new ArrayList<>();
 
   /**
    * State variable, when <code>true</code> the handler should capture character data on the text buffer.
@@ -58,7 +56,7 @@ public final class PSExternalURIHandler extends DefaultHandler {
    * State variable, Text buffer.
    */
   private StringBuilder buffer = new StringBuilder();
-  
+
   /**
    * Create a new handler for external URIs.
    */
@@ -110,6 +108,7 @@ public final class PSExternalURIHandler extends DefaultHandler {
       this.buffer.append(ch, start, length);
     }
   }
+
   /**
    * @return the list of external URIs
    */

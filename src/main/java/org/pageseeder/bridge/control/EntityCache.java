@@ -24,8 +24,6 @@ import javax.cache.spi.CachingProvider;
 
 import org.pageseeder.bridge.PSEntity;
 import org.pageseeder.bridge.PSEntityCache;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A cache for a PageSeeder entity backed by EHCache.
@@ -37,9 +35,6 @@ import org.slf4j.LoggerFactory;
  * @since 0.2.0
  */
 final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
-
-  /** Logger */
-  private static final Logger LOGGER = LoggerFactory.getLogger(EntityCache.class);
 
   /**
    * Reuse the same cache manager to avoid I/O problems (configuration seems to be parsed for each getInstance).
@@ -143,7 +138,7 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
     Long id = entity.getId();
     if (id == null)
       throw new IllegalArgumentException("id");
-    CachedEntity<E> e = new CachedEntity<E>(entity);
+    CachedEntity<E> e = new CachedEntity<>(entity);
     this._cacheById.put(id, e);
     this._cacheByKey.put(key, id);
   }
@@ -192,7 +187,7 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
     Cache<Long, CachedEntity<E>> byId = manager.getCache(type.getSimpleName()+".id");
     Cache<String, Long> byKey = manager.getCache(type.getSimpleName()+".key");
     if (byId == null) {
-      MutableConfiguration<? extends Object, ? extends Object> config = new MutableConfiguration<Object,Object>();
+      MutableConfiguration<? extends Object, ? extends Object> config = new MutableConfiguration<>();
       //config.setTypes(Long.class, CachedEntity.class);
       //config.setTypes(Object.class, Object.class);
       config.setStatisticsEnabled(true);
@@ -200,7 +195,7 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
       byId = (Cache<Long, CachedEntity<E>>)manager.createCache(type.getSimpleName()+".id", config);
       byKey = (Cache<String, Long>)manager.createCache(type.getSimpleName()+".key", config);
     }
-    EntityCache<E> ocache = new EntityCache<E>(byId, byKey);
+    EntityCache<E> ocache = new EntityCache<>(byId, byKey);
     return ocache;
   }
 
@@ -261,11 +256,5 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
       return this._version;
     }
 
-    /**
-     * Update the version of this cached entity with the current time.
-     */
-    public void touch() {
-      this._version = System.currentTimeMillis();
-    }
   }
 }

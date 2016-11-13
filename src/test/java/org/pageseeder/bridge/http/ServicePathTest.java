@@ -119,7 +119,7 @@ public class ServicePathTest {
 
   @Test(expected = NullPointerException.class)
   public void testToPath_Null() {
-    ServicePath.newServicePath("/service/members/{member}").toPath(null);
+    ServicePath.newServicePath("/service/members/{member}").toPath((String)null);
   }
 
   @Test(expected = IllegalArgumentException.class)

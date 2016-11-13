@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Stack;
 
 import org.pageseeder.bridge.model.PSThreadStatus;
+import org.pageseeder.xmlwriter.XML.NamespaceAware;
 import org.pageseeder.xmlwriter.XMLStringWriter;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.Attributes;
@@ -51,7 +52,7 @@ public final class PSThreadHandler extends DefaultHandler {
    */
   private XMLWriter xmlContent = null;
 
-  private Stack<String> elements = new Stack<String>();
+  private Stack<String> elements = new Stack<>();
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
     if (this.xmlContent != null) {
@@ -85,7 +86,7 @@ public final class PSThreadHandler extends DefaultHandler {
       this.buffer = new StringBuilder();
     } else if ("message".equals(localName) &&
         ((this.oldFormat && "threadstatus".equals(dad)) || (!this.oldFormat && "thread".equals(dad)))) {
-      this.xmlContent = new XMLStringWriter(false);
+      this.xmlContent = new XMLStringWriter(NamespaceAware.No);
     }
     this.elements.push(localName);
   }

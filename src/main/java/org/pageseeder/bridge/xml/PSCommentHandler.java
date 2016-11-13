@@ -27,6 +27,7 @@ import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.util.Rules;
+import org.pageseeder.xmlwriter.XML.NamespaceAware;
 import org.pageseeder.xmlwriter.XMLStringWriter;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.Attributes;
@@ -45,16 +46,16 @@ public final class PSCommentHandler extends DefaultHandler {
    * The current comment being processed.
    */
   private PSComment comment = null;
-  
+
   /**
    * Attachments for current comment
    */
-  private List<Attachment> attachments = new ArrayList<Attachment>();
+  private List<Attachment> attachments = new ArrayList<>();
 
   /**
    * The list of comments returned by the servlet.
    */
-  private List<PSComment> comments = new ArrayList<PSComment>();
+  private List<PSComment> comments = new ArrayList<>();
 
   /**
    * To capture text data.
@@ -80,7 +81,7 @@ public final class PSCommentHandler extends DefaultHandler {
    * Whether inside author element
    */
   private boolean inAuthor = false;
-  
+
   /**
    * Author email (non member)
    */
@@ -117,7 +118,7 @@ public final class PSCommentHandler extends DefaultHandler {
       PSComment comment = PSEntityFactory.toComment(atts, this.comment);
       this.comment = comment;
 
-    } else if ("title".equals(localName) || "labels".equals(localName) || ("fullname".equals(localName) && inAuthor)) {
+    } else if ("title".equals(localName) || "labels".equals(localName) || ("fullname".equals(localName) && this.inAuthor)) {
       this.buffer = new StringBuilder();
 
     } else if ("author".equals(localName)) {
@@ -138,7 +139,7 @@ public final class PSCommentHandler extends DefaultHandler {
       String type = atts.getValue("type");
       this.comment.setMediaType(type);
       if (Rules.isXMLMediaType(type)) {
-        this.xmlContent = new XMLStringWriter(true);
+        this.xmlContent = new XMLStringWriter(NamespaceAware.No);
       } else {
         this.buffer = new StringBuilder();
       }
@@ -159,7 +160,7 @@ public final class PSCommentHandler extends DefaultHandler {
       if ("true".equals(atts.getValue("external"))) {
         u = PSEntityFactory.toExternalURI(atts, null);
       } else {
-        u = PSEntityFactory.toDocument(atts, null);        
+        u = PSEntityFactory.toDocument(atts, null);
       }
       if (this.attachment) {
         Attachment attach = new Attachment(u, this.fragment);
@@ -167,7 +168,7 @@ public final class PSCommentHandler extends DefaultHandler {
       } else if ("true".equals(atts.getValue("external"))) {
         this.comment.setContext((PSExternalURI)u, this.fragment);
       } else {
-        this.comment.setContext((PSDocument)u, this.fragment);        
+        this.comment.setContext((PSDocument)u, this.fragment);
       }
     }
   }
@@ -190,7 +191,7 @@ public final class PSCommentHandler extends DefaultHandler {
       this.comment.setLabels(this.buffer.toString());
       this.buffer = null;
 
-    } else if (("fullname".equals(localName)  && inAuthor)) {
+    } else if (("fullname".equals(localName)  && this.inAuthor)) {
       this.comment.setAuthor(this.buffer.toString(), this.authorEmail);
       this.buffer = null;
 

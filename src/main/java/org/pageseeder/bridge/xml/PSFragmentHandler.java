@@ -26,6 +26,7 @@ import org.pageseeder.bridge.psml.PSMLFragment;
 import org.pageseeder.bridge.psml.PropertiesFragment;
 import org.pageseeder.bridge.psml.Property;
 import org.pageseeder.bridge.psml.XRefFragment;
+import org.pageseeder.xmlwriter.XML.NamespaceAware;
 import org.pageseeder.xmlwriter.XMLStringWriter;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.Attributes;
@@ -69,7 +70,7 @@ public final class PSFragmentHandler extends DefaultHandler {
   /**
    * A writer to store the fragment content.
    */
-  private XMLWriter fragXMLContent = new XMLStringWriter(false);
+  private XMLWriter fragXMLContent = new XMLStringWriter(NamespaceAware.No);
 
   /**
    * A handler to do the elements copy.
