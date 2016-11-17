@@ -182,12 +182,10 @@ public final class Sampler {
     URL url = Sampler.class.getResource(filename);
     if (url == null)
       throw new IllegalArgumentException(filename);
-    InputStream in = null;
-    try {
-      in = url.openStream();
+    try (InputStream in = url.openStream()){
       BufferedReader reader = new BufferedReader(new InputStreamReader(in, "utf-8"));
       String name = reader.readLine();
-      List<String> names = new ArrayList<String>();
+      List<String> names = new ArrayList<>();
       while (name != null) {
         names.add(name);
         name = reader.readLine();
@@ -195,12 +193,6 @@ public final class Sampler {
       return names.toArray(new String[]{});
     } catch (IOException ex) {
       throw new IllegalStateException(ex);
-    } finally {
-      try {
-        in.close();
-      } catch (IOException ex) {
-        throw new IllegalArgumentException(filename);
-      }
     }
   }
 
