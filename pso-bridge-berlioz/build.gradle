@@ -1,0 +1,31 @@
+description = "Simple jar for Servlet 3.0 to make it easier to configure a Berlioz site"
+
+apply plugin: 'maven-publish'
+apply from: "$rootDir/gradle/publishing.gradle"
+
+// Dependencies of the project
+dependencies {
+
+  // module dependencies
+  compile rootProject
+  
+  compile (
+    'org.slf4j:slf4j-api:1.7.12',
+    'org.pageseeder.xmlwriter:pso-xmlwriter:1.0.0',
+    'org.pageseeder.berlioz:pso-berlioz:0.11.0'
+  )
+
+  compileOnly (
+    'javax.servlet:javax.servlet-api:3.1.0'
+  )
+
+  testCompile (
+    'junit:junit:4.12',
+    'org.slf4j:slf4j-simple:1.7.12'
+  )
+
+}
+
+javadoc {
+  failOnError= false
+}

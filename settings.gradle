@@ -1,1 +1,3 @@
 rootProject.name = 'pso-bridge'
+
+include ':pso-bridge-berlioz'

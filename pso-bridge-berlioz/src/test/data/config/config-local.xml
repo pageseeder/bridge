@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!--
+  Sample Berlioz config used to test the bridge configuration.
+-->
+<global>
+
+  <bridge url="https://localhost:8443" api-url="http://localhost:8282">
+    <setup username="setup" password="ghj6Gfghs723jl9ahjKL"/>
+    <admin username="admin" password="yzt3GNJfddbCBFBVp8Wz"/>
+    <authenticator type="pageseeder" member-of="party-*"/>
+  </bridge>
+
+</global>

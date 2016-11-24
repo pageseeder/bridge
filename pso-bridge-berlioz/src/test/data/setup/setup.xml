@@ -1,0 +1,37 @@
+<!--
+  Draft for future use...
+-->
+<setup>
+
+  <!-- Define group options -->
+  <group-options id="default" add-creator-as-member="false" create-documents="false" property-supportStandardFormat="false"/>
+
+  <!-- Define projects and groups -->
+  <project name="role"               owner="oxford" description="Container for all users who can be granted access to the system"/>
+  <group   name="role-administrator" owner="oxford" default-role="contributor" description="Group for administrators"/>
+  <group   name="role-individual"    owner="oxford" default-role="contributor" details-type="individual.xml"   description="Group for users accessing as individuals"/>
+  <group   name="role-organisation"  owner="oxford" default-role="contributor" details-type="organisation.xml" description="Group for organisations"/>
+
+  <project name="product"            owner="oxford" description="Container for all subscriptions to products"/>
+
+  <project name="config"             owner="oxford" description="Container for the system configuration"/>
+  <group   name="config-data"        owner="oxford" default-role="reviewer" description="Product and asset definitions as well as Website content are defined here"/>
+
+  <!-- Installation -->
+  <create-project name="role"   group-options="default"/>
+  <upload-resources to="role"/>
+
+  <create-project name="product" group-options="default"/>
+  <upload-resources to="product"/>
+
+  <create-project name="config"  group-options="default"/>
+  <upload-resources to="config"/>
+
+  <create-group name="role-administrator" group-options="default"/>
+  <create-group name="role-individual"    group-options="default"/>
+  <create-group name="role-organisation"  group-options="default"/>
+  <create-group name="config-data"        group-options="default"/>
+
+  <add-subgroup name="role-administrator" to="config-data"/>
+
+</setup>
