@@ -38,7 +38,6 @@ dependencies {
 
 }
 
-
 subprojects {
   group   = 'org.pageseeder.bridge'
   version = "$globalVersion"
@@ -51,6 +50,16 @@ subprojects {
   repositories {
     maven { url 'http://dl.bintray.com/pageseeder/maven' }
     jcenter()
+  }
+}
+
+allprojects {
+  jar {
+    manifest {
+      attributes 'Implementation-Vendor':  'Allette Systems',
+               'Implementation-Title':   "$title",
+               'Implementation-Version': "$globalVersion"
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-description = "Servlets and Berlioz generators for using the bridge in a Berlioz app"
+description = "Servlets and Berlioz generators for the bridge in Berlioz"
 
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
