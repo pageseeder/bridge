@@ -21,8 +21,8 @@ import java.util.Map;
 
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.berlioz.auth.AuthSessions;
 import org.pageseeder.bridge.berlioz.auth.PSUser;
-import org.pageseeder.bridge.berlioz.auth.Sessions;
 import org.pageseeder.bridge.control.GroupManager;
 import org.pageseeder.bridge.model.GroupOptions;
 import org.pageseeder.bridge.model.PSGroup;
@@ -93,7 +93,7 @@ public final class SetupEnvironment {
   public void init() throws SetupException {
     if (this.user == null) {
       try {
-        this.user = Sessions.getConfiguredUser("bridge.setup");
+        this.user = AuthSessions.getConfiguredUser("bridge.setup");
       } catch (APIException ex) {
         throw new SetupException("Unable to load setup user");
       }
@@ -154,7 +154,7 @@ public final class SetupEnvironment {
   /**
    * Add or update the group to the environment
    *
-   * @param project The group to add or update.
+   * @param group The group to add or update.
    */
   public void putGroup(PSGroup group) {
     this._groups.put(group.getName(), group);

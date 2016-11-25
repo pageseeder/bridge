@@ -40,7 +40,7 @@ public final class SetupPageSeeder implements ContentGenerator {
   public void process(ContentRequest req, XMLWriter xml) throws BerliozException, IOException {
     boolean simulate = "true".equals(req.getParameter("simulate"));
     try {
-      File r = GlobalSettings.getRepository();
+      File r = GlobalSettings.getWebInf();
       File config = new File(r, "setup/setup.xml");
       Setup setup = Setup.parse(config);
       if (simulate) {

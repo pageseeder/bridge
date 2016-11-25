@@ -28,8 +28,8 @@ import org.pageseeder.xmlwriter.XMLWriter;
  *
  * @author Christophe Lauret
  *
- * @version 0.9.8
- * @since 0.9.8
+ * @version 0.9.9
+ * @since 0.9.9
  */
 public final class OAuthUser implements User {
 

@@ -18,7 +18,7 @@ package org.pageseeder.bridge.berlioz.oauth;
 import javax.servlet.http.HttpSession;
 
 import org.pageseeder.bridge.PSToken;
-import org.pageseeder.bridge.berlioz.auth.Sessions;
+import org.pageseeder.bridge.berlioz.auth.AuthSessions;
 import org.pageseeder.bridge.http.Method;
 import org.pageseeder.bridge.http.Request;
 import org.pageseeder.bridge.http.Response;
@@ -60,7 +60,7 @@ public final class OAuthUtils {
    * @return the current OAuth user.
    */
   public static OAuthUser getOAuthUserInSession(HttpSession session) {
-    Object o = session.getAttribute(Sessions.USER_ATTRIBUTE);
+    Object o = session.getAttribute(AuthSessions.USER_ATTRIBUTE);
     if (o instanceof OAuthUser) {
       OAuthUser user = (OAuthUser)o;
       PSToken token = user.getToken();

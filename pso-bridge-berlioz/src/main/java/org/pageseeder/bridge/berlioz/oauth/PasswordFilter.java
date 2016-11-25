@@ -31,11 +31,11 @@ import javax.servlet.http.HttpSession;
 
 import org.pageseeder.berlioz.GlobalSettings;
 import org.pageseeder.bridge.PSToken;
+import org.pageseeder.bridge.berlioz.auth.AuthSessions;
 import org.pageseeder.bridge.berlioz.auth.AuthorizationResult;
 import org.pageseeder.bridge.berlioz.auth.Authorizer;
 import org.pageseeder.bridge.berlioz.auth.LoggedInAuthorizer;
 import org.pageseeder.bridge.berlioz.auth.ProtectedRequest;
-import org.pageseeder.bridge.berlioz.auth.Sessions;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.net.UnsafeSSL;
 import org.pageseeder.bridge.net.UsernamePassword;
@@ -194,14 +194,14 @@ public final class PasswordFilter implements Filter {
         HttpSession session = req.getSession(false);
         String goToURL = this.defaultTarget;
         if (session != null) {
-          ProtectedRequest target = (ProtectedRequest)session.getAttribute(Sessions.REQUEST_ATTRIBUTE);
+          ProtectedRequest target = (ProtectedRequest)session.getAttribute(AuthSessions.REQUEST_ATTRIBUTE);
           if (target != null) {
             goToURL = target.url();
             session.invalidate();
           }
         }
         session = req.getSession(true);
-        session.setAttribute(Sessions.USER_ATTRIBUTE, user);
+        session.setAttribute(AuthSessions.USER_ATTRIBUTE, user);
         res.sendRedirect(goToURL);
       } else {
         LOGGER.error("Unable to identify user!");
@@ -210,7 +210,11 @@ public final class PasswordFilter implements Filter {
 
     } else {
       LOGGER.error("OAuth failed '{}': {}", oauth.getError(), oauth.getErrorDescription());
-      res.sendError(HttpServletResponse.SC_FORBIDDEN);
+      if (oauth.isAvailable()) {
+        res.sendError(HttpServletResponse.SC_FORBIDDEN);
+      } else {
+        res.sendError(HttpServletResponse.SC_BAD_GATEWAY);
+      }
     }
 
   }
@@ -228,7 +232,7 @@ public final class PasswordFilter implements Filter {
 
     // Store in current session
     HttpSession session = req.getSession(true);
-    session.setAttribute(Sessions.REQUEST_ATTRIBUTE, target);
+    session.setAttribute(AuthSessions.REQUEST_ATTRIBUTE, target);
 
     res.sendRedirect(this.loginForm);
   }

@@ -24,7 +24,7 @@ import org.pageseeder.berlioz.content.ContentGenerator;
 import org.pageseeder.berlioz.content.ContentRequest;
 import org.pageseeder.bridge.berlioz.auth.AuthException;
 import org.pageseeder.bridge.berlioz.auth.Authenticator;
-import org.pageseeder.bridge.berlioz.auth.Sessions;
+import org.pageseeder.bridge.berlioz.auth.AuthSessions;
 import org.pageseeder.bridge.berlioz.auth.User;
 import org.pageseeder.bridge.berlioz.config.Configuration;
 import org.pageseeder.xmlwriter.XMLWriter;
@@ -48,7 +48,7 @@ public final class LogoutGenerator implements ContentGenerator {
     HttpSession session = req.getSession();
 
     // Already logged in?
-    User user = Sessions.getUser(session);
+    User user = AuthSessions.getUser(session);
     if (user != null) {
       try {
         Authenticator<?> authenticator = Configuration.getAuthenticator();

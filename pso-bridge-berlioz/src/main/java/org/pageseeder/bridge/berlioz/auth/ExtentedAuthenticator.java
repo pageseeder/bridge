@@ -99,7 +99,7 @@ public final class ExtentedAuthenticator<T extends User> implements Authenticato
 
     // Already logged in?
     if (session != null) {
-      Object o = session.getAttribute(Sessions.USER_ATTRIBUTE);
+      Object o = session.getAttribute(AuthSessions.USER_ATTRIBUTE);
       if (o instanceof User) {
         User current = (User)o;
         // Already logged in and it is the current user
@@ -118,7 +118,7 @@ public final class ExtentedAuthenticator<T extends User> implements Authenticato
       if (session == null) {
         session = req.getSession(true);
       }
-      session.setAttribute(Sessions.USER_ATTRIBUTE, user);
+      session.setAttribute(AuthSessions.USER_ATTRIBUTE, user);
       return AuthenticationResult.LOGGED_IN;
     } else return AuthenticationResult.INCORRECT_DETAILS;
   }
@@ -128,7 +128,7 @@ public final class ExtentedAuthenticator<T extends User> implements Authenticato
     // Get the session
     HttpSession session = req.getSession();
     if (session != null) {
-      User user = Sessions.getUser(session);
+      User user = AuthSessions.getUser(session);
       if (user != null) {
         logoutUser(user);
       }

@@ -34,7 +34,7 @@ import org.pageseeder.bridge.berlioz.auth.AuthorizationResult;
 import org.pageseeder.bridge.berlioz.auth.Authorizer;
 import org.pageseeder.bridge.berlioz.auth.LoggedInAuthorizer;
 import org.pageseeder.bridge.berlioz.auth.ProtectedRequest;
-import org.pageseeder.bridge.berlioz.auth.Sessions;
+import org.pageseeder.bridge.berlioz.auth.AuthSessions;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.net.UnsafeSSL;
 import org.pageseeder.bridge.oauth.AuthorizationRequest;
@@ -170,10 +170,10 @@ public final class AuthorizationCodeFilter implements Filter {
 
       if (member != null) {
         OAuthUser user = new OAuthUser(member, token);
-        ProtectedRequest target = (ProtectedRequest)session.getAttribute(Sessions.REQUEST_ATTRIBUTE);
+        ProtectedRequest target = (ProtectedRequest)session.getAttribute(AuthSessions.REQUEST_ATTRIBUTE);
         session.invalidate();
         session = req.getSession(true);
-        session.setAttribute(Sessions.USER_ATTRIBUTE, user);
+        session.setAttribute(AuthSessions.USER_ATTRIBUTE, user);
         res.sendRedirect(target.url());
       } else {
         LOGGER.error("Unable to identify user!");
@@ -200,7 +200,7 @@ public final class AuthorizationCodeFilter implements Filter {
     // Store in current session
     ProtectedRequest target = ProtectedRequest.create(req);
     HttpSession session = req.getSession(true);
-    session.setAttribute(Sessions.REQUEST_ATTRIBUTE, target);
+    session.setAttribute(AuthSessions.REQUEST_ATTRIBUTE, target);
 
     // Constructs OAuth2 redirect
     Properties p = GlobalSettings.getNode("oauth.authorization-code");

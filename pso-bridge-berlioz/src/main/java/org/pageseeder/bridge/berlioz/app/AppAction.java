@@ -24,8 +24,8 @@ import org.pageseeder.berlioz.aeson.JSONWriter;
  *
  * @author Christophe Lauret
  *
- * @since 0.9.8
- * @version 0.9.8
+ * @since 0.9.9
+ * @version 0.9.9
  */
 public interface AppAction {
 

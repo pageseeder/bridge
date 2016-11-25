@@ -77,7 +77,10 @@ public final class PSUser implements User {
 
   /**
    * Creates a new PageSeeder User.
-   * @param id the ID of the user in PageSeeder.
+   *
+   * @param member  The PageSeeder member
+   * @param session The session
+   * @param roles   The list of roles for this user.
    */
   public PSUser(PSMember member, PSSession session, List<String> roles) {
     this._id = member.getId();

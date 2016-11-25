@@ -20,7 +20,7 @@ import java.io.IOException;
 import org.pageseeder.berlioz.BerliozException;
 import org.pageseeder.berlioz.content.ContentGenerator;
 import org.pageseeder.berlioz.content.ContentRequest;
-import org.pageseeder.bridge.berlioz.auth.Sessions;
+import org.pageseeder.bridge.berlioz.auth.AuthSessions;
 import org.pageseeder.bridge.berlioz.auth.User;
 import org.pageseeder.xmlwriter.XMLWriter;
 
@@ -36,7 +36,7 @@ public final class GetUser implements ContentGenerator {
 
   @Override
   public final void process(ContentRequest req, XMLWriter xml) throws BerliozException, IOException {
-    User user = Sessions.getUser(req);
+    User user = AuthSessions.getUser(req);
     if (user != null) {
       user.toXML(xml);
     } else {

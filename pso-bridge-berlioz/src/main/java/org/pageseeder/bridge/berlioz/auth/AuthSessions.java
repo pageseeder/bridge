@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @version 0.1.0
  * @since 0.1.0
  */
-public final class Sessions {
+public final class AuthSessions {
 
   /**
    * The name of the attribute that contains the User currently logged in.
@@ -63,7 +63,7 @@ public final class Sessions {
   /**
    * Logger for this class.
    */
-  private static final Logger LOGGER = LoggerFactory.getLogger(Sessions.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(AuthSessions.class);
 
   /**
    * One minute in millis seconds.
@@ -76,7 +76,7 @@ public final class Sessions {
   private static final Map<String, PSUser> CACHE = new ConcurrentHashMap<>();
 
   /** Utility class */
-  private Sessions() {}
+  private AuthSessions() {}
 
   /**
    * Returns the user stored in the session.
@@ -147,12 +147,12 @@ public final class Sessions {
   /**
    * Returns the user instance from the session if any.
    *
-   * @param req the content request.
+   * @param session the session
    * @return the user if any or <code>null</code>.
    */
   public static User getUser(HttpSession session) {
     if (session == null) return null;
-    Object o = session.getAttribute(Sessions.USER_ATTRIBUTE);
+    Object o = session.getAttribute(AuthSessions.USER_ATTRIBUTE);
     if (o instanceof User) return (User)o;
     // No match or not a user
     return null;
@@ -190,7 +190,7 @@ public final class Sessions {
    * @throws IOException If an error occurs while trying to login the setup user.
    */
   public static PSMember getAdminMember() throws APIException {
-    PSUser user = Sessions.getConfiguredUser(ADMIN_USER_PROPERTY);
+    PSUser user = AuthSessions.getConfiguredUser(ADMIN_USER_PROPERTY);
     return user != null? user.toMember() : null;
   }
 
@@ -208,7 +208,7 @@ public final class Sessions {
    * @throws APIException If an error occurs while trying to login the setup user.
    */
   public static PSSession getSetup() throws APIException {
-    return Sessions.getConfiguredSession(SETUP_USER_PROPERTY);
+    return AuthSessions.getConfiguredSession(SETUP_USER_PROPERTY);
   }
 
   /**
@@ -225,7 +225,7 @@ public final class Sessions {
    * @throws IOException If an error occurs while trying to login the setup user.
    */
   public static PSMember getSetupMember() throws APIException {
-    PSUser user = Sessions.getConfiguredUser(SETUP_USER_PROPERTY);
+    PSUser user = AuthSessions.getConfiguredUser(SETUP_USER_PROPERTY);
     return user != null? user.toMember() : null;
   }
 
@@ -243,7 +243,7 @@ public final class Sessions {
    * @throws IOException If an error occurs while trying to login the setup user.
    */
   public static PSSession getConfiguredSession(String property) throws APIException {
-    return toSession(Sessions.getConfiguredUser(property));
+    return toSession(AuthSessions.getConfiguredUser(property));
   }
 
   /**

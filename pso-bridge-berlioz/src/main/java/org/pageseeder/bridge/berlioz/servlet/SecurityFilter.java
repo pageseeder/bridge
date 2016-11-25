@@ -31,7 +31,7 @@ import org.pageseeder.bridge.berlioz.auth.AuthorizationResult;
 import org.pageseeder.bridge.berlioz.auth.Authorizer;
 import org.pageseeder.bridge.berlioz.auth.LoggedInAuthorizer;
 import org.pageseeder.bridge.berlioz.auth.ProtectedRequest;
-import org.pageseeder.bridge.berlioz.auth.Sessions;
+import org.pageseeder.bridge.berlioz.auth.AuthSessions;
 import org.pageseeder.bridge.berlioz.auth.User;
 
 /**
@@ -89,7 +89,7 @@ public final class SecurityFilter implements Filter {
 
     // Retrieve the user from the session
     HttpSession session = req.getSession(true);
-    Object o = session.getAttribute(Sessions.USER_ATTRIBUTE);
+    Object o = session.getAttribute(AuthSessions.USER_ATTRIBUTE);
 
     // The user is authenticated
     if (o instanceof User) {
@@ -114,7 +114,7 @@ public final class SecurityFilter implements Filter {
         url = url + '?' +query;
       }
       ProtectedRequest target = new ProtectedRequest(url);
-      session.setAttribute(Sessions.REQUEST_ATTRIBUTE, target);
+      session.setAttribute(AuthSessions.REQUEST_ATTRIBUTE, target);
       res.setHeader("WWW-Authenticate", "FORM");
       res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }

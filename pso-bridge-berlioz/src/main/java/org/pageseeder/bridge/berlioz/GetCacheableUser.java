@@ -21,7 +21,7 @@ import org.pageseeder.berlioz.BerliozException;
 import org.pageseeder.berlioz.content.Cacheable;
 import org.pageseeder.berlioz.content.ContentGenerator;
 import org.pageseeder.berlioz.content.ContentRequest;
-import org.pageseeder.bridge.berlioz.auth.Sessions;
+import org.pageseeder.bridge.berlioz.auth.AuthSessions;
 import org.pageseeder.bridge.berlioz.auth.User;
 import org.pageseeder.xmlwriter.XMLWriter;
 
@@ -30,23 +30,21 @@ import org.pageseeder.xmlwriter.XMLWriter;
  *
  * <p>This generator is cacheable.
  *
- * @author Christophe Lauret
- *
- * @version 0.1.0
+ * @version 0.9.9
  * @since 0.1.0
  */
 public final class GetCacheableUser implements ContentGenerator, Cacheable {
 
   @Override
   public String getETag(ContentRequest req) {
-    User user = Sessions.getUser(req);
+    User user = AuthSessions.getUser(req);
     if (user != null) return user.getName();
     else return "*";
   }
 
   @Override
   public final void process(ContentRequest req, XMLWriter xml) throws BerliozException, IOException {
-    User user = Sessions.getUser(req);
+    User user = AuthSessions.getUser(req);
     if (user != null) {
       user.toXML(xml);
     } else {

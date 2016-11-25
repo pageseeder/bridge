@@ -29,7 +29,7 @@ import javax.servlet.http.HttpSession;
 import org.pageseeder.bridge.berlioz.auth.AuthException;
 import org.pageseeder.bridge.berlioz.auth.AuthenticationResult;
 import org.pageseeder.bridge.berlioz.auth.Authenticator;
-import org.pageseeder.bridge.berlioz.auth.Sessions;
+import org.pageseeder.bridge.berlioz.auth.AuthSessions;
 import org.pageseeder.bridge.berlioz.auth.User;
 import org.pageseeder.bridge.berlioz.config.Configuration;
 import org.slf4j.Logger;
@@ -105,7 +105,7 @@ public final class LoginServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-    User user = Sessions.getUser(req);
+    User user = AuthSessions.getUser(req);
 
     // We've already forwarded the user once, they may be a configuration problem
     if (req.getAttribute(getServletName()) != null) {
@@ -162,7 +162,7 @@ public final class LoginServlet extends HttpServlet {
           LOGGER.debug("Redirecting to {}", target.toString());
           res.sendRedirect(target.toString());
           if (session != null) {
-            session.removeAttribute(Sessions.REQUEST_ATTRIBUTE);
+            session.removeAttribute(AuthSessions.REQUEST_ATTRIBUTE);
           }
 
         } else {
@@ -175,7 +175,7 @@ public final class LoginServlet extends HttpServlet {
       } else {
         if (target != null) {
           session = req.getSession(true);
-          session.setAttribute(Sessions.REQUEST_ATTRIBUTE, target);
+          session.setAttribute(AuthSessions.REQUEST_ATTRIBUTE, target);
         }
         if (this.loginPage != null) {
           String ctxt = req.getContextPath() == null ? "" : req.getContextPath();
@@ -209,7 +209,7 @@ public final class LoginServlet extends HttpServlet {
 
     // Check if target in session already
     if (session != null) {
-      Object t = session.getAttribute(Sessions.REQUEST_ATTRIBUTE);
+      Object t = session.getAttribute(AuthSessions.REQUEST_ATTRIBUTE);
       if (t != null) {
         target = t.toString();
       }

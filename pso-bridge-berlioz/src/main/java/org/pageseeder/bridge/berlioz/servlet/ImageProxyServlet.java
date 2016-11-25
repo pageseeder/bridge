@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSSession;
-import org.pageseeder.bridge.berlioz.auth.Sessions;
+import org.pageseeder.bridge.berlioz.auth.AuthSessions;
 import org.pageseeder.bridge.berlioz.util.IOUtils;
 import org.pageseeder.bridge.control.DocumentManager;
 import org.pageseeder.bridge.model.PSDocument;
@@ -89,7 +89,7 @@ public final class ImageProxyServlet extends HttpServlet implements Servlet {
     // but we need the URI ID for the caching key.application level cache
     if (!pathInfo.toLowerCase().matches("/\\d+(\\.png|\\.jpg|\\.gif)?")) {
       if (imageURIID.matches("^.*(\\.png|\\.jpg|\\.gif)$?")) {
-        PSSession session = Sessions.getPSSession(req);
+        PSSession session = AuthSessions.getPSSession(req);
         DocumentManager manager = new DocumentManager(session);
         PSDocument document = null;
         try {
@@ -129,7 +129,7 @@ public final class ImageProxyServlet extends HttpServlet implements Servlet {
 
       // Build URL to fetch from PageSeeder
       PSHTTPResource resource = new PSHTTPResource(PSHTTPResourceType.RESOURCE, "/ps/uri"+imageURIID);
-      PSSession session = Sessions.getPSSession(req);
+      PSSession session = AuthSessions.getPSSession(req);
       URL url = resource.toURL(session);
 
       // Extract metadata

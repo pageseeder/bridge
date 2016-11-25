@@ -38,7 +38,7 @@ import org.pageseeder.bridge.berlioz.auth.AuthenticationResult;
 import org.pageseeder.bridge.berlioz.auth.Authenticator;
 import org.pageseeder.bridge.berlioz.auth.RememberMe;
 import org.pageseeder.bridge.berlioz.auth.RememberMe.Credentials;
-import org.pageseeder.bridge.berlioz.auth.Sessions;
+import org.pageseeder.bridge.berlioz.auth.AuthSessions;
 import org.pageseeder.bridge.berlioz.auth.User;
 import org.pageseeder.bridge.berlioz.config.Configuration;
 import org.slf4j.Logger;
@@ -81,7 +81,7 @@ public final class RememberMeFilter implements Filter {
         HttpSession session = req.getSession();
 
         // Only check for stored credentials if no session
-        if (session == null || session.getAttribute(Sessions.REQUEST_ATTRIBUTE) == null) {
+        if (session == null || session.getAttribute(AuthSessions.REQUEST_ATTRIBUTE) == null) {
           Credentials credentials = this.rememberme.getCredentials(cookie);
 
           // If some credentials are available try to login

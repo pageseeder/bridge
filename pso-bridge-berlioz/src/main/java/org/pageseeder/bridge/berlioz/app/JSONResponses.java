@@ -29,8 +29,8 @@ import org.pageseeder.bridge.http.ServiceError;
  *
  * @author Christophe Lauret
  *
- * @since 0.9.8
- * @version 0.9.8
+ * @since 0.9.9
+ * @version 0.9.9
  */
 public final class JSONResponses {
 

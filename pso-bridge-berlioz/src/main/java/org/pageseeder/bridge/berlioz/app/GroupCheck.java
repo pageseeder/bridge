@@ -44,8 +44,8 @@ import org.pageseeder.bridge.xml.HandlerFactory;
  *
  * @author Christophe Lauret
  *
- * @since 0.9.8
- * @version 0.9.8
+ * @since 0.9.9
+ * @version 0.9.9
  */
 public final class GroupCheck implements AppAction {
 
