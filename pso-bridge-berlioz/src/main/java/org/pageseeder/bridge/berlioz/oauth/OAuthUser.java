@@ -23,6 +23,14 @@ import org.pageseeder.bridge.berlioz.auth.User;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.xmlwriter.XMLWriter;
 
+/**
+ * A user connected to PageSeeder via OAuth
+ *
+ * @author Christophe Lauret
+ *
+ * @version 0.9.8
+ * @since 0.9.8
+ */
 public final class OAuthUser implements User {
 
   /** As per requirement for Serializable */

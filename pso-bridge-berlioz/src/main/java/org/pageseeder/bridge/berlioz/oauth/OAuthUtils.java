@@ -29,18 +29,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Utility class
+ * Utility class for OAuth.
  *
  * @author Christophe Lauret
  */
 public final class OAuthUtils {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PasswordFilter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(OAuthUtils.class);
 
   public static PSMember retrieve(PSToken token) {
     PSMember member = null;
     try {
-      Response response = new Request(Method.GET, "/self").using(token).response();
+      Response response = Request.newService(Method.GET, "/self").using(token).response();
       Handler<PSMember> handler = HandlerFactory.newPSMemberHandler();
       member = response.consumeItem(handler);
       if (member != null) {
