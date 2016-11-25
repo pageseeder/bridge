@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.pageseeder.bridge.berlioz;
+package org.pageseeder.berlioz.bridge;
 
 import java.io.IOException;
 
@@ -23,15 +23,18 @@ import org.pageseeder.berlioz.content.ContentRequest;
 import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
- * Returns the configuration.
+ * Executes the PageSeeder setup script located in <code>WEB-INF/setup/setup.xml</code>.
  *
- * @author Christophe Lauret
+ * @deprecated Use generator from `org.pageseeder.bridge.berlioz` package instead
  */
-public final class GetConfiguration implements ContentGenerator {
+@Deprecated
+public final class SetupPageSeeder implements ContentGenerator {
+
+  private final org.pageseeder.bridge.berlioz.SetupPageSeeder _generator = new org.pageseeder.bridge.berlioz.SetupPageSeeder();
 
   @Override
   public void process(ContentRequest req, XMLWriter xml) throws BerliozException, IOException {
-    // TODO
+    this._generator.process(req, xml);
   }
 
 }
