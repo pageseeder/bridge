@@ -19,9 +19,28 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.pageseeder.berlioz.aeson.JSONWriter;
 
+/**
+ * Defines an action used by the installation process.
+ *
+ * @author Christophe Lauret
+ *
+ * @since 0.9.8
+ * @version 0.9.8
+ */
 public interface AppAction {
 
+  /**
+   * @return the name of the action.
+   */
   public String getName();
 
+  /**
+   * Executes the action based on the request and write the response as JSON.
+   *
+   * @param req  The request
+   * @param json The JSON response.
+   *
+   * @return The HTTP response code as a result of the action.
+   */
   public int process(HttpServletRequest req, JSONWriter json);
 }

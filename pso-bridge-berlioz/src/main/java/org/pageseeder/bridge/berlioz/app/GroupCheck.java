@@ -15,29 +15,28 @@
  */
 package org.pageseeder.bridge.berlioz.app;
 
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.pageseeder.berlioz.aeson.JSONWriter;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.http.Method;
 import org.pageseeder.bridge.http.Request;
-import org.pageseeder.bridge.http.Response;
-import org.pageseeder.bridge.http.Service;
-import org.pageseeder.bridge.model.PSMember;
+import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.net.UsernamePassword;
 import org.pageseeder.bridge.xml.HandlerFactory;
 
 /**
- * Verifies the credentials of the user.
+ * Checks that a group exists.
  *
  * <ul>
  *   <li><code>setup-url</code>: the PageSeeder base URL</li>
  *   <li><code>setup-username</code>: the username of the user to check</li>
  *   <li><code>setup-password</code>: the password of the user to check</li>
+ *   <li><code>setup-group</code>: the name of the group to check</li>
  * </ul>
  *
  * <p>If the "setup-url" is valid the config is stored in the "psconfig" attribute.
@@ -48,36 +47,42 @@ import org.pageseeder.bridge.xml.HandlerFactory;
  * @since 0.9.8
  * @version 0.9.8
  */
-public final class CredentialsCheck implements AppAction {
+public final class GroupCheck implements AppAction {
 
   @Override
   public String getName() {
-    return "check-credentials";
+    return "check-pageseeder";
   }
 
   @Override
   public int process(HttpServletRequest req, JSONWriter json) {
-    HttpSession session = req.getSession();
     String url = req.getParameter("setup-url");
     String username = req.getParameter("setup-username");
     String password = req.getParameter("setup-password");
+    String name = req.getParameter("setup-group");
 
     // Checks
     if (url == null || "".equals(url)) return JSONResponses.requiresParameter(this, json, "setup-url");
     if (username == null || "".equals(username)) return JSONResponses.requiresParameter(this, json, "setup-username");
     if (password == null || "".equals(password)) return JSONResponses.requiresParameter(this, json, "setup-password");
+    if (name == null || "".equals(name)) return JSONResponses.requiresParameter(this, json, "setup-group");
 
-    // Try the config
+    // Let's try to create a project
     PSConfig config = PSConfig.newInstance(url);
     PSCredentials credentials = new UsernamePassword(username, password);
-    Response response = new Request(Method.GET, Service.get_self).config(config).using(credentials).response();
-
-    // We check 200 as we don't accept redirects
-    if (response.code() == 200) {
-      PSMember member = response.consumeItem(HandlerFactory.newPSMemberHandler());
-      session.setAttribute("psconfig", config);
-      return JSONResponses.ok(this, json, Collections.singletonMap("name", member.getFirstname()));
-    } else return JSONResponses.serviceError(this, json, response);
+    PSGroup group = Request.newService(Method.GET, "/groups/{group}", name)
+        .config(config)
+        .using(credentials)
+        .response().consumeItem(HandlerFactory.newPSGroupHandler());
+    if (group != null) {
+      Map<String, String> result = new HashMap<>();
+      result.put("name", group.getName());
+      result.put("description", group.getDescription());
+      return JSONResponses.ok(this, json, result);
+    } else {
+      String description = "Unable to retrieve the group";
+      return JSONResponses.error(this, json, description);
+    }
   }
 
 }

@@ -15,20 +15,39 @@
  */
 package org.pageseeder.bridge.berlioz.app;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.pageseeder.berlioz.aeson.JSONWriter;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.http.Method;
 import org.pageseeder.bridge.http.Request;
-import org.pageseeder.bridge.http.Service;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.net.UsernamePassword;
 import org.pageseeder.bridge.xml.HandlerFactory;
 
-public class ProjectCheck implements AppAction {
+/**
+ * Checks that a project exists.
+ *
+ * <ul>
+ *   <li><code>setup-url</code>: the PageSeeder base URL</li>
+ *   <li><code>setup-username</code>: the username of the user to check</li>
+ *   <li><code>setup-password</code>: the password of the user to check</li>
+ *   <li><code>setup-project</code>: the name of the project to check</li>
+ * </ul>
+ *
+ * <p>If the "setup-url" is valid the config is stored in the "psconfig" attribute.
+ *
+ *
+ * @author Christophe Lauret
+ *
+ * @since 0.9.8
+ * @version 0.9.8
+ */
+public final class ProjectCheck implements AppAction {
 
   @Override
   public String getName() {
@@ -40,25 +59,29 @@ public class ProjectCheck implements AppAction {
     String url = req.getParameter("setup-url");
     String username = req.getParameter("setup-username");
     String password = req.getParameter("setup-password");
-    String project = req.getParameter("setup-project");
+    String name = req.getParameter("setup-project");
+
+    // Checks
+    if (url == null || "".equals(url)) return JSONResponses.requiresParameter(this, json, "setup-url");
+    if (username == null || "".equals(username)) return JSONResponses.requiresParameter(this, json, "setup-username");
+    if (password == null || "".equals(password)) return JSONResponses.requiresParameter(this, json, "setup-password");
+    if (name == null || "".equals(name)) return JSONResponses.requiresParameter(this, json, "setup-project");
+
+    // Let's try to create a project
     PSConfig config = PSConfig.newInstance(url);
     PSCredentials credentials = new UsernamePassword(username, password);
-    PSGroup group = new Request(Method.GET, Service.get_project, project)
+    PSGroup project = Request.newService(Method.GET, "/projects/{group}", name)
         .config(config)
         .using(credentials)
         .response().consumeItem(HandlerFactory.newPSGroupHandler());
-    if (group != null) {
-      json.startObject()
-      .property("action", "check-project")
-      .startObject("result")
-      .property("name", group.getName())
-      .property("description", group.getDescription())
-      .end()
-      .end();
-      return HttpServletResponse.SC_OK;
+    if (project != null) {
+      Map<String, String> result = new HashMap<>();
+      result.put("name", project.getName());
+      result.put("description", project.getDescription());
+      return JSONResponses.ok(this, json, result);
     } else {
-      json.startObject().property("action", "check-project").end();
-      return HttpServletResponse.SC_BAD_REQUEST;
+      String description = "Unable to retrieve the project";
+      return JSONResponses.error(this, json, description);
     }
   }
 

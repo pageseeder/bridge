@@ -15,6 +15,9 @@
  */
 package org.pageseeder.bridge.berlioz.app;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,7 +25,19 @@ import org.pageseeder.berlioz.aeson.JSONWriter;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.Version;
 
-public class PSConfigCheck implements AppAction {
+/**
+ * Checks that a PageSeeder config is valid.
+ *
+ * <ul>
+ *   <li><code>setup-url</code>: the PageSeeder base URL</li>
+ * </ul>
+ *
+ * @author Christophe Lauret
+ *
+ * @since 0.9.8
+ * @version 0.9.8
+ */
+public final class PSConfigCheck implements AppAction {
 
   @Override
   public String getName() {
@@ -32,20 +47,21 @@ public class PSConfigCheck implements AppAction {
   @Override
   public int process(HttpServletRequest req, JSONWriter json) {
     String url = req.getParameter("setup-url");
+
+    // Checks
+    if (url == null || "".equals(url)) return JSONResponses.requiresParameter(this, json, "setup-url");
+
     Version version = PSConfig.newInstance(url).getVersion();
     if (version != null) {
-      json.startObject()
-      .property("action", "check-pageseeder")
-      .startObject("result")
-      .property("major", version.major())
-      .property("build", version.build())
-      .property("version", version.version())
-      .end()
-      .end();
+      Map<String, String> result = new HashMap<>();
+      result.put("major", Integer.toString(version.major()));
+      result.put("build", Integer.toString(version.build()));
+      result.put("version", version.version());
+      JSONResponses.ok(this, json, result);
       return HttpServletResponse.SC_OK;
     } else {
-      json.startObject().property("action", "check-pageseeder").end();
-      return HttpServletResponse.SC_BAD_REQUEST;
+      String description = "Unable of retrieve PageSeeder version or invalid URL";
+      return JSONResponses.error(this, json, description);
     }
   }
 
