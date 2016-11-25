@@ -6,7 +6,7 @@ ext {
   globalVersion = file('version.txt').text
 }
 
-group       = 'org.pageseeder.berlioz'
+group       = 'org.pageseeder.bridge'
 version     = "$globalVersion"
 description = "$title"
 
