@@ -54,10 +54,8 @@ subprojects {
   }
 }
 
-wrapper.gradleVersion = '3.1'
-
-task publishAllToBintray {
-  subprojects.each {
+task publishAllToBintray(group: 'pageseeder') {
+  allprojects.each {
     dependsOn("${it.path}:bintrayUpload" )
   }
 }
