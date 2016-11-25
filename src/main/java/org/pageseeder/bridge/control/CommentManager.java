@@ -296,45 +296,6 @@ public final class CommentManager extends Sessionful {
   }
 
   /**
-   * Find comments using criteria.
-   *
-   * @deprecated Use {@link #findComments(PSMember, PSGroup,String, String, List)} instead.
-   *
-   * @param member The member who is trying to access the comments.
-   * @param group  The context group
-   * @param title  The comments title (can be <code>null</code>)
-   * @param type   The comments type (can be <code>null</code>)
-   * @param paths  A list of paths of URIs the comments must be attached to (can be <code>null</code>)
-   *
-   * @return the list of comments found (never <code>null</code>)
-   */
-  @Deprecated
-  public List<PSComment> getCommentsByFilter(PSMember member, PSGroup group,
-      String title, String type, List<String> paths) throws APIException {
-    return findComments(member, group, title, type, paths);
-  }
-
-  /**
-   * Find comments using criteria.
-   *
-   * @deprecated Use {@link #findComments(PSMember, PSGroup,String, String, List, List)} instead.
-   *
-   * @param member    The member who is trying to access the comments.
-   * @param group     The context group
-   * @param title     The comments title (can be <code>null</code>)
-   * @param type      The comments type (can be <code>null</code>)
-   * @param statuses  A list of statuses the comments must have (can be <code>null</code>)
-   * @param paths     A list of paths of URIs the comments must be attached to (can be <code>null</code>)
-   *
-   * @return the list of comments found (never <code>null</code>)
-   */
-  @Deprecated
-  public List<PSComment> getCommentsByFilter(PSMember member, PSGroup group,
-      String title, String type, List<String> statuses, List<String> paths) throws APIException {
-    return findComments(member, group, title, type, statuses, paths);
-  }
-
-  /**
    * Returns the internal cache used for the comments.
    *
    * @return the internal cache used for the comments

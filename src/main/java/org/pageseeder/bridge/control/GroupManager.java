@@ -20,7 +20,6 @@ import java.util.List;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.InvalidEntityException;
-import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSEntityCache;
 import org.pageseeder.bridge.Requires;
@@ -146,23 +145,6 @@ public final class GroupManager extends Sessionful {
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getCode() >= 400) throw new APIException("Unable to create project '" + project.getName() + "': " + info.getMessage());
     cache.put(project);
-  }
-
-  /**
-   * Returns the connector to create a group folder.
-   *
-   * @deprecated Use {@link #createGroupFolder(PSGroup, String)} instead
-   *
-   * @param group    The group where the group folder should be created.
-   * @param url      The URL of the group folder.
-   * @param isPublic <code>true</code> for a public group folder.
-   *
-   * @throws InvalidEntityException If the group is invalid.
-   * @throws APIException If an error occurs while communicating with PageSeeder.
-   */
-  @Deprecated
-  public void createGroupFolder(PSGroup group, String url, boolean isPublic) throws InvalidEntityException, APIException {
-    createGroupFolder(group, url);
   }
 
   /**
@@ -564,16 +546,6 @@ public final class GroupManager extends Sessionful {
    */
   public static PSEntityCache<PSGroupFolder> getFoldersCache() {
     return folders;
-  }
-
-  /**
-   * @deprecated Use <code>PSConfig.getDefault().getHostURL()</code>;
-   *
-   * @return the host URL.
-   */
-  @Deprecated
-  public static String getHostURL() {
-    return PSConfig.getDefault().getHostURL();
   }
 
 }

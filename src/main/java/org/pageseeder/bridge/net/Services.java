@@ -157,21 +157,6 @@ public final class Services {
   }
 
   /**
-   * Returns the URL to remove a member from a group.
-   *
-   * @deprecated Use {@link #toMembership(String, String)} with DELETE
-   *
-   * @param group  the group name or id
-   * @param member the member username or id
-   *
-   * @return <code>/groups/[group]/members/[member]/delete</code>.
-   */
-  @Deprecated
-  public static String toDeleteMembership(String group, String member) {
-    return "/groups/" + prefixGroup(group) + "/members/" + prefixMember(member) + "/delete";
-  }
-
-  /**
    * Returns the URL to invite a member to a group.
    *
    * @param group  the group name or id
@@ -190,21 +175,6 @@ public final class Services {
    * @return <code>/groups/[group]/members/[member]/inviteself</code>.
    */
   public static String toInviteSelf(String group) {
-    return "/groups/" + prefixGroup(group) + "/members/inviteself";
-  }
-
-  /**
-   * Returns the URL for a member to ivite himself to a group.
-   *
-   * @deprecated Use {@link #toInviteSelf(String)} instead
-   *
-   * @param group  the group name or id
-   * @param member the member username or id
-   *
-   * @return <code>/groups/[group]/members/[member]/inviteself</code>.
-   */
-  @Deprecated
-  public static String toInviteSelf(String group, String member) {
     return "/groups/" + prefixGroup(group) + "/members/inviteself";
   }
 
@@ -261,20 +231,6 @@ public final class Services {
    */
   protected static String toMember(String member) {
     return "/members/" + prefixMember(member);
-  }
-
-  /**
-   * Returns the URL to edit the details of a member.
-   *
-   * @deprecated Use {@link #toMember(String)} with PATCH
-   *
-   * @param member the member username or id
-   *
-   * @return <code>/members/[member]/edit</code>.
-   */
-  @Deprecated
-  protected static String toMemberEdit(String member) {
-    return "/members/" + prefixMember(member) + "/edit";
   }
 
   /**
@@ -423,21 +379,6 @@ public final class Services {
   }
 
   /**
-   * Returns the URL to edit a subgroup.
-   *
-   * @deprecated Use {@link #toSubGroup(String, String)} with PATCH
-   *
-   * @param group the group name or id.
-   * @param sub   the name or id of the subgroup
-   *
-   * @return <code>/groups/[group]/subgroups/[sub]/edit</code>.
-   */
-  @Deprecated
-  public static String toEditSubGroup(String group, String sub) {
-    return "/groups/" + prefixGroup(group) + "/subgroups/" + sub + "/edit";
-  }
-
-  /**
    * Returns the URL to remove a subgroup from a group.
    *
    * @param group the group name or id.
@@ -493,21 +434,6 @@ public final class Services {
   }
 
   /**
-   * Returns the URL to edit a project.
-   *
-   * @deprecated Use {@link #toProject(String, String)} with PATCH
-   *
-   * @param member  the member username or id
-   * @param project the project name or id
-   *
-   * @return <code>/members/[member]/projects/[project]/edit</code>.
-   */
-  @Deprecated
-  public static String toEditProject(String member, String project) {
-    return "/members/" + prefixMember(member) + "/projects/" + project + "/edit";
-  }
-
-  /**
    * Returns the URL to get a project.
    *
    * @param project the project name or id
@@ -515,21 +441,6 @@ public final class Services {
    * @return <code>/members/[member]/projects/[project]</code>.
    */
   public static String toGetProject(String project) {
-    return "/projects/" + project;
-  }
-
-  /**
-   * Returns the URL to get a project.
-   *
-   * @deprecated Use {@link #toGetProject(String)}
-   *
-   * @param member  the member username or id
-   * @param project the project name or id
-   *
-   * @return <code>/members/[member]/projects/[project]</code>.
-   */
-  @Deprecated
-  public static String toGetProject(String member, String project) {
     return "/projects/" + project;
   }
 
@@ -565,21 +476,6 @@ public final class Services {
    */
   public static String toProjectsFind(String member) {
     return "/members/" + prefixMember(member) + "/projects/find";
-  }
-
-  /**
-   * Returns the URL to return the sub-tree of projects a member belongs to.
-   *
-   * @deprecated Use {@link #toListSubProjects(String, String)} or {@link #toSubProjectsTree(String, String)} instead
-   *
-   * @param member  the member username or id
-   * @param project the project name or id
-   *
-   * @return <code>/members/[member]/projects/[project]/subprojects</code>.
-   */
-  @Deprecated
-  public static String toSubProjects(String member, String project) {
-    return "/members/" + prefixMember(member) + "/projects/" + project + "/subprojects";
   }
 
   /**
@@ -680,34 +576,6 @@ public final class Services {
     return "/groups/" + prefixGroup(group) + "/groupfolders/forurl";
   }
 
-  /**
-   * Returns the URL to create a group folder.
-   *
-   * @deprecated Use {@link #toCreateGroupFolder2(String)} instead
-   *
-   * @param group  the group name or id
-   *
-   * @return <code>/groups/[group]/folders/create</code>.
-   */
-  @Deprecated
-  public static String toCreateGroupFolder(String group) {
-    return "/groups/" + prefixGroup(group) + "/folders/create";
-  }
-
-  /**
-   * Returns the URL to get a group folder for a given url.
-   *
-   * @deprecated Use {@link #toGetGroupFolderForURL2(String)} instead
-   *
-   * @param group  the group name or id
-   *
-   * @return <code>/groups/[group]/folders/forurl</code>.
-   */
-  @Deprecated
-  public static String toGetGroupFolderForURL(String group) {
-    return "/groups/" + prefixGroup(group) + "/folders/forurl";
-  }
-
   // Group Services
   // ----------------------------------------------------------------------------------------------
 
@@ -735,21 +603,6 @@ public final class Services {
   }
 
   /**
-   * Returns the URL to edit a group.
-   *
-   * @deprecated Use {@link #toGroup(String, String)} with PATCH
-   *
-   * @param member the member name or id
-   * @param group  the group name or id
-   *
-   * @return <code>/members/[member]/groups/[group]</code>.
-   */
-  @Deprecated
-  public static String toEditGroup(String member, String group) {
-    return "/members/" + prefixMember(member) + "/groups/" + prefixGroup(group) + "/edit";
-  }
-
-  /**
    * Returns the URL to get a group.
    *
    * @param group the group name or id
@@ -757,21 +610,6 @@ public final class Services {
    * @return <code>/groups/[group]</code>.
    */
   public static String toGetGroup(String group) {
-    return "/groups/" + prefixGroup(group);
-  }
-
-  /**
-   * Returns the URL to get a group.
-   *
-   * @deprecated Use {@link #toGetGroup(String)}
-   *
-   * @param member the member name or id
-   * @param group  the group name or id
-   *
-   * @return <code>/members/[member]/groups/[group]</code>.
-   */
-  @Deprecated
-  public static String toGetGroup(String member, String group) {
     return "/groups/" + prefixGroup(group);
   }
 
@@ -840,21 +678,6 @@ public final class Services {
    */
   public static String toMembership(String group, String member) {
     return "/groups/" + prefixGroup(group) + "/members/" + prefixMember(member);
-  }
-
-  /**
-   * Returns the URL to invoke the group member edit service.
-   *
-   * @deprecated Use {@link #toMembership(String, String)} with PATCH
-   *
-   * @param group  the group name or id
-   * @param member the member username or id
-   *
-   * @return <code>/groups/[group]/members/[member]/edit</code>.
-   */
-  @Deprecated
-  public static String toEditMembership(String group, String member) {
-    return "/groups/" + prefixGroup(group) + "/members/" + prefixMember(member) + "/edit";
   }
 
   /**
@@ -1065,22 +888,6 @@ public final class Services {
     return "/members/" + prefixMember(member) + "/groups/" + prefixGroup(group) + "/uris/" + uri;
   }
 
-  /**
-   * Returns the URL to saves the core properties of a URI.
-   *
-   * @deprecated Use {@link #toEditURI(String, String, String)} with PATCH
-   *
-   * @param member the member username or id
-   * @param group  the group name or id
-   * @param uri    the id of uri
-   *
-   * @return <code>/members/[member]/groups/[group]/uris/{uri}/properties </code>.
-   */
-  @Deprecated
-  public static String toSaveURIProperties(String member, String group, String uri) {
-    return "/members/" + prefixMember(member) + "/groups/" + prefixGroup(group) + "/uris/" + uri + "/properties";
-  }
-
   // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/documents
 
   // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/duplicate
@@ -1278,21 +1085,6 @@ public final class Services {
   }
 
   /**
-   * Returns the URL to edit a comment.
-   *
-   * @deprecated Use {@link #toComment(String, String)} with PATCH
-   *
-   * @param member  the username or ID of the member
-   * @param comment the xlink ID of the comment to archive
-   *
-   * @return <code>/members/[member]/comments/[comment]/edit</code>.
-   */
-  @Deprecated
-  public static String toEditComment(String member, String comment) {
-    return "/members/" + prefixMember(member) + "/comments/" + comment + "/edit";
-  }
-
-  /**
    * Returns the URL to archive to a comment.
    *
    * @param member  the username or ID of the member
@@ -1441,34 +1233,6 @@ public final class Services {
    */
   public static String toGetResource(String project) {
     return "/groups/" + project + "/resources";
-  }
-
-  /**
-   * Returns the URL to put a resource.
-   *
-   * @deprecated Use {@link #toResource(String)} with PUT
-   *
-   * @param project the project name or id where the resource should be put.
-   *
-   * @return <code>/groups/[project]/resources</code>.
-   */
-  @Deprecated
-  public static String toPutResource(String project) {
-    return "/groups/" + project + "/resources/put";
-  }
-
-  /**
-   * Returns the URL to delete a resource.
-   *
-   * @deprecated Use {@link #toResource(String)} with DELETE
-   *
-   * @param project the project name or id where the resource should be put.
-   *
-   * @return <code>/groups/[project]/resources/delete</code>.
-   */
-  @Deprecated
-  public static String toDeleteResource(String project) {
-    return "/groups/" + project + "/resources/delete";
   }
 
   // /groups/{group:group}/resources/move

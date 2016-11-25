@@ -25,13 +25,13 @@ import org.pageseeder.xmlwriter.XMLWriter;
  * @author Christophe Lauret
  * @author Philip Rutherford
  */
-public class Fragment extends StandardFragment implements PSMLFragment {
+public class Fragment extends FragmentBase implements PSMLFragment {
 
   /**
    * the xml content of fragment
    */
   private String content;
-  
+
   /**
    * Creates a new fragment.
    *
@@ -43,14 +43,14 @@ public class Fragment extends StandardFragment implements PSMLFragment {
 
   /**
    * Creates a new fragment.
-   * 
+   *
    * @param id the id of fragment
    * @param type the type of fragment
    */
   public Fragment(String id, String type) {
     super(id, type);
   }
-  
+
   /**
    * @param content the xml content within fragment element.
    */

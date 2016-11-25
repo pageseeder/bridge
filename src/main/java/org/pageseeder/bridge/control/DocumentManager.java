@@ -382,27 +382,6 @@ public final class DocumentManager extends Sessionful {
   }
 
   /**
-   * Edit the specified fragment in PageSeeder by using POST method.
-   *
-   * @deprecated Use {@link #putFragment(PSDocument, PSGroup, PSMember, PSMLFragment)} instead.
-   *
-   * @param document The document to create
-   * @param group    The group the document is part of
-   * @param editor   The member editing the document
-   * @param fragment The fragment to edit
-   *
-   * @return the updated fragment.
-   */
-  @Deprecated
-  public PSMLFragment postFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment)
-      throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.postFragment(document, group, editor, fragment).using(this._credentials);
-    PSFragmentHandler handler = new PSFragmentHandler(document);
-    connector.post(handler);
-    return handler.getFragment();
-  }
-
-  /**
    * Write the content of the specified document onto the XML writer.
    *
    * @param uri The URI ID of the document.
