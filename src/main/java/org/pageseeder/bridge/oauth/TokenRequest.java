@@ -17,7 +17,9 @@ package org.pageseeder.bridge.oauth;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
@@ -260,25 +262,34 @@ public final class TokenRequest {
    *
    * @throws IOException If an error occurs while consuming the response
    */
-  public TokenResponse post() throws IOException {
-    // Create connection to URL using client credentials
-    URL url = new URL(this._url);
-    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-    String authorization = this._client.toBasicAuthorization();
-    connection.addRequestProperty("Authorization", authorization);
-    connection.setRequestMethod("POST");
+  public TokenResponse post() {
+    try {
+      // Create connection to URL using client credentials
+      URL url = new URL(this._url);
+      HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+      String authorization = this._client.toBasicAuthorization();
+      connection.addRequestProperty("Authorization", authorization);
+      connection.setRequestMethod("POST");
 
-    // Write the parameters
-    byte[] parameters = HTTP.encodeParameters(this._parameters).getBytes(StandardCharsets.UTF_8);
-    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-    connection.setRequestProperty("Content-Length", Integer.toString(parameters.length));
-    connection.setDoInput(true);
-    connection.setDoOutput(true);
-    try (OutputStream post = connection.getOutputStream()) {
-      post.write(parameters);
-      post.flush();
+      // Write the parameters
+      byte[] parameters = HTTP.encodeParameters(this._parameters).getBytes(StandardCharsets.UTF_8);
+      connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+      connection.setRequestProperty("Content-Length", Integer.toString(parameters.length));
+      connection.setDoInput(true);
+      connection.setDoOutput(true);
+      try (OutputStream post = connection.getOutputStream()) {
+        post.write(parameters);
+        post.flush();
+      }
+      return TokenResponse.consume(connection, this._client);
+
+    } catch (ConnectException ex) {
+      return TokenResponse.error("connection_error", ex.getMessage());
+    } catch (ProtocolException ex) {
+      return TokenResponse.error("protocol_error", ex.getMessage());
+    } catch (IOException ex) {
+      return TokenResponse.error("io_error", ex.getMessage());
     }
-    return TokenResponse.consume(connection, this._client);
   }
 
   /**

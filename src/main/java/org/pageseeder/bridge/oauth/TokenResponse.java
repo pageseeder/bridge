@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.pageseeder.bridge.PSToken;
@@ -110,6 +111,15 @@ public final class TokenResponse {
    */
   public PSMember getMember() {
     return this.member;
+  }
+
+  /**
+   * Indicates whether the response is available
+   *
+   * @return <code>true</code> if the response code is a valid HTTP response code.
+   */
+  public boolean isAvailable() {
+    return this._responseCode > 0;
   }
 
   /**
@@ -220,24 +230,41 @@ public final class TokenResponse {
    * @param credentials the client credentials (required for parsing Open ID tokens)
    *
    * @return a new Token response.
-   *
-   * @throws IOException If throws while reading the response from the connection.
    */
-  public static TokenResponse consume(HttpURLConnection connection, ClientCredentials credentials) throws IOException {
+  public static TokenResponse consume(HttpURLConnection connection, ClientCredentials credentials) {
     // Record time BEFORE connecting
     long time = System.currentTimeMillis();
-    int responseCode = connection.getResponseCode();
-    try (InputStream in = HTTP.stream(connection)) {
-      String raw = toString(in, connection.getContentLength());
-      LOGGER.debug("JSON response: {}", raw);
-      Map<String, String> json = JSONParameter.parse(raw);
-      TokenResponse response = new TokenResponse(responseCode, raw, json);
-      if (response.isSuccessful()) {
-        response.token = extractToken(json, time);
-        response.member = extractMember(json, credentials);
+    try {
+      int responseCode = connection.getResponseCode();
+      try (InputStream in = HTTP.stream(connection)) {
+        String raw = toString(in, connection.getContentLength());
+        LOGGER.debug("JSON response: {}", raw);
+        Map<String, String> json = JSONParameter.parse(raw);
+        TokenResponse response = new TokenResponse(responseCode, raw, json);
+        if (response.isSuccessful()) {
+          response.token = extractToken(json, time);
+          response.member = extractMember(json, credentials);
+        }
+        return response;
       }
-      return response;
+    } catch (IOException ex) {
+      return TokenResponse.error("io_error", ex.getMessage());
     }
+  }
+
+  /**
+   * Create a new error token response
+   *
+   * @param error       the name or ID of the error
+   * @param description a description for the error
+   *
+   * @return a new Token response.
+   */
+  static TokenResponse error(String error, String description) {
+    Map<String, String> json = new HashMap<>(2);
+    json.put("error", error);
+    json.put("error_description", description);
+    return new TokenResponse(-1, null, json);
   }
 
   /**
