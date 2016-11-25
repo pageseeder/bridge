@@ -13,7 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Classes to autatically setup PageSeeder - WILL EVENTUALLY BE INCLUDED IN THE BRIDGE!!
- */
-package org.pageseeder.bridge.berlioz.setup;
+package org.pageseeder.bridge.berlioz.app;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.pageseeder.berlioz.aeson.JSONWriter;
+
+public interface AppAction {
+
+  public String getName();
+
+  public int process(HttpServletRequest req, JSONWriter json);
+}

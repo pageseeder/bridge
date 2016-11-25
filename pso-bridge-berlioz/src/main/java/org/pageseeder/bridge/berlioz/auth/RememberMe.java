@@ -1,4 +1,18 @@
-package org.pageseeder.bridge.berlioz.auth;
+/*
+ * Copyright 2016 Allette Systems (Australia)
+ * http://www.allette.com.au
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */package org.pageseeder.bridge.berlioz.auth;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -69,7 +83,7 @@ public final class RememberMe {
 
   private Path userkeysStore = null;
 
-  private Map<String, SecretKeySpec> userkeys = new HashMap<String, SecretKeySpec>();
+  private Map<String, SecretKeySpec> userkeys = new HashMap<>();
 
   /**
    * The name to use for the cookie.
@@ -333,7 +347,7 @@ public final class RememberMe {
   }
 
   private static void save(Path store, Map<String, SecretKeySpec> data, SecretKeySpec key) throws IOException, GeneralSecurityException {
-    List<String> lines = new ArrayList<String>(data.size());
+    List<String> lines = new ArrayList<>(data.size());
     for (Entry<String, SecretKeySpec> entry : data.entrySet()) {
       byte[] keyBytes = entry.getValue().getEncoded();
       byte[] encrypted = encrypt(keyBytes, key);

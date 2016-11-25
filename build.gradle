@@ -54,3 +54,10 @@ subprojects {
   }
 }
 
+wrapper.gradleVersion = '3.1'
+
+task publishAllToBintray {
+  subprojects.each {
+    dependsOn("${it.path}:bintrayUpload" )
+  }
+}
