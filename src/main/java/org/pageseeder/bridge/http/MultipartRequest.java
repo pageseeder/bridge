@@ -23,12 +23,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
@@ -50,7 +51,7 @@ import org.pageseeder.bridge.PSSession;
  * </pre>
  *
  * @author Christophe Lauret
- * @version 0.9.1
+ * @version 0.10.1
  * @since 0.9.1
  */
 public final class MultipartRequest extends BasicRequest {
@@ -59,11 +60,6 @@ public final class MultipartRequest extends BasicRequest {
    * Byte for carriage return + line feed.
    */
   private static final byte[] CRLF = "\r\n".getBytes(StandardCharsets.UTF_8);
-
-  /**
-   * Used to generate boundary parts.
-   */
-  private static Random random = new Random();
 
   /**
    * The part boundary.
@@ -88,7 +84,7 @@ public final class MultipartRequest extends BasicRequest {
   public MultipartRequest(String path) {
     super(Method.POST, path);
     this._boundary = newBoundary();
-    this._headers.add(new Header("Content-Type", "multipart/form-data; boundary=" + this._boundary));
+    this._headers.add(new Header("Content-Type", "multipart/form-data; boundary=\"" + this._boundary+ "\""));
   }
 
   /**
@@ -99,7 +95,7 @@ public final class MultipartRequest extends BasicRequest {
   public MultipartRequest(Servlet servlet) {
     super(Method.POST, servlet);
     this._boundary = newBoundary();
-    this._headers.add(new Header("Content-Type", "multipart/form-data; boundary=" + this._boundary));
+    this._headers.add(new Header("Content-Type", "multipart/form-data; boundary=\"" + this._boundary+ "\""));
   }
 
   // Setters (return Request)
@@ -188,6 +184,7 @@ public final class MultipartRequest extends BasicRequest {
     }
     try {
       // Start with boundary
+      write("--", this.out);
       write(this._boundary, this.out);
       writeCRLF(this.out);
 
@@ -249,6 +246,7 @@ public final class MultipartRequest extends BasicRequest {
     try {
 
       // Start with boundary
+      write("--", this.out);
       write(this._boundary, this.out);
       writeCRLF(this.out);
 
@@ -256,8 +254,6 @@ public final class MultipartRequest extends BasicRequest {
       write("Content-Disposition: form-data; name=\"file-1\"; filename=\"" + filename + "\"", this.out);
       writeCRLF(this.out);
       write("Content-Type: " + URLConnection.guessContentTypeFromName(filename), this.out);
-      writeCRLF(this.out);
-      write("Content-Transfer-Encoding: binary", this.out);
       writeCRLF(this.out);
       writeCRLF(this.out);
       this.out.flush();
@@ -291,9 +287,13 @@ public final class MultipartRequest extends BasicRequest {
    * @throws IOException Should any error occur while writing
    */
   public MultipartRequest addParameterPart(String name, String value) throws IOException {
+    if (this.out == null) {
+      init();
+    }
     try {
 
       // Start with boundary
+      write("--", this.out);
       write(this._boundary, this.out);
       writeCRLF(this.out);
 
@@ -382,11 +382,11 @@ public final class MultipartRequest extends BasicRequest {
     this.out = new DataOutputStream(connection.getOutputStream());
 
     // We serialize the HTTP parameters first
-    if (!this._parameters.isEmpty()) {
-      for (Parameter p : this._parameters) {
-        addParameterPart(p.name(), p.value());
-      }
-    }
+//    if (!this._parameters.isEmpty()) {
+//      for (Parameter p : this._parameters) {
+//        addParameterPart(p.name(), p.value());
+//      }
+//    }
 
     // Returns the connection
     this.connection = connection;
@@ -395,8 +395,9 @@ public final class MultipartRequest extends BasicRequest {
   /**
    * @return a new multipart boundary.
    */
-  private String newBoundary() {
-    return "--------------------" + Long.toString(Math.abs(random.nextLong()), 36);
+  private static String newBoundary() {
+    long b = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE/36, Long.MAX_VALUE);
+    return Long.toString(b, 36);
   }
 
   /**
@@ -418,6 +419,7 @@ public final class MultipartRequest extends BasicRequest {
    */
   private void endMultipart() throws IOException {
     if (this.out != null) {
+      write("--", this.out);
       write(this._boundary, this.out);
       write("--", this.out);
       writeCRLF(this.out);
@@ -464,6 +466,25 @@ public final class MultipartRequest extends BasicRequest {
     while (-1 != (n = input.read(buffer))) {
       output.write(buffer, 0, n);
     }
+  }
+
+  /**
+   * Returns the URL to access this resource.
+   *
+   * <p>If the user is specified, its details will be included in the URL so that the resource can
+   * be accessed on his behalf.
+   *
+   * @return the URL to access this resource.
+   *
+   * @throws MalformedURLException If the URL is not well-formed
+   */
+  public URL toURL() throws MalformedURLException {
+    String url = toURLString();
+    // We serialize the HTTP parameters first
+    if (!this._parameters.isEmpty()) {
+      url = url+'?'+ encodeParameters();
+    }
+    return new URL(url);
   }
 
   /**
