@@ -1,0 +1,8 @@
+<basic>
+  <a>
+    <b m="x">
+      <c n="y" o="z">Test</c>
+    </b>
+  </a>
+  <d/>
+</basic>

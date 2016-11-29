@@ -234,17 +234,19 @@ public abstract class BasicHandler<T> extends Handler<T> {
   }
 
   /**
-   * Indicates whether the current element name is equals to any of the
-   * specified elements.
+   * Indicates whether the current context has the specified ancestor.
+   *
+   * <p>This method ignores the current element.
    *
    * @param ancestor the ancestor to look for
    *
-   * @return <code>true</code> is it is the current element
+   * @return <code>true</code> the context as the specified parent or ancestor;
+   *         <code>false</code> otherwise.
    */
   protected final boolean hasAncestor(String ancestor) {
-    if (this.list.size() <= 1) return false;
-    for (int i = 1 /* skip current*/ ; i< this.list.size(); i++) {
-      if (ancestor.equals(this.list.get(i))) return true;
+    if (this.ancestorOrSelf.size() <= 1) return false;
+    for (int i = this.ancestorOrSelf.size() - 2 /* skip current*/ ; i >= 0; i--) {
+      if (ancestor.equals(this.ancestorOrSelf.get(i))) return true;
     }
     return false;
   }
