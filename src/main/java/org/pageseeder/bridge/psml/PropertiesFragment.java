@@ -18,7 +18,9 @@ package org.pageseeder.bridge.psml;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
@@ -27,14 +29,16 @@ import org.pageseeder.xmlwriter.XMLWriter;
  * <p>Warning: this version only supports single value properties.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ *
+ * @version 0.10.2
+ * @since 0.1.0
  */
 public class PropertiesFragment extends FragmentBase implements PSMLFragment {
 
   /**
    * Properties inside this fragment.
    */
-  private final List<Property> properties = new ArrayList<Property>();
+  private final List<Property> properties = new ArrayList<>();
 
   /**
    * Creates a new properties fragment with the specified ID.
@@ -63,8 +67,9 @@ public class PropertiesFragment extends FragmentBase implements PSMLFragment {
    *
    * @throws NullPointerException if the name if <code>null</code>
    */
-  public Property getProperty(String name) {
-    if (name == null) throw new NullPointerException("name");
+  public @Nullable Property getProperty(String name) {
+    // We do the check for consistency (otherwise would return null when property list is empty)
+    Objects.requireNonNull(name, "Name must be supplied");
     for (Property p : this.properties) {
       if (name.equals(p.getName())) return p;
     }
@@ -111,7 +116,7 @@ public class PropertiesFragment extends FragmentBase implements PSMLFragment {
    *
    * @throws NullPointerException if the name if <code>null</code>
    */
-  public String getPropertyValue(String name) {
+  public @Nullable String getPropertyValue(String name) {
     Property p = getProperty(name);
     return p != null ? p.getValue() : null;
   }
@@ -126,7 +131,7 @@ public class PropertiesFragment extends FragmentBase implements PSMLFragment {
    * @param name  The name of the property to set.
    * @param value The value of the property to set.
    */
-  public void setProperty(String name, String value) {
+  public void setProperty(String name, @Nullable String value) {
     if (value == null) return;
     for (Property p : this.properties) {
       if (p.getName().equals(name)) {
@@ -155,10 +160,11 @@ public class PropertiesFragment extends FragmentBase implements PSMLFragment {
 
   @Override
   public void toXML(XMLWriter psml) throws IOException {
+    String t = type();
     psml.openElement("properties-fragment", true);
     psml.attribute("id", id());
-    if (type() != null) {
-      psml.attribute("type", type());
+    if (t != null) {
+      psml.attribute("type", t);
     }
     for (Property p : this.properties) {
       p.toXML(psml);

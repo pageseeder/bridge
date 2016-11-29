@@ -17,6 +17,7 @@ package org.pageseeder.bridge.psml;
 
 import java.io.IOException;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.xmlwriter.XMLWritable;
 import org.pageseeder.xmlwriter.XMLWriter;
 
@@ -26,7 +27,9 @@ import org.pageseeder.xmlwriter.XMLWriter;
  * <p>Implementation note: this version only support simple single value properties.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ *
+ * @version 0.10.2
+ * @since 0.1.0
  */
 public class Property implements XMLWritable {
 
@@ -38,17 +41,17 @@ public class Property implements XMLWritable {
   /**
    * The type of property.
    */
-  private String type;
+  private @Nullable String type;
 
   /**
    * The title of the property
    */
-  private String title;
+  private @Nullable String title;
 
   /**
    * The value of the property
    */
-  private String value;
+  private @Nullable String value;
 
   public Property(String name) {
     this.name = name;
@@ -64,15 +67,22 @@ public class Property implements XMLWritable {
   /**
    * @return the type
    */
-  public String getType() {
+  public @Nullable String getType() {
     return this.type;
   }
 
   /**
    * @return the value
    */
-  public String getValue() {
+  public @Nullable String getValue() {
     return this.value;
+  }
+
+  /**
+   * @return the title
+   */
+  public @Nullable String getTitle() {
+    return this.title;
   }
 
   /**
@@ -85,43 +95,39 @@ public class Property implements XMLWritable {
   /**
    * @param type the type to set
    */
-  public void setType(String type) {
+  public void setType(@Nullable String type) {
     this.type = type;
   }
 
   /**
    * @param value the value to set
    */
-  public void setValue(String value) {
+  public void setValue(@Nullable String value) {
     this.value = value;
-  }
-
-  /**
-   * @return the title
-   */
-  public String getTitle() {
-    return this.title;
   }
 
   /**
    * @param title the title to set
    */
-  public void setTitle(String title) {
+  public void setTitle(@Nullable String title) {
     this.title = title;
   }
 
   @Override
   public void toXML(XMLWriter psml) throws IOException {
+    String v = this.value;
+    String t = this.title;
+    String d = this.type;
     psml.openElement("property");
     psml.attribute("name",  this.name);
-    if (this.value != null) {
-      psml.attribute("value", this.value);
+    if (v != null) {
+      psml.attribute("value", v);
     }
-    if (this.title != null) {
-      psml.attribute("title",  this.title);
+    if (t != null) {
+      psml.attribute("title",  t);
     }
-    if (this.type != null) {
-      psml.attribute("datatype",  this.type);
+    if (d != null) {
+      psml.attribute("datatype",  d);
     }
     psml.closeElement();
   }

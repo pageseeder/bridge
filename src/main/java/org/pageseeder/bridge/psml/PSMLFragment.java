@@ -15,6 +15,7 @@
  */
 package org.pageseeder.bridge.psml;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.xmlwriter.XMLWritable;
 
 /**
@@ -23,7 +24,9 @@ import org.pageseeder.xmlwriter.XMLWritable;
  * <p>This interface is used for methods and classes dealing with generic fragments.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ *
+ * @version 0.10.2
+ * @since 0.1.0
  */
 public interface PSMLFragment extends XMLWritable {
 
@@ -35,7 +38,7 @@ public interface PSMLFragment extends XMLWritable {
   /**
    * @return the fragment type.
    */
-  String type();
+  @Nullable String type();
 
   /**
    * @return the fragment as PSML including the fragment element and its contents.

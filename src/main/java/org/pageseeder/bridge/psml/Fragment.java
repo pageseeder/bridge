@@ -17,6 +17,7 @@ package org.pageseeder.bridge.psml;
 
 import java.io.IOException;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
@@ -24,13 +25,16 @@ import org.pageseeder.xmlwriter.XMLWriter;
  *
  * @author Christophe Lauret
  * @author Philip Rutherford
+ *
+ * @version 0.10.2
+ * @since 0.3.0
  */
 public class Fragment extends FragmentBase implements PSMLFragment {
 
   /**
    * the xml content of fragment
    */
-  private String content;
+  private @Nullable String content;
 
   /**
    * Creates a new fragment.
@@ -60,13 +64,15 @@ public class Fragment extends FragmentBase implements PSMLFragment {
 
   @Override
   public void toXML(XMLWriter xml) throws IOException {
+    String t = type();
+    String c = this.content;
     xml.openElement("fragment", true);
     xml.attribute("id", id());
-    if (type() != null) {
-      xml.attribute("type", type());
+    if (t != null) {
+      xml.attribute("type", t);
     }
-    if (this.content != null) {
-      xml.writeXML(this.content);
+    if (c != null) {
+      xml.writeXML(c);
     }
     xml.closeElement();
   }

@@ -26,6 +26,8 @@ import org.pageseeder.xmlwriter.XMLWriter;
  * A PSML XRef fragment.
  *
  * @author Philip Rutherford
+ *
+ * @version 0.10.2
  * @since 0.8.1
  */
 public class XRefFragment extends FragmentBase implements PSMLFragment {
@@ -33,7 +35,7 @@ public class XRefFragment extends FragmentBase implements PSMLFragment {
   /**
    * XRefs inside this fragment.
    */
-  private List<PSXRef> xrefs = new ArrayList<PSXRef>();
+  private List<PSXRef> xrefs = new ArrayList<>();
 
   /**
    * Creates a new XRef fragment with the specified ID.
@@ -63,7 +65,7 @@ public class XRefFragment extends FragmentBase implements PSMLFragment {
 
   /**
    * Set the list of XRefs in this fragment
-   * 
+   *
    * @param xrefs  list of XRefs
    */
   public void setXRefs(List<PSXRef> xrefs) {
@@ -81,53 +83,65 @@ public class XRefFragment extends FragmentBase implements PSMLFragment {
 
   @Override
   public void toXML(XMLWriter psml) throws IOException {
+    String t = type();
     psml.openElement("xref-fragment", true);
     psml.attribute("id", id());
-    if (type() != null) {
-      psml.attribute("type", type());
+    if (t != null) {
+      psml.attribute("type", t);
     }
     for (PSXRef x : this.xrefs) {
       XRefToXML(x, psml);
     }
     psml.closeElement();
   }
-  
+
   /**
    * Outputs an XRef as an XML blockxref element
-   * 
+   *
    * @param psml  for writing output
-   * 
+   *
    * @exception IOException  if problem writing XML
    */
   private void XRefToXML(PSXRef x, XMLWriter psml) throws IOException {
     psml.openElement("blockxref");
-    if (x.getTargetURIId() != null)
+    if (x.getTargetURIId() != null) {
       psml.attribute("uriid", Long.toString(x.getTargetURIId()));
-    if (x.getTargetHref() != null)
+    }
+    if (x.getTargetHref() != null) {
       psml.attribute("href", x.getTargetHref());
-    if (x.getTargetDocid() != null)
+    }
+    if (x.getTargetDocid() != null) {
       psml.attribute("docid", x.getTargetDocid());
-    if (x.getTargetFragment() != null)
+    }
+    if (x.getTargetFragment() != null) {
       psml.attribute("frag", x.getTargetFragment());
+    }
     if (x.getReverseLink()) {
       psml.attribute("reverselink", "true");
-      if (x.getReverseTitle() != null)
+      if (x.getReverseTitle() != null) {
         psml.attribute("reversetitle", x.getReverseTitle());
-      if (x.getReverseType() != null)
+      }
+      if (x.getReverseType() != null) {
         psml.attribute("reversetype", x.getReverseType().toString());
+      }
     } else {
       psml.attribute("reverselink", "false");
     }
-    if (x.getTitle() != null)
+    if (x.getTitle() != null) {
       psml.attribute("title", x.getTitle());
-    if (x.getDisplay() != null)
+    }
+    if (x.getDisplay() != null) {
       psml.attribute("display", x.getDisplay().toString());
-    if (x.getType() != null)
+    }
+    if (x.getType() != null) {
       psml.attribute("type", x.getType().toString());
-    if (x.getLevel() != null)
+    }
+    if (x.getLevel() != null) {
       psml.attribute("level", x.getLevel());
-    if (x.getLabels() != null && x.getLabels().size() > 0)
+    }
+    if (x.getLabels() != null && x.getLabels().size() > 0) {
       psml.attribute("labels", x.getLabelsAsString());
-    psml.closeElement();    
+    }
+    psml.closeElement();
   }
 }

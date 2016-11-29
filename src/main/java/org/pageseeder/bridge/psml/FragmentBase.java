@@ -17,6 +17,7 @@ package org.pageseeder.bridge.psml;
 
 import java.io.IOException;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.xmlwriter.XML.NamespaceAware;
 import org.pageseeder.xmlwriter.XMLStringWriter;
 
@@ -26,7 +27,9 @@ import org.pageseeder.xmlwriter.XMLStringWriter;
  * <p>This class is designed to be extend to create custom fragment types.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ *
+ * @version 0.10.2
+ * @since 0.1.0
  */
 public abstract class FragmentBase implements PSMLFragment {
 
@@ -38,7 +41,7 @@ public abstract class FragmentBase implements PSMLFragment {
   /**
    * The fragment type.
    */
-  private String type;
+  private @Nullable String type;
 
   /**
    * Creates a new untyped fragment with the specified ID.
@@ -67,20 +70,19 @@ public abstract class FragmentBase implements PSMLFragment {
   }
 
   @Override
-  public String type() {
+  public @Nullable String type() {
     return this.type;
   }
 
   @Override
   public String toPSML() {
-    String psml = null;
     try {
       XMLStringWriter xml = new XMLStringWriter(NamespaceAware.No);
       toXML(xml);
-      psml = xml.toString();
+      return xml.toString();
     } catch (IOException ex) {
       // Should NEVER occur since we write to a string
+      throw new IllegalStateException("Unable to write PSML for fragment", ex);
     }
-    return psml;
   }
 }
