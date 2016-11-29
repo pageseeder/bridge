@@ -154,6 +154,7 @@ public final class ServicePath {
       if (t instanceof Literal) {
         url.append(t.toString());
       } else {
+        Objects.requireNonNull(variables[i], "Variables must not be null");
         url.append(t.toString(variables[i++]));
       }
     }
