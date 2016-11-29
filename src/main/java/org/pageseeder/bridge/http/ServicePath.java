@@ -33,7 +33,8 @@ import org.pageseeder.bridge.model.PSURI;
  * Computes the path of a PageSeeder service from a URI template.
  *
  * @author Christophe Lauret
- * @version 0.9.3
+ *
+ * @version 0.10.2
  * @since 0.9.1
  */
 public final class ServicePath {

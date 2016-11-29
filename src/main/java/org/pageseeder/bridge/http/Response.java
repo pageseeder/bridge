@@ -45,6 +45,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.xml.DuplexHandler;
 import org.pageseeder.bridge.xml.Handler;
@@ -90,7 +91,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Christophe Lauret
  *
- * @version 0.9.6
+ * @version 0.10.2
  * @since 0.9.1
  */
 public final class Response implements AutoCloseable {
@@ -142,7 +143,7 @@ public final class Response implements AutoCloseable {
   /**
    * Holds the underlying connection.
    */
-  private final HttpURLConnection _connection;
+  private final @Nullable HttpURLConnection _connection;
 
   /**
    * The HTTP status code.
@@ -152,14 +153,19 @@ public final class Response implements AutoCloseable {
   private final int _statusCode;
 
   /**
+   * The state of response.
+   */
+  private State state = State.available;
+
+  /**
    * Session from request or updated by 'Set-Cookie' header.
    */
-  private final PSSession _session;
+  private final @Nullable PSSession _session;
 
   /**
    * The media type returned by PageSeeder.
    */
-  private final String _mediaType;
+  private final @Nullable String _mediaType;
 
   /**
    * The list of HTTP response headers.
@@ -169,22 +175,17 @@ public final class Response implements AutoCloseable {
   /**
    * The character set detected in the response.
    */
-  private final Charset _charset;
+  private final @Nullable Charset _charset;
 
   /**
    * The message returned by PageSeeder.
    */
-  private final String _message;
-
-  /**
-   * The state of response.
-   */
-  private State state = State.available;
+  private final @Nullable String _message;
 
   /**
    * A service error instance if an error occurred while invoking a service.
    */
-  private ServiceError error = null;
+  private @Nullable ServiceError error = null;
 
   // Constructors
   // ----------------------------------------------------------------------------------------------
@@ -212,7 +213,7 @@ public final class Response implements AutoCloseable {
    * @param statusCode The response status code for that connection
    * @param session    The session used to make the request.
    */
-  Response(HttpURLConnection connection, int statusCode, PSSession session) {
+  Response(HttpURLConnection connection, int statusCode, @Nullable PSSession session) {
     this._connection = connection;
     this._statusCode = statusCode;
     this._session = updateSession(connection, session);
@@ -220,7 +221,7 @@ public final class Response implements AutoCloseable {
     this._mediaType = getMediaType(connection);
     this._charset = detectCharset(connection);
     try {
-      this._message = this._connection.getResponseMessage();
+      this._message = connection.getResponseMessage();
     } catch (IOException ex) {
       throw new IllegalStateException("Connection failed");
     }
@@ -231,7 +232,7 @@ public final class Response implements AutoCloseable {
    *
    * @param message the explanation for the error.
    */
-  Response(String message) {
+  Response(@Nullable String message) {
     this._connection = null;
     this._statusCode = -1;
     this._headers = Collections.emptyList();
@@ -259,7 +260,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the reason string.
    */
-  public String message() {
+  public @Nullable String message() {
     return this._message;
   }
 
@@ -270,7 +271,7 @@ public final class Response implements AutoCloseable {
    *
    * @return The corresponding value or <code>null</code>;
    */
-  public String header(String name) {
+  public @Nullable String header(String name) {
     for (Header h : this._headers) {
       if (h.name().equalsIgnoreCase(name)) return h.value();
     }
@@ -300,7 +301,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the etag of the response derived from the "Etag" response header.
    */
-  public String etag() {
+  public @Nullable String etag() {
     return unwrapEtag(header("Etag"));
   }
 
@@ -316,7 +317,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the corresponding etag value.
    */
-  public static String unwrapEtag(String etag) {
+  public static @Nullable String unwrapEtag(@Nullable String etag) {
     if (etag == null) return null;
     return etag.replaceAll("(?:W/)?\\\"([^\"]+)\\\"", "$1");
   }
@@ -329,8 +330,9 @@ public final class Response implements AutoCloseable {
    * @return the value of "Content-Length" response header or -1 if the content length is not known.
    */
   public long length() {
-    if (this._connection == null) return -1;
-    return this._connection.getContentLengthLong();
+    HttpURLConnection con = this._connection;
+    if (con == null) return -1;
+    return con.getContentLengthLong();
   }
 
   /**
@@ -341,8 +343,9 @@ public final class Response implements AutoCloseable {
    * @return the value of "Date" response header or 0 if the date is not known.
    */
   public long date() {
-    if (this._connection == null) return 0;
-    return this._connection.getDate();
+    HttpURLConnection con = this._connection;
+    if (con == null) return 0;
+    return con.getDate();
   }
 
   /**
@@ -353,8 +356,9 @@ public final class Response implements AutoCloseable {
    * @return the value of "Date" response header or 0 if the date is not known.
    */
   public long modified() {
-    if (this._connection == null) return 0;
-    return this._connection.getLastModified();
+    HttpURLConnection con = this._connection;
+    if (con == null) return 0;
+    return con.getLastModified();
   }
 
   /**
@@ -365,8 +369,9 @@ public final class Response implements AutoCloseable {
    * @return the value of "Expires" response header or 0 if not known.
    */
   public long expires() {
-    if (this._connection == null) return 0;
-    return this._connection.getExpiration();
+    HttpURLConnection con = this._connection;
+    if (con == null) return 0;
+    return con.getExpiration();
   }
 
   /**
@@ -376,9 +381,10 @@ public final class Response implements AutoCloseable {
    *
    * @return the value of "Content-Type" response header.
    */
-  public String getContentType() {
-    if (this._connection == null) return null;
-    return this._connection.getContentType();
+  public @Nullable String getContentType() {
+    HttpURLConnection con = this._connection;
+    if (con == null) return null;
+    return con.getContentType();
   }
 
   /**
@@ -393,7 +399,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the media type of the response content.
    */
-  public String mediaType() {
+  public @Nullable String mediaType() {
     return this._mediaType;
   }
 
@@ -406,16 +412,16 @@ public final class Response implements AutoCloseable {
    *
    * @return the charset used in the response if detected and applicable.
    */
-  public Charset charset() {
+  public @Nullable Charset charset() {
     return this._charset;
   }
 
   /**
-   * Returns the session;
+   * Returns the session.
    *
-   * @return the session.
+   * @return the session if any.
    */
-  public PSSession session() {
+  public @Nullable PSSession session() {
     return this._session;
   }
 
@@ -478,11 +484,10 @@ public final class Response implements AutoCloseable {
    * @throws IOException If the thrown by the underlying connection.
    * @throws IllegalStateException If the response is not available.
    */
-  public InputStream getInputStream() throws IOException {
-    requireAvailable();
-    if (this._connection == null) return null;
+  public @Nullable InputStream getInputStream() throws IOException {
+    HttpURLConnection con = requireAvailable();
     try {
-      return toInputStream(this._connection);
+      return toInputStream(con);
     } finally {
       this.state = State.consumed;
     }
@@ -501,10 +506,11 @@ public final class Response implements AutoCloseable {
    * @throws IOException If the thrown by the underlying connection.
    * @throws IllegalStateException If the response is not available.
    */
-  public Reader getReader() throws IOException {
-    if (this._charset == null)
+  public @Nullable Reader getReader() throws IOException {
+    Charset charset = this._charset;
+    if (charset == null)
       throw new IllegalStateException("Unable to determine the charset for this resource.");
-    return getReader(this._charset);
+    return getReader(charset);
   }
 
   /**
@@ -520,11 +526,10 @@ public final class Response implements AutoCloseable {
    * @throws IOException If the thrown by the underlying connection.
    * @throws IllegalStateException If the response is not available.
    */
-  public Reader getReader(Charset charset) throws IOException {
-    requireAvailable();
-    if (this._connection == null) return null;
+  public @Nullable Reader getReader(Charset charset) throws IOException {
+    HttpURLConnection con = requireAvailable();
     try {
-      return new InputStreamReader(toInputStream(this._connection), charset);
+      return new InputStreamReader(toInputStream(con), charset);
     } finally {
       this.state = State.consumed;
     }
@@ -541,10 +546,10 @@ public final class Response implements AutoCloseable {
    * @throws ContentException If an error occurred while consuming the content.
    */
   public void consumeBytes(OutputStream out) {
-    requireAvailable();
+    HttpURLConnection con = requireAvailable();
     try {
-      int length = this._connection.getContentLength();
-      try (BufferedInputStream in = new BufferedInputStream(toInputStream(this._connection))){
+      int length = con.getContentLength();
+      try (BufferedInputStream in = new BufferedInputStream(toInputStream(con))){
         copy(in, out, length);
       }
     } catch (IOException ex) {
@@ -563,6 +568,7 @@ public final class Response implements AutoCloseable {
    *
    * @throws ContentException If an error occurred while consuming the content.
    */
+  @SuppressWarnings("null")
   public byte[] consumeBytes() {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     consumeBytes(bytes);
@@ -578,9 +584,9 @@ public final class Response implements AutoCloseable {
    * @throws ContentException If an error occurred while consuming the content.
    */
   public void consume() {
-    requireAvailable();
+    HttpURLConnection con = requireAvailable();
     try {
-      try (InputStream in = toInputStream(this._connection)){
+      try (InputStream in = toInputStream(con)){
         while (-1 != in.read()) {
           // do nothing
         }
@@ -604,11 +610,11 @@ public final class Response implements AutoCloseable {
    * @throws ContentException If an error occurred while consuming the content.
    */
   public void consumeChars(Writer out) {
-    requireAvailable();
+    HttpURLConnection con = requireAvailable();
     try {
       int length = (int)length();
       Charset charset = charset();
-      try (Reader r = new InputStreamReader(new BufferedInputStream(toInputStream(this._connection)), charset)) {
+      try (Reader r = new InputStreamReader(new BufferedInputStream(toInputStream(con)), charset)) {
         copy(r, out, length);
       }
     } catch (IOException ex) {
@@ -651,8 +657,6 @@ public final class Response implements AutoCloseable {
    * @throws ContentException If an error occurred while consuming the content.
    */
   public void consumeXML(DefaultHandler handler) throws ContentException {
-    requireAvailable();
-    requireXML();
     try {
       handleXML(this, handler);
     } catch (IOException ex) {
@@ -695,7 +699,7 @@ public final class Response implements AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
-  public <T> T consumeItem(Handler<T> handler) throws ContentException {
+  public <T> @Nullable T consumeItem(Handler<T> handler) throws ContentException {
     consumeXML(handler);
     return handler.get();
   }
@@ -713,8 +717,6 @@ public final class Response implements AutoCloseable {
    * @throws ContentException If an error occurred while consuming the content.
    */
   public void consumeXML(XMLWriter xml) throws ContentException {
-    requireAvailable();
-    requireXML();
     try {
       // Parse with the XML Copy Handler
       XMLCopy handler = new XMLCopy(xml);
@@ -740,6 +742,7 @@ public final class Response implements AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
+  @SuppressWarnings("null")
   public void consumeXML(XMLWriter xml, Templates templates) throws ContentException {
     consumeXML(xml, templates, Collections.<String,String>emptyMap());
   }
@@ -762,8 +765,6 @@ public final class Response implements AutoCloseable {
    */
   public void consumeXML(XMLWriter xml, Templates templates, Map<String, String> parameters)
       throws ContentException {
-    requireAvailable();
-    requireXML();
     try {
       transformXML(this, xml, templates, parameters);
     } catch (IOException ex) {
@@ -784,7 +785,7 @@ public final class Response implements AutoCloseable {
    * @throws ContentException If an error occurred while consuming the content.
    * @throws IllegalStateException If the response is not available.
    */
-  public ServiceError consumeServiceError() {
+  public @Nullable ServiceError consumeServiceError() {
     this.error = consumeItem(new ServiceErrorHandler());
     return this.error;
   }
@@ -803,7 +804,7 @@ public final class Response implements AutoCloseable {
    * @throws ContentException If an error occurred while consuming the content.
    * @throws IllegalStateException If the response is in a failed state.
    */
-  public ServiceError getServiceError() {
+  public @Nullable ServiceError getServiceError() {
     if (this.state == State.consumed)
       return this.error;
     else
@@ -845,7 +846,7 @@ public final class Response implements AutoCloseable {
    * @param connection The HTTP connection
    * @return the media type from the HTTP response stripped of its charset sub-declaration.
    */
-  private static String getMediaType(HttpURLConnection connection) {
+  private static @Nullable String getMediaType(HttpURLConnection connection) {
     String contentType = connection.getContentType();
     return Header.toMediaType(contentType);
   }
@@ -865,7 +866,7 @@ public final class Response implements AutoCloseable {
    *
    * @return a new session, the updated session or <code>null</code>
    */
-  private static PSSession updateSession(HttpURLConnection connection, PSSession session) {
+  private static @Nullable PSSession updateSession(HttpURLConnection connection, @Nullable PSSession session) {
     String cookie = connection.getHeaderField("Set-Cookie");
     // A new session has been created.
     if (cookie != null)
@@ -919,7 +920,7 @@ public final class Response implements AutoCloseable {
    *
    * @return a new list of headers
    */
-  private static final Charset detectCharset(HttpURLConnection connection) {
+  private static final @Nullable Charset detectCharset(HttpURLConnection connection) {
     String contentType = connection.getHeaderField("Content-Type");
     return Header.toCharset(contentType);
   }
@@ -932,9 +933,13 @@ public final class Response implements AutoCloseable {
    *
    * @throws IllegalStateException if that isn't the case.
    */
-  private void requireAvailable() {
+  private HttpURLConnection requireAvailable() {
     switch (this.state) {
-      case available: return;
+      case available:
+        HttpURLConnection connection = this._connection;
+        if (connection == null)
+          throw new IllegalArgumentException("This response cannot be consumed because there is not connection!");
+        return connection;
       case failed:
         throw new IllegalArgumentException("This response cannot be consumed because the connection failed.");
       case consumed:
@@ -962,17 +967,21 @@ public final class Response implements AutoCloseable {
    * @param handler    Handles the XML.
    * @param duplex     Whether to use duplex mode
    *
+   * @throws IllegalStateException If the response is not available.
    * @throws IOException If an error occurs while writing the XML.
    */
   private static void handleXML(Response response, DefaultHandler handler)
       throws IOException {
+    // Ensure we a connection that returned XML content
+    HttpURLConnection connection = response.requireAvailable();
+    response.requireXML();
 
     // Setup the factory
     SAXParserFactory factory = SAXParserFactory.newInstance();
     factory.setValidating(false);
     factory.setNamespaceAware(true);
 
-    HttpURLConnection connection = response._connection;
+
     try (InputStream in = toInputStream(connection)) {
       InputSource source = new InputSource(in);
       source.setSystemId(connection.getURL().toString());
@@ -1008,15 +1017,19 @@ public final class Response implements AutoCloseable {
    * @return <code>true</code> if the data was parsed without error;
    *         <code>false</code> otherwise.
    *
+   * @throws IllegalStateException If the response is not available.
    * @throws IOException If an error occurs while writing the XML.
    */
   private static boolean transformXML(Response response, XMLWriter xml,
       Templates templates, Map<String, String> parameters) throws IOException {
-    boolean ok = true;
+    // Ensure we a connection that returned XML content
+    HttpURLConnection connection = response.requireAvailable();
+    response.requireXML();
 
+    boolean ok = true;
     // Create an XML Buffer
     StringWriter buffer = new StringWriter();
-    HttpURLConnection connection = response._connection;
+
     try (InputStream in = toInputStream(connection)) {
 
       // Setup the source
@@ -1059,7 +1072,7 @@ public final class Response implements AutoCloseable {
    * @return <code>true</code> if equal to "text/xml" or "application/xml" or end with "+xml";
    *         <code>false</code> otherwise.
    */
-  private static boolean isXML(String mediaType) {
+  private static boolean isXML(@Nullable String mediaType) {
     if (mediaType == null) return false;
     return "text/xml".equals(mediaType)
         || "application/xml".equals(mediaType)
@@ -1087,10 +1100,17 @@ public final class Response implements AutoCloseable {
    * @throws IOException If the thrown by the underlying connection.
    */
   private static InputStream toInputStream(HttpURLConnection connection) throws IOException {
-    if (isSuccessful(connection.getResponseCode()))
-      return debugStream(connection.getInputStream(), connection.getContentLength(), System.out);
-    else
-      return debugStream(connection.getErrorStream(), connection.getContentLength(), System.err);
+    if (isSuccessful(connection.getResponseCode())) {
+      InputStream in = connection.getInputStream();
+      if (in == null)
+        throw new IllegalArgumentException("Unable to read connection output");
+      return debugStream(in, connection.getContentLength(), System.out);
+    } else {
+      InputStream err = connection.getErrorStream();
+      if (err == null)
+        throw new IllegalArgumentException("Unable to read connection error output");
+      return debugStream(err, connection.getContentLength(), System.err);
+    }
   }
 
   /**
@@ -1189,7 +1209,7 @@ public final class Response implements AutoCloseable {
     private final XMLReader reader;
 
     /** Service error handler will be set if an error is detected */
-    private ServiceErrorHandler seHandler = null;
+    private @Nullable ServiceErrorHandler seHandler = null;
 
     /**
      * @param reader   The XML currently processing
@@ -1226,8 +1246,9 @@ public final class Response implements AutoCloseable {
      *
      * @return the service error instance or <code>null</code>
      */
-    public ServiceError getServiceError() {
-      if (this.seHandler != null) return this.seHandler.get();
+    public @Nullable ServiceError getServiceError() {
+      ServiceErrorHandler seh = this.seHandler;
+      if (seh != null) return seh.get();
       else return null;
     }
 

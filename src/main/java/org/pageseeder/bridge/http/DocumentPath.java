@@ -18,6 +18,7 @@ package org.pageseeder.bridge.http;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSConfig;
 
 /**
@@ -36,7 +37,8 @@ import org.pageseeder.bridge.PSConfig;
  * are used verbatim.
  *
  * @author Christophe Lauret
- * @version 0.9.4
+ *
+ * @version 0.10.2
  * @since 0.9.4
  */
 public final class DocumentPath {
@@ -126,7 +128,7 @@ public final class DocumentPath {
    *
    * @return the last step or <code>null</code> if empty.
    */
-  public String filename() {
+  public @Nullable String filename() {
     if (this._steps.length == 0) return null;
     String[] steps = this._steps;
     return steps[steps.length-1];
@@ -137,7 +139,7 @@ public final class DocumentPath {
    *
    * @return the path corresponding to the parent or <code>null</code>
    */
-  public DocumentPath parent() {
+  public @Nullable DocumentPath parent() {
     if (this._steps.length == 0) return null;
     String[] current = this._steps;
     String[] parent = Arrays.copyOf(current, current.length-1);
@@ -190,7 +192,7 @@ public final class DocumentPath {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(@Nullable Object obj) {
     if (this == obj) return true;
     if (obj == null) return false;
     if (getClass() != obj.getClass()) return false;

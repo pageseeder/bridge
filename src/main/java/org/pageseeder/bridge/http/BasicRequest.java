@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
@@ -33,7 +34,8 @@ import org.pageseeder.bridge.net.UsernamePassword;
  * Base class for HTTP requests to PageSeeder.
  *
  * @author Christophe Lauret
- * @version 0.9.6
+ *
+ * @version 0.10.2
  * @since 0.9.1
  */
 abstract class BasicRequest {
@@ -78,7 +80,7 @@ abstract class BasicRequest {
   /**
    * Any credentials used when making the request.
    */
-  protected PSCredentials credentials;
+  protected @Nullable PSCredentials credentials;
 
   /**
    * The PageSeeder configuration to use.
@@ -177,12 +179,12 @@ abstract class BasicRequest {
   public BasicRequest using(PSCredentials credentials) {
     this.credentials = credentials;
     // Let's update the headers
-    if (this.credentials instanceof PSToken) {
+    if (credentials instanceof PSToken) {
       // Use OAuth bearer token (PageSeeder 5.9+)
-      header("Authorization", "Bearer "+((PSToken) this.credentials).token());
+      header("Authorization", "Bearer "+((PSToken) credentials).token());
     } else if (this.credentials instanceof UsernamePassword) {
       // Basic authorization (PageSeeder 5.6+)
-      header("Authorization", ((UsernamePassword) this.credentials).toBasicAuthorization());
+      header("Authorization", ((UsernamePassword) credentials).toBasicAuthorization());
     } else {
       removeHeader("Authorization");
     }
@@ -233,7 +235,7 @@ abstract class BasicRequest {
    *
    * @return The value of the corresponding parameter or <code>null</code>
    */
-  public String header(String name) {
+  public @Nullable String header(String name) {
     for (Header h : this._headers) {
       if (h.name().equalsIgnoreCase(name)) return h.value();
     }
@@ -247,7 +249,7 @@ abstract class BasicRequest {
    *
    * @return The value of the corresponding parameter or <code>null</code>
    */
-  public String parameter(String name) {
+  public @Nullable String parameter(String name) {
     for (Parameter p : this._parameters) {
       if (p.name().equals(name)) return p.value();
     }
@@ -259,7 +261,7 @@ abstract class BasicRequest {
    *
    * @return The credentials used by this request
    */
-  public PSCredentials credentials() {
+  public @Nullable PSCredentials credentials() {
     return this.credentials;
   }
 
@@ -438,6 +440,7 @@ abstract class BasicRequest {
    */
   protected void removeHeader(String name) {
     for (Iterator<Header> i = this._headers.iterator(); i.hasNext();) {
+      @SuppressWarnings("null")
       Header h = i.next();
       if (h.name().equalsIgnoreCase(name)) {
         i.remove();
@@ -453,7 +456,7 @@ abstract class BasicRequest {
    *
    * @return The header that was removed
    */
-  protected Header getHeader(String name) {
+  protected @Nullable Header getHeader(String name) {
     for (Header h : this._headers) {
       if (h.name().equalsIgnoreCase(name)) return h;
     }
@@ -504,6 +507,7 @@ abstract class BasicRequest {
     String[] pair = query.split("&");
     if (pair.length > 0) {
       for (String p : pair) {
+        @SuppressWarnings("null")
         Parameter param = Parameter.newParameter(p);
         parameters.add(param);
       }

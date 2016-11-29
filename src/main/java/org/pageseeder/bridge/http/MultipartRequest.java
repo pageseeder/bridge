@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
 
@@ -51,7 +52,8 @@ import org.pageseeder.bridge.PSSession;
  * </pre>
  *
  * @author Christophe Lauret
- * @version 0.10.1
+ *
+ * @version 0.10.2
  * @since 0.9.1
  */
 public final class MultipartRequest extends BasicRequest {
@@ -69,12 +71,12 @@ public final class MultipartRequest extends BasicRequest {
   /**
    * The underlying HTTP connection.
    */
-  private HttpURLConnection connection = null;
+  private @Nullable HttpURLConnection connection = null;
 
   /**
    * The output stream used to write the data to push through the connection (e.g. Multipart).
    */
-  private DataOutputStream out = null;
+  private @Nullable DataOutputStream out = null;
 
   /**
    * Creates a new multipart request to PageSeeder.
@@ -178,37 +180,38 @@ public final class MultipartRequest extends BasicRequest {
    *
    * @throws IOException Should any error occur while writing
    */
-  public MultipartRequest addXMLPart(String part, Map<String, String> headers) throws IOException {
-    if (this.out == null) {
-      init();
+  public MultipartRequest addXMLPart(String part, @Nullable Map<String, String> headers) throws IOException {
+    DataOutputStream o = this.out;
+    if (o == null) {
+      o = init();
     }
     try {
       // Start with boundary
-      write("--", this.out);
-      write(this._boundary, this.out);
-      writeCRLF(this.out);
+      write("--", o);
+      write(this._boundary, o);
+      writeCRLF(o);
 
       // Headers if specified
       if (headers != null) {
         for (Entry<String, String> h : headers.entrySet()) {
           String name = h.getKey();
           if (!"content-type".equalsIgnoreCase(name)) {
-            write(name + ": " + headers.get(h.getValue()), this.out);
-            writeCRLF(this.out);
+            write(name + ": " + headers.get(h.getValue()), o);
+            writeCRLF(o);
           }
         }
       }
 
       // Write content type
-      write("Content-Type: text/xml; charset=\"utf-8\"", this.out);
-      writeCRLF(this.out);
-      writeCRLF(this.out);
-      write(part, this.out);
-      writeCRLF(this.out);
-      this.out.flush();
+      write("Content-Type: text/xml; charset=\"utf-8\"", o);
+      writeCRLF(o);
+      writeCRLF(o);
+      write(part, o);
+      writeCRLF(o);
+      o.flush();
 
     } catch (IOException ex) {
-      closeQuietly(this.out);
+      closeQuietly(o);
       this.out = null;
       throw ex;
     }
@@ -240,36 +243,37 @@ public final class MultipartRequest extends BasicRequest {
    * @throws IOException Should any error occur while writing
    */
   public MultipartRequest addPart(InputStream in, String filename) throws IOException {
-    if (this.out == null) {
-      init();
+    DataOutputStream o = this.out;
+    if (o == null) {
+      o = init();
     }
     try {
 
       // Start with boundary
-      write("--", this.out);
-      write(this._boundary, this.out);
-      writeCRLF(this.out);
+      write("--", o);
+      write(this._boundary, o);
+      writeCRLF(o);
 
       // Write headers
-      write("Content-Disposition: form-data; name=\"file-1\"; filename=\"" + filename + "\"", this.out);
-      writeCRLF(this.out);
-      write("Content-Type: " + URLConnection.guessContentTypeFromName(filename), this.out);
-      writeCRLF(this.out);
-      writeCRLF(this.out);
-      this.out.flush();
+      write("Content-Disposition: form-data; name=\"file-1\"; filename=\"" + filename + "\"", o);
+      writeCRLF(o);
+      write("Content-Type: " + URLConnection.guessContentTypeFromName(filename), o);
+      writeCRLF(o);
+      writeCRLF(o);
+      o.flush();
 
       // Copy binary file content
       try {
-        copy(in, this.out);
+        copy(in, o);
       } finally {
         closeQuietly(in);
       }
 
-      writeCRLF(this.out);
-      this.out.flush();
+      writeCRLF(o);
+      o.flush();
 
     } catch (IOException ex) {
-      closeQuietly(this.out);
+      closeQuietly(o);
       this.out = null;
       throw ex;
     }
@@ -287,26 +291,27 @@ public final class MultipartRequest extends BasicRequest {
    * @throws IOException Should any error occur while writing
    */
   public MultipartRequest addParameterPart(String name, String value) throws IOException {
-    if (this.out == null) {
-      init();
+    DataOutputStream o = this.out;
+    if (o == null) {
+      o = init();
     }
     try {
 
       // Start with boundary
-      write("--", this.out);
-      write(this._boundary, this.out);
-      writeCRLF(this.out);
+      write("--", o);
+      write(this._boundary, o);
+      writeCRLF(o);
 
       // Write Parameter
-      write("Content-Disposition: form-data; name=\"" + name + "\"", this.out);
-      writeCRLF(this.out);
-      writeCRLF(this.out);
-      write(value, this.out);
-      writeCRLF(this.out);
-      this.out.flush();
+      write("Content-Disposition: form-data; name=\"" + name + "\"", o);
+      writeCRLF(o);
+      writeCRLF(o);
+      write(value, o);
+      writeCRLF(o);
+      o.flush();
 
     } catch (IOException ex) {
-      closeQuietly(this.out);
+      closeQuietly(o);
       this.out = null;
       throw ex;
     }
@@ -321,8 +326,9 @@ public final class MultipartRequest extends BasicRequest {
    * @throws IOException If thrown by the close method.
    */
   public void closeOutput() throws IOException {
-    if (this.out != null) {
-      this.out.close();
+    DataOutputStream o = this.out;
+    if (o != null) {
+      o.close();
     }
   }
 
@@ -349,7 +355,9 @@ public final class MultipartRequest extends BasicRequest {
       if (this.credentials instanceof PSSession) {
         session = (PSSession)this.credentials;
       }
-      return new Response(this.connection, this.connection.getResponseCode(), session);
+      HttpURLConnection con = this.connection;
+      if (con != null) return new Response(con, con.getResponseCode(), session);
+      else return new Response("No connection or connection was not established yet.");
     } catch (IOException ex) {
       return new Response(ex.getMessage());
     }
@@ -358,8 +366,14 @@ public final class MultipartRequest extends BasicRequest {
   // Private
   // --------------------------------------------------------------------------
 
-
-  private void init() throws IOException {
+  /**
+   * Initializes the connection and return the output stream.
+   *
+   * @return the data output stream on the connection to write data to upload.
+   *
+   * @throws IOException If a network or I/O error occurs on the connection.
+   */
+  private DataOutputStream init() throws IOException {
     URL url = toURL();
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setDoOutput(true);
@@ -379,7 +393,7 @@ public final class MultipartRequest extends BasicRequest {
 
     // Prepare the connection for
     connection.setDoInput(true);
-    this.out = new DataOutputStream(connection.getOutputStream());
+    DataOutputStream out = new DataOutputStream(connection.getOutputStream());
 
     // We serialize the HTTP parameters first
 //    if (!this._parameters.isEmpty()) {
@@ -390,6 +404,10 @@ public final class MultipartRequest extends BasicRequest {
 
     // Returns the connection
     this.connection = connection;
+    this.out = out;
+
+    // Return the output stream
+    return out;
   }
 
   /**
@@ -418,12 +436,13 @@ public final class MultipartRequest extends BasicRequest {
    * @throws IOException Should an exception be returns while opening the connection
    */
   private void endMultipart() throws IOException {
-    if (this.out != null) {
-      write("--", this.out);
-      write(this._boundary, this.out);
-      write("--", this.out);
-      writeCRLF(this.out);
-      this.out.flush();
+    OutputStream o = this.out;
+    if (o != null) {
+      write("--", o);
+      write(this._boundary, o);
+      write("--", o);
+      writeCRLF(o);
+      o.flush();
     }
   }
 
@@ -478,9 +497,10 @@ public final class MultipartRequest extends BasicRequest {
    *
    * @throws MalformedURLException If the URL is not well-formed
    */
+  @Override
   public URL toURL() throws MalformedURLException {
     String url = toURLString();
-    // We serialize the HTTP parameters first
+    // We serialize the HTTP parameters first and put them on the query
     if (!this._parameters.isEmpty()) {
       url = url+'?'+ encodeParameters();
     }

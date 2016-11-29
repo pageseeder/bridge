@@ -17,6 +17,7 @@
  * A simple fluent interface to interact with PageSeeder via HTTP.
  *
  * @author Christophe Lauret
- * @since 0.9.1
+ * @version 0.10.2
  */
+@org.eclipse.jdt.annotation.NonNullByDefault
 package org.pageseeder.bridge.http;

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
@@ -77,7 +78,8 @@ import org.slf4j.LoggerFactory;
  * </pre>
  *
  * @author Christophe Lauret
- * @version 0.9.6
+ *
+ * @version 0.10.2
  * @since 0.9.1
  */
 public final class Request extends BasicRequest {
@@ -102,7 +104,7 @@ public final class Request extends BasicRequest {
   /**
    * The body of the resource (used for PUT requests).
    */
-  private byte[] body;
+  private byte @Nullable[] body;
 
   /**
    * Creates a new request to PageSeeder.
@@ -291,7 +293,7 @@ public final class Request extends BasicRequest {
    * @return The value of the corresponding parameter or <code>null</code>
    */
   @Override
-  public String header(String name) {
+  public @Nullable String header(String name) {
     // If a content header is requested, we recompute them
     if (name.toLowerCase().startsWith("content-")) {
       computeBodyContent();
@@ -424,7 +426,7 @@ public final class Request extends BasicRequest {
    *
    * @return the body if any.
    */
-  private byte[] computeBodyContent() {
+  private byte @Nullable[] computeBodyContent() {
     byte[] data = null;
     // Compute the data
     if (this._method == Method.POST || this._method == Method.PATCH) {

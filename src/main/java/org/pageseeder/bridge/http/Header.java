@@ -26,11 +26,14 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * A HTTP header
  *
  * @author Christophe Lauret
- * @version 0.9.1
+ *
+ * @version 0.10.2
  * @since 0.9.1
  */
 public final class Header {
@@ -139,7 +142,7 @@ public final class Header {
    *
    * @return the corresponding mediatype.
    */
-  public static String toMediaType(String contentType) {
+  public static @Nullable String toMediaType(@Nullable String contentType) {
     // Strip any content type parameter ";" if any
     if (contentType != null && contentType.indexOf(";") > 0) return contentType.substring(0, contentType.indexOf(";")).trim();
     return contentType;
@@ -162,7 +165,7 @@ public final class Header {
    * @throws UnsupportedCharsetException If no support for the named charset is available
    *         in this instance of the Java virtual machine
    */
-  public static Charset toCharset(String contentType) {
+  public static @Nullable Charset toCharset(@Nullable String contentType) {
     if (contentType == null) return null;
     Charset charset = null;
     String lc = contentType.toLowerCase();
