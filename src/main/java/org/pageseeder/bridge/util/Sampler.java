@@ -24,13 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.pageseeder.bridge.model.PSMember;
 
 /**
  * A simple class to generate sample data.
  *
  * @author Christophe Lauret
- * @version 0.3.7
+ *
+ * @version 0.10.2
  * @since 0.1.0
  */
 public final class Sampler {
@@ -38,12 +40,12 @@ public final class Sampler {
   /**
    * A list of first names to use.
    */
-  private static String[] firstNames = null;
+  private static @NonNull String[] firstNames = load("firstnames.txt");
 
   /**
    * A list of last names to use.
    */
-  private static String[] lastNames = null;
+  private static @NonNull String[] lastNames = load("lastnames.txt");
 
   /**
    * Random
@@ -61,7 +63,6 @@ public final class Sampler {
    * @param domain the email domain
    */
   public void setEmailDomain(String domain) {
-    if (domain == null) throw new NullPointerException();
     if (domain.length() == 0) throw new IllegalArgumentException();
     this.emailDomain = domain;
   }
@@ -79,9 +80,6 @@ public final class Sampler {
    * @return A random first name.
    */
   public String nextFirstName() {
-    if (firstNames == null) {
-      firstNames = load("firstnames.txt");
-    }
     return firstNames[this.random.nextInt(firstNames.length)];
   }
 
@@ -91,9 +89,6 @@ public final class Sampler {
    * @return A random last name.
    */
   public String nextLastName() {
-    if (lastNames == null) {
-      lastNames = load("lastnames.txt");
-    }
     return lastNames[this.random.nextInt(lastNames.length)];
   }
 
@@ -178,7 +173,7 @@ public final class Sampler {
    *
    * @throws IllegalArgumentException If any error occurs.
    */
-  private static String[] load(String filename) {
+  private static @NonNull String[] load(String filename) {
     URL url = Sampler.class.getResource(filename);
     if (url == null)
       throw new IllegalArgumentException(filename);
