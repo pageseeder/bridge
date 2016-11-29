@@ -25,15 +25,19 @@ repositories {
 dependencies {
 
   compile (
-    'org.slf4j:slf4j-api:1.7.12',
+    'org.slf4j:slf4j-api:1.7.21',
     'org.pageseeder.xmlwriter:pso-xmlwriter:1.0.2',
-    'net.sf.ehcache:ehcache:2.8.6',
+    'net.sf.ehcache:ehcache:2.8.8',
     'javax.cache:cache-api:1.0.0',
+  )
+
+  compileOnly (
+    'org.eclipse.jdt:org.eclipse.jdt.annotation:2.0.0'
   )
 
   testCompile (
     'junit:junit:4.12',
-    'org.slf4j:slf4j-simple:1.7.12'
+    'org.slf4j:slf4j-simple:1.7.21'
   )
 
 }
@@ -57,8 +61,8 @@ allprojects {
   jar {
     manifest {
       attributes 'Implementation-Vendor':  'Allette Systems',
-               'Implementation-Title':   "$title",
-               'Implementation-Version': "$globalVersion"
+                 'Implementation-Title':   "$title",
+                 'Implementation-Version': "$globalVersion"
     }
   }
 }
