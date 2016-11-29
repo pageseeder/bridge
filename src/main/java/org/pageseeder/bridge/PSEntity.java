@@ -17,6 +17,8 @@ package org.pageseeder.bridge;
 
 import java.io.Serializable;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * @author Christophe Lauret
  * @version 0.2.1
@@ -27,12 +29,12 @@ public interface PSEntity extends Serializable {
   /**
    * @return the private ID of the PageSeeder entity in the database.
    */
-  Long getId();
+  @Nullable Long getId();
 
   /**
    * @return the public ID for the PageSeeder entity.
    */
-  String getKey();
+  @Nullable String getKey();
 
   /**
    * Determines whether the entity is valid based on known PageSeeder constraints.
@@ -70,7 +72,7 @@ public interface PSEntity extends Serializable {
    *
    * @return the identifier to use when connecting to PageSeeder.
    */
-  String getIdentifier();
+  @Nullable String getIdentifier();
 
   /**
    * Determines whether this object is valid based on known PageSeeder constraints.

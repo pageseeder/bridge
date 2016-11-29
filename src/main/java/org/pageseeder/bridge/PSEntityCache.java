@@ -15,6 +15,7 @@
  */
 package org.pageseeder.bridge;
 
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Interface for all entity caches.
@@ -41,7 +42,7 @@ public interface PSEntityCache<E extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the ID or element is <code>null</code>
    */
-  E get(Long id);
+  @Nullable E get(Long id);
 
   /**
    * Retrieve the object in the cache for the specified key.
@@ -50,7 +51,7 @@ public interface PSEntityCache<E extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  E get(String key);
+  @Nullable E get(String key);
 
   /**
    * Retrieve the object in the cache from an instance.
@@ -59,7 +60,7 @@ public interface PSEntityCache<E extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  E get(E entity);
+  @Nullable E get(E entity);
 
   /**
    * Retrieve the object in the cache for the specified key.
@@ -88,7 +89,7 @@ public interface PSEntityCache<E extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  Long getVersion(String key);
+  @Nullable Long getVersion(String key);
 
   /**
    * Removes the element.

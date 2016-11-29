@@ -15,11 +15,13 @@
  */
 package org.pageseeder.bridge;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.http.Method;
 import org.pageseeder.bridge.http.Request;
 import org.pageseeder.bridge.http.Response;
 import org.pageseeder.bridge.http.Service;
 import org.pageseeder.bridge.xml.BasicHandler;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 
@@ -127,6 +129,7 @@ public final class Version {
   /**
    * Return the PageSeeder version for the specified URL.
    */
+  @Nullable
   public static Version getVersion(PSConfig config) {
     Response response = new Request(Method.GET, Service.get_version).config(config).response();
     if (response.isSuccessful()) return response.consumeItem(new VersionHandler());
@@ -138,16 +141,24 @@ public final class Version {
    */
   private static class VersionHandler extends BasicHandler<Version> {
 
+    private final Logger _logger = LoggerFactory.getLogger(Version.class);
+
     @Override
     public void startElement(String element, Attributes atts) {
       if (isElement("version")) {
-        try {
-          int major = Integer.parseInt(atts.getValue("major"));
-          int build = Integer.parseInt(atts.getValue("build"));
-          String version = atts.getValue("string");
-          add(new Version(major, build, version));
-        } catch (NumberFormatException ex) {
-          LoggerFactory.getLogger(Version.class).error("version is not formatted correctly", ex);
+        String m = atts.getValue("major");
+        String b = atts.getValue("build");
+        String v = atts.getValue("string");
+        if (m == null || b == null || v == null) {
+          this._logger.error("Version is not formatted correctly major={}, build={}, version={}", m, b, v);
+        } else {
+          try {
+            int major = Integer.parseInt(m);
+            int build = Integer.parseInt(b);
+            add(new Version(major, build, v));
+          } catch (NumberFormatException ex) {
+            this._logger.error("Version is not formatted correctly", ex);
+          }
         }
       }
     }

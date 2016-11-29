@@ -17,6 +17,8 @@ package org.pageseeder.bridge;
 
 import java.io.Serializable;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * A simple object to represent a PageSeeder session.
  *
@@ -112,7 +114,7 @@ public final class PSSession implements PSCredentials, Serializable {
    * @param cookie The cookie value
    * @return the corresponding instance or <code>null</code> if the cookie could be parsed
    */
-  public static PSSession parseSetCookieHeader(String cookie) {
+  public static @Nullable PSSession parseSetCookieHeader(String cookie) {
     String name = "JSESSIONID=";
     if (cookie != null && cookie.length() > name.length()) {
       int from = cookie.indexOf(name);

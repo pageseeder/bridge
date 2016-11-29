@@ -21,6 +21,8 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.ServiceLoader;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.spi.ConfigProvider;
 
 /**
@@ -43,7 +45,7 @@ public final class PSConfig {
   protected static final String DEFAULT_PREFIX = "/ps";
 
   /** Default config instance. */
-  private static volatile PSConfig singleton = null;
+  private static volatile @Nullable PSConfig singleton = null;
 
   /**
    * The base URL for the API.
@@ -63,12 +65,12 @@ public final class PSConfig {
   /**
    * The PageSeeder version for this configuration.
    */
-  private volatile Version version;
+  private volatile @Nullable Version version;
 
   /**
    * The PageSeeder version to use for Services.
    */
-  private Version serviceUse;
+  private @Nullable Version serviceUse;
 
   /**
    * Whether to use the strict mode for service requests.
@@ -165,7 +167,7 @@ public final class PSConfig {
    * Implementation note: the version is lazily loaded and stored
    * on this object once it has been retrieved.
    */
-  public synchronized Version getVersion() {
+  public synchronized @Nullable Version getVersion() {
     if (this.version == null) {
       this.version = Version.getVersion(this);
     }
@@ -178,7 +180,7 @@ public final class PSConfig {
    * @return which API version should be requested for the services
    *       or <code>null</code> to use the current PageSeeder version.
    */
-  public Version getServiceAPIVersion() {
+  public @Nullable Version getServiceAPIVersion() {
     return this.serviceUse;
   }
 
@@ -290,11 +292,13 @@ public final class PSConfig {
    * @return the default configuration.
    */
   public static PSConfig getDefault() {
-    if (singleton == null) {
-      singleton = loadFromService();
-      if (singleton == null) throw new IllegalStateException("PSConfig is not configured");
+    PSConfig config = singleton;
+    if (config == null) {
+      config = loadFromService();
+      if (config == null) throw new IllegalStateException("PSConfig is not configured");
+      singleton = config;
     }
-    return singleton;
+    return config;
   }
 
   // Factory methods
@@ -310,14 +314,16 @@ public final class PSConfig {
    * @throws IllegalArgumentException If any or the properties yield to an malformed URL
    */
   public static PSConfig newInstance(Properties p) {
-    String prefix = p.getProperty("siteprefix", DEFAULT_PREFIX);
+    @SuppressWarnings("null")
+    @NonNull String prefix = p.getProperty("siteprefix", DEFAULT_PREFIX);
     try {
       // Compute URL
       URL uri = toBaseURL(p, "uri", DEFAULT_WEBSITE);
       URL api = toBaseURL(p, "api", DEFAULT_API);
       PSConfig config = new PSConfig(uri, api, prefix);
-      if (p.containsKey("api-version")) {
-        config.setServiceAPIVersion(Version.parse(p.getProperty("api-version")));
+      String apiVersion = p.getProperty("api-version");
+      if (apiVersion != null) {
+        config.setServiceAPIVersion(Version.parse(apiVersion));
       }
       if ("true".equals(p.getProperty("api-strict"))) {
         config.setServiceAPIStrict(true);
@@ -375,8 +381,10 @@ public final class PSConfig {
    * @throws MalformedURLException
    */
   private static URL toBaseURL(Properties p, String start, URI fallback) throws MalformedURLException {
-    if (p.containsKey(start+"-url")) return toBaseURL(p.getProperty(start+"-url"));
-    if (p.containsKey("url")) return toBaseURL(p.getProperty("url"));
+    String url = p.getProperty(start+"-url");
+    if (url != null) return toBaseURL(url);
+    url = p.getProperty("url");
+    if (url != null) return toBaseURL(url);
     return fallback.toURL();
   }
 
@@ -398,7 +406,7 @@ public final class PSConfig {
    *
    * @return the configuration from the SPI
    */
-  private static PSConfig loadFromService() {
+  private static @Nullable PSConfig loadFromService() {
     ServiceLoader<ConfigProvider> services = ServiceLoader.load(ConfigProvider.class);
     PSConfig config = null;
     for (ConfigProvider provider : services) {
