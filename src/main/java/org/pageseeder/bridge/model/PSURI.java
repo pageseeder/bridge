@@ -21,7 +21,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.util.ISO8601;
 
@@ -38,25 +40,25 @@ public abstract class PSURI extends PSAddressable {
   private static final long serialVersionUID = 2L;
 
   /** The URI ID of the document */
-  private Long id;
+  private @Nullable Long id;
 
   /** The document ID of the document */
-  private String docid;
+  private @Nullable String docid;
 
   /** The description of the document */
-  private String description;
+  private @Nullable String description;
 
   /** The user title of the document */
-  private String title;
+  private @Nullable String title;
 
   /** The media type */
-  private String mediatype;
+  private @Nullable String mediatype;
 
   /** The created date */
-  private Date created;
+  private @Nullable Date created;
 
   /** The modified date */
-  private Date modified;
+  private @Nullable Date modified;
 
   /** List of labels on the document */
   private List<String> labels = new ArrayList<>();
@@ -90,7 +92,7 @@ public abstract class PSURI extends PSAddressable {
   }
 
   @Override
-  public final Long getId() {
+  public final @Nullable Long getId() {
     return this.id;
   }
 
@@ -106,34 +108,34 @@ public abstract class PSURI extends PSAddressable {
 
   @Override
   public String getIdentifier() {
-    return this.id != null ? this.id.toString() : getURL();
+    return Objects.toString(this.id, getURL());
   }
 
   /**
    * @return the mediatype
    */
-  public final String getMediaType() {
+  public final @Nullable String getMediaType() {
     return this.mediatype;
   }
 
   /**
    * @return the Document ID
    */
-  public final String getDocid() {
+  public final @Nullable String getDocid() {
     return this.docid;
   }
 
   /**
    * @return the description
    */
-  public final String getDescription() {
+  public final @Nullable String getDescription() {
     return this.description;
   }
 
   /**
    * @return the title
    */
-  public final String getTitle() {
+  public final @Nullable String getTitle() {
     return this.title;
   }
 
@@ -143,9 +145,10 @@ public abstract class PSURI extends PSAddressable {
    *
    * @return this URI's display title
    */
-  public String getDisplayTitle() {
-    if (this.title != null && !this.title.trim().isEmpty())
-      return this.title;
+  public @Nullable String getDisplayTitle() {
+    String t = this.title;
+    if (t != null && !t.trim().isEmpty())
+      return t;
     String path = getPath();
     if (path == null) return "";
     try {
@@ -160,14 +163,14 @@ public abstract class PSURI extends PSAddressable {
   /**
    * @return the created date
    */
-  public final Date getCreatedDate() {
+  public final @Nullable Date getCreatedDate() {
     return this.created;
   }
 
   /**
    * @return the modified date
    */
-  public final Date getModifiedDate () {
+  public final @Nullable Date getModifiedDate () {
     return this.modified;
   }
 
@@ -211,7 +214,7 @@ public abstract class PSURI extends PSAddressable {
    * @param labels the labels to set
    */
   public final void setLabels(List<String> labels) {
-    this.labels = labels;
+    this.labels = Objects.requireNonNull(labels, "Labels must not be null, use empty list");
   }
 
   /**
@@ -242,7 +245,6 @@ public abstract class PSURI extends PSAddressable {
    * @return The labels as a comma-separated list.
    */
   public final String getLabelsAsString() {
-    if (this.labels == null) return "";
     StringBuilder s = new StringBuilder();
     for (String label : this.labels) {
       if (s.length() > 0) {
@@ -257,7 +259,6 @@ public abstract class PSURI extends PSAddressable {
    * @param labels The labels as a comma-separated list.
    */
   public final void setLabels(String labels) {
-    if (labels == null) return;
     this.labels.clear();
     for (String label : labels.split(",")) {
       this.labels.add(label);
@@ -270,9 +271,9 @@ public abstract class PSURI extends PSAddressable {
    * @return the validity of the URI.
    */
   public EntityValidity checkURIValid() {
-    if (this.docid != null && this.docid.length() > 100) return EntityValidity.DOCUMENT_DOCID_IS_TOO_LONG;
-    if (this.mediatype != null && this.mediatype.length() > 100) return EntityValidity.DOCUMENT_TITLE_IS_TOO_LONG;
-    if (this.title != null && this.title.length() > 250) return EntityValidity.DOCUMENT_TITLE_IS_TOO_LONG;
+    if (checkMaxLength(this.docid , 100)) return EntityValidity.DOCUMENT_DOCID_IS_TOO_LONG;
+    if (checkMaxLength(this.mediatype, 100)) return EntityValidity.DOCUMENT_TITLE_IS_TOO_LONG;
+    if (checkMaxLength(this.title, 250)) return EntityValidity.DOCUMENT_TITLE_IS_TOO_LONG;
     int length = 0;
     for (String label : this.labels) {
       length += label.length() + 1;
@@ -298,5 +299,7 @@ public abstract class PSURI extends PSAddressable {
       return new Date(0);
     }
   }
-
+  private static boolean checkMaxLength(@Nullable String s, int length) {
+    return s != null && s.length() > length;
+  }
 }

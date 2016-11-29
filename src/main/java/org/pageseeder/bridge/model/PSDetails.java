@@ -17,12 +17,15 @@ package org.pageseeder.bridge.model;
 
 import java.io.Serializable;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.EntityValidity;
 
 /**
  * The details of a membership.
  *
  * @author Christophe Lauret
+ *
+ * @version 0.10.2
  * @version 0.1.0
  */
 public final class PSDetails implements Serializable {
@@ -48,7 +51,7 @@ public final class PSDetails implements Serializable {
    *
    * @throws IndexOutOfBoundsException If the index is less than 1 or greater than 15.
    */
-  public String getField(int i) {
+  public @Nullable String getField(int i) {
     if (i < 1 || i > MAX_SIZE) throw new IndexOutOfBoundsException("Field index must be between 1 and "+MAX_SIZE);
     return this.fields[i-1];
   }
@@ -61,7 +64,7 @@ public final class PSDetails implements Serializable {
    *
    * @throws IndexOutOfBoundsException If the index is less than 1 or greater than 15.
    */
-  public void setField(int i, String value) {
+  public void setField(int i, @Nullable String value) {
     if (i < 1 || i > MAX_SIZE) throw new IndexOutOfBoundsException("Field index must be between 1 and "+MAX_SIZE);
     this.fields[i-1] = value;
   }

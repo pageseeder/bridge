@@ -19,6 +19,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * A single search result.
  *
@@ -33,12 +35,12 @@ public class PSResult implements Serializable {
   /**
    * Fields inside the single result.
    */
-  private List<Field> fields = new ArrayList<Field>();
+  private List<Field> fields = new ArrayList<>();
 
   /**
    * The group this result is part of.
    */
-  private PSGroup group = null;
+  private @Nullable PSGroup group = null;
 
   /**
    * Sole constructor.
@@ -54,7 +56,7 @@ public class PSResult implements Serializable {
    *
    * @return the group the result if part of if known.
    */
-  public PSGroup getGroup() {
+  public @Nullable PSGroup getGroup() {
     return this.group;
   }
 
@@ -72,13 +74,15 @@ public class PSResult implements Serializable {
    *
    * @return The corresponding PageSeeder ID
    */
-  public Long getPSID() {
+  public @Nullable Long getPSID() {
     String psid = getValue("psid");
     Long id = null;
-    try {
-      id = Long.valueOf(psid);
-    } catch (NumberFormatException ex) {
-      // Unable to parse ID, shuld never happen by specification
+    if (psid != null) {
+      try {
+        id = Long.valueOf(psid);
+      } catch (NumberFormatException ex) {
+        // Unable to parse ID, should never happen by specification
+      }
     }
     return id;
   }
@@ -92,7 +96,7 @@ public class PSResult implements Serializable {
    *
    * @return The corresponding value.
    */
-  public String getValue(String name){
+  public @Nullable String getValue(String name){
     for (Field f : this.fields) {
       if (f._name.equals(name)) return f._value;
     }
@@ -108,7 +112,7 @@ public class PSResult implements Serializable {
    *
    * @return The corresponding value.
    */
-  public String getValueOfProperty(String name){
+  public @Nullable String getValueOfProperty(String name){
     String fieldname = "psproperty-"+name;
     for (Field f : this.fields) {
       if (f._name.equals(fieldname)) return f._value;
@@ -126,7 +130,7 @@ public class PSResult implements Serializable {
    * @return The corresponding value.
    */
   public List<String> getValues(String name){
-    List<String> values = new ArrayList<String>();
+    List<String> values = new ArrayList<>();
     for (Field f : this.fields) {
       if (f._name.equals(name)) {
         values.add(f._value);

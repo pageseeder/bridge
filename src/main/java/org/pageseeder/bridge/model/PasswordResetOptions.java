@@ -17,13 +17,15 @@ package org.pageseeder.bridge.model;
 
 import java.util.Date;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.util.ISO8601;
 
 /**
  * Options for resetting the password.
  *
  * @author Christophe Lauret
- * @version 0.3.0
+ *
+ * @version 0.10.2
  * @since 0.3.0
  */
 public final class PasswordResetOptions {
@@ -31,43 +33,30 @@ public final class PasswordResetOptions {
   /**
    * The key
    */
-  private String key;
-
-  /**
-   * The significant date.
-   */
-  private Date significantDate;
+  private @Nullable String key;
 
   /**
    * The new password.
    */
-  private String password;
+  private @Nullable String password;
+
+  /**
+   * The significant date.
+   */
+  @Deprecated
+  private @Nullable Date significantDate;
 
   /**
    * @return the key
    */
-  public String getKey() {
+  public @Nullable String getKey() {
     return this.key;
-  }
-
-  /**
-   * @return the significantDate
-   */
-  public Date getSignificantDate() {
-    return this.significantDate;
-  }
-
-  /**
-   * @return the significantDate
-   */
-  public String getSignificantDateAsString() {
-    return this.significantDate != null? ISO8601.CALENDAR_DATE.format(this.significantDate.getTime()) : null;
   }
 
   /**
    * @return the password
    */
-  public String getPassword() {
+  public @Nullable String getPassword() {
     return this.password;
   }
 
@@ -79,17 +68,41 @@ public final class PasswordResetOptions {
   }
 
   /**
-   * @param significantDate the significantDate to set
-   */
-  public void setSignificantDate(Date significantDate) {
-    this.significantDate = significantDate;
-  }
-
-  /**
    * @param password the password to set
    */
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  /**
+   * @return the significantDate
+   *
+   * @deprecated The significant date is no longer supported in PageSeeder.
+   */
+  @Deprecated
+  public @Nullable Date getSignificantDate() {
+    return this.significantDate;
+  }
+
+  /**
+   * @return the significant date as a string
+   *
+   * @deprecated The significant date is no longer supported in PageSeeder.
+   */
+  @Deprecated
+  public @Nullable String getSignificantDateAsString() {
+    Date d = this.significantDate;
+    return d != null? ISO8601.CALENDAR_DATE.format(d.getTime()) : null;
+  }
+
+  /**
+   * @param significantDate the significant date to set
+   *
+   * @deprecated The significant date is no longer supported in PageSeeder
+   */
+  @Deprecated
+  public void setSignificantDate(Date date) {
+    this.significantDate = date;
   }
 
 }

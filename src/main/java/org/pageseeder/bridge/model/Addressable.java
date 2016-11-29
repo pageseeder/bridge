@@ -15,6 +15,8 @@
  */
 package org.pageseeder.bridge.model;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * An addressable PageSeeder entity.
  *
@@ -46,7 +48,7 @@ interface Addressable {
   /**
    * @return the path
    */
-  String getPath();
+  @Nullable String getPath();
 
   /**
    * @return the path

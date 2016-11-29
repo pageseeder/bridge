@@ -15,6 +15,9 @@
  */
 package org.pageseeder.bridge.model;
 
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.PSEntity;
 
@@ -33,19 +36,19 @@ public final class PSMember implements PSEntity {
   private static final long serialVersionUID = 2L;
 
   /** The PageSeeder database ID. */
-  private Long id;
+  private @Nullable Long id;
 
   /** The username of the member. */
-  private String username;
+  private @Nullable String username;
 
   /** The first name of the member. */
-  private String firstname;
+  private @Nullable String firstname;
 
   /** The last name of the member. */
-  private String surname;
+  private @Nullable String surname;
 
   /** The email address of the member. */
-  private String email;
+  private @Nullable String email;
 
   /** Whether the member has been activated. */
   private boolean activated;
@@ -75,12 +78,12 @@ public final class PSMember implements PSEntity {
   }
 
   @Override
-  public Long getId() {
+  public @Nullable Long getId() {
     return this.id;
   }
 
   @Override
-  public String getKey() {
+  public @Nullable String getKey() {
     return this.username;
   }
 
@@ -90,35 +93,35 @@ public final class PSMember implements PSEntity {
   }
 
   @Override
-  public String getIdentifier() {
-    return this.id != null ? this.id.toString() : this.username;
+  public @Nullable String getIdentifier() {
+    return Objects.toString(this.id, this.username);
   }
 
   /**
    * @return the firstname
    */
-  public String getFirstname() {
+  public @Nullable String getFirstname() {
     return this.firstname;
   }
 
   /**
    * @return the surname
    */
-  public String getSurname() {
+  public @Nullable String getSurname() {
     return this.surname;
   }
 
   /**
    * @return the username
    */
-  public String getUsername() {
+  public @Nullable String getUsername() {
     return this.username;
   }
 
   /**
    * @return the email
    */
-  public String getEmail() {
+  public @Nullable String getEmail() {
     return this.email;
   }
 
@@ -139,21 +142,21 @@ public final class PSMember implements PSEntity {
   /**
    * @param username the username to set
    */
-  public void setUsername(String username) {
+  public void setUsername(@Nullable String username) {
     this.username = username;
   }
 
   /**
    * @param firstname the firstname to set
    */
-  public void setFirstname(String firstname) {
+  public void setFirstname(@Nullable String firstname) {
     this.firstname = firstname;
   }
 
   /**
    * @param surname the surname to set
    */
-  public void setSurname(String surname) {
+  public void setSurname(@Nullable String surname) {
     this.surname = surname;
   }
 
@@ -167,7 +170,7 @@ public final class PSMember implements PSEntity {
   /**
    * @param email the email to set
    */
-  public void setEmail(String email) {
+  public void setEmail(@Nullable String email) {
     this.email = email;
   }
 
@@ -185,10 +188,10 @@ public final class PSMember implements PSEntity {
    */
   @Override
   public EntityValidity checkValid() {
-    if (this.firstname != null && this.firstname.length() > 50) return EntityValidity.MEMBER_FIRSTNAME_IS_TOO_LONG;
-    if (this.surname   != null && this.surname.length()   > 50) return EntityValidity.MEMBER_SURNAME_IS_TOO_LONG;
-    if (this.username  != null && this.username.length()  > 100) return EntityValidity.MEMBER_USERNAME_IS_TOO_LONG;
-    if (this.email     != null && this.email.length()     > 100) return EntityValidity.MEMBER_EMAIL_IS_TOO_LONG;
+    if (checkMaxLength(this.firstname, 50)) return EntityValidity.MEMBER_FIRSTNAME_IS_TOO_LONG;
+    if (checkMaxLength(this.surname, 50)) return EntityValidity.MEMBER_SURNAME_IS_TOO_LONG;
+    if (checkMaxLength(this.username, 100)) return EntityValidity.MEMBER_USERNAME_IS_TOO_LONG;
+    if (checkMaxLength(this.email, 100)) return EntityValidity.MEMBER_EMAIL_IS_TOO_LONG;
     return EntityValidity.OK;
   }
 
@@ -200,5 +203,9 @@ public final class PSMember implements PSEntity {
   @Override
   public String toString() {
     return "M("+this.id+":"+this.username+")";
+  }
+
+  private static boolean checkMaxLength(@Nullable String s, int length) {
+    return s != null && s.length() > length;
   }
 }

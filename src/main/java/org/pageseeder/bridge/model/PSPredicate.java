@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.util.ISO8601;
 
 /**
@@ -37,7 +38,7 @@ public final class PSPredicate implements Serializable {
   /**
    * The type of search result requested.
    */
-  private String type = null;
+  private @Nullable String type = null;
 
   /**
    * Facets.
@@ -62,7 +63,7 @@ public final class PSPredicate implements Serializable {
   private long to = Long.MAX_VALUE;
 
   /** */
-  private String sortBy = null;
+  private @Nullable String sortBy = null;
 
 
   /**
@@ -75,7 +76,7 @@ public final class PSPredicate implements Serializable {
   /**
    * @return the type
    */
-  public String getType() {
+  public @Nullable String getType() {
     return this.type;
   }
 
@@ -145,7 +146,7 @@ public final class PSPredicate implements Serializable {
     this.sortBy = sortBy;
   }
 
-  public String getSortBy() {
+  public @Nullable String getSortBy() {
     return this.sortBy;
   }
 
@@ -169,8 +170,9 @@ public final class PSPredicate implements Serializable {
    */
   public Map<String, String> toParameters() {
     Map<String, String> parameters = new HashMap<>();
-    if (this.type != null) {
-      parameters.put("types", this.type);
+    String t = this.type;
+    if (t != null) {
+      parameters.put("types", t);
     }
     if (this.from != Long.MIN_VALUE) {
       parameters.put("from", ISO8601.DATETIME.format(this.from));
@@ -194,8 +196,9 @@ public final class PSPredicate implements Serializable {
       parameters.put("page", Integer.toString(this.page));
     }
     parameters.put("page-size", Integer.toString(this.pageSize));
-    if (this.sortBy != null) {
-      parameters.put("sortby", this.sortBy);
+    String s = this.sortBy;
+    if (s != null) {
+      parameters.put("sortby", s);
     }
     return parameters;
   }

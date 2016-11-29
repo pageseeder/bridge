@@ -18,7 +18,9 @@ package org.pageseeder.bridge.model;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.PSEntity;
 
@@ -28,7 +30,8 @@ import org.pageseeder.bridge.PSEntity;
  * <p>The public ID of a group is its name.
  *
  * @author Christophe Lauret
- * @version 0.2.1
+ *
+ * @version 0.10.2
  * @since 0.2.0
  */
 public class PSGroup implements PSEntity {
@@ -46,28 +49,28 @@ public class PSGroup implements PSEntity {
   private static final String REGEX_GROUP_NAME = "^[a-z][a-z0-9_~\\-]+$";
 
   /** PageSeeder database ID. */
-  private Long id;
+  private @Nullable Long id;
 
   /** The full name of the group */
-  private String name;
+  private @Nullable String name;
 
   /** The owner of the group */
-  private String owner;
+  private @Nullable String owner;
 
   /** The description of the group */
-  private String description;
+  private @Nullable String description;
 
   /** The default role when users are invited */
-  private PSRole defaultRole;
+  private @Nullable PSRole defaultRole;
 
   /** The default role when users are invited */
-  private PSNotification defaultNotification;
+  private @Nullable PSNotification defaultNotification;
 
   /** The type of details */
-  private String detailsType;
+  private @Nullable String detailsType;
 
   /** The template folder for customizations (aka style owner)*/
-  private String template;
+  private @Nullable String template;
 
   /**
    * Create a new group without any identifier.
@@ -95,12 +98,12 @@ public class PSGroup implements PSEntity {
   }
 
   @Override
-  public Long getId() {
+  public @Nullable Long getId() {
     return this.id;
   }
 
   @Override
-  public String getKey() {
+  public @Nullable String getKey() {
     return this.name;
   }
 
@@ -111,7 +114,7 @@ public class PSGroup implements PSEntity {
 
   @Override
   public String getIdentifier() {
-    return this.id != null ? this.id.toString() : this.name;
+    return Objects.toString(this.id, this.name);
   }
 
   /**
@@ -119,7 +122,7 @@ public class PSGroup implements PSEntity {
    *
    * @return the name of the group.
    */
-  public String getName() {
+  public @Nullable String getName() {
     return this.name;
   }
 
@@ -130,10 +133,11 @@ public class PSGroup implements PSEntity {
    *
    * @return the name of the parent or <code>null</code> if the name is <code>null</code> or does not include a dash.
    */
-  public String getParentName() {
-    if (this.name == null) return null;
-    int dash = this.name.lastIndexOf('-');
-    return dash > 0 ? this.name.substring(0, dash) : null;
+  public @Nullable String getParentName() {
+    String n = this.name;
+    if (n == null) return null;
+    int dash = n.lastIndexOf('-');
+    return dash > 0 ? n.substring(0, dash) : null;
   }
 
   /**
@@ -143,10 +147,11 @@ public class PSGroup implements PSEntity {
    *
    * @return the short name or <code>null</code> if the name is <code>null</code>.
    */
-  public String getShortName() {
-    if (this.name == null) return null;
-    int dash = this.name.lastIndexOf('-');
-    return dash > 0 ? this.name.substring(dash + 1) : this.name;
+  public @Nullable String getShortName() {
+    String n = this.name;
+    if (n == null) return null;
+    int dash = n.lastIndexOf('-');
+    return dash > 0 ? n.substring(dash + 1) : n;
   }
 
   /**
@@ -172,7 +177,7 @@ public class PSGroup implements PSEntity {
    *
    * @return the description
    */
-  public final String getDescription() {
+  public final @Nullable String getDescription() {
     return this.description;
   }
 
@@ -190,7 +195,7 @@ public class PSGroup implements PSEntity {
    *
    * @return the default role assigned to members when they join the group.
    */
-  public final PSRole getDefaultRole() {
+  public final @Nullable PSRole getDefaultRole() {
     return this.defaultRole;
   }
 
@@ -199,7 +204,7 @@ public class PSGroup implements PSEntity {
    *
    * @return the default notification assigned to members when they join the group.
    */
-  public final PSNotification getDefaultNotification() {
+  public final @Nullable PSNotification getDefaultNotification() {
     return this.defaultNotification;
   }
 
@@ -226,7 +231,7 @@ public class PSGroup implements PSEntity {
    *
    * @return the type of membership details for this group.
    */
-  public String getDetailsType() {
+  public @Nullable String getDetailsType() {
     return this.detailsType;
   }
 
@@ -234,7 +239,7 @@ public class PSGroup implements PSEntity {
    * Return the template folder for customizations (aka style owner).
    * @return the style owner.
    */
-  public String getTemplate() {
+  public @Nullable String getTemplate() {
     return this.template;
   }
 
@@ -265,7 +270,7 @@ public class PSGroup implements PSEntity {
    *
    * @return the owner of the group.
    */
-  public String getOwner() {
+  public @Nullable String getOwner() {
     return this.owner;
   }
 
@@ -292,11 +297,11 @@ public class PSGroup implements PSEntity {
    */
   @Override
   public EntityValidity checkValid() {
-    if (this.name != null && this.name.length() > 60) return EntityValidity.GROUP_NAME_IS_TOO_LONG;
-    if (this.owner != null && this.owner.length() > 100) return EntityValidity.GROUP_OWNER_IS_TOO_LONG;
-    if (this.description != null && this.description.length() > 250) return EntityValidity.GROUP_DESCRIPTION_IS_TOO_LONG;
-    if (this.detailsType != null && this.detailsType.length() > 150) return EntityValidity.GROUP_DETAILTYPE_IS_TOO_LONG;
-    if (this.template != null && this.template.length() > 60) return EntityValidity.GROUP_TEMPLATE_IS_TOO_LONG;
+    if (checkMaxLength(this.name, 60)) return EntityValidity.GROUP_NAME_IS_TOO_LONG;
+    if (checkMaxLength(this.owner, 100)) return EntityValidity.GROUP_OWNER_IS_TOO_LONG;
+    if (checkMaxLength(this.description, 250)) return EntityValidity.GROUP_DESCRIPTION_IS_TOO_LONG;
+    if (checkMaxLength(this.detailsType, 150)) return EntityValidity.GROUP_DETAILTYPE_IS_TOO_LONG;
+    if (checkMaxLength(this.template, 60)) return EntityValidity.GROUP_TEMPLATE_IS_TOO_LONG;
 
     if (!isValidGroupName(this.name)) return EntityValidity.GROUP_NAME_IS_INVALID;
     // TODO Constraints on possible roles and notifications?
@@ -320,14 +325,10 @@ public class PSGroup implements PSEntity {
   /**
    * An unmodifiable list of names which cannot be used as group names.
    */
-  public static final Collection<String> RESERVED_GROUP_NAMES;
-  static {
-    String[] reserved = new String[] {
-        "page", "block", "tree", "uri", "fullpage", "embed", "psadmin", "bundle", "service", "error",
-        "weborganic", "woconfig", "servlet", "psdoc", "filter", "group", "home", "member", "project"
-    };
-    RESERVED_GROUP_NAMES = Collections.unmodifiableList(Arrays.asList(reserved));
-  }
+  public static final Collection<String> RESERVED_GROUP_NAMES = Collections.unmodifiableList(
+      Arrays.asList("page", "block", "tree", "uri", "fullpage", "embed", "psadmin", "bundle",
+          "service", "error", "weborganic", "woconfig", "servlet", "psdoc", "filter", "group",
+          "home", "member", "project"));
 
   /**
    * Checks if given String is a valid group name. Restrictions are:
@@ -340,7 +341,7 @@ public class PSGroup implements PSEntity {
    * @return <code>true</code> if the group name is valid;
    *         <code>false</code> otherwise.
    */
-  public static boolean isValidGroupName(String name) {
+  public static boolean isValidGroupName(@Nullable String name) {
     if (name == null || name.length() == 0) return false;
     String pjname = name;
     int dash = name.indexOf('-');
@@ -350,4 +351,7 @@ public class PSGroup implements PSEntity {
     return name.matches(REGEX_GROUP_NAME) && !RESERVED_GROUP_NAMES.contains(pjname) && !name.endsWith("-silent") && name.indexOf("--") == -1;
   }
 
+  private static boolean checkMaxLength(@Nullable String s, int length) {
+    return s != null && s.length() > length;
+  }
 }

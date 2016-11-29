@@ -19,10 +19,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * A status for a process thread.
  *
  * @author Jean-Baptiste Reure
+ * @author Christophe Lauret
+ *
+ * @version 0.10.2
  * @version 0.3.10
  */
 public final class PSThreadStatus implements Serializable {
@@ -72,7 +77,7 @@ public final class PSThreadStatus implements Serializable {
      * @param s the string value
      * @return the status if found, null otherwise
      */
-    static Status fromString(String s) {
+    static @Nullable Status fromString(String s) {
       for (Status st : values()) {
         if (st.toString().equalsIgnoreCase(s)) return st;
       }
@@ -87,27 +92,27 @@ public final class PSThreadStatus implements Serializable {
   /**
    * The thread name.
    */
-  private String name = null;
+  private @Nullable String name = null;
 
   /**
    * The author's username.
    */
-  private String username = null;
+  private @Nullable String username = null;
 
   /**
    * The context group id.
    */
-  private Long groupID;
+  private @Nullable Long groupID;
 
   /**
    * The thread status.
    */
-  private Status status;
+  private @Nullable Status status;
 
   /**
    * The thread's list of messages.
    */
-  private List<String> messages = new ArrayList<String>();
+  private List<String> messages = new ArrayList<>();
 
   /**
    * @param threadid the ID of the process thread
@@ -168,28 +173,28 @@ public final class PSThreadStatus implements Serializable {
   /**
    * @return the context group ID
    */
-  public Long getGroupID() {
+  public @Nullable Long getGroupID() {
     return this.groupID;
   }
 
   /**
    * @return the thread name
    */
-  public String getThreadName() {
+  public @Nullable String getThreadName() {
     return this.name;
   }
 
   /**
    * @return the username of the author
    */
-  public String getUsername() {
+  public @Nullable String getUsername() {
     return this.username;
   }
 
   /**
    * @return the thread status
    */
-  public Status getStatus() {
+  public @Nullable Status getStatus() {
     return this.status;
   }
 
@@ -217,7 +222,7 @@ public final class PSThreadStatus implements Serializable {
   /**
    * @return the last message if there was any, <code>null</code> otherwise
    */
-  public String getLastMessage() {
+  public @Nullable String getLastMessage() {
     if (this.messages.isEmpty()) return null;
     return this.messages.get(this.messages.size()-1);
   }

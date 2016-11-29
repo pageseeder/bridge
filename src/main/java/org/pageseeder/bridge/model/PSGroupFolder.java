@@ -15,6 +15,9 @@
  */
 package org.pageseeder.bridge.model;
 
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSEntity;
@@ -32,7 +35,7 @@ public class PSGroupFolder extends PSAddressable implements PSEntity {
   private static final long serialVersionUID = 2L;
 
   /** ID of the Group URI in PageSeeder */
-  private Long id;
+  private @Nullable Long id;
 
   /** Whether it points to an external location */
   private boolean isExternal = false;
@@ -50,7 +53,7 @@ public class PSGroupFolder extends PSAddressable implements PSEntity {
    * @return the id
    */
   @Override
-  public Long getId() {
+  public @Nullable Long getId() {
     return this.id;
   }
 
@@ -66,7 +69,7 @@ public class PSGroupFolder extends PSAddressable implements PSEntity {
 
   @Override
   public String getIdentifier() {
-    return this.id != null? this.id.toString() : getURL();
+    return Objects.toString(this.id, getURL());
   }
 
   /**

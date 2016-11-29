@@ -17,6 +17,7 @@ package org.pageseeder.bridge.model;
 
 import java.util.Date;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.PSEntity;
 import org.pageseeder.bridge.Requires;
@@ -25,7 +26,8 @@ import org.pageseeder.bridge.Requires;
  *
  *
  * @author Christophe Lauret
- * @version 0.2.1
+ *
+ * @version 0.10.2
  * @since 0.2.0
  */
 public final class PSMembership implements PSEntity  {
@@ -36,17 +38,17 @@ public final class PSMembership implements PSEntity  {
   /**
    * The PageSeeder id of the member.
    */
-  private Long id;
+  private @Nullable Long id;
 
   /**
    * The PageSeeder group the member belongs to
    */
-  private PSGroup group;
+  private @Nullable PSGroup group;
 
   /**
    * The member instance
    */
-  private PSMember member;
+  private @Nullable PSMember member;
 
   /**
    * Indicates whether the email address is visible to others in the group
@@ -56,28 +58,28 @@ public final class PSMembership implements PSEntity  {
   /**
    * Notification setting of the member for the group.
    */
-  private PSNotification notification;
+  private @Nullable PSNotification notification;
 
   /**
    * Role of the member in the group.
    */
-  private PSRole role;
+  private @Nullable PSRole role;
 
   /**
    * Membership created date (since 5.7)
    */
   @Requires(minVersion = 57000)
-  private Date created = null;
+  private @Nullable Date created = null;
 
   /**
    * Membership detail fields if any
    */
-  private PSDetails details = null;
+  private @Nullable PSDetails details = null;
 
   /**
    * Generated key
    */
-  private transient String key = null;
+  private transient @Nullable String key = null;
 
   /**
    * Create a new membership without setting the group of member.
@@ -100,16 +102,22 @@ public final class PSMembership implements PSEntity  {
    * @return the PageSeeder id of the member.
    */
   @Override
-  public Long getId() {
+  public @Nullable Long getId() {
     return this.id;
   }
 
   @Override
-  public String getKey() {
-    if (this.key == null && this.group != null && this.member != null) {
-      this.key = this.group.getKey()+'/'+this.member.getKey();
+  public @Nullable String getKey() {
+    String k = this.key;
+    if (k == null) {
+      PSGroup g = this.group;
+      PSMember m = this.member;
+      if (g != null && m != null) {
+        k = g.getKey()+'/'+m.getKey();
+        this.key = k;
+      }
     }
-    return this.key;
+    return k;
   }
 
   /**
@@ -124,8 +132,10 @@ public final class PSMembership implements PSEntity  {
   @Override
   public boolean isIdentifiable() {
     if (this.id != null) return true;
-    if (this.group == null || this.member == null) return false;
-    return this.group.isIdentifiable() && this.member.isIdentifiable();
+    PSGroup g = this.group;
+    PSMember m = this.member;
+    if (g == null || m == null) return false;
+    return g.isIdentifiable() && m.isIdentifiable();
   }
 
   /**
@@ -134,21 +144,22 @@ public final class PSMembership implements PSEntity  {
    * @return The membership ID only if not <code>null</code>.
    */
   @Override
-  public String getIdentifier() {
-    return this.id != null? this.id.toString() : null;
+  public @Nullable String getIdentifier() {
+    Long id = this.id;
+    return id != null? id.toString() : null;
   }
 
   /**
    * @return the group
    */
-  public PSGroup getGroup() {
+  public @Nullable PSGroup getGroup() {
     return this.group;
   }
 
   /**
    * @return the member
    */
-  public PSMember getMember() {
+  public @Nullable PSMember getMember() {
     return this.member;
   }
 
@@ -162,14 +173,14 @@ public final class PSMembership implements PSEntity  {
   /**
    * @return the notification
    */
-  public PSNotification getNotification() {
+  public @Nullable PSNotification getNotification() {
     return this.notification;
   }
 
   /**
    * @return the role
    */
-  public PSRole getRole() {
+  public @Nullable PSRole getRole() {
     return this.role;
   }
 
@@ -177,14 +188,14 @@ public final class PSMembership implements PSEntity  {
    * @return the date the membership was created
    */
   @Requires(minVersion = 57000)
-  public Date getCreated() {
+  public @Nullable Date getCreated() {
     return this.created;
   }
 
   /**
    * @return Membership detail fields if any
    */
-  public PSDetails getDetails() {
+  public @Nullable PSDetails getDetails() {
     return this.details;
   }
 
@@ -254,8 +265,9 @@ public final class PSMembership implements PSEntity  {
    *
    * @throws IndexOutOfBoundsException If the index is less than 1 or greater than 15.
    */
-  public String getField(int i) {
-    return this.details != null? this.details.getField(i) : null;
+  public @Nullable String getField(int i) {
+    PSDetails d = this.details;
+    return d != null? d.getField(i) : null;
   }
 
   /**
@@ -269,15 +281,18 @@ public final class PSMembership implements PSEntity  {
    * @throws IndexOutOfBoundsException If the index is less than 1 or greater than 15.
    */
   public void setField(int i, String value) {
-    if (this.details == null) {
-      this.details = new PSDetails();
+    PSDetails d = this.details;
+    if (d == null) {
+      d = new PSDetails();
+      this.details = d;
     }
-    this.details.setField(i, value);
+    d.setField(i, value);
   }
 
   @Override
   public EntityValidity checkValid() {
-    if (this.details != null) return this.details.checkValid();
+    PSDetails d = this.details;
+    if (d != null) return d.checkValid();
     return EntityValidity.OK;
   }
 

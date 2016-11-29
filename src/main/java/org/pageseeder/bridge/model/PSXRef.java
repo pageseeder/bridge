@@ -17,7 +17,9 @@ package org.pageseeder.bridge.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.PSEntity;
 
@@ -26,6 +28,7 @@ import org.pageseeder.bridge.PSEntity;
  *
  * @author Philip Rutherford
  *
+ * @version 0.10.2
  * @since 0.8.1
  */
 public final class PSXRef implements PSEntity {
@@ -131,67 +134,67 @@ public final class PSXRef implements PSEntity {
   /**
    * The XRef ID
    */
-  private Long id;
+  private @Nullable Long id;
 
   /**
    * The ID of the source document.
    */
-  private Long sourceURIId;
+  private @Nullable Long sourceURIId;
 
   /**
    * The source fragment.
    */
-  private String sourceFragment;
+  private @Nullable String sourceFragment;
 
   /**
    * The source document tile
    */
-  private String sourceURITitle;
+  private @Nullable String sourceURITitle;
 
   /**
    * The Document ID of the source document.
    */
-  private String sourceDocid;
+  private @Nullable String sourceDocid;
 
   /**
    * The source document media type
    */
-  private String sourceMediaType;
+  private @Nullable String sourceMediaType;
 
   /**
    * The href pointing to the source document.
    */
-  private String sourceHref;
+  private @Nullable String sourceHref;
 
   /**
    * The ID of the target document.
    */
-  private Long targetURIId;
+  private @Nullable Long targetURIId;
 
   /**
    * The target document tile
    */
-  private String targetURITitle;
+  private @Nullable String targetURITitle;
 
   /**
    * The Document ID of the target document.
    */
-  private String targetDocid;
+  private @Nullable String targetDocid;
 
   /**
    * The target document media type
    */
-  private String targetMediaType;
+  private @Nullable String targetMediaType;
 
   /**
    * The href pointing to the target document.
    */
-  private String targetHref;
+  private @Nullable String targetHref;
 
   /**
    * The target fragment.
    */
-  private String targetFragment = "default";
+  private @Nullable String targetFragment = "default";
 
   /**
    * A flag specifying if the xref is a reverse link.
@@ -201,32 +204,32 @@ public final class PSXRef implements PSEntity {
   /**
    * The reverse title.
    */
-  private String reverseTitle;
+  private @Nullable String reverseTitle;
 
   /**
    * The manually entered tile
    */
-  private String title;
+  private @Nullable String title;
 
   /**
    * The level of numbering.
    */
-  private Integer level;
+  private @Nullable Integer level;
 
   /**
    * The display type.
    */
-  private DISPLAY display;
+  private @Nullable DISPLAY display;
 
   /**
    * The type of the xref.
    */
-  private TYPE type;
+  private @Nullable TYPE type;
 
   /**
    * The reverse type.
    */
-  private TYPE reverseType;
+  private @Nullable TYPE reverseType;
 
   /**
    * The XRef's labels.
@@ -243,13 +246,14 @@ public final class PSXRef implements PSEntity {
    * @return the id
    */
   @Override
-  public Long getId() {
+  public @Nullable Long getId() {
     return this.id;
   }
 
   @Override
-  public String getKey() {
-    return this.id != null? this.id.toString() : null;
+  public @Nullable String getKey() {
+    Long id = this.id;
+    return id != null? id.toString() : null;
   }
 
   @Override
@@ -263,14 +267,17 @@ public final class PSXRef implements PSEntity {
   }
 
   @Override
-  public String getIdentifier() {
-    return this.id != null? this.id.toString() : null;
+  public @Nullable String getIdentifier() {
+    Long id = this.id;
+    return id != null? id.toString() : null;
   }
 
   @Override
   public EntityValidity checkValid() {
     // image xrefs must point to an image
-    if (this.type == TYPE.IMAGE && this.targetMediaType != null && !this.targetMediaType.startsWith("image/")) return EntityValidity.IMAGE_XREF_TARGET_NOT_IMAGE;
+    String tmt = this.targetMediaType;
+    if (this.type == TYPE.IMAGE && tmt != null && !tmt.startsWith("image/"))
+      return EntityValidity.IMAGE_XREF_TARGET_NOT_IMAGE;
     // TODO More constraints on xref type, etc.
     return EntityValidity.OK;
   }
@@ -278,84 +285,84 @@ public final class PSXRef implements PSEntity {
   /**
    * @return the target URI ID.
    */
-  public Long getTargetURIId() {
+  public @Nullable Long getTargetURIId() {
     return this.targetURIId;
   }
 
   /**
    * @return the target URI title.
    */
-  public String getTargetURITitle() {
+  public @Nullable String getTargetURITitle() {
     return this.targetURITitle;
   }
 
   /**
    * @return the target Media Type
    */
-  public String getTargetMediaType() {
+  public @Nullable String getTargetMediaType() {
     return this.targetMediaType;
   }
 
   /**
    * @return the source URI ID.
    */
-  public Long getSourceURIId() {
+  public @Nullable Long getSourceURIId() {
     return this.sourceURIId;
   }
 
   /**
    * @return the source URI title.
    */
-  public String getSourceURITitle() {
+  public @Nullable String getSourceURITitle() {
     return this.sourceURITitle;
   }
 
   /**
    * @return the source Media Type
    */
-  public String getSourceMediaType() {
+  public @Nullable String getSourceMediaType() {
     return this.sourceMediaType;
   }
 
   /**
    * @return the sourceDocid
    */
-  public String getSourceDocid() {
+  public @Nullable String getSourceDocid() {
     return this.sourceDocid;
   }
 
   /**
    * @return the source Href
    */
-  public String getSourceHref() {
+  public @Nullable String getSourceHref() {
     return this.sourceHref;
   }
 
   /**
    * @return the source fragment.
    */
-  public String getSourceFragment() {
+  public @Nullable String getSourceFragment() {
     return this.sourceFragment;
   }
 
   /**
    * @return the XRef's type
    */
-  public TYPE getType() {
+  public @Nullable TYPE getType() {
     return this.type;
   }
 
   /**
    * @return the reverse type
    */
-  public TYPE getReverseType() {
+  public @Nullable TYPE getReverseType() {
     return this.reverseType;
   }
 
   /**
    * @return the display
    */
-  public DISPLAY getDisplay() {
+  public @Nullable DISPLAY getDisplay() {
     return this.display;
   }
 
@@ -369,42 +376,42 @@ public final class PSXRef implements PSEntity {
   /**
    * @return the reverse title.
    */
-  public String getReverseTitle() {
+  public @Nullable String getReverseTitle() {
     return this.reverseTitle;
   }
 
    /**
    * @return the numbering level
    */
-  public Integer getLevel() {
+  public @Nullable Integer getLevel() {
     return this.level;
   }
 
   /**
    * @return the target Docid
    */
-  public String getTargetDocid() {
+  public @Nullable String getTargetDocid() {
     return this.targetDocid;
   }
 
   /**
    * @return the target Href
    */
-  public String getTargetHref() {
+  public @Nullable String getTargetHref() {
     return this.targetHref;
   }
 
   /**
    * @return the target fragment.
    */
-  public String getTargetFragment() {
+  public @Nullable String getTargetFragment() {
     return this.targetFragment;
   }
 
   /**
    * @return the title.
    */
-  public String getTitle() {
+  public@Nullable String getTitle() {
     return this.title;
   }
 
@@ -419,7 +426,6 @@ public final class PSXRef implements PSEntity {
    * @return The labels as a comma-separated list.
    */
   public final String getLabelsAsString() {
-    if (this.labels == null) return "";
     StringBuilder s = new StringBuilder();
     for (String label : this.labels) {
       if (s.length() > 0) {
@@ -433,7 +439,7 @@ public final class PSXRef implements PSEntity {
   /**
    * @return the content of the XRef.
    */
-  public String getContent() {
+  public @Nullable String getContent() {
     if (this.display == DISPLAY.MANUAL)
       return this.title;
     if (this.display == DISPLAY.DOCUMENT_FRAGMENT)
@@ -465,7 +471,6 @@ public final class PSXRef implements PSEntity {
    * @param labels The labels as a comma-separated list.
    */
   public final void setLabels(String labels) {
-    if (labels == null) return;
     this.labels.clear();
     for (String label : labels.split(",")) {
       this.labels.add(label);
@@ -550,7 +555,7 @@ public final class PSXRef implements PSEntity {
    * @param labels the labels to set
    */
   public void setLabels(List<String> labels) {
-    this.labels = labels;
+    this.labels = Objects.requireNonNull(labels, "Labels must not be null, use empty list");
   }
 
   @Override

@@ -15,6 +15,7 @@
  */
 package org.pageseeder.bridge.model;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.PSEntity;
 
@@ -50,7 +51,7 @@ public final class PSFolder extends PSURI implements PSEntity {
   /**
    * @return the foldername
    */
-  public String getFoldername() {
+  public @Nullable String getFoldername() {
     return getFoldername(getPath());
   }
 
@@ -99,7 +100,7 @@ public final class PSFolder extends PSURI implements PSEntity {
    *
    * @return the text after the last '/' in the path or URL
    */
-  public static String getFoldername(String url) {
+  public static @Nullable String getFoldername(@Nullable String url) {
     if (url == null) return null;
     int solidus = url.lastIndexOf('/');
     return url.substring(solidus+1);

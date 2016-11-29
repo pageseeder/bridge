@@ -15,6 +15,8 @@
  */
 package org.pageseeder.bridge.model;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * A project resource used for
  *
@@ -27,17 +29,17 @@ public class PSResource {
   /**
    * The location of the resource from the website root.
    */
-  private String location;
+  private @Nullable String location;
 
   /**
    * The content of the resource.
    */
-  private String content;
+  private @Nullable String content;
 
   /**
    * The content of the resource.
    */
-  private byte[] bytes;
+  private byte @Nullable[] bytes;
 
   /**
    * Default constructor.
@@ -59,21 +61,21 @@ public class PSResource {
   /**
    * @return the location
    */
-  public String getLocation() {
+  public @Nullable String getLocation() {
     return this.location;
   }
 
   /**
    * @return the content
    */
-  public String getContent() {
+  public @Nullable String getContent() {
     return this.content;
   }
 
   /**
    * @return the content
    */
-  public byte[] getBytes() {
+  public byte @Nullable[] getBytes() {
     return this.bytes;
   }
 

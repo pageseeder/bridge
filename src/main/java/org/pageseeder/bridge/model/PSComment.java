@@ -22,7 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.PSEntity;
 
@@ -30,7 +32,9 @@ import org.pageseeder.bridge.PSEntity;
  * Represents a PageSeeder comment.
  *
  * @author Christophe Lauret
- * @version 28 April 2014
+ *
+ * @version 0.10.2
+ * @since 0.2.0
  */
 public final class PSComment implements PSEntity {
 
@@ -38,66 +42,66 @@ public final class PSComment implements PSEntity {
   private static final long serialVersionUID = 1L;
 
   /** The XLink ID of the comment. */
-  private Long id;
+  private @Nullable Long id;
 
   /** The title of the comment (required) */
-  private String title;
+  private @Nullable String title;
 
   /** The content of the comment (required) */
-  private String content;
+  private @Nullable String content;
 
   /** The content type of the comment, defaults to 'text/plain' */
   private String mediatype = "text/plain";
 
   /** The type of the comment to further qualify the comment. */
-  private String type = null;
+  private @Nullable String type = null;
 
   /** The list of labels on the comment. */
-  private List<String> labels = new ArrayList<String>();
+  private List<String> labels = new ArrayList<>();
 
   /** A pipe-separated list of properties as value pairs (e.g. x=1|y=2|) */
-  private Map<String, String> properties;
+  private @Nullable Map<String, String> properties;
 
   /** The author of the comment. */
-  private Author author;
+  private @Nullable Author author;
 
   /** The status for task e.g. 'Open', 'Resolved', 'Closed' */
-  private String status;
+  private @Nullable String status;
 
   /** The priority for task e.g. 'High', 'Medium', 'Low' */
-  private String priority;
+  private @Nullable String priority;
 
   /** The member ID of the member the task should be assigned to. */
-  private PSMember assignedto;
+  private @Nullable PSMember assignedto;
 
   /** The task due date format is ISO-8601 e.g. 2010-10-25, 2010-10-25T12:26 (defaults to T18:00) */
-  private Date due;
+  private @Nullable Date due;
 
   /** The context of this comment */
-  private Context context;
+  private @Nullable Context context;
 
   /** The list of attachments for this comment */
-  private List<Attachment> attachments;
+  private @Nullable List<Attachment> attachments;
 
   /**
    * @return the id
    */
   @Override
-  public Long getId() {
+  public @Nullable Long getId() {
     return this.id;
   }
 
   /**
    * @return the title
    */
-  public String getTitle() {
+  public @Nullable String getTitle() {
     return this.title;
   }
 
   /**
    * @return the content
    */
-  public String getContent() {
+  public @Nullable String getContent() {
     return this.content;
   }
 
@@ -111,7 +115,7 @@ public final class PSComment implements PSEntity {
   /**
    * @return the type
    */
-  public String getType() {
+  public @Nullable String getType() {
     return this.type;
   }
 
@@ -157,17 +161,20 @@ public final class PSComment implements PSEntity {
    * @return the list of attachments
    */
   public boolean hasAttachments() {
-    return this.attachments != null && this.attachments.size() > 0;
+    List<Attachment> a = this.attachments;
+    return a != null && a.size() > 0;
   }
 
   /**
    * @return the list of attachments
    */
   public List<Attachment> getAttachments() {
-    if (this.attachments == null) {
-      this.attachments = new ArrayList<Attachment>();
+    List<Attachment> a = this.attachments;
+    if (a == null) {
+      a = new ArrayList<>();
+      this.attachments = a;
     }
-    return this.attachments;
+    return a;
   }
 
   /**
@@ -176,10 +183,12 @@ public final class PSComment implements PSEntity {
    * @param document The document to attach to the comment.
    */
   public void addAttachment(PSDocument document) {
-    if (this.attachments == null) {
-      this.attachments = new ArrayList<Attachment>();
+    List<Attachment> a = this.attachments;
+    if (a == null) {
+      a = new ArrayList<>();
+      this.attachments = a;
     }
-    this.attachments.add(new Attachment(document));
+    a.add(new Attachment(document));
   }
 
   /**
@@ -189,10 +198,12 @@ public final class PSComment implements PSEntity {
    * @param fragment The fragment ID of where the comment is attached (<code>null</code> for default fragment)
    */
   public void addAttachment(PSDocument document, String fragment) {
-    if (this.attachments == null) {
-      this.attachments = new ArrayList<Attachment>();
+    List<Attachment> a = this.attachments;
+    if (a == null) {
+      a = new ArrayList<>();
+      this.attachments = a;
     }
-    this.attachments.add(new Attachment(document, fragment));
+    a.add(new Attachment(document, fragment));
   }
 
   /**
@@ -223,7 +234,6 @@ public final class PSComment implements PSEntity {
    * @return The labels as a comma-separated list.
    */
   public String getLabelsAsString() {
-    if (this.labels == null) return "";
     StringBuilder s = new StringBuilder();
     for (String label : this.labels) {
       if (s.length() > 0) {
@@ -238,15 +248,14 @@ public final class PSComment implements PSEntity {
    * @param labels the labels to set
    */
   public void setLabels(List<String> labels) {
-    this.labels = labels;
+    this.labels = Objects.requireNonNull(labels, "Labels must not be null, use empty list");
   }
 
   /**
    * @param labels The labels as a comma-separated list.
    */
   public void setLabels(String labels) {
-    if (labels == null) return;
-    this.labels = new ArrayList<String>();
+    this.labels = new ArrayList<>();
     for (String label : labels.split(",")) {
       this.labels.add(label);
     }
@@ -259,26 +268,30 @@ public final class PSComment implements PSEntity {
    * @return the labels
    */
   public boolean hasProperties() {
-    return this.properties != null && this.properties.size() > 0;
+    Map<String, String> p = this.properties;
+    return p != null && p.size() > 0;
   }
 
   /**
    * @return the properties
    */
   public Map<String, String> getProperties() {
-    if (this.properties == null) {
-      this.properties = new HashMap<String, String>();
+    Map<String, String> p = this.properties;
+    if (p == null) {
+      p = new HashMap<>();
+      this.properties = p;
     }
-    return this.properties;
+    return p;
   }
 
   /**
    * @return The labels as a comma-separated list.
    */
   public String getPropertiesAsString() {
-    if (this.properties == null) return "";
+    Map<String, String> props = this.properties;
+    if (props == null) return "";
     StringBuilder s = new StringBuilder();
-    for (Entry<String, String> p : this.properties.entrySet()) {
+    for (Entry<String, String> p : props.entrySet()) {
       if (s.length() > 0) {
         s.append('|');
       }
@@ -299,7 +312,7 @@ public final class PSComment implements PSEntity {
    * @param properties the properties to set
    */
   public void setProperties(String properties) {
-    Map<String, String> p = new HashMap<String, String>();
+    Map<String, String> p = new HashMap<>();
     if (properties != null) {
       for (String property: properties.split("(?<!\\|)\\|(?!\\|)")) {
         property = property.replaceAll("\\|\\|", "\\|");
@@ -329,7 +342,7 @@ public final class PSComment implements PSEntity {
   /**
    * @return the author
    */
-  public Author getAuthor() {
+  public @Nullable Author getAuthor() {
     return this.author;
   }
 
@@ -371,7 +384,7 @@ public final class PSComment implements PSEntity {
   /**
    * @return the context
    */
-  public Context getContext() {
+  public @Nullable Context getContext() {
     return this.context;
   }
 
@@ -438,28 +451,28 @@ public final class PSComment implements PSEntity {
   /**
    * @return the status
    */
-  public String getStatus() {
+  public @Nullable String getStatus() {
     return this.status;
   }
 
   /**
    * @return the priority
    */
-  public String getPriority() {
+  public @Nullable String getPriority() {
     return this.priority;
   }
 
   /**
    * @return the assignedto
    */
-  public PSMember getAssignedTo() {
+  public @Nullable PSMember getAssignedTo() {
     return this.assignedto;
   }
 
   /**
    * @return the due
    */
-  public Date getDue() {
+  public @Nullable Date getDue() {
     return this.due;
   }
 
@@ -492,8 +505,9 @@ public final class PSComment implements PSEntity {
   }
 
   @Override
-  public String getKey() {
-    return this.id != null? this.id.toString() : null;
+  public @Nullable String getKey() {
+    Long id = this.id;
+    return id != null? id.toString() : null;
   }
 
   @Override
@@ -507,8 +521,9 @@ public final class PSComment implements PSEntity {
   }
 
   @Override
-  public String getIdentifier() {
-    return this.id != null? this.id.toString() : null;
+  public @Nullable String getIdentifier() {
+    Long id = this.id;
+    return id != null? id.toString() : null;
   }
 
   @Override
@@ -536,17 +551,17 @@ public final class PSComment implements PSEntity {
     /**
      * The name of the author (required) yes string
      */
-    private final String _name;
+    private final @Nullable String _name;
 
     /**
      * When the author is a member
      */
-    private final PSMember _member;
+    private final @Nullable PSMember _member;
 
     /**
      * The email of the author yes email
      */
-    private final String _email;
+    private final @Nullable String _email;
 
     /**
      * Set the author name and email for when the author is not a PageSeeder member.
@@ -576,7 +591,7 @@ public final class PSComment implements PSEntity {
     /**
      * @return the member or <code>null</code> if the author is not specified or an external user.
      */
-    public PSMember member() {
+    public @Nullable PSMember member() {
       return this._member;
     }
 
@@ -585,7 +600,7 @@ public final class PSComment implements PSEntity {
      *
      * @return the email of the external user
      */
-    public String name() {
+    public @Nullable String name() {
       return this._name;
     }
 
@@ -594,7 +609,7 @@ public final class PSComment implements PSEntity {
      *
      * @return the email of the external user
      */
-    public String email() {
+    public @Nullable String email() {
       return this._email;
     }
 
@@ -611,18 +626,19 @@ public final class PSComment implements PSEntity {
     /**
      * The URI of the attachment.
      */
-    private PSURI _uri;
+    private final PSURI _uri;
 
     /**
      * The fragment the comment is attached to.
      */
-    private String _fragment;
+    private final @Nullable String _fragment;
 
     /**
      * @param uri The URI to attach
      */
     public Attachment(PSURI uri) {
       this._uri = uri;
+      this._fragment = null;
     }
 
     /**
@@ -644,7 +660,7 @@ public final class PSComment implements PSEntity {
     /**
      * @return the fragment of the URI where the comment is attached
      */
-    public String fragment() {
+    public @Nullable String fragment() {
       return this._fragment;
     }
 
@@ -659,13 +675,13 @@ public final class PSComment implements PSEntity {
     private static final long serialVersionUID = 1L;
 
     /** The group the comment is attached to. */
-    private final PSGroup _group;
+    private final @Nullable PSGroup _group;
 
     /** The URI the comment is attached to. */
-    private final PSURI _uri;
+    private final @Nullable PSURI _uri;
 
     /** The fragment (for a URI only) */
-    private final String _fragment;
+    private final @Nullable String _fragment;
 
     /**
      * Create a group context.
@@ -704,21 +720,21 @@ public final class PSComment implements PSEntity {
     /**
      * @return the group
      */
-    public PSGroup group() {
+    public @Nullable PSGroup group() {
       return this._group;
     }
 
     /**
      * @return the _uri
      */
-    public PSURI uri() {
+    public @Nullable PSURI uri() {
       return this._uri;
     }
 
     /**
      * @return the fragment
      */
-    public String fragment() {
+    public @Nullable String fragment() {
       return this._fragment;
     }
   }

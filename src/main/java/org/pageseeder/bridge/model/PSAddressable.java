@@ -18,6 +18,7 @@ package org.pageseeder.bridge.model;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSEntity;
 
@@ -62,47 +63,6 @@ public abstract class PSAddressable implements Addressable, PSEntity {
   private static final Pattern URL_DECOMPOSER = Pattern.compile("^(?:(https?):)?(?://([\\da-z\\.-]+)(?:\\:(\\d{1,4}))?)?(/[^\\?]*)?$");
 
   /**
-   * Instantiate a new addressable object from the specified url.
-   *
-   * <p>The URL may omit the scheme or authority part, it which case it will default
-   * on the default values from the configuration.
-   *
-   * @param url The url.
-   *
-   * @throws IllegalArgumentException If the specified URL is invalid
-   */
-  protected PSAddressable(String url) {
-    Matcher m = URL_DECOMPOSER.matcher(url);
-    PSConfig p = PSConfig.getDefault();
-    if (m.matches()) {
-      String scheme = m.group(1);
-      String host = m.group(2);
-      String port = m.group(3);
-      String path = m.group(4);
-      setScheme(scheme != null? scheme : p.getScheme());
-      setHost(scheme != null? host : p.getHost());
-      setPort(port != null? Integer.parseInt(port) : p.getPort());
-      setPath(path);
-    } else throw new IllegalArgumentException("Invalid url");
-  }
-
-  /**
-   * Instantiate a new addressable object from the specified scheme, host, port and path.
-   *
-   * @param scheme The scheme "http" or "https"
-   * @param host   Where the resource is hosted.
-   * @param port   The port (or negative to use the default port).
-   * @param path   The path to the resource.
-   */
-  public PSAddressable(String scheme, String host, int port, String path) {
-    // We use the methods to ensure that the values are correctly checked
-    setScheme(scheme);
-    setHost(host);
-    setPort(port);
-    setPath(path);
-  }
-
-  /**
    * The scheme.
    */
   private String scheme;
@@ -120,12 +80,55 @@ public abstract class PSAddressable implements Addressable, PSEntity {
   /**
    * The path.
    */
-  private String path;
+  private @Nullable String path;
 
   /**
    * The URL corresponding to the other attributes.
    */
-  private transient String url = null;
+  private transient @Nullable String url = null;
+
+  /**
+   * Instantiate a new addressable object from the specified url.
+   *
+   * <p>The URL may omit the scheme or authority part, it which case it will default
+   * on the default values from the configuration.
+   *
+   * @param url The url.
+   *
+   * @throws IllegalArgumentException If the specified URL is invalid
+   */
+  protected PSAddressable(String url) {
+    Matcher m = URL_DECOMPOSER.matcher(url);
+    PSConfig p = PSConfig.getDefault();
+    if (m.matches()) {
+      String scheme = m.group(1);
+      String host = m.group(2);
+      String port = m.group(3);
+      String path = m.group(4);
+      this.scheme = scheme != null? scheme : p.getScheme();
+      this.host = host != null? host : p.getHost();
+      this.port = port != null? Integer.parseInt(port) : p.getPort();
+      this.path = path;
+      this.url = null; // Reset the URL that will be recomputed if needed
+    } else throw new IllegalArgumentException("Invalid url");
+  }
+
+  /**
+   * Instantiate a new addressable object from the specified scheme, host, port and path.
+   *
+   * @param scheme The scheme "http" or "https"
+   * @param host   Where the resource is hosted.
+   * @param port   The port (or negative to use the default port).
+   * @param path   The path to the resource.
+   */
+  public PSAddressable(String scheme, String host, int port, String path) {
+    // We use the methods to ensure that the values are correctly checked
+    this.scheme = scheme;
+    this.host = host;
+    this.port = port;
+    this.path = path;
+    this.url = null; // Reset the URL that will be recomputed if needed
+  }
 
   @Override
   public final String getScheme() {
@@ -143,7 +146,7 @@ public abstract class PSAddressable implements Addressable, PSEntity {
   }
 
   @Override
-  public final String getPath() {
+  public final @Nullable String getPath() {
     return this.path;
   }
 
@@ -165,10 +168,12 @@ public abstract class PSAddressable implements Addressable, PSEntity {
 
   @Override
   public final String getURL() {
-    if (this.url == null) {
-      this.url = toURL();
+    String url = this.url;
+    if (url == null) {
+      url = toURL();
+      this.url = url;
     }
-    return this.url;
+    return url;
   }
 
   /**

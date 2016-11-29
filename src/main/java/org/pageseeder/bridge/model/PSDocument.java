@@ -15,6 +15,7 @@
  */
 package org.pageseeder.bridge.model;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.PSEntity;
 
@@ -24,6 +25,8 @@ import org.pageseeder.bridge.PSEntity;
  * A document is a URI which can have some content and can be typed.
  *
  * @author Christophe Lauret
+ *
+ * @version 0.10.2
  * @version 0.1.0
  */
 public final class PSDocument extends PSURI implements PSEntity {
@@ -65,14 +68,14 @@ public final class PSDocument extends PSURI implements PSEntity {
   /**
    * @return the filename
    */
-  public String getFilename() {
+  public @Nullable String getFilename() {
     return getFilename(getPath());
   }
 
   /**
    * @return the filename
    */
-  public String getFolderURL() {
+  public @Nullable String getFolderURL() {
     return getFolder(getURL());
   }
 
@@ -152,7 +155,7 @@ public final class PSDocument extends PSURI implements PSEntity {
    *
    * @return the text after the last '/' in the path or URL
    */
-  public static String getFilename(String url) {
+  public static @Nullable String getFilename(@Nullable String url) {
     if (url == null) return null;
     int solidus = url.lastIndexOf('/');
     return url.substring(solidus+1);
@@ -165,7 +168,7 @@ public final class PSDocument extends PSURI implements PSEntity {
    *
    * @return the text before the last '/' in the path or URL
    */
-  public static String getFolder(String url) {
+  public static @Nullable String getFolder(@Nullable String url) {
     if (url == null) return null;
     int solidus = url.lastIndexOf('/');
     return url.substring(0, solidus);

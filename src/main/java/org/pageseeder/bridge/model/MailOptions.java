@@ -18,14 +18,17 @@ package org.pageseeder.bridge.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.util.Rules;
 
 /**
  * Define options to send mail via PageSeeder.
  *
  * @author Christophe Lauret
- * @version 0.2.4
+ *
+ * @version 0.10.2
  * @since 0.2.4
  */
 public final class MailOptions {
@@ -106,7 +109,7 @@ public final class MailOptions {
   /**
    * The content to be send.
    */
-  private String content = null;
+  private @Nullable String content = null;
 
   /**
    * The Email notify
@@ -116,12 +119,12 @@ public final class MailOptions {
   /**
    * The list of recipients.
    */
-  private List<String> recipients = null;
+  private @Nullable List<String> recipients = null;
 
   /**
    * The list of attachments
    */
-  private List<String> attachments = null;
+  private @Nullable List<String> attachments = null;
 
   /**
    * Creates a new set of mail options.
@@ -132,7 +135,7 @@ public final class MailOptions {
   /**
    * @return the content
    */
-  public String getContent() {
+  public @Nullable String getContent() {
     return this.content;
   }
 
@@ -161,8 +164,7 @@ public final class MailOptions {
    * @param template the template to set
    */
   public void setTemplate(Template template) {
-    if (template == null) throw new NullPointerException("Template must be specified");
-    this.template = template;
+    this.template = Objects.requireNonNull(template, "Template must be specified");
   }
 
   /**
@@ -186,14 +188,16 @@ public final class MailOptions {
    *         <code>false</code> otherwise.
    */
   public boolean hasRecipients() {
-    return this.recipients != null && this.recipients.size() > 0;
+    List<String> r = this.recipients;
+    return r != null && r.size() > 0;
   }
 
   /**
    * @return the recipients
    */
   public List<String> getRecipients() {
-    return this.recipients != null ? Collections.unmodifiableList(this.recipients) : Collections.<String>emptyList();
+    List<String> r = this.recipients;
+    return r != null ? Collections.unmodifiableList(r) : Collections.<String>emptyList();
   }
 
   /**
@@ -207,11 +211,13 @@ public final class MailOptions {
    * @param email the email address to add to the list of recipient.
    */
   public void addRecipients(String email) {
-    if (this.recipients == null) {
-      this.recipients = new ArrayList<String>();
+    List<String> r = this.recipients;
+    if (r == null) {
+      r = new ArrayList<>();
+      this.recipients = r;
     }
     if (Rules.isEmail(email)) {
-      this.recipients.add(email);
+      r.add(email);
     } else throw new IllegalArgumentException("Recipient is not a valid email address:"+email);
   }
 
@@ -222,14 +228,16 @@ public final class MailOptions {
    *         <code>false</code> otherwise.
    */
   public boolean hasAttachments() {
-    return this.attachments != null && this.attachments.size() > 0;
+    List<String> a = this.attachments;
+    return a != null && a.size() > 0;
   }
 
   /**
    * @return the list of attachments
    */
   public List<String> getAttachments() {
-    return this.attachments != null? Collections.unmodifiableList(this.attachments) : Collections.<String>emptyList();
+    List<String> a = this.attachments;
+    return a != null? Collections.unmodifiableList(a) : Collections.<String>emptyList();
   }
 
   /**
@@ -243,11 +251,13 @@ public final class MailOptions {
    * @param url the URL to the attachment to add.
    */
   public void addAttachment(String url) {
-    if (this.attachments == null) {
-      this.attachments = new ArrayList<String>();
+    List<String> a = this.attachments;
+    if (a == null) {
+      a = new ArrayList<>();
+      this.attachments = a;
     }
     // TODO check URL
-    this.attachments.add(url);
+    a.add(url);
   }
 
   /**
