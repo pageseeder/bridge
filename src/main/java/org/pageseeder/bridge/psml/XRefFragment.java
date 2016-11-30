@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pageseeder.bridge.model.PSXRef;
+import org.pageseeder.bridge.model.PSXRef.DISPLAY;
+import org.pageseeder.bridge.model.PSXRef.TYPE;
 import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
@@ -102,42 +104,57 @@ public class XRefFragment extends FragmentBase implements PSMLFragment {
    *
    * @exception IOException  if problem writing XML
    */
-  private void XRefToXML(PSXRef x, XMLWriter psml) throws IOException {
+  private static void XRefToXML(PSXRef x, XMLWriter psml) throws IOException {
     psml.openElement("blockxref");
-    if (x.getTargetURIId() != null) {
-      psml.attribute("uriid", Long.toString(x.getTargetURIId()));
+    // Target attributes
+    Long targetURI = x.getTargetURIId();
+    String targetHref = x.getTargetHref();
+    String targetDocid = x.getTargetDocid();
+    String targetFragment = x.getTargetFragment();
+    if (targetURI != null) {
+      psml.attribute("uriid", targetURI.toString());
     }
-    if (x.getTargetHref() != null) {
-      psml.attribute("href", x.getTargetHref());
+    if (targetHref != null) {
+      psml.attribute("href", targetHref);
     }
-    if (x.getTargetDocid() != null) {
-      psml.attribute("docid", x.getTargetDocid());
+    if (targetDocid != null) {
+      psml.attribute("docid", targetDocid);
     }
-    if (x.getTargetFragment() != null) {
-      psml.attribute("frag", x.getTargetFragment());
+    if (targetFragment != null) {
+      psml.attribute("frag", targetFragment);
     }
+
+    // Reverse link
     if (x.getReverseLink()) {
+      String reverseTitle = x.getReverseTitle();
+      TYPE reverseType = x.getReverseType();
       psml.attribute("reverselink", "true");
-      if (x.getReverseTitle() != null) {
-        psml.attribute("reversetitle", x.getReverseTitle());
+      if (reverseTitle != null) {
+        psml.attribute("reversetitle", reverseTitle);
       }
-      if (x.getReverseType() != null) {
-        psml.attribute("reversetype", x.getReverseType().toString());
+      if (reverseType != null) {
+        psml.attribute("reversetype", reverseType.toString());
       }
     } else {
       psml.attribute("reverselink", "false");
     }
-    if (x.getTitle() != null) {
-      psml.attribute("title", x.getTitle());
+
+    // Other attributes
+    String title = x.getTitle();
+    DISPLAY display = x.getDisplay();
+    TYPE type = x.getType();
+    Integer level = x.getLevel();
+    if (title != null) {
+      psml.attribute("title", title);
     }
-    if (x.getDisplay() != null) {
-      psml.attribute("display", x.getDisplay().toString());
+    if (display != null) {
+      psml.attribute("display", display.toString());
     }
-    if (x.getType() != null) {
-      psml.attribute("type", x.getType().toString());
+    if (type != null) {
+      psml.attribute("type", type.toString());
     }
-    if (x.getLevel() != null) {
-      psml.attribute("level", x.getLevel());
+    if (level != null) {
+      psml.attribute("level", level.intValue());
     }
     if (x.getLabels() != null && x.getLabels().size() > 0) {
       psml.attribute("labels", x.getLabelsAsString());

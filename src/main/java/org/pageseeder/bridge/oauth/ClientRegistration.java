@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.http.Method;
 import org.pageseeder.bridge.http.Request;
@@ -37,7 +38,7 @@ import org.xml.sax.Attributes;
  *
  * <p>This class provides a simple API to register an OAuth client PageSeeder.
  *
- * @version 0.9.5
+ * @version 0.10.2
  * @since 0.9.5
  */
 public final class ClientRegistration {
@@ -63,22 +64,22 @@ public final class ClientRegistration {
   /**
    * The name of the client
    */
-  private String _clientName;
+  private final String _clientName;
 
   /**
    * The grant type.
    */
-  private String grantType;
+  private @Nullable String grantType;
 
   /**
    * The redirect URI (for authorization code grant type)
    */
-  private String redirectURI;
+  private @Nullable String redirectURI;
 
   /**
    * URI of the client.
    */
-  private String clientURI;
+  private @Nullable String clientURI;
 
   /**
    * Max age for the access token.
@@ -98,7 +99,7 @@ public final class ClientRegistration {
   /**
    * A description for the client.
    */
-  private String description;
+  private @Nullable String description;
 
   /**
    * Create a client registration for a client with the specified name;
@@ -120,7 +121,7 @@ public final class ClientRegistration {
   /**
    * @return The grant type.
    */
-  public String getGrantType() {
+  public @Nullable String getGrantType() {
     return this.grantType;
   }
 
@@ -146,7 +147,7 @@ public final class ClientRegistration {
   /**
    * @return the redirect URI
    */
-  public String getRedirectURI() {
+  public @Nullable String getRedirectURI() {
     return this.redirectURI;
   }
 
@@ -164,7 +165,7 @@ public final class ClientRegistration {
   }
 
 
-  public String getClientURI() {
+  public @Nullable String getClientURI() {
     return this.clientURI;
   }
 
@@ -196,7 +197,7 @@ public final class ClientRegistration {
     this.scope = scope;
   }
 
-  public String getDescription() {
+  public @Nullable String getDescription() {
     return this.description;
   }
 
@@ -212,28 +213,33 @@ public final class ClientRegistration {
    *
    * @return The credentials for client.
    */
-  public ClientCredentials register(UsernamePassword credentials, PSConfig config) {
+  public @Nullable ClientCredentials register(UsernamePassword credentials, PSConfig config) {
     String service = ServicePath.newPath("/oauth/members/{member}/clients", credentials.username());
     Request request = new Request(Method.POST, service).using(credentials).config(config);
     request.parameter("name", this._clientName);
-    if (this.description != null) {
-      request.parameter("description", this.description);
-    }
-    if (this.grantType != null) {
-      request.parameter("grant-type", this.grantType);
+    String d = this.description;
+    if (d != null) {
+      request.parameter("description", d);
     }
 
+    String g = this.grantType;
+    if (g != null) {
+      request.parameter("grant-type", g);
+    }
+
+    String r = this.redirectURI;
     boolean requiresRedirectURI = "authorization_code".equals(this.grantType) || "implicit".equals(this.grantType);
-    if (requiresRedirectURI && this.redirectURI != null) {
-      request.parameter("redirect-uri", this.redirectURI);
+    if (requiresRedirectURI && r != null) {
+      request.parameter("redirect-uri", r);
     } else if (requiresRedirectURI && this.redirectURI == null) {
       LOGGER.warn("Missing redirect URI for grant type {}", this.grantType);
     } else if (!requiresRedirectURI && this.redirectURI != null) {
       LOGGER.warn("Ignoring redirect URI for grant type {}", this.grantType);
     }
 
-    if (this.clientURI != null) {
-      request.parameter("client-uri", this.clientURI);
+    String c = this.clientURI;
+    if (c != null) {
+      request.parameter("client-uri", c);
     }
     if (this.accessTokenMaxAge > 0) {
       request.parameter("access-token-max-age", Long.toString(this.accessTokenMaxAge));
@@ -252,7 +258,11 @@ public final class ClientRegistration {
     if (response.isSuccessful()) return response.consumeItem(new ClientCredentialsHandler());
     else {
       ServiceError error = response.consumeServiceError();
-      LOGGER.error("Unable to register client - error {}: {}", error.code(), error.message());
+      if (error != null) {
+        LOGGER.error("Unable to register client - service error {}: {}", error.code(), error.message());
+      } else {
+        LOGGER.error("Unable to register client - error: {}", response.message());
+      }
     }
     return null;
   }
@@ -265,12 +275,12 @@ public final class ClientRegistration {
     /**
      * The client identifier.
      */
-    private String identifier;
+    private @Nullable String identifier;
 
     /**
      * The client secret.
      */
-    private String secret;
+    private @Nullable String secret;
 
     @Override
     public void startElement(String element, Attributes atts) {
@@ -284,8 +294,16 @@ public final class ClientRegistration {
     @Override
     public void endElement(String element) {
       if (isElement("client-registration")) {
-        ClientCredentials credentials = new ClientCredentials(this.identifier, this.secret);
-        add(credentials);
+        String clientId = this.identifier;
+        String clientSecret = this.secret;
+        if (clientId == null) {
+          LOGGER.warn("Unable to retrieve client ID from client-registration");
+        } else if (clientSecret == null) {
+          LOGGER.warn("Unable to retrieve client secret from client-registration");
+        } else {
+          ClientCredentials credentials = new ClientCredentials(clientId, clientSecret);
+          add(credentials);
+        }
       }
     }
   }

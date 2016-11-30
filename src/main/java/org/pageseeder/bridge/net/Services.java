@@ -18,6 +18,7 @@ package org.pageseeder.bridge.net;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.Requires;
 import org.pageseeder.bridge.model.PSComment.Author;
 import org.pageseeder.bridge.model.PSComment.Context;
@@ -1123,8 +1124,9 @@ public final class Services {
       service.append("/members/").append(creator.getIdentifier());
     }
     // The context determines the rest of the URL
-    if (context.group() != null) {
-      service.append("/groups/").append(context.group().getIdentifier()).append("/comments");
+    PSGroup group = context.group();
+    if (group != null) {
+      service.append("/groups/").append(group.getIdentifier()).append("/comments");
     } else {
       PSURI uri = context.uri();
       if (uri != null && uri.getId() != null) {
@@ -1149,11 +1151,12 @@ public final class Services {
    *
    * @return The corresponding service path.
    */
-  public static String toReplyCommentService(Author author, long xlinkid, PSGroup group) {
+  public static String toReplyCommentService(Author author, long xlinkid, @Nullable PSGroup group) {
     // If the author is a member it is prefixed by '/members/[id]'
     StringBuilder service = new StringBuilder();
-    if (author.member() != null) {
-      service.append("/members/").append(author.member().getIdentifier());
+    PSMember member = author.member();
+    if (member != null) {
+      service.append("/members/").append(member.getIdentifier());
     }
     if (group != null) {
       service.append("/groups/").append(group.getIdentifier());

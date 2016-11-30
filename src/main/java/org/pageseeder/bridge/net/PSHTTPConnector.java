@@ -17,13 +17,17 @@ package org.pageseeder.bridge.net;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.xml.transform.Templates;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.model.PSNotification;
+import org.pageseeder.bridge.model.PSRole;
 import org.pageseeder.bridge.net.PSHTTPConnection.Method;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.slf4j.Logger;
@@ -77,12 +81,12 @@ public final class PSHTTPConnector {
   /**
    * Credentials that can be used to connect to the connector.
    */
-  private PSCredentials credentials = null;
+  private @Nullable PSCredentials credentials = null;
 
   /**
    * If specified, the request will be made on behalf of that user.
    */
-  private PSSession session = null;
+  private @Nullable PSSession session = null;
 
   /**
    * Creates a new connection to the specified resource.
@@ -142,7 +146,7 @@ public final class PSHTTPConnector {
   /**
    * @return the session which may have been updated after the connection
    */
-  public PSSession getSession() {
+  public @Nullable PSSession getSession() {
     return this.session;
   }
 
@@ -154,6 +158,54 @@ public final class PSHTTPConnector {
    */
   public void addParameter(String name, String value) {
     this._resource.addParameter(name, value);
+  }
+
+  /**
+   * Add a parameter to this request if the value is  not <code>null</code>.
+   *
+   * @param name  The name of the parameter
+   * @param value The value of the parameter
+   */
+  public void addOptionalParameter(String name, @Nullable String value) {
+    if (value != null) {
+      this._resource.addParameter(name, value);
+    }
+  }
+
+  /**
+   * Add a parameter to this request if the value is  not <code>null</code>.
+   *
+   * @param name  The name of the parameter
+   * @param value The value of the parameter
+   */
+  public void addOptionalParameter(String name, @Nullable Long value) {
+    if (value != null) {
+      this._resource.addParameter(name, value.toString());
+    }
+  }
+
+  /**
+   * Add a parameter to this request if the value is  not <code>null</code>.
+   *
+   * @param name  The name of the parameter
+   * @param value The value of the parameter
+   */
+  public void addOptionalParameter(String name, @Nullable PSNotification value) {
+    if (value != null) {
+      this._resource.addParameter(name, value.parameter());
+    }
+  }
+
+  /**
+   * Add a parameter to this request if the value is  not <code>null</code>.
+   *
+   * @param name  The name of the parameter
+   * @param value The value of the parameter
+   */
+  public void addOptionalParameter(String name, @Nullable PSRole value) {
+    if (value != null) {
+      this._resource.addParameter(name, value.parameter());
+    }
   }
 
   /**
@@ -274,7 +326,7 @@ public final class PSHTTPConnector {
    * @return The PageSeeder HTTP response metadata
    */
   public PSHTTPResponseInfo get(XMLWriter xml, Templates templates) throws APIException {
-    return transform(Method.GET, xml, templates, null);
+    return transform(Method.GET, xml, templates, Collections.emptyMap());
   }
 
   /**
@@ -353,7 +405,7 @@ public final class PSHTTPConnector {
    * @return The PageSeeder HTTP response metadata
    */
   public PSHTTPResponseInfo patch(XMLWriter xml, Templates templates) throws APIException {
-    return transform(Method.PATCH, xml, templates, null);
+    return transform(Method.PATCH, xml, templates, Collections.emptyMap());
   }
 
   /**
@@ -432,7 +484,7 @@ public final class PSHTTPConnector {
    * @return The PageSeeder HTTP response metadata
    */
   public PSHTTPResponseInfo post(XMLWriter xml, Templates templates) throws APIException {
-    return transform(Method.POST, xml, templates, null);
+    return transform(Method.POST, xml, templates, Collections.emptyMap());
   }
 
   /**
@@ -560,7 +612,7 @@ public final class PSHTTPConnector {
    *
    * @return The PageSeeder HTTP response metadata
    */
-  private PSHTTPResponseInfo handle(Method method, DefaultHandler handler) throws APIException {
+  private PSHTTPResponseInfo handle(Method method, @Nullable DefaultHandler handler) throws APIException {
     PSHTTPResource resource = this._resource.build();
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     try {

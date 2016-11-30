@@ -114,7 +114,7 @@ public final class PSSession implements PSCredentials, Serializable {
    * @param cookie The cookie value
    * @return the corresponding instance or <code>null</code> if the cookie could be parsed
    */
-  public static @Nullable PSSession parseSetCookieHeader(String cookie) {
+  public static @Nullable PSSession parseSetCookieHeader(@Nullable String cookie) {
     String name = "JSESSIONID=";
     if (cookie != null && cookie.length() > name.length()) {
       int from = cookie.indexOf(name);

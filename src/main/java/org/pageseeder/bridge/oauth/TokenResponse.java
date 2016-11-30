@@ -22,6 +22,8 @@ import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSToken;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.net.HTTP;
@@ -58,29 +60,29 @@ public final class TokenResponse {
   private static final Logger LOGGER = LoggerFactory.getLogger(TokenResponse.class);
 
   /**
-   * The access token if the response was successful.
-   */
-  private PSToken token;
-
-  /**
-   * The member if the request was using open ID.
-   */
-  private PSMember member;
-
-  /**
    * The HTTP response code.
    */
   private final int _responseCode;
 
   /**
+   * The access token if the response was successful.
+   */
+  private @Nullable PSToken token;
+
+  /**
+   * The member if the request was using open ID.
+   */
+  private @Nullable PSMember member;
+
+  /**
    * The actual response as a string.
    */
-  private String _response;
+  private @Nullable String _response;
 
   /**
    * The parsed JSON values.
    */
-  private Map<String, String> _json;
+  private Map<@NonNull String, @NonNull String> _json;
 
   /**
    * Creates a new token response.
@@ -89,7 +91,7 @@ public final class TokenResponse {
    * @param response The actual response.
    * @param json     A map of JSON elements.
    */
-  TokenResponse(int code, String response, Map<String, String> json) {
+  TokenResponse(int code, @Nullable String response, Map<@NonNull String, @NonNull String> json) {
     this._responseCode = code;
     this._response = response;
     this._json = json;
@@ -100,7 +102,7 @@ public final class TokenResponse {
    *
    * @return the access token if the response is successful or <code>null</code>
    */
-  public PSToken getAccessToken() {
+  public @Nullable PSToken getAccessToken() {
     return this.token;
   }
 
@@ -109,7 +111,7 @@ public final class TokenResponse {
    *
    * @return the PageSeeder member or <code>null</code>
    */
-  public PSMember getMember() {
+  public @Nullable PSMember getMember() {
     return this.member;
   }
 
@@ -143,7 +145,7 @@ public final class TokenResponse {
   /**
    * @return the raw JSON response.
    */
-  public String getJSONResponse() {
+  public @Nullable String getJSONResponse() {
     return this._response;
   }
 
@@ -155,7 +157,7 @@ public final class TokenResponse {
    *
    * @return The refresh token
    */
-  public String getRefreshToken() {
+  public @Nullable String getRefreshToken() {
     return this._json.get("refresh_token");
   }
 
@@ -167,7 +169,7 @@ public final class TokenResponse {
    *
    * @return The scope
    */
-  public String getScope() {
+  public @Nullable String getScope() {
     return this._json.get("scope");
   }
 
@@ -188,7 +190,7 @@ public final class TokenResponse {
    *
    * @see <a href="http://tools.ietf.org/html/rfc6749#section-5.2">OAuth 2.0 - 5.2 Error Response</a>
    */
-  public String getError() {
+  public @Nullable String getError() {
     return this._json.get("error");
   }
 
@@ -199,7 +201,7 @@ public final class TokenResponse {
    *
    * @return The error description
    */
-  public String getErrorDescription() {
+  public @Nullable String getErrorDescription() {
     return this._json.get("error_description");
   }
 
@@ -210,7 +212,7 @@ public final class TokenResponse {
    *
    * @return The error URI
    */
-  public String getErrorURI() {
+  public @Nullable String getErrorURI() {
     return this._json.get("error_uri");
   }
 
@@ -219,7 +221,7 @@ public final class TokenResponse {
    *
    * @return A OAuth parameter from the JSON response.
    */
-  public String getParameter(String name) {
+  public @Nullable String getParameter(String name) {
     return this._json.get(name);
   }
 
@@ -293,7 +295,7 @@ public final class TokenResponse {
    *
    * @return The PageSeeder member or <code>null</code>.
    */
-  private static PSMember extractMember(Map<String,String> json, ClientCredentials credentials) {
+  private static @Nullable PSMember extractMember(Map<String,String> json, ClientCredentials credentials) {
     PSMember member = null;
     String idToken = json.get("id_token");
     if (idToken != null) {

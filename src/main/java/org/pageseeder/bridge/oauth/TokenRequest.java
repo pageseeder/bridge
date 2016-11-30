@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.net.HTTP;
 import org.pageseeder.bridge.net.UsernamePassword;
@@ -184,21 +185,21 @@ public final class TokenRequest {
   /**
    * @return the grant type
    */
-  public String grantType() {
+  public @Nullable String grantType() {
     return this._parameters.get("grant_type");
   }
 
   /**
    * @return the scope used for this request.
    */
-  public String scope() {
+  public @Nullable String scope() {
     return this._parameters.get("scope");
   }
 
   /**
    * @return The redirect URI used in this request.
    */
-  public String redirectURI() {
+  public @Nullable String redirectURI() {
     return this._parameters.get("client_id");
   }
 
@@ -207,7 +208,7 @@ public final class TokenRequest {
    *
    * @return the corresponding value or <code>null</code>.
    */
-  public String parameter(String name) {
+  public @Nullable String parameter(String name) {
     Objects.requireNonNull(name, "The parameter name cannot be null");
     return this._parameters.get(name);
   }

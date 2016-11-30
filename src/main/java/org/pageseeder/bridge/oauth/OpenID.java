@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.util.Base64;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ final class OpenID {
   /** Utility class. */
   private OpenID(){}
 
-  protected static PSMember parseIDToken(String idToken, byte[] key) {
+  protected static @Nullable PSMember parseIDToken(String idToken, byte[] key) {
     LOGGER.debug("Parsing JWT ID token");
     // [header].[payload].[signature]
     String[] segments = idToken.split("\\.");

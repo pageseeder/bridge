@@ -13,6 +13,9 @@ import java.util.Map.Entry;
 
 /**
  * Utility class for HTTP
+ *
+ * @version 0.10.2
+ * @since 0.9.0
  */
 public final class HTTP {
 
@@ -85,8 +88,15 @@ public final class HTTP {
    */
   public static InputStream stream(HttpURLConnection connection) throws IOException {
     int responseCode = connection.getResponseCode();
-    if (responseCode >= HttpURLConnection.HTTP_OK && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) return connection.getInputStream();
-    else return connection.getErrorStream();
+    if (responseCode >= HttpURLConnection.HTTP_OK && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
+      InputStream in = connection.getInputStream();
+      if (in == null) throw new IllegalStateException("Unable to get connection output");
+      return in;
+    } else {
+      InputStream err = connection.getErrorStream();
+      if (err == null) throw new IllegalStateException("Unable to get connection output");
+      return err;
+    }
   }
 
 }

@@ -31,8 +31,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Random;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -44,6 +46,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.PSToken;
@@ -67,7 +70,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Christophe Lauret
  *
- * @version 0.3.32
+ * @version 0.10.2
  * @since 0.2.0
  */
 public final class PSHTTPConnection {
@@ -103,14 +106,14 @@ public final class PSHTTPConnection {
   /** Version of the API */
   private static final String API_VERSION;
   static {
-    Package p = Package.getPackage("org.pageseeder.api");
-    API_VERSION = p != null ? p.getImplementationVersion() : "dev";
+    Package p = Package.getPackage("org.pageseeder.bridge");
+    API_VERSION = p != null ? Objects.toString(p.getImplementationVersion(), "dev") : "dev";
   }
 
   /**
    * UTF-8.
    */
-  private static final Charset UTF8 = Charset.forName("utf-8");
+  private static final Charset UTF8 = StandardCharsets.UTF_8;
 
   /**
    * Byte for carriage return + line feed.
@@ -145,14 +148,14 @@ public final class PSHTTPConnection {
   /**
    * The output stream used to write the data to push through the connection (e.g. Multipart).
    */
-  private DataOutputStream out = null;
+  private @Nullable DataOutputStream out = null;
 
   /**
    * The user who initiated the connection.
    *
    * A <code>null</code> value indicates an anonymous connection.
    */
-  private PSSession session;
+  private @Nullable PSSession session;
 
   /**
    * Can only be created by the factory method.
@@ -163,7 +166,7 @@ public final class PSHTTPConnection {
    * @param session    The user who initiated the connection (may be <code>null</code>)
    * @param boundary   The boundary to use for multipart only (may be <code>null</code>)
    */
-  private PSHTTPConnection(HttpURLConnection connection, PSHTTPResource resource, Method method, PSSession session, String boundary) {
+  private PSHTTPConnection(HttpURLConnection connection, PSHTTPResource resource, Method method, @Nullable PSSession session, String boundary) {
     this._connection = connection;
     this._resource = resource;
     this._method = method;
@@ -177,11 +180,12 @@ public final class PSHTTPConnection {
    * @throws IOException
    */
   private void endMultipart() throws IOException {
-    if (this.out != null) {
-      write(this._boundary, this.out);
-      write("--", this.out);
-      writeCRLF(this.out);
-      this.out.flush();
+    DataOutputStream o = this.out;
+    if (o != null) {
+      write(this._boundary, o);
+      write("--", o);
+      writeCRLF(o);
+      o.flush();
     }
   }
 
@@ -203,38 +207,36 @@ public final class PSHTTPConnection {
    *
    * @throws IOException Should any error occur while writing
    */
-  public void addXMLPart(String part, Map<String, String> headers) throws IOException {
-    if (this.out == null) {
-      this.out = new DataOutputStream(this._connection.getOutputStream());
-    }
+  public void addXMLPart(String part, @Nullable Map<String, String> headers) throws IOException {
+    DataOutputStream o = initDataOutputStream();
     try {
       if (this._method != Method.MULTIPART) throw new IOException("Cannot add XML part unless connection type is set to Multipart");
 
       // Start with boundary
-      write(this._boundary, this.out);
-      writeCRLF(this.out);
+      write(this._boundary, o);
+      writeCRLF(o);
 
       // Headers if specified
       if (headers != null) {
         for (Entry<String, String> h : headers.entrySet()) {
           String name = h.getKey();
           if (!"content-type".equalsIgnoreCase(name)) {
-            write(name + ": " + headers.get(h.getValue()), this.out);
-            writeCRLF(this.out);
+            write(name + ": " + headers.get(h.getValue()), o);
+            writeCRLF(o);
           }
         }
       }
 
       // Write content type
-      write("Content-Type: text/xml; charset=\"utf-8\"", this.out);
-      writeCRLF(this.out);
-      writeCRLF(this.out);
-      write(part, this.out);
-      writeCRLF(this.out);
-      this.out.flush();
+      write("Content-Type: text/xml; charset=\"utf-8\"", o);
+      writeCRLF(o);
+      writeCRLF(o);
+      write(part, o);
+      writeCRLF(o);
+      o.flush();
 
     } catch (IOException ex) {
-      closeQuietly(this.out);
+      closeQuietly(o);
       this.out = null;
       throw ex;
     }
@@ -260,38 +262,36 @@ public final class PSHTTPConnection {
    * @throws IOException Should any error occur while writing
    */
   public void addPart(InputStream in, String filename) throws IOException {
-    if (this.out == null) {
-      this.out = new DataOutputStream(this._connection.getOutputStream());
-    }
+    DataOutputStream o = initDataOutputStream();
     try {
       if (this._method != Method.MULTIPART) throw new IOException("Cannot add file part unless connection type is set to Multipart");
 
       // Start with boundary
-      write(this._boundary, this.out);
-      writeCRLF(this.out);
+      write(this._boundary, o);
+      writeCRLF(o);
 
       // Write headers
-      write("Content-Disposition: form-data; name=\"file-1\"; filename=\"" + filename + "\"", this.out);
-      writeCRLF(this.out);
-      write("Content-Type: " + URLConnection.guessContentTypeFromName(filename), this.out);
-      writeCRLF(this.out);
-      write("Content-Transfer-Encoding: binary", this.out);
-      writeCRLF(this.out);
-      writeCRLF(this.out);
-      this.out.flush();
+      write("Content-Disposition: form-data; name=\"file-1\"; filename=\"" + filename + "\"", o);
+      writeCRLF(o);
+      write("Content-Type: " + URLConnection.guessContentTypeFromName(filename), o);
+      writeCRLF(o);
+      write("Content-Transfer-Encoding: binary", o);
+      writeCRLF(o);
+      writeCRLF(o);
+      o.flush();
 
       // Copy binary file content
       try {
-        copy(in, this.out);
+        copy(in, o);
       } finally {
         closeQuietly(in);
       }
 
-      writeCRLF(this.out);
-      this.out.flush();
+      writeCRLF(o);
+      o.flush();
 
     } catch (IOException ex) {
-      closeQuietly(this.out);
+      closeQuietly(o);
       this.out = null;
       throw ex;
     }
@@ -306,26 +306,24 @@ public final class PSHTTPConnection {
    * @throws IOException Should any error occur while writing
    */
   public void addParameterPart(String name, String value) throws IOException {
-    if (this.out == null) {
-      this.out = new DataOutputStream(this._connection.getOutputStream());
-    }
+    DataOutputStream o = initDataOutputStream();
     try {
       if (this._method != Method.MULTIPART) throw new IOException("Cannot add parameter connection type is set to Multipart");
 
       // Start with boundary
-      write(this._boundary, this.out);
-      writeCRLF(this.out);
+      write(this._boundary, o);
+      writeCRLF(o);
 
       // Write Parameter
-      write("Content-Disposition: form-data; name=\"" + name + "\"", this.out);
-      writeCRLF(this.out);
-      writeCRLF(this.out);
-      write(value, this.out);
-      writeCRLF(this.out);
-      this.out.flush();
+      write("Content-Disposition: form-data; name=\"" + name + "\"", o);
+      writeCRLF(o);
+      writeCRLF(o);
+      write(value, o);
+      writeCRLF(o);
+      o.flush();
 
     } catch (IOException ex) {
-      closeQuietly(this.out);
+      closeQuietly(o);
       this.out = null;
       throw ex;
     }
@@ -339,8 +337,9 @@ public final class PSHTTPConnection {
    * @throws IOException If thrown by the close method.
    */
   public void closeOutput() throws IOException {
-    if (this.out != null) {
-      this.out.close();
+    DataOutputStream o = this.out;
+    if (o != null) {
+      o.close();
     }
   }
 
@@ -362,7 +361,7 @@ public final class PSHTTPConnection {
    * @return the response message of the underlying HTTP connection.
    * @throws IOException If thrown by the underlying HTTP connection.
    */
-  public String getResponseMessage() throws IOException {
+  public @Nullable String getResponseMessage() throws IOException {
     return this._connection.getResponseMessage();
   }
 
@@ -373,7 +372,7 @@ public final class PSHTTPConnection {
    * @return the content type of the underlying HTTP connection.
    * @throws IOException If thrown by the underlying HTTP connection.
    */
-  public String getContentType() throws IOException {
+  public @Nullable String getContentType() throws IOException {
     return this._connection.getContentType();
   }
 
@@ -412,7 +411,7 @@ public final class PSHTTPConnection {
    *
    * @return the session
    */
-  public PSSession getSession() {
+  public @Nullable PSSession getSession() {
     return this.session;
   }
 
@@ -466,7 +465,7 @@ public final class PSHTTPConnection {
    *
    * @throws IOException If an error occurs when trying to write the XML.
    */
-  public void process(PSHTTPResponseInfo response, DefaultHandler handler) throws IOException {
+  public void process(PSHTTPResponseInfo response, @Nullable DefaultHandler handler) throws IOException {
     if (this._method == Method.MULTIPART) {
       endMultipart();
     }
@@ -585,7 +584,7 @@ public final class PSHTTPConnection {
    *
    * @return The updated response metadata.
    */
-  public PSHTTPResponseInfo process(PSHTTPResponseInfo response, XMLWriter xml, Templates templates, Map<String, String> parameters)
+  public PSHTTPResponseInfo process(PSHTTPResponseInfo response, XMLWriter xml, Templates templates, @Nullable Map<String, String> parameters)
       throws IOException {
     if (this._method == Method.MULTIPART) {
       endMultipart();
@@ -636,7 +635,7 @@ public final class PSHTTPConnection {
    * @param connection The HTTP connection
    * @return the media type from the HTTP response stripped of its charset sub-declaration.
    */
-  private static String getMediaType(HttpURLConnection connection) {
+  private static @Nullable String getMediaType(HttpURLConnection connection) {
     String mediaType = connection.getContentType();
     // Strip ";charset" declaration if any
     if (mediaType != null && mediaType.indexOf(";charset=") > 0) {
@@ -651,12 +650,13 @@ public final class PSHTTPConnection {
    * @param connection the HTTP connection
    */
   private void updateSession(HttpURLConnection connection) {
+    PSSession s = this.session;
     // Updating the session
-    if (this.session != null) {
-      this.session.update();
+    if (s != null) {
+      s.update();
     } else {
       String cookie = connection.getHeaderField("Set-Cookie");
-      this.session = PSSession.parseSetCookieHeader(cookie);
+      s = PSSession.parseSetCookieHeader(cookie);
     }
   }
 
@@ -667,7 +667,7 @@ public final class PSHTTPConnection {
    * @return <code>true</code> if equal to "text/xml" or "application/xml" or end with "+xml";
    *         <code>false</code> otherwise.
    */
-  private static boolean isXML(String contentType) {
+  private static boolean isXML(@Nullable String contentType) {
     if (contentType == null) return false;
     return "text/xml".equals(contentType)
         || "application/xml".equals(contentType)
@@ -691,7 +691,7 @@ public final class PSHTTPConnection {
    * @return A newly opened connection to the specified URL
    * @throws IOException Should an exception be returns while opening the connection
    */
-  protected static PSHTTPConnection connect(PSHTTPResource resource, Method type, PSCredentials credentials)
+  protected static PSHTTPConnection connect(PSHTTPResource resource, Method type, @Nullable PSCredentials credentials)
       throws IOException {
     URL url = resource.toURL(credentials, (type == Method.POST || type == Method.PATCH) ? false : true);
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -724,7 +724,7 @@ public final class PSHTTPConnection {
       connection.setRequestProperty("Content-Length", Integer.toString(parameters.length));
       connection.setDoInput(true);
       writeData(connection, parameters);
-      instance = new PSHTTPConnection(connection, resource, Method.POST, session, null);
+      instance = new PSHTTPConnection(connection, resource, Method.POST, session, "NO_BOUNDARY");
 
     // POST using "multipart/form-data"
     } else if (type == Method.MULTIPART) {
@@ -749,11 +749,11 @@ public final class PSHTTPConnection {
         connection.setDoInput(true);
         writeData(connection, data);
       }
-      instance = new PSHTTPConnection(connection, resource, type, session, null);
+      instance = new PSHTTPConnection(connection, resource, type, session, "NO_BOUNDARY");
 
     // GET and DELETE
     } else {
-      instance = new PSHTTPConnection(connection, resource, type, session, null);
+      instance = new PSHTTPConnection(connection, resource, type, session, "NO_BOUNDARY");
     }
 
     return instance;
@@ -793,7 +793,7 @@ public final class PSHTTPConnection {
    *
    * @throws IOException If an error occurs while writing the XML.
    */
-  private static void handleXML(HttpURLConnection connection, PSHTTPResponseInfo response, DefaultHandler handler, boolean duplex)
+  private static void handleXML(HttpURLConnection connection, PSHTTPResponseInfo response, @Nullable DefaultHandler handler, boolean duplex)
       throws IOException {
     SAXParserFactory factory = SAXParserFactory.newInstance();
     factory.setValidating(false);
@@ -850,7 +850,7 @@ public final class PSHTTPConnection {
    * @throws IOException If an error occurs while writing the XML.
    */
   private static boolean transformXML(HttpURLConnection connection, PSHTTPResponseInfo response, XMLWriter xml,
-      Templates templates, Map<String, String> parameters) throws IOException {
+      Templates templates, @Nullable Map<String, String> parameters) throws IOException {
     boolean ok = true;
 
     // Create an XML Buffer
@@ -991,11 +991,14 @@ public final class PSHTTPConnection {
    * @return the error stream.
    *
    * @throws IOException If thrown while writing the XML.
+   * @throws IllegalStateException If there is no error stream
    */
   private static InputStream getErrorStream(HttpURLConnection connection) throws IOException {
-    InputStream err = null;
+    InputStream err = connection.getErrorStream();
+    if (err == null)
+      throw new IllegalStateException("No error stream available!");
     if (LOGGER.isDebugEnabled()) {
-      InputStream tmp = connection.getErrorStream();
+      InputStream tmp = err;
       try {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         copy(tmp, buffer);
@@ -1004,8 +1007,6 @@ public final class PSHTTPConnection {
       } finally {
         closeQuietly(tmp);
       }
-    } else {
-      err = connection.getErrorStream();
     }
     return err;
   }
@@ -1015,7 +1016,7 @@ public final class PSHTTPConnection {
    *
    * @param closeable The object to close.
    */
-  private static void closeQuietly(Closeable closeable) {
+  private static void closeQuietly(@Nullable Closeable closeable) {
     try {
       if (closeable != null) {
         closeable.close();
@@ -1067,6 +1068,19 @@ public final class PSHTTPConnection {
   }
 
   /**
+   * @return the data output stream
+   * @throws IOException If thrown by the connection
+   */
+  private DataOutputStream initDataOutputStream() throws IOException {
+    DataOutputStream o = this.out;
+    if (o == null) {
+      o = new DataOutputStream(this._connection.getOutputStream());
+      this.out = o;
+    }
+    return o;
+  }
+
+  /**
    * A handler that wraps a specified handler but will automatically dispatch to different handler
    * if an error is detected.
    *
@@ -1094,7 +1108,7 @@ public final class PSHTTPConnection {
      * @param response The response metadata
      * @param handler  THe handler to use unless an error is detected.
      */
-    public HandlerDispatcher(XMLReader reader, PSHTTPResponseInfo response, DefaultHandler handler) {
+    public HandlerDispatcher(XMLReader reader, PSHTTPResponseInfo response, @Nullable DefaultHandler handler) {
       this.reader = reader;
       this.handler = handler != null ? handler : new DefaultHandler();
       this.response = response;
@@ -1158,7 +1172,12 @@ public final class PSHTTPConnection {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
       if (ERROR_ELEMENT.equals(localName) || ERROR_ELEMENT.equals(qName)) {
-        this.response.setErrorID(attributes.getValue("id"));
+        String id = attributes.getValue("id");
+        if (id != null) {
+          this.response.setErrorID(id);
+        } else {
+          LOGGER.warn("Expected error id, but none found!");
+        }
       } else if (MESSAGE_ELEMENT.equals(localName) || MESSAGE_ELEMENT.equals(qName)) {
         this.isMessage = true;
       }

@@ -25,6 +25,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -54,7 +55,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Christophe Lauret
  *
- * @version 0.9.3
+ * @version 0.10.2
  * @since 0.9.3
  */
 public final class UnsafeSSL {
@@ -88,11 +89,11 @@ public final class UnsafeSSL {
       final TrustManager[] trustAllCerts = new TrustManager[] {
         new X509TrustManager() {
           @Override
-          public void checkClientTrusted(java.security.cert.X509Certificate [] chain, String authType) throws CertificateException {
+          public void checkClientTrusted(java.security.cert.X509Certificate @Nullable[] chain, @Nullable String authType) throws CertificateException {
           }
 
           @Override
-          public void checkServerTrusted(java.security.cert.X509Certificate [] chain, String authType) throws CertificateException {
+          public void checkServerTrusted(java.security.cert.X509Certificate @Nullable[] chain, @Nullable String authType) throws CertificateException {
           }
 
           @Override
@@ -111,7 +112,7 @@ public final class UnsafeSSL {
       HttpsURLConnection.setDefaultSSLSocketFactory(sslSocketFactory);
       HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
         @Override
-        public boolean verify(String hostname, SSLSession session) {
+        public boolean verify(@Nullable String hostname, @Nullable SSLSession session) {
           return true;
         }
       });

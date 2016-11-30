@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
@@ -52,8 +53,8 @@ public final class PSHTTPResource {
   /**
    * The body of the resource (used for PUT requests).
    */
-  private final String _body;
-  
+  private final @Nullable String _body;
+
   /**
    * The parameters to send.
    */
@@ -87,7 +88,7 @@ public final class PSHTTPResource {
    * @param parameters The parameters to access the resource.
    * @param include    Whether to include the response content.
    */
-  private PSHTTPResource(PSHTTPResourceType type, String name, String body, Map<String, String> parameters, boolean include) {
+  private PSHTTPResource(PSHTTPResourceType type, String name, @Nullable String body, Map<String, String> parameters, boolean include) {
     this._type = type;
     this._name = name;
     this._body = body;
@@ -128,7 +129,7 @@ public final class PSHTTPResource {
    *
    * @return the body of the resource.
    */
-  public String body() {
+  public @Nullable String body() {
     return this._body;
   }
 
@@ -189,7 +190,7 @@ public final class PSHTTPResource {
    *
    * @throws MalformedURLException If the URL is not well-formed
    */
-  protected URL toURL(PSCredentials credentials, boolean includePOSTParameters) throws MalformedURLException {
+  protected URL toURL(@Nullable PSCredentials credentials, boolean includePOSTParameters) throws MalformedURLException {
     return new URL(toURLString(credentials, includePOSTParameters));
   }
 
@@ -236,7 +237,7 @@ public final class PSHTTPResource {
    *
    * @return the URL to access this resource.
    */
-  private String toURLString(PSCredentials credentials, boolean includeParameters) {
+  private String toURLString(@Nullable PSCredentials credentials, boolean includeParameters) {
     PSConfig ps = PSConfig.getDefault();
 
     // Start building the URL
@@ -323,7 +324,7 @@ public final class PSHTTPResource {
    * @param resource the path to the resource
    * @return the part after and including '?' if it exists; otherwise <code>null</code>
    */
-  private static String getURLQuery(String resource) {
+  private static @Nullable String getURLQuery(String resource) {
     int q = resource.indexOf('?');
     int h = resource.lastIndexOf('#');
     if (q < 0 || (h > 0 && h < q)) return null;
@@ -337,7 +338,7 @@ public final class PSHTTPResource {
    * @param resource the path to the resource
    * @return the part after and including '#' if it exists; otherwise <code>null</code>
    */
-  private static String getURLFragment(String resource) {
+  private static @Nullable String getURLFragment(String resource) {
     int h = resource.indexOf('#');
     return h >= 0 ? resource.substring(h) : null;
   }
@@ -370,18 +371,18 @@ public final class PSHTTPResource {
   public static final class Builder {
 
     /** The type of resource accessed. */
-    private PSHTTPResourceType type;
+    private @Nullable PSHTTPResourceType type;
 
     /**
      * The name of the resource to access.
      */
-    private String name;
+    private @Nullable String name;
 
     /**
      * The body of the resource (used for PUT requests).
      */
-    private String body;
-    
+    private @Nullable String body;
+
     /**
      * Whether to include errors
      */
@@ -390,7 +391,7 @@ public final class PSHTTPResource {
     /**
      * The parameters to send.
      */
-    private final Map<String, String> _parameters = new HashMap<String, String>();
+    private final Map<String, String> _parameters = new HashMap<>();
 
     /**
      * Creates a new builder for a PageSeeder resource.
@@ -468,15 +469,17 @@ public final class PSHTTPResource {
      * @return The corresponding resource.
      */
     public PSHTTPResource build() {
-      if (this.type == null) throw new IllegalStateException("Unable to build PSResource, type is not set.");
-      if (this.name == null) throw new IllegalStateException("Unable to build PSResource, name is not set.");
+      PSHTTPResourceType t = this.type;
+      String n = this.name;
+      if (t == null) throw new IllegalStateException("Unable to build PSResource, type is not set.");
+      if (n == null) throw new IllegalStateException("Unable to build PSResource, name is not set.");
       Map<String, String> parameters = null;
       if (this._parameters.isEmpty()) {
-        parameters = Collections.<String, String>emptyMap();
+        parameters = Collections.emptyMap();
       } else {
-        parameters = new HashMap<String, String>(this._parameters);
+        parameters = new HashMap<>(this._parameters);
       }
-      return new PSHTTPResource(this.type, this.name, this.body, parameters, this.includeError);
+      return new PSHTTPResource(t, n, this.body, parameters, this.includeError);
     }
 
   }

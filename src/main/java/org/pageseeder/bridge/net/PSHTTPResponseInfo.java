@@ -16,6 +16,9 @@
 package org.pageseeder.bridge.net;
 
 import java.net.HttpURLConnection;
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Provides metadata about a response to an HTTP request made to PageSeeder.
@@ -91,7 +94,7 @@ public final class PSHTTPResponseInfo {
   /**
    * The media type returned by PageSeeder.
    */
-  private String mediaType = "";
+  private @Nullable String mediaType = "";
 
   /**
    * The error ID returned by PageSeeder (services only)
@@ -120,7 +123,7 @@ public final class PSHTTPResponseInfo {
   /**
    * @return the media type of the response
    */
-  public String getMediaType() {
+  public @Nullable String getMediaType() {
     return this.mediaType;
   }
 
@@ -187,7 +190,7 @@ public final class PSHTTPResponseInfo {
   /**
    * @param mediaType the mediatype to set
    */
-  void setMediaType(String mediaType) {
+  void setMediaType(@Nullable String mediaType) {
     this.mediaType = mediaType;
   }
 
@@ -202,9 +205,9 @@ public final class PSHTTPResponseInfo {
    * @param status the status of the response
    * @param message the message to set
    */
-  void setStatus(Status status, String message) {
+  void setStatus(Status status, @Nullable String message) {
     this.status = status;
-    this.message = message;
+    this.message = Objects.toString(message, "Unknown");
   }
 
   /**

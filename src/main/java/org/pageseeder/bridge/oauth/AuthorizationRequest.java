@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.net.HTTP;
 
@@ -41,7 +42,7 @@ import org.pageseeder.bridge.net.HTTP;
  * String url = request.toURLString();
  * </code></pre>
  *
- * @version 0.9.0
+ * @version 0.10.2
  * @since 0.9.0
  */
 public final class AuthorizationRequest {
@@ -97,21 +98,21 @@ public final class AuthorizationRequest {
   /**
    * @return the state parameter
    */
-  public String state() {
+  public @Nullable String state() {
     return this._parameters.get("state");
   }
 
   /**
    * @return The client ID used in this request.
    */
-  public String clientId() {
+  public @Nullable String clientId() {
     return this._parameters.get("client_id");
   }
 
   /**
    * @return the scope used for this request.
    */
-  public String scope() {
+  public @Nullable String scope() {
     return this._parameters.get("scope");
   }
 
@@ -120,7 +121,7 @@ public final class AuthorizationRequest {
    *
    * @return the corresponding value or <code>null</code>.
    */
-  public String parameter(String name) {
+  public @Nullable String parameter(String name) {
     Objects.requireNonNull(name, "The parameter name cannot be null");
     return this._parameters.get(name);
   }

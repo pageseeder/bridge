@@ -275,12 +275,15 @@ public final class ServicePath {
         return o.toString();
       else if (o instanceof PSMember) {
         PSMember member = (PSMember)o;
-        if (member.getId() != null)
-          return member.getId().toString();
-        else if (member.getUsername() != null)
-          return '~'+encode(member.getUsername());
-        else if (member.getEmail() != null)
-          return '~'+encode(member.getEmail());
+        Long id = member.getId();
+        String username = member.getUsername();
+        String email = member.getEmail();
+        if (id != null)
+          return id.toString();
+        else if (username != null)
+          return '~'+encode(username);
+        else if (email != null)
+          return '~'+encode(email);
         else throw new IllegalArgumentException("Member must have an id, username or email to be used as a variable");
       } else {
         String s = Objects.toString(o);
@@ -300,10 +303,12 @@ public final class ServicePath {
       if (o instanceof Integer || o instanceof Long) return o.toString();
       else if (o instanceof PSGroup) {
         PSGroup group = (PSGroup)o;
-        if (group.getId() != null)
-          return group.getId().toString();
-        else if (group.getName() != null)
-          return '~'+group.getName();
+        Long id = group.getId();
+        String name = group.getName();
+        if (id != null)
+          return id.toString();
+        else if (name != null)
+          return '~'+name;
         else throw new IllegalArgumentException("Group must have an id or name to be used as a variable");
       } else {
         String s = o.toString();
@@ -323,8 +328,9 @@ public final class ServicePath {
       if (o instanceof Integer || o instanceof Long) return o.toString();
       else if (o instanceof PSURI) {
         PSURI uri = (PSURI)o;
-        if (uri.getId() != null)
-          return uri.getId().toString();
+        Long id = uri.getId();
+        if (id != null)
+          return id.toString();
         else throw new IllegalArgumentException("URI must have an id to be used as a variable");
       } else {
         String s = o.toString();
@@ -344,10 +350,14 @@ public final class ServicePath {
       if (o instanceof Integer || o instanceof Long) return o.toString();
       else if (o instanceof PSEntity) {
         PSEntity entity = (PSEntity)o;
-        if (entity.getId() != null)
-          return entity.getId().toString();
+        Long id = entity.getId();
+        String idf = entity.getIdentifier();
+        if (id != null)
+          return id.toString();
+        else if (idf != null)
+          return encode(idf);
         else
-          return encode(entity.getIdentifier());
+          throw new IllegalArgumentException("Object must have an id or identifier to be used as a variable");
       } else {
         String s = o.toString();
         if (isNumeric(s)) return s;

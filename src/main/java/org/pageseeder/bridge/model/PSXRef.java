@@ -93,6 +93,7 @@ public final class PSXRef implements PSEntity {
    * XRef type.
    */
   public static enum TYPE {
+
     /** none */
     NONE,
     /** embed */

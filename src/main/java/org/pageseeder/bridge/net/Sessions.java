@@ -15,6 +15,7 @@
  */
 package org.pageseeder.bridge.net;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSSession;
 
 /**
@@ -32,7 +33,7 @@ public final class Sessions {
   /**
    * A JSession ID to recycle when not using a PageSeeder User.
    */
-  private static volatile PSSession anonymous = null;
+  private static volatile @Nullable PSSession anonymous = null;
 
   /**
    * Utility class.
@@ -48,7 +49,7 @@ public final class Sessions {
    * @return <code>true</code> if the session is still valid;
    *         <code>false</code> otherwise.
    */
-  public static boolean isValid(PSSession session) {
+  public static boolean isValid(@Nullable PSSession session) {
     if (session == null) return false;
     final int _minutes = 60;
     long maxSessionAge = _minutes * ONE_MINUTE_IN_MS;
@@ -58,7 +59,7 @@ public final class Sessions {
   /**
    * @return the anonymous
    */
-  public static PSSession getAnonymous() {
+  public static @Nullable PSSession getAnonymous() {
     return anonymous;
   }
 

@@ -15,6 +15,10 @@
  */
 package org.pageseeder.bridge.net;
 
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.InvalidEntityException;
 import org.pageseeder.bridge.PSEntity;
@@ -25,7 +29,8 @@ import org.pageseeder.bridge.PSEntity;
  * <p>Preconditions are used to ensure that no connections are made to PageSeeder needlessly
  *
  * @author Christophe Lauret
- * @version 0.2.1
+ *
+ * @version 0.10.2
  * @since 0.1.0
  */
 public final class Preconditions {
@@ -44,6 +49,20 @@ public final class Preconditions {
    */
   static void isIdentifiable(PSEntity entity, String name) throws FailedPrecondition {
     if (!entity.isIdentifiable()) throw new FailedPrecondition(name + " must be identifiable");
+  }
+
+  /**
+   * Precondition requiring the specified entity to be identifiable.
+   *
+   * @param entity The entity to check
+   * @param name   The name of the entity
+   *
+   * @throws NullPointerException If the entity is <code>null</code>
+   * @throws FailedPrecondition If the the {@link PSEntity#isIdentifiable()} method returns <code>false</code>.
+   */
+  static String checkIdentifiable(PSEntity entity, String name) throws FailedPrecondition {
+    if (!entity.isIdentifiable()) throw new FailedPrecondition(name + " must be identifiable");
+    return Objects.requireNonNull(entity.getIdentifier());
   }
 
   /**
@@ -79,8 +98,23 @@ public final class Preconditions {
    *
    * @throws FailedPrecondition If the pre-condition failed.
    */
-  static void isNotEmpty(String s, String name) throws FailedPrecondition {
+  static void isNotEmpty(@Nullable String s, String name) throws FailedPrecondition {
     if (s == null || s.length() == 0) throw new FailedPrecondition(name + " must not be empty");
+  }
+
+  /**
+   * Precondition requiring the specified string to be non-null and at least 1 character long.
+   *
+   * @param s    The string to check
+   * @param name The name of the object to generate the message.
+   *
+   * @return the string check (and definitely not <code>null</code> or empty)
+   *
+   * @throws FailedPrecondition If the pre-condition failed.
+   */
+  static String checkNotEmpty(@Nullable String s, String name) throws FailedPrecondition {
+    if (s == null || s.length() == 0) throw new FailedPrecondition(name + " must not be empty");
+    return s;
   }
 
   /**
@@ -91,8 +125,23 @@ public final class Preconditions {
    *
    * @throws FailedPrecondition If the pre-condition failed.
    */
-  static void isNotNull(Object o, String name) throws FailedPrecondition {
+  static <T> void isNotNull(@Nullable T o, String name) throws FailedPrecondition {
     if (o == null) throw new FailedPrecondition(name + " must not be null");
+  }
+
+  /**
+   * Precondition requiring the specified object to be non-null.
+   *
+   * @param o    The object to check for <code>null</code>
+   * @param name The name of the object to generate the message.
+   *
+   * @return The object (not <code>null</code>)
+   *
+   * @throws FailedPrecondition If the pre-condition failed.
+   */
+  static <T> @NonNull T checkNotNull(@Nullable T o, String name) throws FailedPrecondition {
+    if (o == null) throw new FailedPrecondition(name + " must not be null");
+    return o;
   }
 
   /**
