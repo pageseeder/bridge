@@ -1,5 +1,6 @@
 package org.pageseeder.bridge.xml;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.xml.sax.SAXException;
 
 /**
@@ -19,7 +20,7 @@ public abstract class BuildableHandler<T, B> extends BasicHandler<T> {
   /**
    * The current item being processed (may be <code>null</code>)
    */
-  private B builder;
+  private @Nullable B builder;
 
   public BuildableHandler() {
     this.builder = null;
@@ -50,7 +51,7 @@ public abstract class BuildableHandler<T, B> extends BasicHandler<T> {
   /**
    * @return the item currently processed.
    */
-  protected B builder() {
+  protected @Nullable B builder() {
     return this.builder;
   }
 
@@ -64,8 +65,9 @@ public abstract class BuildableHandler<T, B> extends BasicHandler<T> {
    * <p>If the builder cannot be reused, use the {@link #newBuilder(Object)}
    */
   protected void addItem() {
-    if (this.builder != null) {
-      T item = build(this.builder);
+    @Nullable B b = this.builder;
+    if (b != null) {
+      T item = build(b);
       add(item);
     }
   }

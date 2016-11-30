@@ -17,6 +17,7 @@ package org.pageseeder.bridge.xml;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -41,6 +42,7 @@ public abstract class Handler<T> extends DefaultHandler {
   /**
    * @return the last item that was processed and added to the list.
    */
+  @Nullable
   public abstract T get();
 
 }

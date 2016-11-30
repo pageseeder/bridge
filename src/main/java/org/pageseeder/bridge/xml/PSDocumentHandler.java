@@ -18,6 +18,7 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSFolder;
 import org.xml.sax.Attributes;
@@ -28,29 +29,31 @@ import org.xml.sax.helpers.DefaultHandler;
  * Handles for services returning documents or folders (as URIs) from services.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ *
+ * @version 0.10.2
+ * @since 0.1.0
  */
 public final class PSDocumentHandler extends DefaultHandler {
 
   /**
    * The current document being processed.
    */
-  private PSDocument document = null;
+  private @Nullable PSDocument document = null;
 
   /**
    * The current folder being processed.
    */
-  private PSFolder folder = null;
+  private @Nullable PSFolder folder = null;
 
   /**
    * The list of documents returned by the servlet.
    */
-  List<PSDocument> documents = new ArrayList<PSDocument>();
+  List<PSDocument> documents = new ArrayList<>();
 
   /**
    * The list of folders returned by the servlet.
    */
-  List<PSFolder> folders = new ArrayList<PSFolder>();
+  List<PSFolder> folders = new ArrayList<>();
 
   /**
    * State variable, when <code>true</code> the handler should capture character data on the text buffer.
@@ -104,21 +107,27 @@ public final class PSDocumentHandler extends DefaultHandler {
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
+    PSDocument doc = this.document;
     if ("uri".equals(localName)) {
-      if (this.document != null) {
-        this.documents.add(this.document);
+      if (doc != null) {
+        this.documents.add(doc);
         this.document = null;
       }
-      if (this.folder != null) {
-        this.folders.add(this.folder);
+      PSFolder fol = this.folder;
+      if (fol != null) {
+        this.folders.add(fol);
         this.folder = null;
       }
       this.inURI = false;
     } else if (this.inURI) {
       if ("description".equals(localName)) {
-        this.document.setDescription(this.buffer.toString());
+        if (doc != null) {
+          doc.setDescription(this.buffer.toString());
+        }
       } else if ("labels".equals(localName)) {
-        this.document.setLabels(this.buffer.toString());
+        if (doc != null) {
+          doc.setLabels(this.buffer.toString());
+        }
       }
     }
     // Stop recording when an element closes
@@ -142,7 +151,7 @@ public final class PSDocumentHandler extends DefaultHandler {
   /**
    * @return the list of groups
    */
-  public PSDocument getDocument() {
+  public @Nullable PSDocument getDocument() {
     int size = this.documents.size();
     return size > 0? this.documents.get(size-1) : null;
   }
@@ -157,7 +166,7 @@ public final class PSDocumentHandler extends DefaultHandler {
   /**
    * @return the list of groups
    */
-  public PSFolder getFolder() {
+  public @Nullable PSFolder getFolder() {
     int size = this.folders.size();
     return size > 0? this.folders.get(size-1) : null;
   }

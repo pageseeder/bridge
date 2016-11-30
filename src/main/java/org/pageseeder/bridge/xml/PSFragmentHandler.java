@@ -17,7 +17,9 @@ package org.pageseeder.bridge.xml;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.model.PSXRef;
@@ -45,12 +47,12 @@ public final class PSFragmentHandler extends DefaultHandler {
   /**
    * The containing uri
    */
-  private PSURI fraguri = null;
+  private @Nullable PSURI fraguri = null;
 
   /**
    * The current document being processed.
    */
-  private PSMLFragment fragment = null;
+  private @Nullable PSMLFragment fragment = null;
 
   /**
    * The list of documents returned by the servlet.
@@ -95,19 +97,19 @@ public final class PSFragmentHandler extends DefaultHandler {
     }
 
     if ("fragment".equals(localName)) {
-      String id = atts.getValue("id");
-      String type = atts.getValue("type");
+      String id = Objects.requireNonNull(atts.getValue("id"), "expected id attribute on fragment");
+      String type = Objects.requireNonNull(atts.getValue("type"), "expected type attribute on fragment");
       this.fragment = new Fragment(id, type);
       this.copyAll = true;
 
     } else if ("properties-fragment".equals(localName)) {
-      String id = atts.getValue("id");
-      String type = atts.getValue("type");
+      String id = Objects.requireNonNull(atts.getValue("id"), "expected id attribute on properties-fragment");
+      String type = Objects.requireNonNull(atts.getValue("type"), "expected type attribute on properties-fragment");
       this.fragment = new PropertiesFragment(id, type);
 
     } else if ("xref-fragment".equals(localName)) {
-      String id = atts.getValue("id");
-      String type = atts.getValue("type");
+      String id = Objects.requireNonNull(atts.getValue("id"), "expected id attribute on xref-fragment");
+      String type = Objects.requireNonNull(atts.getValue("type"), "expected type attribute on xref-fragment");
       this.fragment = new XRefFragment(id, type);
 
     } else if ("media-fragment".equals(localName)) {
@@ -115,7 +117,7 @@ public final class PSFragmentHandler extends DefaultHandler {
 
     } else if ("property".equals(localName) && this.fragment instanceof PropertiesFragment) {
       PropertiesFragment f = (PropertiesFragment) this.fragment;
-      String name = atts.getValue("name");
+      String name = Objects.requireNonNull(atts.getValue("name"), "expected property name");
       String title = atts.getValue("title");
       String value = atts.getValue("value");
       String datatype = atts.getValue("datatype");
@@ -123,11 +125,15 @@ public final class PSFragmentHandler extends DefaultHandler {
       p.setType(datatype);
       p.setValue(value);
       p.setTitle(title);
-      f.add(p);
+      if (f != null) {
+        f.add(p);
+      }
     } else if ("blockxref".equals(localName) && this.fragment instanceof XRefFragment) {
       XRefFragment f = (XRefFragment) this.fragment;
       PSXRef xref = PSEntityFactory.toXRef(atts, this.fraguri, null);
-      f.add(xref);
+      if (f != null) {
+        f.add(xref);
+      }
     } else {
       this.buffer.setLength(0);
     }
@@ -139,7 +145,9 @@ public final class PSFragmentHandler extends DefaultHandler {
       // store the content
       if (this.fragment instanceof Fragment) {
         Fragment frag = (Fragment) this.fragment;
-        frag.setContent(this.fragXMLContent.toString());
+        if (frag != null) {
+          frag.setContent(this.fragXMLContent.toString());
+        }
         this.copyAll = false;
       }
 
@@ -172,7 +180,7 @@ public final class PSFragmentHandler extends DefaultHandler {
   /**
    * @return the list of groups
    */
-  public PSMLFragment getFragment() {
+  public @Nullable PSMLFragment getFragment() {
     return this.fragment;
   }
 

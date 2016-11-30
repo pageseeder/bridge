@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSComment;
 import org.pageseeder.bridge.model.PSComment.Attachment;
 import org.pageseeder.bridge.model.PSDocument;
@@ -38,14 +39,16 @@ import org.xml.sax.helpers.DefaultHandler;
  * Handles XML for services returning comments.
  *
  * @author Christophe Lauret
- * @version 0.3.0
+ *
+ * @version 0.10.3
+ * @since 0.3.0
  */
 public final class PSCommentHandler extends DefaultHandler {
 
   /**
    * The current comment being processed.
    */
-  private PSComment comment = null;
+  private @Nullable PSComment comment = null;
 
   /**
    * Attachments for current comment
@@ -60,12 +63,12 @@ public final class PSCommentHandler extends DefaultHandler {
   /**
    * To capture text data.
    */
-  private StringBuilder buffer = null;
+  private @Nullable StringBuilder buffer = null;
 
   /**
    * To capture XML content.
    */
-  private XMLWriter xmlContent = null;
+  private @Nullable XMLWriter xmlContent = null;
 
   /**
    * Indicates whether the handler is within an 'attachment' element.
@@ -75,7 +78,7 @@ public final class PSCommentHandler extends DefaultHandler {
   /**
    * The fragment ID for context and attachments
    */
-  private String fragment = null;
+  private @Nullable String fragment = null;
 
   /**
    * Whether inside author element
@@ -85,7 +88,7 @@ public final class PSCommentHandler extends DefaultHandler {
   /**
    * Author email (non member)
    */
-  private String authorEmail = null;
+  private @Nullable String authorEmail = null;
 
   /**
    * Create a new handler for comments.
@@ -104,11 +107,12 @@ public final class PSCommentHandler extends DefaultHandler {
 
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
-    if (this.xmlContent != null) {
+    XMLWriter xml = this.xmlContent;
+    if (xml != null) {
       try {
-        this.xmlContent.openElement(uri, localName, true);
+        xml.openElement(uri, localName, true);
         for (int i = 0; i < atts.getLength(); i++) {
-          this.xmlContent.attribute(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
+          xml.attribute(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
         }
       } catch (IOException ex) {
         // shouldn't happen as internal writer
@@ -209,9 +213,11 @@ public final class PSCommentHandler extends DefaultHandler {
       this.attachment = false;
       this.fragment = null;
     }
-    if (this.xmlContent != null) {
+
+    XMLWriter xml = this.xmlContent;
+    if (xml != null) {
       try {
-        this.xmlContent.closeElement();
+        xml.closeElement();
       } catch (IOException ex) {
         // shouldn't happen as internal writer
       }
@@ -220,9 +226,10 @@ public final class PSCommentHandler extends DefaultHandler {
 
   @Override
   public void characters(char[] ch, int start, int length) throws SAXException {
-    if (this.xmlContent != null) {
+    XMLWriter xml = this.xmlContent;
+    if (xml != null) {
       try {
-        this.xmlContent.writeText(ch, start, length);
+        xml.writeText(ch, start, length);
       } catch (IOException ex) {
         // shouldn't happen as internal writer
       }
@@ -241,7 +248,7 @@ public final class PSCommentHandler extends DefaultHandler {
   /**
    * @return the last comment processed
    */
-  public PSComment getComment() {
+  public @Nullable PSComment getComment() {
     int size = this.comments.size();
     return size > 0? this.comments.get(size-1) : null;
   }

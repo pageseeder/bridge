@@ -15,6 +15,7 @@
  */
 package org.pageseeder.bridge.xml;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSGroup;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -28,7 +29,7 @@ import org.xml.sax.SAXException;
  */
 public final class PSGroupHandler extends PSEntityHandler<PSGroup> {
 
-  private PSGroup tempGroup = null;
+  private @Nullable PSGroup tempGroup = null;
 
   /**
    * A new handler to fill up the values of an incomplete group (or project).
@@ -49,27 +50,34 @@ public final class PSGroupHandler extends PSEntityHandler<PSGroup> {
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
     if ("group".equals(localName)) {
       // save parent project (for tree)
-      if (this.tempGroup != null)
-        this._items.add(this.tempGroup);
+      PSGroup tmp = this.tempGroup;
+      if (tmp != null) {
+        this._items.add(tmp);
+      }
       this.tempGroup = make(atts, this.current);
     } else if ("project".equals(localName)) {
       // save parent project (for tree)
-      if (this.tempGroup != null)
-        this._items.add(this.tempGroup);
+      PSGroup tmp = this.tempGroup;
+      if (tmp != null) {
+        this._items.add(tmp);
+      }
       this.tempGroup = PSEntityFactory.toProject(atts, this.current);
     }
   }
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
-    if (("group".equals(localName) || "project".equals(localName)) && this.tempGroup != null) {
-      this._items.add(this.tempGroup);
-      this.tempGroup = null;
+    if ("group".equals(localName) || "project".equals(localName)) {
+      PSGroup tmp = this.tempGroup;
+      if (tmp != null) {
+        this._items.add(tmp);
+        this.tempGroup = null;
+      }
     }
   }
 
   @Override
-  public PSGroup make(Attributes atts, PSGroup entity) {
+  public PSGroup make(Attributes atts, @Nullable PSGroup entity) {
     return PSEntityFactory.toGroup(atts, entity);
   }
 }

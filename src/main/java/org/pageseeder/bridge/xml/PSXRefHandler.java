@@ -18,6 +18,7 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.model.PSXRef;
 import org.xml.sax.Attributes;
@@ -28,25 +29,27 @@ import org.xml.sax.helpers.DefaultHandler;
  * Handles for services returning XRefs from services.
  *
  * @author Philip Rutherford
+ *
+ * @version 0.10.2
  * @version 0.8.1
  */
 public final class PSXRefHandler extends DefaultHandler {
-  
+
   /**
    * The context URI
    */
-  private PSURI uri = null;
+  private @Nullable PSURI uri = null;
 
   /**
    * The current XRef being processed.
    */
-  private PSXRef xref = null;
+  private @Nullable PSXRef xref = null;
 
   /**
    * The list of XRefs returned by the service.
    */
-  List<PSXRef> xrefs = new ArrayList<PSXRef>();
-  
+  List<PSXRef> xrefs = new ArrayList<>();
+
   /**
    * Create a new handler for external URIs.
    */
@@ -81,12 +84,15 @@ public final class PSXRefHandler extends DefaultHandler {
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
-    if ("xref".equals(localName) || "blockxref".equals(localName)) {
-      this.xrefs.add(this.xref);
-      this.xref = null;
-    } else if ("reversexref".equals(localName)) {
-      this.xrefs.add(this.xref);
-      this.xref = null;
+    PSXRef x = this.xref;
+    if (x != null) {
+      if ("xref".equals(localName) || "blockxref".equals(localName)) {
+        this.xrefs.add(x);
+        this.xref = null;
+      } else if ("reversexref".equals(localName)) {
+        this.xrefs.add(x);
+        this.xref = null;
+      }
     }
   }
 
@@ -100,7 +106,7 @@ public final class PSXRefHandler extends DefaultHandler {
   /**
    * @return a single external URI
    */
-  public PSXRef getXRef() {
+  public @Nullable PSXRef getXRef() {
     int size = this.xrefs.size();
     return size > 0 ? this.xrefs.get(size-1) : null;
   }

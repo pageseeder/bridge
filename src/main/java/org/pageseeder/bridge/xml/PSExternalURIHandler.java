@@ -18,6 +18,7 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSExternalURI;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -28,19 +29,21 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Christophe Lauret
  * @author Jean-Baptiste Reure
- * @version 0.3.0
+ *
+ * @version 0.10.2
+ * @since 0.3.0
  */
 public final class PSExternalURIHandler extends DefaultHandler {
 
   /**
-   * The current external URI being processed.
-   */
-  private PSExternalURI externaluri = null;
-
-  /**
    * The list of external URIs returned by the servlet.
    */
-  List<PSExternalURI> externaluris = new ArrayList<>();
+  private final List<PSExternalURI> _externalURIs = new ArrayList<>();
+
+  /**
+   * The current external URI being processed.
+   */
+  private @Nullable PSExternalURI externalURI = null;
 
   /**
    * State variable, when <code>true</code> the handler should capture character data on the text buffer.
@@ -69,14 +72,14 @@ public final class PSExternalURIHandler extends DefaultHandler {
    * @param external An external URI to update.
    */
   public PSExternalURIHandler(PSExternalURI external) {
-    this.externaluri = external;
+    this.externalURI = external;
   }
 
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
     if ("uri".equals(localName)) {
       this.inURI = true;
-      this.externaluri = PSEntityFactory.toExternalURI(atts, this.externaluri);
+      this.externalURI = PSEntityFactory.toExternalURI(atts, this.externalURI);
     // record element content
     } else if (this.inURI && "description".equals(localName)
         || "labels".equals(localName)) {
@@ -87,15 +90,20 @@ public final class PSExternalURIHandler extends DefaultHandler {
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
+    PSExternalURI extURI = this.externalURI;
     if ("uri".equals(localName)) {
-      this.externaluris.add(this.externaluri);
-      this.externaluri = null;
+      if (extURI != null) {
+        this._externalURIs.add(extURI);
+        this.externalURI = null;
+      }
       this.inURI = false;
     } else if (this.inURI) {
-      if ("description".equals(localName)) {
-        this.externaluri.setDescription(this.buffer.toString());
-      } else if ("labels".equals(localName)) {
-        this.externaluri.setLabels(this.buffer.toString());
+      if (extURI != null) {
+        if ("description".equals(localName)) {
+          extURI.setDescription(this.buffer.toString());
+        } else if ("labels".equals(localName)) {
+          extURI.setLabels(this.buffer.toString());
+        }
       }
     }
     // Stop recording when an element closes
@@ -113,15 +121,15 @@ public final class PSExternalURIHandler extends DefaultHandler {
    * @return the list of external URIs
    */
   public List<PSExternalURI> listExternalURIs() {
-    return this.externaluris;
+    return this._externalURIs;
   }
 
   /**
    * @return a single external URI
    */
-  public PSExternalURI getExternalURI() {
-    int size = this.externaluris.size();
-    return size > 0 ? this.externaluris.get(size-1) : null;
+  public @Nullable PSExternalURI getExternalURI() {
+    int size = this._externalURIs.size();
+    return size > 0 ? this._externalURIs.get(size-1) : null;
   }
 
 }

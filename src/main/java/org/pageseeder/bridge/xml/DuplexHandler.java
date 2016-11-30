@@ -2,6 +2,7 @@ package org.pageseeder.bridge.xml;
 
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -176,7 +177,7 @@ public final class DuplexHandler extends DefaultHandler {
   // --------------------------------------------------------------------------
 
 
-  private static SAXException characters(DefaultHandler handler, char[] ch, int start, int length) {
+  private static @Nullable SAXException characters(DefaultHandler handler, char[] ch, int start, int length) {
     try {
       handler.characters(ch, start, length);
       return null;
@@ -185,7 +186,7 @@ public final class DuplexHandler extends DefaultHandler {
     }
   }
 
-  private static SAXException endDocument(DefaultHandler handler) {
+  private static @Nullable SAXException endDocument(DefaultHandler handler) {
     try {
       handler.endDocument();
       return null;
@@ -194,7 +195,7 @@ public final class DuplexHandler extends DefaultHandler {
     }
   }
 
-  private static SAXException endElement(DefaultHandler handler, String uri, String localName, String qName) {
+  private static @Nullable SAXException endElement(DefaultHandler handler, String uri, String localName, String qName) {
     try {
       handler.endElement(uri, localName, qName);
       return null;
@@ -203,7 +204,7 @@ public final class DuplexHandler extends DefaultHandler {
     }
   }
 
-  private static SAXException endPrefixMapping(DefaultHandler handler, String prefix) {
+  private static @Nullable SAXException endPrefixMapping(DefaultHandler handler, String prefix) {
     try {
       handler.endPrefixMapping(prefix);
       return null;
@@ -212,7 +213,7 @@ public final class DuplexHandler extends DefaultHandler {
     }
   }
 
-  private static SAXException error(DefaultHandler handler, SAXParseException exception) {
+  private static @Nullable SAXException error(DefaultHandler handler, SAXParseException exception) {
     try {
       handler.error(exception);
       return null;
@@ -221,7 +222,7 @@ public final class DuplexHandler extends DefaultHandler {
     }
   }
 
-  private static SAXException fatalError(DefaultHandler handler, SAXParseException error) {
+  private static @Nullable SAXException fatalError(DefaultHandler handler, SAXParseException error) {
     try {
       handler.fatalError(error);
       return null;
@@ -230,7 +231,7 @@ public final class DuplexHandler extends DefaultHandler {
     }
   }
 
-  private static SAXException ignorableWhitespace(DefaultHandler handler, char[] ch, int start, int length) {
+  private static @Nullable SAXException ignorableWhitespace(DefaultHandler handler, char[] ch, int start, int length) {
     try {
       handler.ignorableWhitespace(ch, start, length);
       return null;
@@ -239,7 +240,7 @@ public final class DuplexHandler extends DefaultHandler {
     }
   }
 
-  private static SAXException notationDecl(DefaultHandler handler, String name, String publicId, String systemId) {
+  private static @Nullable SAXException notationDecl(DefaultHandler handler, String name, String publicId, String systemId) {
     try {
       handler.notationDecl(name, publicId, systemId);
       return null;
@@ -248,7 +249,7 @@ public final class DuplexHandler extends DefaultHandler {
     }
   }
 
-  private static SAXException processingInstruction(DefaultHandler handler, String target, String data) {
+  private static @Nullable SAXException processingInstruction(DefaultHandler handler, String target, String data) {
     try {
       handler.processingInstruction(target, data);
       return null;
@@ -257,7 +258,7 @@ public final class DuplexHandler extends DefaultHandler {
     }
   }
 
-  private static SAXException skippedEntity(DefaultHandler handler, String name) {
+  private static @Nullable SAXException skippedEntity(DefaultHandler handler, String name) {
     try {
       handler.skippedEntity(name);
       return null;
@@ -266,7 +267,7 @@ public final class DuplexHandler extends DefaultHandler {
     }
   }
 
-  private static SAXException startDocument(DefaultHandler handler) {
+  private static @Nullable SAXException startDocument(DefaultHandler handler) {
     try {
       handler.startDocument();
       return null;
@@ -275,7 +276,7 @@ public final class DuplexHandler extends DefaultHandler {
     }
   }
 
-  private static SAXException startElement(DefaultHandler handler, String uri, String localName, String qName, Attributes attributes) {
+  private static @Nullable SAXException startElement(DefaultHandler handler, String uri, String localName, String qName, Attributes attributes) {
     try {
       handler.startElement(uri, localName, qName, attributes);
       return null;
@@ -284,7 +285,7 @@ public final class DuplexHandler extends DefaultHandler {
     }
   }
 
-  private static SAXException startPrefixMapping(DefaultHandler handler, String prefix, String uri) {
+  private static @Nullable SAXException startPrefixMapping(DefaultHandler handler, String prefix, String uri) {
     try {
       handler.startPrefixMapping(prefix, uri);
       return null;
@@ -293,7 +294,7 @@ public final class DuplexHandler extends DefaultHandler {
     }
   }
 
-  private static SAXException unparsedEntityDecl(DefaultHandler handler, String name, String publicId, String systemId, String notationName) {
+  private static @Nullable SAXException unparsedEntityDecl(DefaultHandler handler, String name, String publicId, String systemId, String notationName) {
     try {
       handler.unparsedEntityDecl(name, publicId, systemId, notationName);
       return null;
@@ -302,7 +303,7 @@ public final class DuplexHandler extends DefaultHandler {
     }
   }
 
-  private static SAXException warning(DefaultHandler handler, SAXParseException exception) {
+  private static @Nullable SAXException warning(DefaultHandler handler, SAXParseException exception) {
     try {
       handler.warning(exception);
       return null;

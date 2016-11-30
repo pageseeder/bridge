@@ -18,6 +18,7 @@ package org.pageseeder.bridge.xml;
 import java.text.ParseException;
 import java.util.Date;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSNotification;
 import org.pageseeder.bridge.model.PSRole;
 import org.pageseeder.bridge.util.ISO8601;
@@ -47,7 +48,7 @@ public final class PSHandlers {
    * @param date the date as 'YYYY-MM-DDThh:mm:ss' with optional timezone component.
    * @return the corresponding Date value or <code>null</code>
    */
-  public static Date datetime(String date) {
+  public static @Nullable Date datetime(@Nullable String date) {
     if (date == null) return null;
     try {
       return ISO8601.parseAuto(date);
@@ -63,7 +64,7 @@ public final class PSHandlers {
    * @param id the ID
    * @return the corresponding Long value or <code>null</code>
    */
-  public static Long id(String id) {
+  public static @Nullable Long id(@Nullable String id) {
     if (id == null) return null;
     try {
       return Long.valueOf(id);
@@ -79,7 +80,7 @@ public final class PSHandlers {
    * @param i the integer to parse
    * @return the corresponding Integer value or <code>null</code>
    */
-  public static int integer(String i) {
+  public static int integer(@Nullable String i) {
     if (i == null) return -1;
     try {
       return Integer.parseInt(i);
@@ -95,7 +96,7 @@ public final class PSHandlers {
    * @param notification the notification to parse
    * @return the corresponding notification value or <code>null</code>
    */
-  public static PSNotification notification(String notification) {
+  public static @Nullable PSNotification notification(@Nullable String notification) {
     if (notification == null) return null;
     try {
       return PSNotification.valueOf(notification);
@@ -111,7 +112,7 @@ public final class PSHandlers {
    * @param role the role to parse
    * @return the corresponding role value or <code>null</code>
    */
-  public static PSRole role(String role) {
+  public static @Nullable PSRole role(@Nullable String role) {
     if (role == null) return null;
     try {
       return PSRole.valueOf(role.replace('-', '_'));

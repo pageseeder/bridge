@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -65,7 +66,12 @@ public final class XMLCopy extends DefaultHandler implements ContentHandler, Lex
     try {
       this.to.openElement(qName);
       for (int i = 0; i < atts.getLength(); i++) {
-        this.to.attribute(atts.getQName(i), atts.getValue(i));
+        String name = atts.getQName(i);
+        String value = atts.getValue(i);
+        // Since we iterate over the values, there is no reason to think we could get a null...
+        if (name != null && value != null) {
+          this.to.attribute(name, value);
+        }
       }
       // Put the prefix mapping was reported BEFORE the startElement was reported...
       if (!this.mapping.isEmpty()) {
@@ -153,7 +159,7 @@ public final class XMLCopy extends DefaultHandler implements ContentHandler, Lex
    * {@inheritDoc}
    */
   @Override
-  public void startDTD(String name, String publicId, String systemId) throws SAXException {
+  public void startDTD(String name, @Nullable String publicId, @Nullable String systemId) throws SAXException {
   }
 
   /**

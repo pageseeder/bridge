@@ -70,7 +70,7 @@ public final class PSXRef implements PSEntity {
      *
      * @return the display
      */
-    public static DISPLAY fromString(String value) {
+    public static DISPLAY fromString(@Nullable String value) {
       for (DISPLAY display : values()) {
         if (display._value.equalsIgnoreCase(value)) return display;
       }
@@ -110,7 +110,7 @@ public final class PSXRef implements PSEntity {
      *
      * @return the type
      */
-    public static TYPE fromString(String value) {
+    public static TYPE fromString(@Nullable String value) {
       if ("none".equalsIgnoreCase(value))        return NONE;
       if ("embed".equalsIgnoreCase(value))       return EMBED;
       if ("transclude".equalsIgnoreCase(value))  return TRANSCLUDE;

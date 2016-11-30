@@ -15,6 +15,7 @@
  */
 package org.pageseeder.bridge.xml;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSMember;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -23,7 +24,8 @@ import org.xml.sax.SAXException;
  * Handler for PageSeeder members.
  *
  * @author Christophe Lauret
- * @version 0.2.2
+ *
+ * @version 0.10.2
  * @since 0.1.0
  */
 public final class PSMemberHandler extends PSEntityHandler<PSMember> {
@@ -52,14 +54,17 @@ public final class PSMemberHandler extends PSEntityHandler<PSMember> {
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
-    if ("member".equals(localName) && this.current != null) {
-      this._items.add(this.current);
-      this.current = null;
+    if ("member".equals(localName)) {
+      PSMember m = this.current;
+      if (m != null) {
+        this._items.add(m);
+        this.current = null;
+      }
     }
   }
 
   @Override
-  public PSMember make(Attributes atts, PSMember entity) {
+  public PSMember make(Attributes atts, @Nullable PSMember entity) {
     return PSEntityFactory.toMember(atts, entity);
   }
 

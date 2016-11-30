@@ -18,6 +18,7 @@ package org.pageseeder.bridge.xml;
 import java.io.IOException;
 import java.util.Stack;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSThreadStatus;
 import org.pageseeder.xmlwriter.XML.NamespaceAware;
 import org.pageseeder.xmlwriter.XMLStringWriter;
@@ -40,26 +41,27 @@ public final class PSThreadHandler extends DefaultHandler {
    */
   private boolean oldFormat = true;
 
-  private PSThreadStatus tempStatus = null;
+  private @Nullable PSThreadStatus tempStatus = null;
 
   /**
    * To capture text data.
    */
-  private StringBuilder buffer = null;
+  private @Nullable StringBuilder buffer = null;
 
   /**
    * To capture XML content.
    */
-  private XMLWriter xmlContent = null;
+  private @Nullable XMLWriter xmlContent = null;
 
   private Stack<String> elements = new Stack<>();
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
-    if (this.xmlContent != null) {
+    XMLWriter xml = this.xmlContent;
+    if (xml != null) {
       try {
-        this.xmlContent.openElement(uri, localName, true);
+        xml.openElement(uri, localName, true);
         for (int i = 0; i < atts.getLength(); i++) {
-          this.xmlContent.attribute(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
+          xml.attribute(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
         }
       } catch (IOException ex) {
         // shouldn't happen as internal writer
@@ -69,11 +71,12 @@ public final class PSThreadHandler extends DefaultHandler {
       String id = atts.getValue("id");
       this.oldFormat = id == null;
       if (!this.oldFormat) {
-        this.tempStatus = new PSThreadStatus(id);
-        this.tempStatus.setGroupID(Long.valueOf(atts.getValue("groupid")));
-        this.tempStatus.setStatus(atts.getValue("status"));
-        this.tempStatus.setUsername(atts.getValue("username"));
-        this.tempStatus.setName(atts.getValue("name"));
+        PSThreadStatus tmp = new PSThreadStatus(id);
+        tmp.setGroupID(Long.valueOf(atts.getValue("groupid")));
+        tmp.setStatus(atts.getValue("status"));
+        tmp.setUsername(atts.getValue("username"));
+        tmp.setName(atts.getValue("name"));
+        this.tempStatus = tmp;
       }
     }
     String dad = this.elements.isEmpty() ? null : this.elements.peek();
@@ -113,9 +116,10 @@ public final class PSThreadHandler extends DefaultHandler {
       this.xmlContent = null;
     }
     this.elements.pop();
-    if (this.xmlContent != null) {
+    XMLWriter xml = this.xmlContent;
+    if (xml != null) {
       try {
-        this.xmlContent.closeElement();
+        xml.closeElement();
       } catch (IOException ex) {
         // shouldn't happen as internal writer
       }
@@ -124,18 +128,22 @@ public final class PSThreadHandler extends DefaultHandler {
 
   @Override
   public void characters(char[] ch, int start, int length) throws SAXException {
-    if (this.xmlContent != null) {
+    XMLWriter xml = this.xmlContent;
+    if (xml != null) {
       try {
-        this.xmlContent.writeText(ch, start, length);
+        xml.writeText(ch, start, length);
       } catch (IOException ex) {
         // shouldn't happen as internal writer
       }
-    } else if (this.buffer != null) {
-      this.buffer.append(ch, start, length);
+    } else {
+      StringBuilder b = this.buffer;
+      if (b != null) {
+        b.append(ch, start, length);
+      }
     }
   }
 
-  public PSThreadStatus getThreadStatus() {
+  public @Nullable PSThreadStatus getThreadStatus() {
     return this.tempStatus;
   }
 }

@@ -1,5 +1,6 @@
 package org.pageseeder.bridge.xml;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.http.ServiceError;
 import org.xml.sax.Attributes;
 
@@ -8,7 +9,7 @@ import org.xml.sax.Attributes;
  *
  * @author Christophe Lauret
  *
- * @version 0.9.2
+ * @version 0.10.2
  * @since 0.9.2
  */
 public final class ServiceErrorHandler extends BasicHandler<ServiceError> {
@@ -17,15 +18,18 @@ public final class ServiceErrorHandler extends BasicHandler<ServiceError> {
   private int id = -1;
 
   /** The message with the service error */
-  private String message;
+  private @Nullable String message;
 
   @Override
   public void startElement(String element, Attributes atts) {
     if (isElement("error")) {
-      try {
-        this.id = Integer.parseInt(atts.getValue("id"), 16);
-      } catch (NumberFormatException ex) {
-        // Probably not a service error
+      String idAttribute = atts.getValue("id");
+      if (idAttribute != null) {
+        try {
+          this.id = Integer.parseInt(idAttribute, 16);
+        } catch (NumberFormatException ex) {
+          // Probably not a service error
+        }
       }
     } else if (isElement("message") && isParent("error")) {
       newBuffer();
@@ -38,7 +42,11 @@ public final class ServiceErrorHandler extends BasicHandler<ServiceError> {
       this.message = buffer(true);
     } else if (isElement("error")) {
       if (this.id >= 0) {
-        ServiceError error = new ServiceError(this.id, this.message);
+        String m = this.message;
+        if (m == null) {
+          m = "Unknown (no message or description available)";
+        }
+        ServiceError error = new ServiceError(this.id, m);
         add(error);
       }
       // There usually is only one error, so no need to reset

@@ -15,6 +15,7 @@
  */
 package org.pageseeder.bridge.xml;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSGroupFolder;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -52,14 +53,17 @@ public class PSGroupFolderHandler extends PSEntityHandler<PSGroupFolder> {
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
-    if ("groupfolder".equals(localName) && this.current != null) {
-      this._items.add(current());
-      this.current = null;
+    if ("groupfolder".equals(localName)) {
+      PSGroupFolder gf = current();
+      if (gf != null) {
+        this._items.add(gf);
+        this.current = null;
+      }
     }
   }
 
   @Override
-  public PSGroupFolder make(Attributes atts, PSGroupFolder entity) {
+  public PSGroupFolder make(Attributes atts, @Nullable PSGroupFolder entity) {
     return PSEntityFactory.toGroupFolder(atts, entity);
   }
 }

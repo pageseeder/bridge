@@ -18,6 +18,7 @@ package org.pageseeder.bridge.xml;
 import java.text.ParseException;
 import java.util.Date;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSEntityCache;
 import org.pageseeder.bridge.control.CommentManager;
 import org.pageseeder.bridge.control.DocumentManager;
@@ -70,7 +71,7 @@ public final class PSEntityFactory {
    *
    * @return The membership instance.
    */
-  public static PSMembership toMembership(Attributes atts, PSMembership membership) {
+  public static PSMembership toMembership(Attributes atts, @Nullable PSMembership membership) {
     // Grab attributes values
     Long id = PSHandlers.id(atts.getValue("id"));
     String listed = atts.getValue("email-listed");
@@ -117,7 +118,7 @@ public final class PSEntityFactory {
    *
    * @return The member instance.
    */
-  public static PSMember toMember(Attributes atts, PSMember member) {
+  public static PSMember toMember(Attributes atts, @Nullable PSMember member) {
     String id = atts.getValue("id");
     String firstname = atts.getValue("firstname");
     String surname = atts.getValue("surname");
@@ -165,7 +166,7 @@ public final class PSEntityFactory {
    *
    * @return The group instance.
    */
-  public static PSGroup toGroup(Attributes atts, PSGroup group) {
+  public static PSGroup toGroup(Attributes atts, @Nullable PSGroup group) {
 
     String id = atts.getValue("id");
     String name = atts.getValue("name");
@@ -223,7 +224,7 @@ public final class PSEntityFactory {
    *
    * @return The project instance.
    */
-  public static PSProject toProject(Attributes atts, PSGroup group) {
+  public static PSProject toProject(Attributes atts, @Nullable PSGroup group) {
 
     String id = atts.getValue("id");
     String name = atts.getValue("name");
@@ -273,7 +274,7 @@ public final class PSEntityFactory {
    *
    * @return The corresponding PSDocument.
    */
-  public static PSDocument toDocument(Attributes atts, PSDocument document) {
+  public static PSDocument toDocument(Attributes atts, @Nullable PSDocument document) {
     String id = atts.getValue("id");
     String scheme = atts.getValue("scheme");
     String host = atts.getValue("host");
@@ -349,7 +350,7 @@ public final class PSEntityFactory {
    *
    * @return The corresponding PSDocument.
    */
-  public static PSExternalURI toExternalURI(Attributes atts, PSExternalURI externaluri) {
+  public static PSExternalURI toExternalURI(Attributes atts, @Nullable PSExternalURI externaluri) {
     String id = atts.getValue("id");
     String scheme = atts.getValue("scheme");
     String host = atts.getValue("host");
@@ -395,7 +396,7 @@ public final class PSEntityFactory {
    *
    * @return The corresponding PSComment
    */
-  public static PSComment toComment(Attributes atts, PSComment comment) {
+  public static PSComment toComment(Attributes atts, @Nullable PSComment comment) {
     String id = atts.getValue("id");
     String status = atts.getValue("status");
     String priority = atts.getValue("priority");
@@ -450,7 +451,7 @@ public final class PSEntityFactory {
    *
    * @return the corresponding folder instance.
    */
-  public static PSFolder toFolder(Attributes atts, PSFolder folder) {
+  public static PSFolder toFolder(Attributes atts, @Nullable PSFolder folder) {
     String id = atts.getValue("id");
     String path = atts.getValue("path");
     String description = atts.getValue("description");
@@ -485,7 +486,7 @@ public final class PSEntityFactory {
    *
    * @return The group folder instance.
    */
-  public static PSGroupFolder toGroupFolder(Attributes atts, PSGroupFolder folder) {
+  public static PSGroupFolder toGroupFolder(Attributes atts, @Nullable PSGroupFolder folder) {
 
     String id = atts.getValue("id");
     String scheme = atts.getValue("scheme");
@@ -521,7 +522,7 @@ public final class PSEntityFactory {
    *
    * @return The group folder instance.
    */
-  public static PSXRef toXRef(Attributes atts, PSURI source, PSXRef xref) {
+  public static PSXRef toXRef(Attributes atts, PSURI source, @Nullable PSXRef xref) {
 
     String id = atts.getValue("id");
     String targetDocid = atts.getValue("docid");
@@ -582,7 +583,7 @@ public final class PSEntityFactory {
    *
    * @return The group folder instance.
    */
-  public static PSXRef toReverseXRef(Attributes atts, PSURI target, PSXRef xref) {
+  public static PSXRef toReverseXRef(Attributes atts, PSURI target, @Nullable PSXRef xref) {
 
     String id = atts.getValue("id");
     String sourceDocid = atts.getValue("docid");

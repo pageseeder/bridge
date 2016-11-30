@@ -15,6 +15,7 @@
  */
 package org.pageseeder.bridge.xml;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSDetails;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
@@ -35,12 +36,12 @@ public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
   /**
    * The current member.
    */
-  private PSMember member = null;
+  private @Nullable PSMember member = null;
 
   /**
    * The current group.
    */
-  private PSGroup group = null;
+  private @Nullable PSGroup group = null;
 
   /**
    * Text buffer.
@@ -192,7 +193,7 @@ public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
    *
    * @return the group
    */
-  public PSGroup getGroup() {
+  public @Nullable PSGroup getGroup() {
     return this.group;
   }
 
@@ -201,7 +202,7 @@ public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
    *
    * @return the member
    */
-  public PSMember getMember() {
+  public @Nullable PSMember getMember() {
     return this.member;
   }
 }

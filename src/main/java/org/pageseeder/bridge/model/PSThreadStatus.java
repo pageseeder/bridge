@@ -77,7 +77,7 @@ public final class PSThreadStatus implements Serializable {
      * @param s the string value
      * @return the status if found, null otherwise
      */
-    static @Nullable Status fromString(String s) {
+    static @Nullable Status fromString(@Nullable String s) {
       for (Status st : values()) {
         if (st.toString().equalsIgnoreCase(s)) return st;
       }
@@ -131,21 +131,21 @@ public final class PSThreadStatus implements Serializable {
   /**
    * @param n the thread name
    */
-  public void setName(String n) {
+  public void setName(@Nullable String n) {
     this.name = n;
   }
 
   /**
    * @param uname The author's username
    */
-  public void setUsername(String uname) {
+  public void setUsername(@Nullable String uname) {
     this.username = uname;
   }
 
   /**
    * @param thestatus the thread status
    */
-  public void setStatus(String thestatus) {
+  public void setStatus(@Nullable String thestatus) {
     this.status = Status.fromString(thestatus);
   }
 

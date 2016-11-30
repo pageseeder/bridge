@@ -16,4 +16,5 @@
 /**
  * Service provider classes for the classes in the bridge.
  */
+@org.eclipse.jdt.annotation.NonNullByDefault
 package org.pageseeder.bridge.spi;

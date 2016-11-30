@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.xml.sax.Attributes;
 
 /**
@@ -23,12 +24,12 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
   /**
    * State variable to indicate the group the current result belong to
    */
-  private String group = null;
+  private @Nullable String group = null;
 
   /**
    * State variable to indicate the name of the current field.
    */
-  private String fieldname = null;
+  private @Nullable String fieldname = null;
 
   /**
    * This method is called whenever a new result document starts.

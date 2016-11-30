@@ -3,6 +3,7 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -44,7 +45,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
   /**
    * The buffer when capturing text values from elements.
    */
-  private StringBuilder buffer = null;
+  private @Nullable StringBuilder buffer = null;
 
   public BasicHandler() {
   }
@@ -93,8 +94,9 @@ public abstract class BasicHandler<T> extends Handler<T> {
    */
   @Override
   public final void characters(char[] ch, int start, int length) throws SAXException {
-    if (this.buffer != null) {
-      this.buffer.append(ch, start, length);
+    StringBuilder b = this.buffer;
+    if (b != null) {
+      b.append(ch, start, length);
     }
   }
 
@@ -115,8 +117,10 @@ public abstract class BasicHandler<T> extends Handler<T> {
    *
    * @return the content of the current buffer as a string or <code>null</code>.
    */
+  @Nullable
   protected final String buffer() {
-    return this.buffer != null? this.buffer.toString() : null;
+    StringBuilder b = this.buffer;
+    return b != null? b.toString() : null;
   }
 
   /**
@@ -126,6 +130,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    *
    * @return the content of the current buffer as a string.
    */
+  @Nullable
   protected final String buffer(boolean clear) {
     String text = buffer();
     if (clear) {
@@ -140,8 +145,9 @@ public abstract class BasicHandler<T> extends Handler<T> {
    * @param s The content to add.
    */
   protected final void append(String s) {
-    if (this.buffer != null) {
-      this.buffer.append(s);
+    StringBuilder b = this.buffer;
+    if (b != null) {
+      b.append(s);
     }
   }
 
@@ -178,6 +184,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
   /**
    * @return the name of the current element or <code>null</code> before/after the document element.
    */
+  @Nullable
   protected final String element() {
     return this.ancestorOrSelf.isEmpty()? null : this.ancestorOrSelf.get(this.ancestorOrSelf.size()-1);
   }
@@ -185,6 +192,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
   /**
    * @return the name of the parent element or <code>null</code> if the current element does not have any.
    */
+  @Nullable
   protected final String parent() {
     return (this.ancestorOrSelf.size() > 1)? this.ancestorOrSelf.get(this.ancestorOrSelf.size()-2) : null;
   }
@@ -205,6 +213,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    *
    * @throws IndexOutOfBoundsException if the specified index is less than 0;
    */
+  @Nullable
   protected final String ancestor(int i) {
     return (this.ancestorOrSelf.size() > i)? this.ancestorOrSelf.get(this.ancestorOrSelf.size()-(i-1)) : null;
   }
@@ -284,6 +293,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    * @return the last item that was processed and added to the list.
    */
   @Override
+  @Nullable
   public T get() {
     return this.list.isEmpty()? null : this.list.get(this.list.size()-1);
   }

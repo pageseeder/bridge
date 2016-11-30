@@ -18,6 +18,7 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSEntity;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
@@ -36,12 +37,12 @@ abstract class PSEntityHandler<E extends PSEntity> extends DefaultHandler {
   /**
    * The list of entities processed by this handler.
    */
-  protected final List<E> _items = new ArrayList<E>();
+  protected final List<E> _items = new ArrayList<>();
 
   /**
    * The entity being currently processed.
    */
-  protected E current = null;
+  protected @Nullable E current = null;
 
   /**
    * Creates a new handler without setting an initial entity to update.
@@ -65,7 +66,7 @@ abstract class PSEntityHandler<E extends PSEntity> extends DefaultHandler {
    *
    * @return the entity being currently processed.
    */
-  final E current() {
+  final @Nullable E current() {
     return this.current;
   }
 
@@ -79,7 +80,7 @@ abstract class PSEntityHandler<E extends PSEntity> extends DefaultHandler {
   /**
    * @return the list of group folders
    */
-  public final E get() {
+  public final @Nullable E get() {
     int size = this._items.size();
     return size > 0? this._items.get(size-1) : null;
   }

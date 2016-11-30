@@ -370,7 +370,7 @@ public final class PSHTTPConnectors {
    *                            or the description is <code>null</code> or empty.
    * @throws InvalidEntityException if the group is not valid.
    */
-  public static PSHTTPConnector createGroup(PSGroup group, PSMember creator, GroupOptions options)
+  public static PSHTTPConnector createGroup(PSGroup group, PSMember creator, @Nullable GroupOptions options)
       throws FailedPrecondition, InvalidEntityException {
     String creatorIdentifier = Preconditions.checkIdentifiable(creator, "creator");
     Preconditions.isValid(group, "group");
@@ -414,14 +414,13 @@ public final class PSHTTPConnectors {
 
   /**
    * @param member the member needs to create personal group.
+   *
    * @return the corresponding connector
-   * @throws FailedPrecondition If the member is not identifiable;
+   * @throws FailedPrecondition If the member ID is not known
    */
   public static PSHTTPConnector createPersonalGroup(PSMember member) throws FailedPrecondition {
-    // FIXME: We need the member ID not just the username/email
-    Preconditions.isIdentifiable(member, "member");
-    Long id = Objects.requireNonNull(member.getId(), "member ID required to create personal group");
-    String service = Services.toCreate(id.toString());
+    Long memberId = Preconditions.checkNotNull(member.getId(), "member");
+    String service = Services.toCreate(memberId.toString());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
     return connector;
   }
@@ -438,7 +437,7 @@ public final class PSHTTPConnectors {
    *                            or the description is <code>null</code> or empty.
    * @throws InvalidEntityException if the project is not valid.
    */
-  public static PSHTTPConnector createProject(PSProject project, PSMember creator, GroupOptions options)
+  public static PSHTTPConnector createProject(PSProject project, PSMember creator, @Nullable GroupOptions options)
       throws FailedPrecondition, InvalidEntityException {
     String creatorId = Preconditions.checkIdentifiable(creator, "creator");
     Preconditions.isValid(project, "project");
@@ -557,7 +556,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition
    */
-  public static PSHTTPConnector patchGroup(PSGroup group, PSMember editor, GroupOptions options) throws FailedPrecondition {
+  public static PSHTTPConnector patchGroup(PSGroup group, PSMember editor, @Nullable GroupOptions options) throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
     Preconditions.isIdentifiable(editor, "editor");
     String service = Services.toGroup(Objects.requireNonNull(editor.getIdentifier()), group.getIdentifier());
@@ -773,8 +772,8 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector createMembership(PSMembership membership, String password,
-      MemberOptions options) throws FailedPrecondition, InvalidEntityException {
+  public static PSHTTPConnector createMembership(PSMembership membership, @Nullable String password, MemberOptions options)
+      throws FailedPrecondition, InvalidEntityException {
     PSGroup group = Preconditions.checkNotNull(membership.getGroup(), "group");
     PSMember member = Preconditions.checkNotNull(membership.getMember(), "member");
     String groupIdentifier = Preconditions.checkIdentifiable(group, "group");
@@ -828,7 +827,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector createMembership(PSMembership membership, String password, boolean delegated)
+  public static PSHTTPConnector createMembership(PSMembership membership, @Nullable String password, boolean delegated)
       throws FailedPrecondition, InvalidEntityException {
     MemberOptions options = new MemberOptions();
     options.setAutoActivate(delegated);
@@ -1697,8 +1696,8 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector listXRefs(PSGroup group, PSURI uri, List<PSXRef.TYPE> includetypes,
-      boolean forward, boolean reverse, String version, int page, int pagesize)
+  public static PSHTTPConnector listXRefs(PSGroup group, PSURI uri, @Nullable List<PSXRef.TYPE> includetypes,
+      boolean forward, boolean reverse, @Nullable String version, int page, int pagesize)
       throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
     Long uriId = Preconditions.checkNotNull(uri.getId(), "uri id");
