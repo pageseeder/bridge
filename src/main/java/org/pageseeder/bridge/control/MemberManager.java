@@ -15,6 +15,9 @@
  */
 package org.pageseeder.bridge.control;
 
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSEntityCache;
@@ -63,11 +66,11 @@ public final class MemberManager extends Sessionful {
    *
    * @throws APIException
    */
-  public PSMember getByUsername(String username) throws APIException {
-    if (username == null) throw new NullPointerException("username");
+  public @Nullable PSMember getByUsername(String username) throws APIException {
+    String identifier = Objects.requireNonNull(username);
     PSMember member = cache.get(username);
     if (member == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getMember(username).using(this._credentials);
+      PSHTTPConnector connector = PSHTTPConnectors.getMember(identifier).using(this._credentials);
       PSMemberHandler handler = new PSMemberHandler();
       connector.get(handler);
       member = handler.get();
@@ -120,9 +123,8 @@ public final class MemberManager extends Sessionful {
    *
    * @throws APIException
    */
-  public PSMember get(PSMember member) throws APIException {
-    if (member == null) throw new NullPointerException("member");
-    PSMember m = cache.get(member);
+  public @Nullable PSMember get(PSMember member) throws APIException {
+    PSMember m = cache.get(Objects.requireNonNull(member));
     if (m == null) {
       PSHTTPConnector connector = PSHTTPConnectors.getMember(member).using(this._credentials);
       PSMemberHandler handler = new PSMemberHandler(member);
@@ -336,14 +338,13 @@ public final class MemberManager extends Sessionful {
    *
    * @throws APIException If an error occurs while connecting to PageSeeder.
    */
-  public static PSSession login(String username, String password) throws APIException {
+  public static @Nullable PSSession login(String username, String password) throws APIException {
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, "/self");
     connector.addParameter("username", username);
     connector.addParameter("password", password);
     PSHTTPResponseInfo info = connector.get();
     return info.isSuccessful()? connector.getSession() : null;
   }
-
 
   /**
    * Allow members to confirm a change of email address by supplying a confirmation key.
@@ -382,7 +383,7 @@ public final class MemberManager extends Sessionful {
    * @throws APIException If an error occurs while connecting to PageSeeder.
    */
   public static boolean logout(PSSession session) throws APIException {
-    if (session == null) throw new NullPointerException("Session is required to logout.");
+    Objects.requireNonNull(session, "Session is required to logout.");
     String servlet = Servlets.LOGIN_SERVLET;
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, servlet);
     connector.using(session);

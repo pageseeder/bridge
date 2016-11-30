@@ -18,11 +18,13 @@ package org.pageseeder.bridge.control;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSEntityCache;
 import org.pageseeder.bridge.model.PSComment;
+import org.pageseeder.bridge.model.PSComment.Author;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSNotify;
@@ -36,7 +38,8 @@ import org.pageseeder.bridge.xml.PSCommentHandler;
  * A manager for comments and tasks.
  *
  * @author Christophe Lauret
- * @version 0.3.0
+ *
+ * @version 0.10.2
  * @since 0.3.0
  */
 public final class CommentManager extends Sessionful {
@@ -63,9 +66,8 @@ public final class CommentManager extends Sessionful {
    * @param comment The comment to create
    */
   public boolean createComment(PSComment comment) throws FailedPrecondition, APIException {
-    if (comment.getAuthor() == null || comment.getAuthor().member() == null)
-      throw new FailedPrecondition("Comment must have a member author");
-    return createComment(comment, comment.getAuthor().member());
+    PSMember member = checkAuthorMember(comment);
+    return createComment(comment, member);
   }
 
   /**
@@ -89,9 +91,8 @@ public final class CommentManager extends Sessionful {
    * @param group   The group the comment should be posted against
    */
   public boolean createComment(PSComment comment, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
-    if (comment.getAuthor() == null || comment.getAuthor().member() == null)
-      throw new FailedPrecondition("Comment must have a member author");
-    return createComment(comment, comment.getAuthor().member(), notify, Collections.singletonList(group));
+    PSMember member = checkAuthorMember(comment);
+    return createComment(comment, member, notify, Collections.singletonList(group));
   }
 
   /**
@@ -114,9 +115,8 @@ public final class CommentManager extends Sessionful {
    * @param groups  The group the comment should be posted against
    */
   public boolean createComment(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
-    if (comment.getAuthor() == null || comment.getAuthor().member() == null)
-      throw new FailedPrecondition("Comment must have a member author");
-    return createComment(comment, comment.getAuthor().member(), notify, groups);
+    PSMember member = checkAuthorMember(comment);
+    return createComment(comment, member, notify, groups);
   }
 
   /**
@@ -127,7 +127,7 @@ public final class CommentManager extends Sessionful {
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param groups  The group the comment should be posted against
    */
-  public boolean createComment(PSComment comment, PSMember creator, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
+  public boolean createComment(PSComment comment, PSMember creator, @Nullable PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
     PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, creator, notify, groups).using(this._credentials);
     PSCommentHandler handler = new PSCommentHandler(comment);
     PSHTTPResponseInfo info = connector.post(handler);
@@ -144,9 +144,8 @@ public final class CommentManager extends Sessionful {
    * @param group   The group the comment should be posted against
    */
   public boolean save(PSComment comment, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
-    if (comment.getAuthor() == null || comment.getAuthor().member() == null)
-      throw new FailedPrecondition("Comment must have a member author");
-    return save(comment, comment.getAuthor().member(), notify, Collections.singletonList(group));
+    PSMember member = checkAuthorMember(comment);
+    return save(comment, member, notify, Collections.singletonList(group));
   }
 
   /**
@@ -169,9 +168,8 @@ public final class CommentManager extends Sessionful {
    * @param groups  The groups the comment should be posted against
    */
   public boolean save(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
-    if (comment.getAuthor() == null || comment.getAuthor().member() == null)
-      throw new FailedPrecondition("Comment must have a member author");
-    return save(comment, comment.getAuthor().member(), notify, groups);
+    PSMember member = checkAuthorMember(comment);
+    return save(comment, member, notify, groups);
   }
 
   /**
@@ -220,7 +218,7 @@ public final class CommentManager extends Sessionful {
    *
    * @param comment The comment to archive
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
-   * @param groups   The group the comment should be posted against
+   * @param groups  The group the comment should be posted against
    * @param xlink   The comment to reply to
    */
   public boolean replyToComment(PSComment comment, PSNotify notify, List<PSGroup> groups, long xlink) throws FailedPrecondition, APIException {
@@ -240,7 +238,7 @@ public final class CommentManager extends Sessionful {
    *
    * @return the matching comment (<code>null</code> if not found)
    */
-  public PSComment getComment(long id, PSMember member) throws APIException {
+  public @Nullable PSComment getComment(long id, PSMember member) throws APIException {
     PSComment comment = cache.get(Long.valueOf(id));
     if (comment == null) {
       PSHTTPConnector connector = PSHTTPConnectors.getComment(member, id).using(this._credentials);
@@ -266,7 +264,7 @@ public final class CommentManager extends Sessionful {
    * @return the list of comments found (never <code>null</code>)
    */
   public List<PSComment> findComments(PSMember member, PSGroup group,
-      String title, String type, List<String> paths) throws APIException {
+      @Nullable String title, @Nullable String type, @Nullable List<String> paths) throws APIException {
     return findComments(member, group, title, type, null, paths);
   }
 
@@ -282,8 +280,8 @@ public final class CommentManager extends Sessionful {
    *
    * @return the list of comments found (never <code>null</code>)
    */
-  public List<PSComment> findComments(PSMember member, PSGroup group, String title,
-      String type, List<String> statuses, List<String> paths) throws APIException {
+  public List<PSComment> findComments(PSMember member, PSGroup group, @Nullable String title,
+      @Nullable String type, @Nullable List<String> statuses, @Nullable List<String> paths) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.findComments(member, group, title, type, statuses, paths).using(this._credentials);
     PSCommentHandler handler = new PSCommentHandler();
     connector.get(handler);
@@ -303,5 +301,16 @@ public final class CommentManager extends Sessionful {
   public static PSEntityCache<PSComment> getCache() {
     return cache;
   }
+
+  private static PSMember checkAuthorMember(PSComment comment) throws FailedPrecondition {
+    Author author = comment.getAuthor();
+    if (author == null)
+      throw new FailedPrecondition("Comment must have a member author");
+    PSMember member = author.member();
+    if (member == null)
+      throw new FailedPrecondition("Comment must have a member author");
+    return member;
+  }
+
 
 }

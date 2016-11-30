@@ -15,6 +15,9 @@
  */
 package org.pageseeder.bridge.control;
 
+import java.util.Objects;
+
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.model.PSThreadStatus;
@@ -27,7 +30,8 @@ import org.pageseeder.bridge.xml.PSThreadHandler;
  * A manager for process threads.
  *
  * @author Jean-Baptiste Reure
- * @version 0.3.10
+ *
+ * @version 0.10.2
  * @since 0.3.10
  */
 public final class ThreadManager extends Sessionful {
@@ -58,8 +62,8 @@ public final class ThreadManager extends Sessionful {
    *
    * @throws APIException If connecting to PageSeeder failed
    */
-  public PSThreadStatus checkProgress(PSThreadStatus status) throws APIException {
-    if (status == null) throw new NullPointerException("status");
+  public @Nullable PSThreadStatus checkProgress(PSThreadStatus status) throws APIException {
+    Objects.requireNonNull(status);
     PSHTTPConnector connector = PSHTTPConnectors.checkThreadProgress(status).using(this._credentials);
     PSThreadHandler handler = new PSThreadHandler();
     PSHTTPResponseInfo info = connector.get(handler);
@@ -78,7 +82,7 @@ public final class ThreadManager extends Sessionful {
    *
    * @throws APIException if there was an error polling the thread or the timeout was triggered
    */
-  public PSThreadStatus completeThread(PSThreadStatus currentStatus) throws APIException {
+  public @Nullable PSThreadStatus completeThread(PSThreadStatus currentStatus) throws APIException {
     return completeThread(currentStatus, -1, -1);
   }
 
@@ -93,13 +97,13 @@ public final class ThreadManager extends Sessionful {
    *
    * @throws APIException if there was an error polling the thread or the timeout was triggered
    */
-  public PSThreadStatus completeThread(PSThreadStatus currentStatus, int delay, int timeout) throws APIException {
+  public @Nullable PSThreadStatus completeThread(PSThreadStatus currentStatus, int delay, int timeout) throws APIException {
     long delayInMS   = (delay < 1 ? DEFAULT_THREAD_DELAY_SECONDS     : delay)   * 1000;
     long timeoutInMS = (timeout < 1 ? DEFAULT_THREAD_TIMEOUT_SECONDS : timeout) * 1000;
     // synchronous so keep checking for thread progress
     long started = System.currentTimeMillis();
     PSThreadStatus status = currentStatus;
-    while (!status.isCompleted()) {
+    while (status != null && !status.isCompleted()) {
       try {
         Thread.sleep(delayInMS);
       } catch (InterruptedException ex) {

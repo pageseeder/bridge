@@ -15,6 +15,7 @@
  */
 package org.pageseeder.bridge.control;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSEntityCache;
@@ -32,7 +33,8 @@ import org.pageseeder.bridge.xml.PSExternalURIHandler;
  *
  * @author Christophe Lauret
  * @author Jean-Baptiste Reure
- * @version 0.3.0
+ *
+ * @version 0.10.2
  * @since 0.2.0
  */
 public final class ExternalURIManager extends Sessionful {
@@ -77,7 +79,7 @@ public final class ExternalURIManager extends Sessionful {
    *
    * @return the corresponding external URI
    */
-  public PSExternalURI getExternalURI(long id, PSGroup group) throws APIException {
+  public @Nullable PSExternalURI getExternalURI(long id, PSGroup group) throws APIException {
     PSExternalURI externaluri = cache.get(Long.valueOf(id));
     if (externaluri == null) {
       PSHTTPConnector connector = PSHTTPConnectors.getURI(id, group).using(this._credentials);
@@ -99,7 +101,7 @@ public final class ExternalURIManager extends Sessionful {
    *
    * @return the corresponding external URI
    */
-  public PSExternalURI getExternalURI(String url, PSGroup group) throws APIException {
+  public @Nullable PSExternalURI getExternalURI(String url, PSGroup group) throws APIException {
     PSExternalURI externaluri = cache.get(url);
     if (externaluri == null) {
       PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group).using(this._credentials);

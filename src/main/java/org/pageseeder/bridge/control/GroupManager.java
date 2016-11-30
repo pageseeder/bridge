@@ -16,7 +16,9 @@
 package org.pageseeder.bridge.control;
 
 import java.util.List;
+import java.util.Objects;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.InvalidEntityException;
@@ -43,7 +45,8 @@ import org.pageseeder.bridge.xml.PSThreadHandler;
  * A manager for groups, projects and group folders.
  *
  * @author Christophe Lauret
- * @version 0.3.3
+ *
+ * @version 0.10.2
  * @since 0.2.0
  */
 public final class GroupManager extends Sessionful {
@@ -97,10 +100,10 @@ public final class GroupManager extends Sessionful {
    * @throws APIException         If an error occurs while communicating with PageSeeder.
    * @throws NullPointerException If either the group or member is <code>null</code>.
    */
-  public void createGroup(PSGroup group, PSMember creator, GroupOptions options)
+  public void createGroup(PSGroup group, PSMember creator, @Nullable GroupOptions options)
       throws FailedPrecondition, APIException {
-    if (group == null) throw new NullPointerException("group");
-    if (creator == null) throw new NullPointerException("member");
+    Objects.requireNonNull(group, "Group must be specified");
+    Objects.requireNonNull(creator, "Member must be specified");
     PSHTTPConnector connector = PSHTTPConnectors.createGroup(group, creator, options).using(this._credentials);
     PSGroupHandler handler = new PSGroupHandler(group);
     PSHTTPResponseInfo info = connector.post(handler);
@@ -136,10 +139,10 @@ public final class GroupManager extends Sessionful {
    * @throws APIException         If an error occurs while communicating with PageSeeder.
    * @throws NullPointerException If either the project or member is <code>null</code>.
    */
-  public void createProject(PSProject project, PSMember creator, GroupOptions options)
+  public void createProject(PSProject project, PSMember creator, @Nullable GroupOptions options)
       throws FailedPrecondition, APIException {
-    if (project == null) throw new NullPointerException("project");
-    if (creator == null) throw new NullPointerException("creator");
+    Objects.requireNonNull(project, "Project must be specified");
+    Objects.requireNonNull(creator, "Member must be specified");
     PSHTTPConnector connector = PSHTTPConnectors.createProject(project, creator, options).using(this._credentials);
     PSGroupHandler handler = new PSGroupHandler(project);
     PSHTTPResponseInfo info = connector.post(handler);
@@ -177,7 +180,7 @@ public final class GroupManager extends Sessionful {
    * @throws APIException If an error occurs while communicating with PageSeeder.
    */
   public void createPersonalGroup(PSMember member) throws APIException {
-    if (member == null) throw new NullPointerException("member");
+    Objects.requireNonNull(member, "Member must be specified");
     PSHTTPConnector connector = PSHTTPConnectors.createPersonalGroup(member).using(this._credentials);
     PSGroup group = new PSGroup("member-" + member.getId() + "-home");
     PSGroupHandler handler = new PSGroupHandler(group);
@@ -201,10 +204,10 @@ public final class GroupManager extends Sessionful {
    * @throws APIException         If an error occurs while communicating with PageSeeder.
    * @throws NullPointerException If the group, editor or newname is <code>null</code>.
    */
-  public PSThreadStatus renameGroup(PSGroup group, PSMember editor, String newname) throws FailedPrecondition, APIException {
-    if (group == null) throw new NullPointerException("group");
-    if (editor == null) throw new NullPointerException("editor");
-    if (newname == null) throw new NullPointerException("newname");
+  public @Nullable PSThreadStatus renameGroup(PSGroup group, PSMember editor, String newname) throws FailedPrecondition, APIException {
+    Objects.requireNonNull(group, "Group must be specified");
+    Objects.requireNonNull(editor, "Member must be specified");
+    Objects.requireNonNull(newname, "New group name must be specified");
     PSHTTPConnector connector = PSHTTPConnectors.renameGroup(group, editor, newname).using(this._credentials);
     PSThreadHandler handler = new PSThreadHandler();
     PSHTTPResponseInfo info = connector.post(handler);
@@ -220,8 +223,7 @@ public final class GroupManager extends Sessionful {
    * @throws NullPointerException If the group is <code>null</code>.
    */
   public void groupIsRenamed(PSGroup group) {
-    if (group == null) throw new NullPointerException("group");
-    cache.put(group);
+    cache.put(Objects.requireNonNull(group, "group"));
   }
 
   /**
@@ -238,9 +240,9 @@ public final class GroupManager extends Sessionful {
    * @throws APIException         If an error occurs while communicating with PageSeeder.
    * @throws NullPointerException If the group or editor is <code>null</code>.
    */
-  public PSThreadStatus archiveGroup(PSGroup group, PSMember editor) throws FailedPrecondition, APIException {
-    if (group == null) throw new NullPointerException("group");
-    if (editor == null) throw new NullPointerException("editor");
+  public @Nullable PSThreadStatus archiveGroup(PSGroup group, PSMember editor) throws FailedPrecondition, APIException {
+    Objects.requireNonNull(group, "Group must be specified");
+    Objects.requireNonNull(editor, "Member must be specified");
     PSHTTPConnector connector = PSHTTPConnectors.archiveGroup(group, editor).using(this._credentials);
     PSThreadHandler handler = new PSThreadHandler();
     PSHTTPResponseInfo info = connector.post(handler);
@@ -256,8 +258,8 @@ public final class GroupManager extends Sessionful {
    * @throws NullPointerException If the group is <code>null</code>.
    */
   public void groupIsArchived(PSGroup group) {
-    if (group == null) throw new NullPointerException("group");
-    cache.remove(group.getKey());
+    String groupKey = Objects.requireNonNull(group.getKey());
+    cache.remove(groupKey);
   }
 
   /**
@@ -288,9 +290,9 @@ public final class GroupManager extends Sessionful {
    * @throws APIException         If an error occurs while communicating with PageSeeder.
    * @throws NullPointerException If the group or editor is <code>null</code>.
    */
-  public void editGroup(PSGroup group, PSMember editor, GroupOptions options) throws FailedPrecondition, APIException {
-    if (group == null) throw new NullPointerException("group");
-    if (editor == null) throw new NullPointerException("editor");
+  public void editGroup(PSGroup group, PSMember editor, @Nullable GroupOptions options) throws FailedPrecondition, APIException {
+    Objects.requireNonNull(group, "Group must be specified");
+    Objects.requireNonNull(editor, "Member must be specified");
     PSHTTPConnector connector = PSHTTPConnectors.patchGroup(group, editor, options).using(this._credentials);
     PSThreadHandler handler = new PSThreadHandler();
     PSHTTPResponseInfo info = connector.patch(handler);
@@ -309,9 +311,8 @@ public final class GroupManager extends Sessionful {
    * @throws NullPointerException If either the name of the group is <code>null</code>.
    */
   @Requires(minVersion = 56000)
-  public PSGroup get(String name) throws APIException {
-    if (name == null) throw new NullPointerException("name");
-    PSGroup group = cache.get(name);
+  public @Nullable PSGroup get(String name) throws APIException {
+    PSGroup group = cache.get(Objects.requireNonNull(name));
     if (group == null) {
       PSHTTPConnector connector = PSHTTPConnectors.getGroup(name).using(this._credentials);
       PSGroupHandler handler = new PSGroupHandler();
@@ -333,7 +334,7 @@ public final class GroupManager extends Sessionful {
    * @throws APIException         If an error occurs while communicating with PageSeeder.
    * @throws NullPointerException If either the name of the group is <code>null</code>.
    */
-  public PSProject getProject(String name) throws APIException {
+  public @Nullable PSProject getProject(String name) throws APIException {
     PSGroup group = get(name);
     if (group == null) return null;
     else if (group instanceof PSProject) return (PSProject) group;
@@ -348,9 +349,9 @@ public final class GroupManager extends Sessionful {
    *
    * @return The corresponding instance or <code>null</code>.
    */
-  public PSGroupFolder getGroupFolder(PSGroup group, String url) throws APIException {
-    if (group == null) throw new NullPointerException("group");
-    if (url == null) throw new NullPointerException("url");
+  public @Nullable PSGroupFolder getGroupFolder(PSGroup group, String url) throws APIException {
+    Objects.requireNonNull(group, "Group must be specified");
+    Objects.requireNonNull(url, "URL must be specified");
     PSGroupFolder folder = folders.get(url);
     if (folder == null) {
       PSHTTPConnector connector = PSHTTPConnectors.getGroupFolder(group, url).using(this._credentials);
@@ -460,7 +461,7 @@ public final class GroupManager extends Sessionful {
    * @throws APIException
    */
   public List<PSGroup> listProjectTree(PSMember member, String nameprefix, int max, boolean showGroup, boolean showAll) throws APIException {
-    if (member == null) throw new NullPointerException("member");
+    Objects.requireNonNull(member);
     PSHTTPConnector connector = PSHTTPConnectors.listProjectsTree(member, nameprefix, max, showGroup, showAll).using(this._credentials);
     PSGroupHandler handler = new PSGroupHandler();
     PSHTTPResponseInfo info = connector.get(handler);

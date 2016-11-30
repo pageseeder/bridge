@@ -31,6 +31,8 @@ import org.pageseeder.bridge.xml.PSXRefHandler;
  * A manager for XRefs (based on PageSeeder XRefs).
  *
  * @author Philip Rutherford
+ *
+ * @version 0.10.2
  * @since 0.8.1
  */
 public final class XRefManager extends Sessionful {

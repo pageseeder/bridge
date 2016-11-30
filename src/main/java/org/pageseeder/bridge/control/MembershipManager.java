@@ -17,7 +17,10 @@ package org.pageseeder.bridge.control;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.APIException;
+import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.InvalidEntityException;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSEntityCache;
@@ -36,7 +39,8 @@ import org.pageseeder.bridge.xml.PSMembershipHandler;
  * A manager for memberships (based on PageSeeder MemberForGroups and Details).
  *
  * @author Christophe Lauret
- * @version 0.2.32
+ *
+ * @version 0.10.2
  * @since 0.2.0
  */
 public final class MembershipManager extends Sessionful {
@@ -376,7 +380,7 @@ public final class MembershipManager extends Sessionful {
    * @return The corresponding membership if it exists
    *         or <code>null</code> if the member does not belong to the group
    */
-  public PSMembership get(String group, String member) throws APIException {
+  public @Nullable PSMembership get(String group, String member) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(group, member).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler();
     connector.get(handler);
@@ -393,7 +397,7 @@ public final class MembershipManager extends Sessionful {
    * @return The corresponding membership if it exists
    *         or <code>null</code> if the member does not belong to the group
    */
-  public PSMembership getAuto(String group, String emailOrUsername, boolean isManager) throws APIException {
+  public @Nullable PSMembership getAuto(String group, String emailOrUsername, boolean isManager) throws APIException {
     PSMember member = new PSMember();
    // guess if the input value is email address
     if (emailOrUsername != null && emailOrUsername.contains("@")) {
@@ -417,10 +421,12 @@ public final class MembershipManager extends Sessionful {
    * @return The corresponding membership if it exists
    *         or <code>null</code> if the member does not belong to the group
    */
-  public PSMembership get(PSGroup group, PSMember member) throws APIException {
+  public @Nullable PSMembership get(PSGroup group, PSMember member) throws APIException {
     if (!group.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
     if (!member.isValid()) throw new InvalidEntityException(PSMember.class, member.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(group.getName(), member.getUsername()).using(this._credentials);
+    String groupIdentifier = checkNotNull(group.getIdentifier(), "group id or name");
+    String memberIdentifier = checkNotNull(member.getIdentifier(), "member id or username");
+    PSHTTPConnector connector = PSHTTPConnectors.getMembershipDetails(groupIdentifier, memberIdentifier).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(group);
     connector.get(handler);
     return handler.get();
@@ -476,7 +482,8 @@ public final class MembershipManager extends Sessionful {
    */
   public List<PSMembership> listForMember(PSMember member) throws APIException {
     if (!member.isValid()) throw new InvalidEntityException(PSMember.class, member.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(member.getIdentifier()).using(this._credentials);
+    String memberIdentifier = checkNotNull(member.getIdentifier(), "member id or username");
+    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(memberIdentifier).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(member);
     connector.get(handler);
     return handler.list();
@@ -515,7 +522,8 @@ public final class MembershipManager extends Sessionful {
    */
   public List<PSMembership> listForGroup(PSGroup group, boolean includeSubgroups) throws APIException {
     if (!group.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForGroup(group.getName(), includeSubgroups).using(this._credentials);
+    String groupIdentifier = checkNotNull(group.getIdentifier(), "group id or name");
+    PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForGroup(groupIdentifier, includeSubgroups).using(this._credentials);
     PSMembershipHandler handler = new PSMembershipHandler(group);
     connector.get(handler);
     return handler.list();
@@ -531,7 +539,8 @@ public final class MembershipManager extends Sessionful {
    */
   public List<PSMembership> find(PSMembership membership, boolean isManager) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.findMembershipsForGroup(membership, isManager).using(this._credentials);
-    PSMembershipHandler handler = new PSMembershipHandler(membership.getGroup());
+    PSGroup group = checkNotNull(membership.getGroup(), "group of membership");
+    PSMembershipHandler handler = new PSMembershipHandler(group);
     connector.get(handler);
     return handler.list();
   }
@@ -541,6 +550,21 @@ public final class MembershipManager extends Sessionful {
    */
   public static PSEntityCache<PSMembership> getCache() {
     return cache;
+  }
+
+  /**
+   * Precondition requiring the specified object to be non-null.
+   *
+   * @param o    The object to check for <code>null</code>
+   * @param name The name of the object to generate the message.
+   *
+   * @return The object (not <code>null</code>)
+   *
+   * @throws FailedPrecondition If the pre-condition failed.
+   */
+  private static <T> @NonNull T checkNotNull(@Nullable T o, String name) throws FailedPrecondition {
+    if (o == null) throw new FailedPrecondition(name + " must not be null");
+    return o;
   }
 
 }

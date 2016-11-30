@@ -18,6 +18,7 @@ package org.pageseeder.bridge.control;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSEntity;
 import org.pageseeder.bridge.PSEntityCache;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
   /**
    * Reuse the same cache manager to avoid I/O problems (configuration seems to be parsed for each getInstance).
    */
-  private static volatile CacheManager manager = null;
+  private static volatile @Nullable CacheManager manager = null;
 
   /**
    * The underlying cache.
@@ -77,10 +78,10 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    */
   @Override
   @SuppressWarnings("unchecked")
-  public synchronized E get(String key) {
+  public synchronized @Nullable E get(String key) {
     if (key == null)
       return null;
-    E o = null;
+    @Nullable E o = null;
     Element element = this._cache.get(key);
     if (element != null && !element.isExpired()) {
       try {
@@ -93,9 +94,13 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
   }
 
   @Override
-  public E get(E entity) {
+  public @Nullable E get(E entity) {
     if (!entity.isIdentifiable()) return null;
-    return entity.getKey() != null ? get(entity.getKey()) : get(entity.getId());
+    String key = entity.getKey();
+    Long id = entity.getId();
+    if (key != null) return get(key);
+    if (id != null) return get(id);
+    return null;
   }
 
   /**
@@ -107,10 +112,10 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    */
   @Override
   @SuppressWarnings("unchecked")
-  public synchronized E get(Long id) {
+  public synchronized @Nullable E get(Long id) {
     if (id == null)
       return null;
-    E o = null;
+    @Nullable E o = null;
     Query query =  this._cache.createQuery();
     Attribute<Long> byId = this._cache.getSearchAttribute("id");
     query.includeValues().addCriteria(byId.eq(id));
@@ -132,10 +137,10 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
   @SuppressWarnings("unchecked")
-  public E get(String attribute, String value) {
+  public @Nullable E get(String attribute, String value) {
     if (value == null)
       return null;
-    E o = null;
+    @Nullable E o = null;
     Query query =  this._cache.createQuery();
     Attribute<String> byId = this._cache.getSearchAttribute(attribute);
     query.includeValues().addCriteria(byId.eq(value));
@@ -157,7 +162,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @return The list of matching element or <code>null</code> if the key or element is <code>null</code>
    */
   @SuppressWarnings("unchecked")
-  public List<E> list(String attribute, String value) {
+  public @Nullable List<E> list(String attribute, String value) {
     if (value == null)
       return null;
     Query query =  this._cache.createQuery();
@@ -180,7 +185,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
   @Override
-  public synchronized Long getVersion(String key) {
+  public synchronized @Nullable Long getVersion(String key) {
     if (key == null)
       return null;
     Element element = this._cache.get(key);
@@ -238,10 +243,12 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @return A new cache wrapper instance.
    */
   protected static synchronized <E extends PSEntity> PSEntityCache<E> newInstance(String name, String... keys) {
-    if (manager == null) {
-      manager = CacheManager.create();
+    CacheManager man = manager;
+    if (man == null) {
+      man = CacheManager.create();
+      manager = man;
     }
-    Ehcache cache = manager.getEhcache(name);
+    Ehcache cache = man.getEhcache(name);
     if (cache == null) {
       CacheConfiguration config = new CacheConfiguration(name, 1000).eternal(true);
       Searchable searchable = new Searchable();
@@ -254,8 +261,8 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
         }
       }
       config.addSearchable(searchable);
-      manager.addCache(new Cache(config));
-      cache = manager.getEhcache(name);
+      man.addCache(new Cache(config));
+      cache = man.getEhcache(name);
     }
     PSEntityCache<E> ocache = new EHEntityCache<>(cache);
     return ocache;
@@ -266,13 +273,14 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    */
   public static synchronized void shutdown() {
     // shutdown the mananer to release resources
-    if (manager != null) {
-      for (String name : manager.getCacheNames()) {
-        Ehcache cache = manager.getEhcache(name);
+    CacheManager man = manager;
+    if (man != null) {
+      manager = null;
+      for (String name : man.getCacheNames()) {
+        Ehcache cache = man.getEhcache(name);
         cache.flush();
       }
-      manager.shutdown();
-      manager = null;
+      man.shutdown();
     }
   }
 }

@@ -21,7 +21,10 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.APIException;
+import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSEntityCache;
@@ -49,7 +52,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Philip Rutherford
  * @author Christophe Lauret
  *
- * @version 0.8.2
+ * @version 0.10.2
  * @since 0.2.0
  */
 public final class DocumentManager extends Sessionful {
@@ -134,7 +137,7 @@ public final class DocumentManager extends Sessionful {
    * @param id    The URI ID of the document.
    * @param group The group the document is accessible from.
    */
-  public PSDocument getDocument(long id, PSGroup group) throws APIException {
+  public @Nullable PSDocument getDocument(long id, PSGroup group) throws APIException {
     PSDocument document = cache.get(Long.valueOf(id));
     if (document == null) {
       PSHTTPConnector connector = PSHTTPConnectors.getURI(id, group).using(this._credentials);
@@ -156,7 +159,7 @@ public final class DocumentManager extends Sessionful {
    *
    * @return the corresponding document
    */
-  public PSDocument getDocument(String url, PSGroup group) throws APIException {
+  public @Nullable PSDocument getDocument(String url, PSGroup group) throws APIException {
     PSDocument document = cache.get(url);
     if (document == null) {
       PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group).using(this._credentials);
@@ -178,7 +181,7 @@ public final class DocumentManager extends Sessionful {
    *
    * @return the corresponding folder
    */
-  public PSFolder getFolder(String url, PSGroup group) throws APIException {
+  public @Nullable PSFolder getFolder(String url, PSGroup group) throws APIException {
     PSFolder folder = folders.get(url);
     if (folder == null) {
       PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group).using(this._credentials);
@@ -199,8 +202,9 @@ public final class DocumentManager extends Sessionful {
    * @return the documents
    */
   public List<PSDocument> listDocuments(PSGroup group) throws APIException {
+    String groupName = checkNotNull(group.getName(), "group name");
     PSConfig p = PSConfig.getDefault();
-    String url = p.getScheme() + "://" + p.getHost() + p.getSitePrefix() + "/" + group.getName().replace('-', '/');
+    String url = p.getScheme() + "://" + p.getHost() + p.getSitePrefix() + "/" + groupName.replace('-', '/');
     PSHTTPConnector connector = PSHTTPConnectors.listDocumentsInGroup(group, url, 200).using(this._credentials);
     PSDocumentHandler handler = new PSDocumentHandler();
     connector.get(handler);
@@ -217,8 +221,9 @@ public final class DocumentManager extends Sessionful {
    * @return the documents/folders.
    */
   public List<PSDocument> listDocuments(PSGroup group, String folder, int max) throws APIException {
+    String groupName = checkNotNull(group.getName(), "group name");
     PSConfig p = PSConfig.getDefault();
-    String url = p.getScheme() + "://" + p.getHost() + p.getSitePrefix() + "/" + group.getName().replace('-', '/')
+    String url = p.getScheme() + "://" + p.getHost() + p.getSitePrefix() + "/" + groupName.replace('-', '/')
         + "/" + folder;
     PSHTTPConnector connector = PSHTTPConnectors.listDocumentsInGroup(group, url, max).using(this._credentials);
     PSDocumentHandler handler = new PSDocumentHandler();
@@ -236,8 +241,9 @@ public final class DocumentManager extends Sessionful {
    * @return the folders.
    */
   public List<PSFolder> listFolders(PSGroup group, String folder, int max) throws APIException {
+    String groupName = checkNotNull(group.getName(), "group name");
     PSConfig p = PSConfig.getDefault();
-    String url = p.getScheme() + "://" + p.getHost() + p.getSitePrefix() + "/" + group.getName().replace('-', '/')
+    String url = p.getScheme() + "://" + p.getHost() + p.getSitePrefix() + "/" + groupName.replace('-', '/')
         + "/" + folder;
     PSHTTPConnector connector = PSHTTPConnectors.listFoldersInGroup(group, url, max).using(this._credentials);
     PSDocumentHandler handler = new PSDocumentHandler();
@@ -288,13 +294,14 @@ public final class DocumentManager extends Sessionful {
    *
    * @throws APIException
    */
-  public PSDocument upload(PSGroup group, String url, File file) throws APIException {
+  public @Nullable PSDocument upload(PSGroup group, String url, File file) throws APIException {
+    String groupName = checkNotNull(group.getName(), "group name");
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, Servlets.UPLOAD_SERVLET).using(this._credentials);
     PSDocumentHandler handler = new PSDocumentHandler();
     try {
       connector.addParameter("autoload", "true");
-      connector.addParameter("group", group.getName());
+      connector.addParameter("group", groupName);
       connector.addParameter("url", url);
 
       // Attach part
@@ -322,13 +329,14 @@ public final class DocumentManager extends Sessionful {
    *
    * @throws APIException
    */
-  public PSDocument upload(PSGroup group, String url, InputStream in, String filename) throws APIException {
+  public @Nullable PSDocument upload(PSGroup group, String url, InputStream in, String filename) throws APIException {
+    String groupName = checkNotNull(group.getName(), "group name");
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, Servlets.UPLOAD_SERVLET).using(this._credentials);
     PSDocumentHandler handler = new PSDocumentHandler();
     try {
       connector.addParameter("autoload", "true");
-      connector.addParameter("group", group.getName());
+      connector.addParameter("group", groupName);
       connector.addParameter("url", url);
 
       // Attach part
@@ -354,7 +362,7 @@ public final class DocumentManager extends Sessionful {
    *
    * @return the corresponding fragment.
    */
-  public PSMLFragment getFragment(PSDocument document, PSGroup group, PSMember editor, String fragment)
+  public @Nullable PSMLFragment getFragment(PSDocument document, PSGroup group, PSMember editor, String fragment)
       throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.getFragment(document, group, editor, fragment).using(this._credentials);
     PSFragmentHandler handler = new PSFragmentHandler(document);
@@ -372,7 +380,7 @@ public final class DocumentManager extends Sessionful {
    *
    * @return the updated fragment.
    */
-  public PSMLFragment putFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment) throws APIException {
+  public @Nullable PSMLFragment putFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.putFragment(document, group, editor, fragment).using(this._credentials);
     PSFragmentHandler handler = new PSFragmentHandler(document);
     //connector.put(handler);
@@ -438,4 +446,20 @@ public final class DocumentManager extends Sessionful {
   public static PSEntityCache<PSFolder> getFoldersCache() {
     return folders;
   }
+
+  /**
+   * Precondition requiring the specified object to be non-null.
+   *
+   * @param o    The object to check for <code>null</code>
+   * @param name The name of the object to generate the message.
+   *
+   * @return The object (not <code>null</code>)
+   *
+   * @throws FailedPrecondition If the pre-condition failed.
+   */
+  private static <T> @NonNull T checkNotNull(@Nullable T o, String name) throws FailedPrecondition {
+    if (o == null) throw new FailedPrecondition(name + " must not be null");
+    return o;
+  }
+
 }

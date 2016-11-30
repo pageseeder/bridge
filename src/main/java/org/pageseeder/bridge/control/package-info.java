@@ -24,4 +24,5 @@
  *
  * @author Christophe Lauret
  */
+@org.eclipse.jdt.annotation.NonNullByDefault
 package org.pageseeder.bridge.control;

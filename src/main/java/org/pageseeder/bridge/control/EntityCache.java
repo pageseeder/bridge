@@ -22,6 +22,7 @@ import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.EternalExpiryPolicy;
 import javax.cache.spi.CachingProvider;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSEntity;
 import org.pageseeder.bridge.PSEntityCache;
 
@@ -39,7 +40,7 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
   /**
    * Reuse the same cache manager to avoid I/O problems (configuration seems to be parsed for each getInstance).
    */
-  private static volatile CacheManager manager = null;
+  private static volatile @Nullable CacheManager manager = null;
 
   /**
    * The underlying cache.
@@ -49,7 +50,7 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
   /**
    * To lookup cache by identifier.
    */
-  private final Cache<String, Long> _cacheByKey;
+  private final @Nullable Cache<String, Long> _cacheByKey;
 
   /**
    * Create a new cache wrapper.
@@ -79,7 +80,7 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
   @Override
-  public synchronized E get(String key) {
+  public synchronized @Nullable E get(String key) {
     if (key == null)
       return null;
     CachedEntity<E> o = getCachedEntity(key);
@@ -87,9 +88,13 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
   }
 
   @Override
-  public E get(E entity) {
+  public @Nullable E get(E entity) {
     if (!entity.isIdentifiable()) return null;
-    return entity.getKey() != null ? get(entity.getKey()) : get(entity.getId());
+    String key = entity.getKey();
+    Long id = entity.getId();
+    if (key != null) return get(key);
+    if (id != null) return get(id);
+    return null;
   }
 
   /**
@@ -100,7 +105,7 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
   @Override
-  public synchronized E get(Long id) {
+  public synchronized @Nullable E get(Long id) {
     if (id == null)
       return null;
     CachedEntity<E> o = getCachedEntity(id);
@@ -115,7 +120,7 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
   @Override
-  public synchronized Long getVersion(String key) {
+  public synchronized @Nullable Long getVersion(String key) {
     if (key == null)
       return null;
     CachedEntity<E> o = getCachedEntity(key);
@@ -140,7 +145,10 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
       throw new IllegalArgumentException("id");
     CachedEntity<E> e = new CachedEntity<>(entity);
     this._cacheById.put(id, e);
-    this._cacheByKey.put(key, id);
+    Cache<String, Long> keyCache = this._cacheByKey;
+    if (keyCache != null) {
+      keyCache.put(key, id);
+    }
   }
 
   /**
@@ -153,8 +161,14 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
     if (key == null) return;
     CachedEntity<E> e = getCachedEntity(key);
     if (e != null) {
-      this._cacheById.get(e.entity().getId());
-      this._cacheByKey.get(e.entity().getKey());
+      Long id = e.entity().getId();
+      if (id != null) {
+        this._cacheById.remove(id);
+      }
+      Cache<String, Long> keyCache = this._cacheByKey;
+      if (keyCache != null) {
+        keyCache.remove(key);
+      }
     }
   }
 
@@ -164,7 +178,10 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
   @Override
   public synchronized void removeAll() {
     this._cacheById.removeAll();
-    this._cacheByKey.removeAll();
+    Cache<String, Long> keyCache = this._cacheByKey;
+    if (keyCache != null) {
+      keyCache.removeAll();
+    }
   }
 
   // Lifecycle
@@ -204,9 +221,10 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
    */
   public static synchronized void shutdown() {
     // shutdown the manager to release resources
-    if (manager != null) {
-      manager.close();
+    CacheManager man = manager;
+    if (man != null) {
       manager = null;
+      man.close();
     }
   }
 
@@ -219,13 +237,17 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
    *
    * @return The corresponding cached entity
    */
-  private CachedEntity<E> getCachedEntity(String key) {
-    Long id = this._cacheByKey.get(key);
+  private @Nullable CachedEntity<E> getCachedEntity(String key) {
+    Long id = null;
+    Cache<String, Long> keyCache = this._cacheByKey;
+    if (keyCache != null) {
+      id = keyCache.get(key);
+    }
     if (id == null) return null;
     return this._cacheById.get(id);
   }
 
-  private CachedEntity<E> getCachedEntity(Long id) {
+  private @Nullable CachedEntity<E> getCachedEntity(Long id) {
     return this._cacheById.get(id);
   }
 

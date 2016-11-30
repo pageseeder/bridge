@@ -15,6 +15,7 @@
  */
 package org.pageseeder.bridge.control;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.PSToken;
@@ -25,7 +26,8 @@ import org.pageseeder.bridge.PSToken;
  * <p>All managers should specify a user to connect to PageSeeder.
  *
  * @author Christophe Lauret
- * @version 0.9.0
+ *
+ * @version 0.10.2
  * @since 0.2.0
  */
 abstract class Sessionful {
@@ -47,14 +49,14 @@ abstract class Sessionful {
   /**
    * @return the session used by the class.
    */
-  public PSSession session() {
+  public @Nullable PSSession session() {
     return (this._credentials instanceof PSSession)? (PSSession)this._credentials : null;
   }
 
   /**
    * @return the session used by the class.
    */
-  public PSToken token() {
+  public @Nullable PSToken token() {
     return (this._credentials instanceof PSToken)? (PSToken)this._credentials : null;
   }
 
