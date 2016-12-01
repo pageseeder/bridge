@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.xml.sax.Attributes;
 
@@ -34,9 +35,11 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
   /**
    * This method is called whenever a new result document starts.
    *
+   * <p>If the group is not known, a <code>null</code> value is sent.
+   *
    * @param group  The group this document is part of.
    */
-  public abstract void startResult(String group);
+  public abstract void startResult(@Nullable String group);
 
   /**
    * This method is called whenever a result document ends.
@@ -80,7 +83,7 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
    *
    * @throws NullPointerException if fields is <code>null</code>.
    */
-  public BasicResultHandler(String... fields) {
+  public BasicResultHandler(@NonNull String... fields) {
     this._fields = Arrays.asList(fields);
   }
 

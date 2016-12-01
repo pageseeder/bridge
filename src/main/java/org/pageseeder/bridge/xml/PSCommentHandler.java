@@ -15,7 +15,6 @@
  */
 package org.pageseeder.bridge.xml;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +39,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Christophe Lauret
  *
- * @version 0.10.3
+ * @version 0.10.2
  * @since 0.3.0
  */
 public final class PSCommentHandler extends DefaultHandler {
@@ -68,7 +67,7 @@ public final class PSCommentHandler extends DefaultHandler {
   /**
    * To capture XML content.
    */
-  private @Nullable XMLWriter xmlContent = null;
+  private @Nullable XMLStringWriter xmlContent = null;
 
   /**
    * Indicates whether the handler is within an 'attachment' element.
@@ -107,134 +106,153 @@ public final class PSCommentHandler extends DefaultHandler {
 
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
-    XMLWriter xml = this.xmlContent;
+    XMLStringWriter xml = this.xmlContent;
     if (xml != null) {
-      try {
-        xml.openElement(uri, localName, true);
-        for (int i = 0; i < atts.getLength(); i++) {
-          xml.attribute(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
+      xml.openElement(uri, localName, true);
+      for (int i = 0; i < atts.getLength(); i++) {
+        String name = atts.getLocalName(i);
+        String value = atts.getValue(i);
+        if (name != null && value != null) {
+          xml.attribute(atts.getURI(i), name, value);
         }
-      } catch (IOException ex) {
-        // shouldn't happen as internal writer
       }
     }
     if ("comment".equals(localName)) {
       PSComment comment = PSEntityFactory.toComment(atts, this.comment);
       this.comment = comment;
 
-    } else if ("title".equals(localName) || "labels".equals(localName) || ("fullname".equals(localName) && this.inAuthor)) {
-      this.buffer = new StringBuilder();
+    } else {
+      PSComment com = this.comment;
+      if (com != null) {
+        if ("title".equals(localName) || "labels".equals(localName) || ("fullname".equals(localName) && this.inAuthor)) {
+          this.buffer = new StringBuilder();
 
-    } else if ("author".equals(localName)) {
-      // If an 'id' is specified, it is a PageSeeder member
-      if (atts.getValue("id") != null) {
-        PSMember member = PSEntityFactory.toMember(atts, null);
-        this.comment.setAuthor(member);
-      } else {
-        this.inAuthor = true;
-        this.authorEmail = atts.getValue("email");
-      }
+        } else if ("author".equals(localName)) {
+          // If an 'id' is specified, it is a PageSeeder member
+          if (atts.getValue("id") != null) {
+            PSMember member = PSEntityFactory.toMember(atts, null);
+            com.setAuthor(member);
+          } else {
+            this.inAuthor = true;
+            this.authorEmail = atts.getValue("email");
+          }
 
-    } else if ("assignedto".equals(localName)) {
-      PSMember member = PSEntityFactory.toMember(atts, null);
-      this.comment.setAssignedto(member);
+        } else if ("assignedto".equals(localName)) {
+          PSMember member = PSEntityFactory.toMember(atts, null);
+          com.setAssignedto(member);
 
-    } else if ("content".equals(localName)) {
-      String type = atts.getValue("type");
-      this.comment.setMediaType(type);
-      if (Rules.isXMLMediaType(type)) {
-        this.xmlContent = new XMLStringWriter(NamespaceAware.No);
-      } else {
-        this.buffer = new StringBuilder();
-      }
+        } else if ("content".equals(localName)) {
+          String type = atts.getValue("type");
+          if (type == null) {
+            type= "text/plain";
+          }
+          com.setMediaType(type);
+          if (Rules.isXMLMediaType(type)) {
+            this.xmlContent = new XMLStringWriter(NamespaceAware.No);
+          } else {
+            this.buffer = new StringBuilder();
+          }
 
-    } else if ("context".equals(localName)) {
-      this.fragment = atts.getValue("fragment");
+        } else if ("context".equals(localName)) {
+          this.fragment = atts.getValue("fragment");
 
-    } else if ("attachment".equals(localName)) {
-      this.attachment = true;
-      this.fragment = atts.getValue("fragment");
+        } else if ("attachment".equals(localName)) {
+          this.attachment = true;
+          this.fragment = atts.getValue("fragment");
 
-    } else if ("group".equals(localName)) {
-      PSGroup group = PSEntityFactory.toGroup(atts, null);
-      this.comment.setContext(group);
+        } else if ("group".equals(localName)) {
+          PSGroup group = PSEntityFactory.toGroup(atts, null);
+          com.setContext(group);
 
-    } else if ("uri".equals(localName)) {
-      PSURI u = null;
-      if ("true".equals(atts.getValue("external"))) {
-        u = PSEntityFactory.toExternalURI(atts, null);
-      } else {
-        u = PSEntityFactory.toDocument(atts, null);
-      }
-      if (this.attachment) {
-        Attachment attach = new Attachment(u, this.fragment);
-        this.attachments.add(attach);
-      } else if ("true".equals(atts.getValue("external"))) {
-        this.comment.setContext((PSExternalURI)u, this.fragment);
-      } else {
-        this.comment.setContext((PSDocument)u, this.fragment);
+        } else if ("uri".equals(localName)) {
+          PSURI u = null;
+          if ("true".equals(atts.getValue("external"))) {
+            u = PSEntityFactory.toExternalURI(atts, null);
+          } else {
+            u = PSEntityFactory.toDocument(atts, null);
+          }
+          String frag = this.fragment; // XXX Should we default to `default` instead of null?
+          if (frag != null) {
+            if (this.attachment) {
+              Attachment attach = new Attachment(u, frag);
+              this.attachments.add(attach);
+            } else if ("true".equals(atts.getValue("external"))) {
+              com.setContext((PSExternalURI)u, frag);
+            } else {
+              com.setContext((PSDocument)u, frag);
+            }
+          }
+        }
       }
     }
   }
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
+    PSComment comment = this.comment;
     if ("comment".equals(localName)) {
-      if (this.comment != null) {
-        this.comment.setAttachments(this.attachments);
-        this.attachments = null;
-        this.comments.add(this.comment);
+      if (comment != null) {
+        comment.setAttachments(this.attachments);
+        this.attachments = new ArrayList<>();
+        this.comments.add(comment);
       }
       this.comment = null;
+    } else if (comment != null) {
+      StringBuilder buf = this.buffer;
+      if ("title".equals(localName)) {
+        if (buf != null) {
+          comment.setTitle(buf.toString());
+          this.buffer = null;
+        }
 
-    } else if ("title".equals(localName)) {
-      this.comment.setTitle(this.buffer.toString());
-      this.buffer = null;
+      } else if ("labels".equals(localName)) {
+        if (buf != null) {
+          comment.setLabels(buf.toString());
+          this.buffer = null;
+        }
 
-    } else if ("labels".equals(localName)) {
-      this.comment.setLabels(this.buffer.toString());
-      this.buffer = null;
+      } else if (("fullname".equals(localName) && this.inAuthor)) {
+        String email = this.authorEmail;
+        if (buf != null && email != null) {
+          comment.setAuthor(buf.toString(), email);
+          this.buffer = null;
+        }
 
-    } else if (("fullname".equals(localName)  && this.inAuthor)) {
-      this.comment.setAuthor(this.buffer.toString(), this.authorEmail);
-      this.buffer = null;
+      } else if ("author".equals(localName)) {
+        this.inAuthor = false;
 
-    } else if ("author".equals(localName)) {
-      this.inAuthor = false;
+      } else if ("content".equals(localName)) {
+        XMLWriter xml = this.xmlContent;
+        if (xml != null) {
+          comment.setContent(xml.toString());
+        } else if (buf != null) {
+          comment.setContent(buf.toString());
+        }
+        this.buffer = null;
+        this.xmlContent = null;
 
-    } else if ("content".equals(localName)) {
-      this.comment.setContent(this.xmlContent == null ? this.buffer.toString() : this.xmlContent.toString());
-      this.buffer = null;
-      this.xmlContent = null;
-
-    } else if ("context".equals(localName)) {
-      this.fragment = null;
-    } else if ("attachment".equals(localName)) {
-      this.attachment = false;
-      this.fragment = null;
+      } else if ("context".equals(localName)) {
+        this.fragment = null;
+      } else if ("attachment".equals(localName)) {
+        this.attachment = false;
+        this.fragment = null;
+      }
     }
 
-    XMLWriter xml = this.xmlContent;
+    XMLStringWriter xml = this.xmlContent;
     if (xml != null) {
-      try {
-        xml.closeElement();
-      } catch (IOException ex) {
-        // shouldn't happen as internal writer
-      }
+      xml.closeElement();
     }
   }
 
   @Override
   public void characters(char[] ch, int start, int length) throws SAXException {
-    XMLWriter xml = this.xmlContent;
+    XMLStringWriter xml = this.xmlContent;
+    StringBuilder buf = this.buffer;
     if (xml != null) {
-      try {
-        xml.writeText(ch, start, length);
-      } catch (IOException ex) {
-        // shouldn't happen as internal writer
-      }
-    } else if (this.buffer != null) {
-      this.buffer.append(ch, start, length);
+      xml.writeText(ch, start, length);
+    } else if (buf != null) {
+      buf.append(ch, start, length);
     }
   }
 

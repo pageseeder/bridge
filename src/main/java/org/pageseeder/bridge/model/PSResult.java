@@ -47,7 +47,7 @@ public class PSResult implements Serializable {
    *
    * @param group the group the result if part of if known.
    */
-  public PSResult(PSGroup group) {
+  public PSResult(@Nullable PSGroup group) {
     this.group = group;
   }
 

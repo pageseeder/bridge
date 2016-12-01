@@ -192,21 +192,21 @@ public abstract class PSURI extends PSAddressable {
   /**
    * @param docid the docid to set
    */
-  public final void setDocid(String docid) {
+  public final void setDocid(@Nullable String docid) {
     this.docid = docid;
   }
 
   /**
    * @param description the description to set
    */
-  public final void setDescription(String description) {
+  public final void setDescription(@Nullable String description) {
     this.description = description;
   }
 
   /**
    * @param title the title to set
    */
-  public final void setTitle(String title) {
+  public final void setTitle(@Nullable String title) {
     this.title = title;
   }
 
@@ -220,22 +220,22 @@ public abstract class PSURI extends PSAddressable {
   /**
    * @param mediatype the mediatype to set
    */
-  public final void setMediaType(String mediatype) {
+  public final void setMediaType(@Nullable String mediatype) {
     this.mediatype = mediatype;
   }
 
   /**
    * @param date the ISO8601 date
    */
-  public final void setCreatedDate(String date) {
-    this.created = toDate(date);
+  public final void setCreatedDate(@Nullable String date) {
+    this.created = date != null? toDate(date) : null;
   }
 
   /**
   * @param date the ISO8601 date
   */
-  public final void setModifiedDate(String date) {
-    this.modified = toDate(date);
+  public final void setModifiedDate(@Nullable String date) {
+    this.modified = date != null? toDate(date) : null;
   }
 
   // Convenience methods

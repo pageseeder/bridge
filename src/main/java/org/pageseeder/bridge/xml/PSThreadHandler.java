@@ -15,14 +15,13 @@
  */
 package org.pageseeder.bridge.xml;
 
-import java.io.IOException;
+import java.util.Objects;
 import java.util.Stack;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSThreadStatus;
 import org.pageseeder.xmlwriter.XML.NamespaceAware;
 import org.pageseeder.xmlwriter.XMLStringWriter;
-import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -31,7 +30,8 @@ import org.xml.sax.helpers.DefaultHandler;
  * Handler for PageSeeder thread status.
  *
  * @author Jean-Baptiste Reure
- * @version 0.3.27
+ *
+ * @version 0.10.2
  * @since 0.2.2
  */
 public final class PSThreadHandler extends DefaultHandler {
@@ -51,35 +51,41 @@ public final class PSThreadHandler extends DefaultHandler {
   /**
    * To capture XML content.
    */
-  private @Nullable XMLWriter xmlContent = null;
+  private @Nullable XMLStringWriter xmlContent = null;
 
-  private Stack<String> elements = new Stack<>();
+  /**
+   * To keep track of elements
+   */
+  private final Stack<String> _elements = new Stack<>();
+
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
-    XMLWriter xml = this.xmlContent;
+    XMLStringWriter xml = this.xmlContent;
     if (xml != null) {
-      try {
-        xml.openElement(uri, localName, true);
-        for (int i = 0; i < atts.getLength(); i++) {
-          xml.attribute(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
+      xml.openElement(uri, localName, true);
+      for (int i = 0; i < atts.getLength(); i++) {
+        String name = atts.getLocalName(i);
+        String value = atts.getValue(i);
+        if (name != null && value != null) {
+          xml.attribute(atts.getURI(i), name, value);
         }
-      } catch (IOException ex) {
-        // shouldn't happen as internal writer
       }
     }
     if ("thread".equals(localName)) {
       String id = atts.getValue("id");
-      this.oldFormat = id == null;
-      if (!this.oldFormat) {
+      if (id != null) {
+        this.oldFormat = false;
         PSThreadStatus tmp = new PSThreadStatus(id);
-        tmp.setGroupID(Long.valueOf(atts.getValue("groupid")));
+        tmp.setGroupID(Long.valueOf(Objects.requireNonNull(atts.getValue("groupid"), "Missing required groupid")));
         tmp.setStatus(atts.getValue("status"));
         tmp.setUsername(atts.getValue("username"));
         tmp.setName(atts.getValue("name"));
         this.tempStatus = tmp;
+      } else {
+        this.oldFormat = true;
       }
     }
-    String dad = this.elements.isEmpty() ? null : this.elements.peek();
+    String dad = this._elements.isEmpty() ? null : this._elements.peek();
     if ("thread".equals(dad) && ("id".equals(localName) ||
                            "username".equals(localName) ||
                                "name".equals(localName) ||
@@ -91,55 +97,55 @@ public final class PSThreadHandler extends DefaultHandler {
         ((this.oldFormat && "threadstatus".equals(dad)) || (!this.oldFormat && "thread".equals(dad)))) {
       this.xmlContent = new XMLStringWriter(NamespaceAware.No);
     }
-    this.elements.push(localName);
+    this._elements.push(localName);
   }
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
-    if ("id".equals(localName) && this.buffer != null && this.oldFormat) {
-      this.tempStatus = new PSThreadStatus(this.buffer.toString());
+    StringBuilder buf = this.buffer;
+    if ("id".equals(localName) && buf != null && this.oldFormat) {
+      this.tempStatus = new PSThreadStatus(buf.toString());
       this.buffer = null;
-    } else if ("name".equals(localName) && this.buffer != null && this.tempStatus != null && this.oldFormat) {
-      this.tempStatus.setName(this.buffer.toString());
-      this.buffer = null;
-    } else if ("username".equals(localName) && this.buffer != null && this.tempStatus != null && this.oldFormat) {
-      this.tempStatus.setUsername(this.buffer.toString());
-      this.buffer = null;
-    } else if ("groupid".equals(localName) && this.buffer != null && this.tempStatus != null && this.oldFormat) {
-      this.tempStatus.setGroupID(Long.parseLong(this.buffer.toString()));
-      this.buffer = null;
-    } else if ("status".equals(localName) && this.buffer != null && this.tempStatus != null && this.oldFormat) {
-      this.tempStatus.setStatus(this.buffer.toString());
-      this.buffer = null;
-    } else if ("message".equals(localName) && this.xmlContent != null && this.tempStatus != null) {
-      this.tempStatus.addMessage(this.xmlContent.toString());
-      this.xmlContent = null;
-    }
-    this.elements.pop();
-    XMLWriter xml = this.xmlContent;
-    if (xml != null) {
-      try {
-        xml.closeElement();
-      } catch (IOException ex) {
-        // shouldn't happen as internal writer
+    } else {
+      PSThreadStatus tmp = this.tempStatus;
+      if (tmp != null) {
+        if ("name".equals(localName) && buf != null && this.oldFormat) {
+          tmp.setName(buf.toString());
+          this.buffer = null;
+        } else if ("username".equals(localName) && buf != null && this.oldFormat) {
+          tmp.setUsername(buf.toString());
+          this.buffer = null;
+        } else if ("groupid".equals(localName) && buf != null && this.oldFormat) {
+          tmp.setGroupID(Long.parseLong(buf.toString()));
+          this.buffer = null;
+        } else if ("status".equals(localName) && buf != null && this.oldFormat) {
+          tmp.setStatus(buf.toString());
+          this.buffer = null;
+        } else if ("message".equals(localName)) {
+          XMLStringWriter xml = this.xmlContent;
+          if (xml != null) {
+            tmp.addMessage(xml.toString());
+            this.xmlContent = null;
+          }
+        }
       }
+    }
+
+    this._elements.pop();
+    XMLStringWriter xml = this.xmlContent;
+    if (xml != null) {
+      xml.closeElement();
     }
   }
 
   @Override
   public void characters(char[] ch, int start, int length) throws SAXException {
-    XMLWriter xml = this.xmlContent;
+    XMLStringWriter xml = this.xmlContent;
+    StringBuilder buf = this.buffer;
     if (xml != null) {
-      try {
-        xml.writeText(ch, start, length);
-      } catch (IOException ex) {
-        // shouldn't happen as internal writer
-      }
-    } else {
-      StringBuilder b = this.buffer;
-      if (b != null) {
-        b.append(ch, start, length);
-      }
+      xml.writeText(ch, start, length);
+    } else if (buf != null) {
+      buf.append(ch, start, length);
     }
   }
 

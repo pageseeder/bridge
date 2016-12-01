@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.pageseeder.bridge.model.PSXRef;
-import org.pageseeder.bridge.model.PSXRef.DISPLAY;
-import org.pageseeder.bridge.model.PSXRef.TYPE;
+import org.pageseeder.bridge.model.PSXRef.Display;
+import org.pageseeder.bridge.model.PSXRef.Type;
 import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
@@ -127,7 +127,7 @@ public class XRefFragment extends FragmentBase implements PSMLFragment {
     // Reverse link
     if (x.getReverseLink()) {
       String reverseTitle = x.getReverseTitle();
-      TYPE reverseType = x.getReverseType();
+      Type reverseType = x.getReverseType();
       psml.attribute("reverselink", "true");
       if (reverseTitle != null) {
         psml.attribute("reversetitle", reverseTitle);
@@ -141,8 +141,8 @@ public class XRefFragment extends FragmentBase implements PSMLFragment {
 
     // Other attributes
     String title = x.getTitle();
-    DISPLAY display = x.getDisplay();
-    TYPE type = x.getType();
+    Display display = x.getDisplay();
+    Type type = x.getType();
     Integer level = x.getLevel();
     if (title != null) {
       psml.attribute("title", title);

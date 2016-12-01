@@ -232,21 +232,21 @@ public final class PSMembership implements PSEntity  {
   /**
    * @param notification the notification to set
    */
-  public void setNotification(PSNotification notification) {
+  public void setNotification(@Nullable PSNotification notification) {
     this.notification = notification;
   }
 
   /**
    * @param role the role to set
    */
-  public void setRole(PSRole role) {
+  public void setRole(@Nullable PSRole role) {
     this.role = role;
   }
 
   /**
    * @param created the date the membership was created.
    */
-  public void setCreated(Date created) {
+  public void setCreated(@Nullable Date created) {
     this.created = created;
   }
 

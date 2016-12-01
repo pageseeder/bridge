@@ -39,7 +39,7 @@ public final class PSXRef implements PSEntity {
   /**
    * XRef titles to display.
    */
-  public static enum DISPLAY {
+  public static enum Display {
 
     /** manual */
     MANUAL("manual"),
@@ -55,7 +55,7 @@ public final class PSXRef implements PSEntity {
 
     private final String _value;
 
-    private DISPLAY(String value) {
+    private Display(String value) {
       this._value = value;
     }
 
@@ -70,8 +70,8 @@ public final class PSXRef implements PSEntity {
      *
      * @return the display
      */
-    public static DISPLAY fromString(@Nullable String value) {
-      for (DISPLAY display : values()) {
+    public static Display fromString(@Nullable String value) {
+      for (Display display : values()) {
         if (display._value.equalsIgnoreCase(value)) return display;
       }
       // Fallback on document
@@ -92,7 +92,7 @@ public final class PSXRef implements PSEntity {
   /**
    * XRef type.
    */
-  public static enum TYPE {
+  public static enum Type {
 
     /** none */
     NONE,
@@ -110,7 +110,7 @@ public final class PSXRef implements PSEntity {
      *
      * @return the type
      */
-    public static TYPE fromString(@Nullable String value) {
+    public static Type fromString(@Nullable String value) {
       if ("none".equalsIgnoreCase(value))        return NONE;
       if ("embed".equalsIgnoreCase(value))       return EMBED;
       if ("transclude".equalsIgnoreCase(value))  return TRANSCLUDE;
@@ -220,17 +220,17 @@ public final class PSXRef implements PSEntity {
   /**
    * The display type.
    */
-  private @Nullable DISPLAY display;
+  private @Nullable Display display;
 
   /**
    * The type of the xref.
    */
-  private @Nullable TYPE type;
+  private @Nullable Type type;
 
   /**
    * The reverse type.
    */
-  private @Nullable TYPE reverseType;
+  private @Nullable Type reverseType;
 
   /**
    * The XRef's labels.
@@ -277,7 +277,7 @@ public final class PSXRef implements PSEntity {
   public EntityValidity checkValid() {
     // image xrefs must point to an image
     String tmt = this.targetMediaType;
-    if (this.type == TYPE.IMAGE && tmt != null && !tmt.startsWith("image/"))
+    if (this.type == Type.IMAGE && tmt != null && !tmt.startsWith("image/"))
       return EntityValidity.IMAGE_XREF_TARGET_NOT_IMAGE;
     // TODO More constraints on xref type, etc.
     return EntityValidity.OK;
@@ -349,21 +349,21 @@ public final class PSXRef implements PSEntity {
   /**
    * @return the XRef's type
    */
-  public @Nullable TYPE getType() {
+  public @Nullable Type getType() {
     return this.type;
   }
 
   /**
    * @return the reverse type
    */
-  public @Nullable TYPE getReverseType() {
+  public @Nullable Type getReverseType() {
     return this.reverseType;
   }
 
   /**
    * @return the display
    */
-  public @Nullable DISPLAY getDisplay() {
+  public @Nullable Display getDisplay() {
     return this.display;
   }
 
@@ -441,11 +441,11 @@ public final class PSXRef implements PSEntity {
    * @return the content of the XRef.
    */
   public @Nullable String getContent() {
-    if (this.display == DISPLAY.MANUAL)
+    if (this.display == Display.MANUAL)
       return this.title;
-    if (this.display == DISPLAY.DOCUMENT_FRAGMENT)
+    if (this.display == Display.DOCUMENT_FRAGMENT)
       return this.targetURITitle + ": " + this.targetFragment;
-    if (this.display == DISPLAY.DOCUMENT_MANUAL)
+    if (this.display == Display.DOCUMENT_MANUAL)
       return this.targetURITitle + ": " + this.title;
     return this.targetURITitle;
   }
@@ -464,7 +464,7 @@ public final class PSXRef implements PSEntity {
   /**
    * @param title the new title to set
    */
-  public void setTitle(String title) {
+  public void setTitle(@Nullable String title) {
     this.title = title;
   }
 
@@ -520,35 +520,35 @@ public final class PSXRef implements PSEntity {
   /**
    * @param reverseTitle the reverse Title to set
    */
-  public void setReverseTitle(String reverseTitle) {
+  public void setReverseTitle(@Nullable String reverseTitle) {
     this.reverseTitle = reverseTitle;
   }
 
   /**
    * @param level the level to set
    */
-  public void setLevel(Integer level) {
+  public void setLevel(@Nullable Integer level) {
     this.level = level;
   }
 
   /**
    * @param display the display to set
    */
-  public void setDisplay(DISPLAY display) {
+  public void setDisplay(Display display) {
     this.display = display;
   }
 
   /**
    * @param type the type to set
    */
-  public void setType(TYPE type) {
+  public void setType(Type type) {
     this.type = type;
   }
 
   /**
    * @param reverseType the reverse Type to set
    */
-  public void setReverseType(TYPE reverseType) {
+  public void setReverseType(Type reverseType) {
     this.reverseType = reverseType;
   }
 

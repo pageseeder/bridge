@@ -1,6 +1,7 @@
 package org.pageseeder.bridge;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -56,8 +57,7 @@ public class PSToken implements PSCredentials, Serializable {
    * @throws IllegalArgumentException if the token is not valid.
    */
   public PSToken(String token, long expires) {
-    if (token == null)
-      throw new NullPointerException("Access token is null");
+    Objects.requireNonNull(token, "Access token is null");
     if (!VALID_PAGESEEDER_TOKEN.matcher(token).matches())
       throw new IllegalArgumentException("Access token is invalid");
     this._token = token;

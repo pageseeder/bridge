@@ -21,6 +21,8 @@ import java.util.List;
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.model.PSXRef;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -34,6 +36,8 @@ import org.xml.sax.helpers.DefaultHandler;
  * @version 0.8.1
  */
 public final class PSXRefHandler extends DefaultHandler {
+
+  private final Logger LOGGER = LoggerFactory.getLogger(PSXRefHandler.class);
 
   /**
    * The context URI
@@ -76,9 +80,19 @@ public final class PSXRefHandler extends DefaultHandler {
         this.uri = PSEntityFactory.toDocument(atts, null);
       }
     } else if ("xref".equals(localName) || "blockxref".equals(localName)) {
-      this.xref = PSEntityFactory.toXRef(atts, this.uri, null);
+      PSURI u = this.uri;
+      if (u != null) {
+        this.xref = PSEntityFactory.toXRef(atts, u, null);
+      } else {
+        this.LOGGER.warn("Unable to construct cross-reference {}: No URI", atts.getValue("id"));
+      }
     } else if ("reversexref".equals(localName)) {
-      this.xref = PSEntityFactory.toReverseXRef(atts, this.uri, null);
+      PSURI u = this.uri;
+      if (u != null) {
+        this.xref = PSEntityFactory.toReverseXRef(atts, u, null);
+      } else {
+        this.LOGGER.warn("Unable to construct reverse cross-reference {}: No URI", atts.getValue("id"));
+      }
     }
   }
 

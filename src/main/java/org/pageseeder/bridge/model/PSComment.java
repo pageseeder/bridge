@@ -150,7 +150,7 @@ public final class PSComment implements PSEntity {
   /**
    * @param type the type to set
    */
-  public void setType(String type) {
+  public void setType(@Nullable String type) {
     this.type = type;
   }
 
@@ -479,28 +479,28 @@ public final class PSComment implements PSEntity {
   /**
    * @param status the status to set
    */
-  public void setStatus(String status) {
+  public void setStatus(@Nullable String status) {
     this.status = status;
   }
 
   /**
    * @param priority the priority to set
    */
-  public void setPriority(String priority) {
+  public void setPriority(@Nullable String priority) {
     this.priority = priority;
   }
 
   /**
    * @param assignedto the assignedto to set
    */
-  public void setAssignedto(PSMember assignedto) {
+  public void setAssignedto(@Nullable PSMember assignedto) {
     this.assignedto = assignedto;
   }
 
   /**
    * @param due the due to set
    */
-  public void setDue(Date due) {
+  public void setDue(@Nullable Date due) {
     this.due = due;
   }
 

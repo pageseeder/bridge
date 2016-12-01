@@ -92,36 +92,39 @@ public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
 
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+    PSMembership membership = this.current;
     if ("membership".equals(localName)) {
       this.current = PSEntityFactory.toMembership(atts, this.current);
 
     } else if ("member".equals(localName)) {
       PSMember member = PSEntityFactory.toMember(atts, this.member);
-      if (this.current != null) {
-        this.current.setMember(member);
+      if (membership != null) {
+        membership.setMember(member);
       } else {
         this.member = member;
       }
 
     } else if ("group".equals(localName)) {
       PSGroup group = PSEntityFactory.toGroup(atts, this.group);
-      if (this.current != null) {
-        this.current.setGroup(group);
+      if (membership != null) {
+        membership.setGroup(group);
       } else {
         this.group = group;
       }
 
     } else if ("project".equals(localName)) {
       PSProject project = PSEntityFactory.toProject(atts, this.group);
-      if (this.current != null) {
-        this.current.setGroup(project);
+      if (membership != null) {
+        membership.setGroup(project);
       } else {
         this.group = project;
       }
 
     } else if ("details".equals(localName)) {
-      PSDetails details = new PSDetails();
-      this.current.setDetails(details);
+      if (membership != null) {
+        PSDetails details = new PSDetails();
+        membership.setDetails(details);
+      }
 
     } else if ("field".equals(localName)) {
       this.field = PSHandlers.integer(atts.getValue("position"));
@@ -137,22 +140,29 @@ public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
+    PSMembership membership = this.current;
     if ("membership".equals(localName)) {
       // Ensure that the group/member is added
-      if (this.current.getGroup() == null) {
-        this.current.setGroup(this.group);
+      if (membership != null) {
+        PSGroup g = this.group;
+        PSMember m = this.member;
+        if (membership.getGroup() == null && g != null) {
+          membership.setGroup(g);
+        }
+        if (membership.getMember() == null && m != null) {
+          membership.setMember(m);
+        }
+        this._items.add(membership);
+        this.current = null;
       }
-      if (this.current.getMember() == null) {
-        this.current.setMember(this.member);
-      }
-      this._items.add(this.current);
-      this.current = null;
     } else if ("field".equals(localName)) {
-      PSDetails details = this.current.getDetails();
-      if (details != null && this.field > 0) {
-        details.setField(this.field, this.buffer.toString());
-        this.buffer.setLength(0);
-        this.field = -1;
+      if (membership != null) {
+        PSDetails details = membership.getDetails();
+        if (details != null && this.field > 0) {
+          details.setField(this.field, this.buffer.toString());
+          this.buffer.setLength(0);
+          this.field = -1;
+        }
       }
     }
   }

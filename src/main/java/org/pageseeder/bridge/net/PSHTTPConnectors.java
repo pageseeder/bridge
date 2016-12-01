@@ -1696,7 +1696,7 @@ public final class PSHTTPConnectors {
    *
    * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector listXRefs(PSGroup group, PSURI uri, @Nullable List<PSXRef.TYPE> includetypes,
+  public static PSHTTPConnector listXRefs(PSGroup group, PSURI uri, @Nullable List<PSXRef.Type> includetypes,
       boolean forward, boolean reverse, @Nullable String version, int page, int pagesize)
       throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");

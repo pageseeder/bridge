@@ -68,12 +68,15 @@ public final class PSResultHandler extends DefaultHandler {
       String groupid = atts.getValue("groupid");
       String groupname = atts.getValue("groupname");
       if (groupname != null) {
-        this.group = new PSGroup(groupname);
-        try {
-          this.group.setId(Long.parseLong(groupid));
-        } catch (NumberFormatException ex) {
-          // Ignore
+        PSGroup g = new PSGroup(groupname);
+        if (groupid != null) {
+          try {
+            g.setId(Long.parseLong(groupid));
+          } catch (NumberFormatException ex) {
+            // Ignore
+          }
         }
+        this.group = g;
       }
     }
   }
@@ -87,14 +90,18 @@ public final class PSResultHandler extends DefaultHandler {
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
-    if (this.result != null) {
+    PSResult r = this.result;
+    if (r != null) {
       if ("document".equals(localName)) {
-        this._results.add(this.result);
+        this._results.add(r);
         this.result = null;
       } else if ("field".equals(localName)) {
-        this.result.add(new PSResult.Field(this.field, this.buffer.toString()));
-        this.buffer.setLength(0);
-        this.field = null;
+        String f = this.field;
+        if (f != null) {
+          r.add(new PSResult.Field(f, this.buffer.toString()));
+          this.buffer.setLength(0);
+          this.field = null;
+        }
       }
     }
   }

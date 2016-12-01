@@ -17,6 +17,7 @@ package org.pageseeder.bridge.xml;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSEntityCache;
@@ -47,7 +48,9 @@ import org.xml.sax.Attributes;
  * A utility class used to generate objects from the XML returned by services.
  *
  * @author Christophe Lauret
- * @version 0.3.10
+ *
+ * @version 0.10.2
+ * @since 0.3.10
  */
 public final class PSEntityFactory {
 
@@ -55,7 +58,7 @@ public final class PSEntityFactory {
   private PSEntityFactory() {}
 
   /**
-   * Generates the membership object from the attributes of a "membership" element.
+   * Generate a <code>PSMembership</code> from a <code>{@code <membership>}</code> element.
    *
    * <p>Will use the following attributes:
    * <ul>
@@ -72,36 +75,22 @@ public final class PSEntityFactory {
    * @return The membership instance.
    */
   public static PSMembership toMembership(Attributes atts, @Nullable PSMembership membership) {
-    // Grab attributes values
-    Long id = PSHandlers.id(atts.getValue("id"));
-    String listed = atts.getValue("email-listed");
+    Long id = requiredId(atts);
+    String listed = optional(atts, "email-listed");
     PSNotification notification = PSHandlers.notification(atts.getValue("notification"));
     PSRole role = PSHandlers.role(atts.getValue("role"));
     Date created = PSHandlers.datetime(atts.getValue("created")); // since 5.7
-
-    // XXX: Unused attributes
-    // String flags = atts.getValue("flags");
-    // String status = atts.getValue("status");
-
-    PSMembership m = membership;
-    if (m == null) {
-      PSEntityCache<PSMembership> cache = MembershipManager.getCache();
-      m = cache.get(id);
-      if (m == null) {
-        m = new PSMembership();
-      }
-    }
+    PSMembership m = tryMembershipCache(membership, id);
     m.setId(id);
     m.setListed("true".equals(listed));
     m.setNotification(notification);
     m.setRole(role);
     m.setCreated(created);
-
     return m;
   }
 
   /**
-   * Generates the member object from the attributes of a "member" element.
+   * Generate a <code>PSMember</code> from a <code>{@code <member>}</code> element.
    *
    * <p>Will use the following attributes:
    * <ul>
@@ -119,22 +108,14 @@ public final class PSEntityFactory {
    * @return The member instance.
    */
   public static PSMember toMember(Attributes atts, @Nullable PSMember member) {
-    String id = atts.getValue("id");
-    String firstname = atts.getValue("firstname");
-    String surname = atts.getValue("surname");
-    String username = atts.getValue("username");
-    String email = atts.getValue("email");
-    String status = atts.getValue("status");
-
-    PSMember m = member;
-    if (m == null) {
-      PSEntityCache<PSMember> cache = MemberManager.getCache();
-      m = cache.get(id);
-      if (m == null) {
-        m = new PSMember();
-      }
-    }
-    m.setId(PSHandlers.id(id));
+    Long id = requiredId(atts);
+    String firstname = optional(atts, "firstname");
+    String surname = optional(atts, "surname");
+    String username = optional(atts, "username");
+    String email = optional(atts, "email");
+    String status = optional(atts, "status");
+    PSMember m = tryMemberCache(member, id);
+    m.setId(id);
     m.setFirstname(firstname);
     m.setSurname(surname);
     m.setUsername(username);
@@ -144,12 +125,11 @@ public final class PSEntityFactory {
     if (status != null) {
       m.setActivated("activated".equals(status));
     }
-
     return m;
   }
 
   /**
-   * Generates the group object from the attributes of a "group" element.
+   * Generate a <code>PSGroup</code> from a <code>{@code <group>}</code> element.
    *
    * <p>Will use the following attributes:
    * <ul>
@@ -167,26 +147,17 @@ public final class PSEntityFactory {
    * @return The group instance.
    */
   public static PSGroup toGroup(Attributes atts, @Nullable PSGroup group) {
-
-    String id = atts.getValue("id");
-    String name = atts.getValue("name");
-    String description = atts.getValue("description");
-    String owner = atts.getValue("owner");
-    String detailstype = atts.getValue("detailstype");
-    String template = atts.getValue("template");
+    Long id = requiredId(atts);
+    String name = required(atts, "name");
+    String description = optional(atts, "description");
+    String owner = optional(atts, "owner");
+    String detailstype = optional(atts, "detailstype");
+    String template = optional(atts, "template");
     PSRole defaultRole = PSHandlers.role(atts.getValue("defaultrole"));
     PSNotification defaultNotification = PSHandlers.notification(atts.getValue("defaultnotify"));
 
-    PSGroup g = group;
-    if (g == null) {
-      PSEntityCache<PSGroup> cache = GroupManager.getCache();
-      g = cache.get(id);
-      if (g == null) {
-        g = new PSGroup(name);
-      }
-    }
-
-    g.setId(PSHandlers.id(id));
+    PSGroup g = tryGroupCache(group, id);
+    g.setId(id);
     g.setName(name);
     g.setDescription(description);
     if (owner != null) {
@@ -208,7 +179,7 @@ public final class PSEntityFactory {
   }
 
   /**
-   * Generates the project object from the attributes of a "project" element.
+   * Generate a <code>PSProject</code> from a <code>{@code <project>}</code> element.
    *
    * <p>Will use the following attributes:
    * <ul>
@@ -225,24 +196,13 @@ public final class PSEntityFactory {
    * @return The project instance.
    */
   public static PSProject toProject(Attributes atts, @Nullable PSGroup group) {
-
-    String id = atts.getValue("id");
-    String name = atts.getValue("name");
-    String description = atts.getValue("description");
+    Long id = requiredId(atts);
+    String name = required(atts, "name");
+    String description = optional(atts, "description");
     PSRole defaultRole = PSHandlers.role(atts.getValue("defaultrole"));
     PSNotification defaultNotification = PSHandlers.notification(atts.getValue("defaultnotify"));
-
-    PSProject p = group instanceof PSProject ? (PSProject) group : null;
-    if (p == null) {
-      PSEntityCache<PSGroup> cache = GroupManager.getCache();
-      // FIXME: If project was previous a group??
-      p = (PSProject) cache.get(id);
-      if (p == null) {
-        p = new PSProject();
-      }
-    }
-
-    p.setId(PSHandlers.id(id));
+    PSProject p = tryProjectCache(group instanceof PSProject ? (PSProject) group : null, id);
+    p.setId(id);
     p.setName(name);
     p.setDescription(description);
     if (defaultRole != null) {
@@ -255,6 +215,7 @@ public final class PSEntityFactory {
   }
 
   /**
+   * Generate a <code>PSDocument</code> from a <code>{@code <uri>}</code> element.
    *
    * <pre>{@code
    * <uri id="2439"
@@ -275,41 +236,33 @@ public final class PSEntityFactory {
    * @return The corresponding PSDocument.
    */
   public static PSDocument toDocument(Attributes atts, @Nullable PSDocument document) {
-    String id = atts.getValue("id");
-    String scheme = atts.getValue("scheme");
-    String host = atts.getValue("host");
-    String port = atts.getValue("port");
-    String path = atts.getValue("path");
-    String description = atts.getValue("description");
-    String docid = atts.getValue("docid");
-    String filename = atts.getValue("filename");
-    String labels = atts.getValue("labels");
-    String title = atts.getValue("title");
-    String type = atts.getValue("type");
+    Long id = requiredId(atts);
+    String scheme = required(atts, "scheme");
+    String host = required(atts, "host");
+    int port = optionalInt(atts, "port", 80); // XXX Is this the correct default port to use???
+    String path = required(atts, "path");
+    String description = optional(atts, "description");
+    String docid = optional(atts, "docid");
+    String filename = optional(atts, "filename");
+    String labels = optional(atts, "labels", "");
+    String title = optional(atts, "title");
+    String type = optional(atts, "type");
     if (type == null) {
-      type = atts.getValue("documenttype");
+      type = optional(atts, "documenttype", "default");
     }
-    String mediatype = atts.getValue("mediatype");
-    String created = atts.getValue("created");
-    String modified = atts.getValue("modified");
+    String mediatype = optional(atts, "mediatype");
+    String created = optional(atts, "created");
+    String modified = optional(atts, "modified");
 
     PSDocument d = document;
     if (d == null) {
       PSEntityCache<PSDocument> cache = DocumentManager.getCache();
       d = cache.get(id);
       if (d == null) {
-        int portnum = 80;
-        if (port != null) {
-          try {
-            portnum = Integer.parseInt(port);
-          } catch (NumberFormatException ex) {
-            // should not happen
-          }
-        }
-        d = new PSDocument(scheme, host, portnum, path);
+        d = new PSDocument(scheme, host, port, path);
       }
     }
-    d.setId(PSHandlers.id(id));
+    d.setId(id);
     d.setPath(path);
     d.setDescription(description);
     d.setDocid(docid);
@@ -331,6 +284,7 @@ public final class PSEntityFactory {
   }
 
   /**
+   * Generate a <code>PSExternalURI</code> from a <code>{@code <uri>}</code> element.
    *
    *<pre>{@code
    * <uri id="2439"
@@ -351,16 +305,16 @@ public final class PSEntityFactory {
    * @return The corresponding PSDocument.
    */
   public static PSExternalURI toExternalURI(Attributes atts, @Nullable PSExternalURI externaluri) {
-    String id = atts.getValue("id");
-    String scheme = atts.getValue("scheme");
-    String host = atts.getValue("host");
-    String port = atts.getValue("port");
-    String path = atts.getValue("path");
-    String description = atts.getValue("description");
-    String docid = atts.getValue("docid");
-    String labels = atts.getValue("labels");
-    String title = atts.getValue("title");
-    String mediatype = atts.getValue("mediatype");
+    Long id = requiredId(atts);
+    String scheme = required(atts, "scheme");
+    String host = required(atts, "host");
+    int port = optionalInt(atts, "port", 80); // XXX Is this the correct default port to use???
+    String path = required(atts, "path");
+    String description = optional(atts, "description");
+    String docid = optional(atts, "docid");
+    String labels = optional(atts, "labels", "");
+    String title = optional(atts, "title");
+    String mediatype = optional(atts, "mediatype");
     boolean folder = "true".equals(atts.getValue("folder"));
 
     PSExternalURI u = externaluri;
@@ -368,18 +322,10 @@ public final class PSEntityFactory {
       PSEntityCache<PSExternalURI> cache = ExternalURIManager.getCache();
       u = cache.get(id);
       if (u == null) {
-        int portnum = 80;
-        if (port != null) {
-          try {
-            portnum = Integer.parseInt(port);
-          } catch (NumberFormatException ex) {
-            // should not happen
-          }
-        }
-        u = new PSExternalURI(scheme, host, portnum, path);
+        u = new PSExternalURI(scheme, host, port, path);
       }
     }
-    u.setId(PSHandlers.id(id));
+    u.setId(id);
     u.setDescription(description);
     u.setDocid(docid);
     u.setLabels(labels);
@@ -390,6 +336,7 @@ public final class PSEntityFactory {
   }
 
   /**
+   * Generate a <code>PSComment</code> from a <code>{@code <comment>}</code> element.
    *
    * @param atts    The attributes the "comment" element
    * @param comment The PSComment instance (may be <code>null</code>).
@@ -397,24 +344,17 @@ public final class PSEntityFactory {
    * @return The corresponding PSComment
    */
   public static PSComment toComment(Attributes atts, @Nullable PSComment comment) {
-    String id = atts.getValue("id");
-    String status = atts.getValue("status");
-    String priority = atts.getValue("priority");
+    Long id = requiredId(atts);
+    String status = optional(atts, "status");
+    String priority = optional(atts, "priority");
     // TODO Due date
-    String due = atts.getValue("due");
-    String labels = atts.getValue("labels");
-    String type = atts.getValue("type");
-    String properties = atts.getValue("properties");
+    String due = optional(atts, "due");
+    String labels = optional(atts, "labels", "");
+    String type = optional(atts, "type");
+    String properties = optional(atts, "properties", "");
 
-    PSComment c = comment;
-    if (c == null) {
-      PSEntityCache<PSComment> cache = CommentManager.getCache();
-      c = cache.get(id);
-      if (c == null) {
-        c = new PSComment();
-      }
-    }
-    c.setId(PSHandlers.id(id));
+    PSComment c = tryCommentCache(comment, id);
+    c.setId(id);
     c.setLabels(labels);
     c.setStatus(status);
     c.setPriority(priority);
@@ -424,7 +364,6 @@ public final class PSEntityFactory {
       } catch (ParseException ex) {
         // it should not happen
       }
-
     }
     c.setType(type);
     c.setProperties(properties);
@@ -432,6 +371,7 @@ public final class PSEntityFactory {
   }
 
   /**
+   * Generate a <code>PSFolder</code> from a <code>{@code <uri>}</code> element.
    *
    * <pre>{@code
    * <uri id="2439"
@@ -452,34 +392,26 @@ public final class PSEntityFactory {
    * @return the corresponding folder instance.
    */
   public static PSFolder toFolder(Attributes atts, @Nullable PSFolder folder) {
-    String id = atts.getValue("id");
-    String path = atts.getValue("path");
-    String description = atts.getValue("description");
-    String docid = atts.getValue("docid");
-    String labels = atts.getValue("labels");
-    String title = atts.getValue("title");
-    String mediatype = atts.getValue("mediatype");
+    Long id = requiredId(atts);
+    String path = required(atts, "path");
+    String description = optional(atts, "description");
+    String docid = optional(atts, "docid");
+    String labels = optional(atts, "labels", "");
+    String title = optional(atts, "title");
+    String mediatype = optional(atts, "mediatype");
 
-    PSFolder d = folder;
-    if (d == null) {
-      PSEntityCache<PSFolder> cache = DocumentManager.getFoldersCache();
-      d = cache.get(id);
-      if (d == null) {
-        d = new PSFolder(path);
-      }
-    }
-    d.setId(PSHandlers.id(id));
-    d.setDescription(description);
-    d.setDocid(docid);
-    d.setLabels(labels);
-    d.setTitle(title);
-    d.setMediaType(mediatype);
-    return d;
+    PSFolder f = tryFolderCache(folder, id, path);
+    f.setId(id);
+    f.setDescription(description);
+    f.setDocid(docid);
+    f.setLabels(labels);
+    f.setTitle(title);
+    f.setMediaType(mediatype);
+    return f;
   }
 
   /**
-   * Generates the group folder object from the attributes of a "groupfolder" element.
-   *
+   * Generate a <code>PSGroupFolder</code> from a <code>{@code <groupfolder>}</code> element.
    *
    * @param atts   the attributes of the "groupfolder" element.
    * @param folder an existing group folder instance to reuse.
@@ -487,34 +419,26 @@ public final class PSEntityFactory {
    * @return The group folder instance.
    */
   public static PSGroupFolder toGroupFolder(Attributes atts, @Nullable PSGroupFolder folder) {
-
-    String id = atts.getValue("id");
-    String scheme = atts.getValue("scheme");
-    String host = atts.getValue("host");
-    String port = atts.getValue("port");
-    String path = atts.getValue("path");
+    Long id = requiredId(atts);
+    String scheme = required(atts, "scheme");
+    String host = required(atts, "host");
+    int port = optionalInt(atts, "port", 80);
+    String path = required(atts, "path");
     boolean isExternal = "true".equals(atts.getValue("external"));
 
-    PSGroupFolder f = folder;
-    if (f == null) {
-      PSEntityCache<PSGroupFolder> cache = GroupManager.getFoldersCache();
-      f = cache.get(id);
-      if (f == null) {
-        f = new PSGroupFolder(path);
-      }
-    }
-
-    f.setId(PSHandlers.id(id));
+    PSGroupFolder f = tryGroupFolderCache(folder, id, path);
+    f.setId(id);
     f.setScheme(scheme);
     f.setHost(host);
-    f.setPort(PSHandlers.integer(port));
+    f.setPort(port);
     f.setPath(path);
     f.setExternal(isExternal);
     return f;
   }
 
   /**
-   * Generates the xref object from the attributes of an "xref" or "blockxref" element.
+   * Generate a <code>PSXRef</code> from a <code>{@code <xref>}</code> or
+   * a <code>{@code <blockxref>}</code> element.
    *
    * @param atts    the attributes of the element.
    * @param source  the source URI.
@@ -523,40 +447,31 @@ public final class PSEntityFactory {
    * @return The group folder instance.
    */
   public static PSXRef toXRef(Attributes atts, PSURI source, @Nullable PSXRef xref) {
+    Long id = requiredId(atts);
+    Long targetURIId = requiredId(atts, "uriid");
+    String targetHref = required(atts, "href");
+    String targetDocid = optional(atts, "docid");
+    String targetFragment = optional(atts, "frag", "default");
+    String targetURITitle = optional(atts, "urititle");
+    String targetMediaType = optional(atts, "mediatype");
+    PSXRef.Type type = PSXRef.Type.fromString(optional(atts, "type"));
+    boolean reverseLink = !"false".equals(optional(atts, "reverselink"));
+    String reverseTitle = optional(atts, "reversetitle");
+    String sourceFragment = optional(atts, "reversefrag", "default");
+    PSXRef.Type reverseType = PSXRef.Type.fromString(optional(atts, "reversetype"));
+    String title = optional(atts, "title");
+    PSXRef.Display display = PSXRef.Display.fromString(optional(atts, "display"));
+    String labels = optional(atts, "labels", "");
+    String level = optional(atts, "level");
+    boolean external = "true".equals(optional(atts, "external"));
 
-    String id = atts.getValue("id");
-    String targetDocid = atts.getValue("docid");
-    String targetURIId = atts.getValue("uriid");
-    String targetFragment = atts.getValue("frag");
-    String targetURITitle = atts.getValue("urititle");
-    String targetMediaType = atts.getValue("mediatype");
-    PSXRef.TYPE type = PSXRef.TYPE.fromString(atts.getValue("type"));
-    boolean reverseLink = !"false".equals(atts.getValue("reverselink"));
-    String reverseTitle = atts.getValue("reversetitle");
-    String sourceFragment = atts.getValue("reversefrag");
-    PSXRef.TYPE reverseType = PSXRef.TYPE.fromString(atts.getValue("reversetype"));
-    String title = atts.getValue("title");
-    PSXRef.DISPLAY display = PSXRef.DISPLAY.fromString(atts.getValue("display"));
-    String labels = atts.getValue("labels") == null ? "" : atts.getValue("labels");
-    String level = atts.getValue("level");
-    String targetHref = atts.getValue("href");
-    boolean external = "true".equals(atts.getValue("external"));
-
-    PSXRef x = xref;
-    if (x == null) {
-      PSEntityCache<PSXRef> cache = XRefManager.getCache();
-      x = cache.get(id);
-      if (x == null) {
-        x = new PSXRef();
-      }
-    }
-
-    x.setId(PSHandlers.id(id));
+    PSXRef x = tryXRefCache(xref, id);
+    x.setId(id);
     x.setSourceURI(source);
     x.setSourceFragment(sourceFragment);
     PSURI target = external ? new PSExternalURI(targetHref) : new PSDocument(targetHref);
     target.setDocid(targetDocid);
-    target.setId(PSHandlers.id(targetURIId));
+    target.setId(targetURIId);
     target.setTitle(targetURITitle);
     target.setMediaType(targetMediaType);
     x.setTargetURI(target);
@@ -575,7 +490,7 @@ public final class PSEntityFactory {
   }
 
   /**
-   * Generates the xref object from the attributes of a "reversexref" element.
+   * Generate a <code>PSXRef</code> from a <code>{@code <reversexref>}</code> element.
    *
    * @param atts    the attributes of the element.
    * @param target  the source URI.
@@ -584,40 +499,31 @@ public final class PSEntityFactory {
    * @return The group folder instance.
    */
   public static PSXRef toReverseXRef(Attributes atts, PSURI target, @Nullable PSXRef xref) {
-
-    String id = atts.getValue("id");
-    String sourceDocid = atts.getValue("docid");
-    String sourceURIId = atts.getValue("uriid");
-    String sourceFragment = atts.getValue("frag");
-    String sourceURITitle = atts.getValue("urititle");
-    String sourceMediaType = atts.getValue("mediatype");
+    Long id = requiredId(atts);
+    Long sourceURIId = requiredId(atts, "uriid");
+    String sourceHref = required(atts, "href");
+    String sourceDocid = optional(atts, "docid");
+    String sourceFragment = optional(atts, "frag", "default");
+    String sourceURITitle = optional(atts, "urititle");
+    String sourceMediaType = optional(atts, "mediatype");
     boolean reverseLink = true;
-    PSXRef.TYPE reverseType = PSXRef.TYPE.fromString(atts.getValue("type"));
-    String reverseTitle = atts.getValue("title");
-    PSXRef.TYPE type = PSXRef.TYPE.fromString(atts.getValue("forwardtype"));
-    String title = atts.getValue("forwardtitle");
-    String targetFragment = atts.getValue("forwardfrag");
-    PSXRef.DISPLAY display = PSXRef.DISPLAY.fromString(atts.getValue("forwarddisplay"));
-    String labels = atts.getValue("labels") == null ? "" : atts.getValue("labels");
-    String level = atts.getValue("level");
-    String sourceHref = atts.getValue("href");
-    boolean external = "true".equals(atts.getValue("external"));
+    PSXRef.Type reverseType = PSXRef.Type.fromString(optional(atts, "type"));
+    String reverseTitle = optional(atts, "title");
+    PSXRef.Type type = PSXRef.Type.fromString(optional(atts, "forwardtype"));
+    String title = optional(atts, "forwardtitle");
+    String targetFragment = optional(atts, "forwardfrag", "default");
+    PSXRef.Display display = PSXRef.Display.fromString(optional(atts, "forwarddisplay"));
+    String labels = optional(atts, "labels", "");
+    String level = optional(atts, "level");
+    boolean external = "true".equals(optional(atts, "external"));
 
-    PSXRef x = xref;
-    if (x == null) {
-      PSEntityCache<PSXRef> cache = XRefManager.getCache();
-      x = cache.get(id);
-      if (x == null) {
-        x = new PSXRef();
-      }
-    }
-
-    x.setId(PSHandlers.id(id));
+    PSXRef x = tryXRefCache(xref, id);
+    x.setId(id);
     x.setTargetURI(target);
     x.setTargetFragment(targetFragment);
     PSURI source = external ? new PSExternalURI(sourceHref) : new PSDocument(sourceHref);
     source.setDocid(sourceDocid);
-    source.setId(PSHandlers.id(sourceURIId));
+    source.setId(sourceURIId);
     source.setTitle(sourceURITitle);
     source.setMediaType(sourceMediaType);
     x.setSourceURI(source);
@@ -634,5 +540,140 @@ public final class PSEntityFactory {
     }
     return x;
   }
+
+  // Attribute retrieval
+  // --------------------------------------------------------------------------
+
+  private static Long requiredId(Attributes atts) {
+    return PSHandlers.requiredId(Objects.requireNonNull(atts.getValue("id"), "Missing required attribute ID."));
+  }
+
+  private static Long requiredId(Attributes atts, String name) {
+    return PSHandlers.requiredId(Objects.requireNonNull(atts.getValue(name), "Missing required ID attribute '"+name+"'"));
+  }
+
+  private static String required(Attributes atts, String name) {
+    return Objects.requireNonNull(atts.getValue(name), "Expected attribute was null");
+  }
+
+  private static String optional(Attributes atts, String name, String fallback) {
+    String value = atts.getValue(name);
+    return value != null? value : fallback;
+  }
+
+  private static int optionalInt(Attributes atts, String name, int fallback) {
+    String value = atts.getValue(name);
+    return value != null? Integer.parseInt(value) : fallback;
+  }
+
+  private static @Nullable String optional(Attributes atts, String name) {
+    return atts.getValue(name);
+  }
+
+  // Cache utility methods
+  // --------------------------------------------------------------------------
+
+
+  private static PSMembership tryMembershipCache(@Nullable PSMembership membership, Long id) {
+    PSMembership m = membership;
+    if (m == null) {
+      PSEntityCache<PSMembership> cache = MembershipManager.getCache();
+      m = cache.get(id);
+      if (m == null) {
+        m = new PSMembership();
+      }
+    }
+    return m;
+  }
+
+  private static PSMember tryMemberCache(@Nullable PSMember member, Long id) {
+    PSMember m = member;
+    if (m == null) {
+      PSEntityCache<PSMember> cache = MemberManager.getCache();
+      m = cache.get(id);
+      if (m == null) {
+        m = new PSMember(id);
+      }
+    }
+    return m;
+  }
+
+  private static PSGroup tryGroupCache(@Nullable PSGroup group, Long id) {
+    PSGroup g = group;
+    if (g == null) {
+      PSEntityCache<PSGroup> cache = GroupManager.getCache();
+      g = cache.get(id);
+      if (g == null) {
+        g = new PSGroup(id);
+      }
+    }
+    return g;
+  }
+
+  private static PSProject tryProjectCache(@Nullable PSProject project, Long id) {
+    PSProject p = project;
+    if (p == null) {
+      PSEntityCache<PSGroup> cache = GroupManager.getCache();
+      try {
+        p = (PSProject) cache.get(id);
+      } catch (ClassCastException ex) {
+        // This should never occur: it is when a group has become a project
+        // TODO Log??
+      }
+      if (p == null) {
+        p = new PSProject(id);
+      }
+    }
+    return p;
+  }
+
+  private static PSComment tryCommentCache(@Nullable PSComment comment, Long id) {
+    PSComment g = comment;
+    if (g == null) {
+      PSEntityCache<PSComment> cache = CommentManager.getCache();
+      g = cache.get(id);
+      if (g == null) {
+        g = new PSComment(); // Add new constructor
+      }
+    }
+    return g;
+  }
+
+  private static PSFolder tryFolderCache(@Nullable PSFolder folder, Long id, String path) {
+    PSFolder f = folder;
+    if (f == null) {
+      PSEntityCache<PSFolder> cache = DocumentManager.getFoldersCache();
+      f = cache.get(id);
+      if (f == null) {
+        f = new PSFolder(path);
+      }
+    }
+    return f;
+  }
+
+  private static PSGroupFolder tryGroupFolderCache(@Nullable PSGroupFolder folder, Long id, String path) {
+    PSGroupFolder f = folder;
+    if (f == null) {
+      PSEntityCache<PSGroupFolder> cache = GroupManager.getFoldersCache();
+      f = cache.get(id);
+      if (f == null) {
+        f = new PSGroupFolder(path); // TODO This does not seem right
+      }
+    }
+    return f;
+  }
+
+  private static PSXRef tryXRefCache(@Nullable PSXRef xref, Long id) {
+    PSXRef x = xref;
+    if (x == null) {
+      PSEntityCache<PSXRef> cache = XRefManager.getCache();
+      x = cache.get(id);
+      if (x == null) {
+        x = new PSXRef();
+      }
+    }
+    return x;
+  }
+
 
 }

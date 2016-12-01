@@ -86,7 +86,7 @@ public final class XRefManager extends Sessionful {
    *
    * @return the list of XRefs found (never <code>null</code>)
    */
-  public List<PSXRef> listXRefs(PSGroup group, PSURI uri, List<PSXRef.TYPE> includetypes,
+  public List<PSXRef> listXRefs(PSGroup group, PSURI uri, List<PSXRef.Type> includetypes,
       boolean forward, boolean reverse, String version, int page, int pagesize) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.listXRefs(group, uri, includetypes,
         forward, reverse, version, page, pagesize).using(this._credentials);

@@ -1,5 +1,6 @@
 package org.pageseeder.bridge.xml;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -32,7 +33,7 @@ public abstract class SimpleHandler<T> extends BasicHandler<T> {
   /**
    * The current item being processed (may be <code>null</code>)
    */
-  private T item = null;
+  private @Nullable T item = null;
 
   public SimpleHandler() {
   }
@@ -48,7 +49,7 @@ public abstract class SimpleHandler<T> extends BasicHandler<T> {
   /**
    * @return the item currently processed.
    */
-  protected T item() {
+  protected @Nullable T item() {
     return this.item;
   }
 
@@ -59,8 +60,9 @@ public abstract class SimpleHandler<T> extends BasicHandler<T> {
    * is invoked.
    */
   protected void addItem() {
-    if (this.item != null) {
-      add(this.item);
+    @Nullable T i = this.item;
+    if (i != null) {
+      add(i);
     }
     this.item = null;
   }

@@ -186,7 +186,7 @@ public class PSGroup implements PSEntity {
    *
    * @param description the description to set
    */
-  public final void setDescription(String description) {
+  public final void setDescription(@Nullable String description) {
     this.description = description;
   }
 
@@ -213,7 +213,7 @@ public class PSGroup implements PSEntity {
    *
    * @param role the default role assigned to members when they join the group.
    */
-  public final void setDefaultRole(PSRole role) {
+  public final void setDefaultRole(@Nullable PSRole role) {
     this.defaultRole = role;
   }
 
@@ -222,7 +222,7 @@ public class PSGroup implements PSEntity {
    *
    * @param notification the default notification assigned to members when they join the group.
    */
-  public final void setDefaultNotification(PSNotification notification) {
+  public final void setDefaultNotification(@Nullable PSNotification notification) {
     this.defaultNotification = notification;
   }
 

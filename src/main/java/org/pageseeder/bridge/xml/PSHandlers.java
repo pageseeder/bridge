@@ -61,7 +61,7 @@ public final class PSHandlers {
   /**
    * Parse the id and return the corresponding <code>Long</code>.
    *
-   * @param id the ID
+   * @param id the ID may be <code>null</code>.
    * @return the corresponding Long value or <code>null</code>
    */
   public static @Nullable Long id(@Nullable String id) {
@@ -71,6 +71,20 @@ public final class PSHandlers {
     } catch (NumberFormatException ex) {
       LOGGER.warn("Found suspicious ID value: {}", id);
       return null;
+    }
+  }
+
+  /**
+   * Parse the id and return the corresponding <code>Long</code>.
+   *
+   * @param id the ID
+   * @return the corresponding Long value
+   */
+  public static Long requiredId(String id) {
+    try {
+      return Long.valueOf(id);
+    } catch (NumberFormatException ex) {
+      throw new IllegalArgumentException("Invalid entity ID found", ex);
     }
   }
 

@@ -262,10 +262,12 @@ public final class TokenResponse {
    *
    * @return a new Token response.
    */
-  static TokenResponse error(String error, String description) {
+  static TokenResponse error(String error, @Nullable String description) {
     Map<String, String> json = new HashMap<>(2);
     json.put("error", error);
-    json.put("error_description", description);
+    if (description != null) {
+      json.put("error_description", description);
+    }
     return new TokenResponse(-1, null, json);
   }
 
@@ -282,8 +284,8 @@ public final class TokenResponse {
   private static PSToken extractToken(Map<String,String> json, long time) {
     // TODO Better error handling.
     // Compute the token
-    String accessToken = json.get("access_token");
-    String expiresInSeconds = json.get("expires_in");
+    @Nullable String accessToken = json.get("access_token");
+    @Nullable String expiresInSeconds = json.get("expires_in");
     long expiresInMillis = time + Long.parseLong(expiresInSeconds)*1000;
     LOGGER.debug("Access token: {}", accessToken);
     return new PSToken(accessToken, expiresInMillis);
@@ -295,9 +297,9 @@ public final class TokenResponse {
    *
    * @return The PageSeeder member or <code>null</code>.
    */
-  private static @Nullable PSMember extractMember(Map<String,String> json, ClientCredentials credentials) {
+  private static @Nullable PSMember extractMember(Map<String, String> json, ClientCredentials credentials) {
     PSMember member = null;
-    String idToken = json.get("id_token");
+    @Nullable String idToken = json.get("id_token");
     if (idToken != null) {
       member = OpenID.parseIDToken(idToken, credentials.secret().getBytes());
     }
