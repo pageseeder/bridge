@@ -22,6 +22,7 @@ import java.util.Scanner;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,16 +48,16 @@ final class JSONParameter {
   /** Utility class. */
   private JSONParameter(){}
 
-  static Map<String,String> parse(String s) {
+  static Map<@NonNull String, @NonNull String> parse(String s) {
     return  parse(new Scanner(s));
   }
 
-  static Map<String,String> parse(InputStream in) {
+  static Map<@NonNull String, @NonNull String> parse(InputStream in) {
     return parse(new Scanner(in, "utf-8"));
   }
 
-  private static Map<String,String> parse(Scanner scanner) {
-    Map<String, String> map = new HashMap<>(4);
+  private static Map<@NonNull String, @NonNull String> parse(Scanner scanner) {
+    Map<@NonNull  String, @NonNull String> map = new HashMap<>(4);
     scanner.useDelimiter("\\s*[{,}]\\s*");
     while (scanner.hasNext()) {
       if (scanner.hasNext(JSON_STRING)) {
@@ -64,13 +65,17 @@ final class JSONParameter {
         MatchResult r = scanner.match();
         String name = r.group(1);
         String value = r.group(2);
-        map.put(name, value);
+        if (name != null && value != null) {
+          map.put(name, value);
+        }
       } else if (scanner.hasNext(JSON_NUMBER)) {
         scanner.next(JSON_NUMBER);
         MatchResult r = scanner.match();
         String name = r.group(1);
         String value = r.group(2);
-        map.put(name, value);
+        if (name != null && value != null) {
+          map.put(name, value);
+        }
       } else {
         String token = scanner.next();
         LOGGER.warn("Unable to parse JSON! Found unparsable token {}", token);

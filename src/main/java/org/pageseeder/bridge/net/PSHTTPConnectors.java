@@ -579,7 +579,10 @@ public final class PSHTTPConnectors {
       Map<String, String> properties = options.getProperties();
       if (properties != null) {
         for (String pname : properties.keySet()) {
-          connector.addParameter("property." + pname, properties.get(pname));
+          String value = properties.get(pname);
+          if (value != null) {
+            connector.addParameter("property." + pname, value);
+          }
         }
       }
     }

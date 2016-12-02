@@ -281,14 +281,19 @@ public final class TokenResponse {
    * @throws NullPointerException If the token could not be constructed.
    * @throws IllegalArgumentException If the token could not be constructed.
    */
-  private static PSToken extractToken(Map<String,String> json, long time) {
-    // TODO Better error handling.
+  private static PSToken extractToken(Map<String, String> json, long time) {
     // Compute the token
-    @Nullable String accessToken = json.get("access_token");
-    @Nullable String expiresInSeconds = json.get("expires_in");
-    long expiresInMillis = time + Long.parseLong(expiresInSeconds)*1000;
-    LOGGER.debug("Access token: {}", accessToken);
-    return new PSToken(accessToken, expiresInMillis);
+    String accessToken = json.get("access_token");
+    String expiresInSeconds = json.get("expires_in");
+    if (accessToken != null && expiresInSeconds != null) {
+      try {
+        long expiresInMillis = time + Long.parseLong(expiresInSeconds)*1000;
+        LOGGER.debug("Access token: {}", accessToken);
+        return new PSToken(accessToken, expiresInMillis);
+      } catch (NumberFormatException ex) {
+        throw new IllegalArgumentException("Unable to parse 'expires_in' value");
+      }
+    } else throw new IllegalArgumentException("JSON missing 'access_token' or 'expires_in'");
   }
 
   /**
@@ -299,7 +304,7 @@ public final class TokenResponse {
    */
   private static @Nullable PSMember extractMember(Map<String, String> json, ClientCredentials credentials) {
     PSMember member = null;
-    @Nullable String idToken = json.get("id_token");
+    String idToken = json.get("id_token");
     if (idToken != null) {
       member = OpenID.parseIDToken(idToken, credentials.secret().getBytes());
     }

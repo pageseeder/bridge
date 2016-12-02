@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.util.Base64;
@@ -44,7 +45,7 @@ final class OpenID {
   protected static @Nullable PSMember parseIDToken(String idToken, byte[] key) {
     LOGGER.debug("Parsing JWT ID token");
     // [header].[payload].[signature]
-    String[] segments = idToken.split("\\.");
+    @NonNull String[] segments = idToken.split("\\.");
     if (segments.length != 3) {
       LOGGER.error("Invalid ID Token: {} segments found", segments.length);
       return null;
@@ -73,19 +74,24 @@ final class OpenID {
 
     // Check Payload
     try {
-      Map<String,String> payload = JSONParameter.parse(Base64.decodeURL(segments[1], StandardCharsets.UTF_8));
-      Long id = Long.valueOf(payload.get("sub"));
-      String username = payload.get("preferred_username");
-      String firstname = payload.get("given_name");
-      String surname = payload.get("family_name");
-      String email = payload.get("email");
-      PSMember member = new PSMember(id);
-      member.setEmail(email);
-      member.setFirstname(firstname);
-      member.setSurname(surname);
-      member.setUsername(username);
-      LOGGER.debug("Found member {} ({}) via Open ID", username, id);
-      return member;
+      Map<@NonNull String, @NonNull String> payload = JSONParameter.parse(Base64.decodeURL(segments[1], StandardCharsets.UTF_8));
+      String sub = payload.get("sub");
+      if (sub != null) {
+        Long id = Long.valueOf(sub);
+        String username = payload.get("preferred_username");
+        String firstname = payload.get("given_name");
+        String surname = payload.get("family_name");
+        String email = payload.get("email");
+        PSMember member = new PSMember(id);
+        member.setEmail(email);
+        member.setFirstname(firstname);
+        member.setSurname(surname);
+        member.setUsername(username);
+        LOGGER.debug("Found member {} ({}) via Open ID", username, id);
+        return member;
+      } else {
+        LOGGER.error("Invalid ID token: missing 'sub' in payload");
+      }
     } catch (Exception ex) {
       LOGGER.error("Invalid ID token: unable to parse payload", ex);
     }
