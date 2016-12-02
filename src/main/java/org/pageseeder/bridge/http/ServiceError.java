@@ -15,10 +15,15 @@
  */
 package org.pageseeder.bridge.http;
 
+import java.io.Serializable;
+
 /**
  * Encapsulate information about service errors.
  */
-public final class ServiceError {
+public final class ServiceError implements Serializable {
+
+  /** As per requirement for serializable */
+  private static final long serialVersionUID = 20161202L;
 
   /** Used for padding */
   private final static String ZEROES = "0000";
