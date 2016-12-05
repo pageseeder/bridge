@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
+import org.pageseeder.bridge.http.ContentException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -176,6 +177,98 @@ public abstract class BasicHandler<T> extends Handler<T> {
   protected final void add(T item) {
     if (item == null) throw new NullPointerException("Cannot add null item to list");
     this.list.add(item);
+  }
+
+  // Attribute utility classes
+  // --------------------------------------------------------------------------
+
+  /**
+   * @param atts Attributes being parsed
+   * @param name The name of the requested attribute.
+   *
+   * @return The corresponding value.
+   *
+   * @throws ContentException If the attribute is missing or could not be parsed as a long.
+   */
+  public static final Long getLong(Attributes atts, String name) {
+    String value = atts.getValue(name);
+    if (value == null) throw new ContentException("Missing required attribute "+name);
+    return toLong(value, name);
+  }
+
+  /**
+   * @param atts     Attributes being parsed
+   * @param name     The name of the requested attribute.
+   * @param fallback The value to return if the attribute is not specified
+   *
+   * @return The corresponding value or the fallback value.
+   *
+   * @throws ContentException If the attribute is missing or could not be parsed as a long.
+   */
+  public static final Long getLong(Attributes atts, String name, Long fallback) {
+    String value = atts.getValue(name);
+    return value != null? toLong(value, name) : fallback;
+  }
+
+  /**
+   * @param atts Attributes being parsed
+   * @param name The name of the requested attribute.
+   *
+   * @return The corresponding value.
+   *
+   * @throws ContentException If the attribute could not be parsed as a long.
+   */
+  public static final @Nullable Long getOptionalLong(Attributes atts, String name) {
+    String value = atts.getValue(name);
+    if (value == null) return null;
+    return toLong(value, name);
+  }
+
+  /**
+   * @param atts Attributes being parsed
+   * @param name The name of the requested attribute.
+   *
+   * @return The corresponding value.
+   *
+   * @throws ContentException If the attribute is missing or could not be parsed as a long.
+   */
+  public static final String getString(Attributes atts, String name) {
+    String value = atts.getValue(name);
+    if (value == null) throw new ContentException("Missing required attribute "+name);
+    return value;
+  }
+
+  /**
+   * @param atts     Attributes being parsed
+   * @param name     The name of the requested attribute.
+   * @param fallback The value to return if the attribute is not specified
+   *
+   * @return The corresponding value or the fallback value.
+   *
+   * @throws ContentException If the attribute is missing.
+   */
+  public static final String getString(Attributes atts, String name, String fallback) {
+    String value = atts.getValue(name);
+    return value != null? value : fallback;
+  }
+
+  /**
+   * @param atts Attributes being parsed
+   * @param name The name of the requested attribute.
+   *
+   * @return The corresponding value.
+   */
+  @Nullable
+  public static final String getOptionalString(Attributes atts, String name) {
+    return atts.getValue(name);
+  }
+
+  private static Long toLong(String value, String name) {
+    try {
+      return Long.valueOf(value);
+    } catch (NumberFormatException ex) {
+      throw new ContentException("Unable to parse required attribute "+name+" as a long");
+    }
   }
 
   // Manage items
