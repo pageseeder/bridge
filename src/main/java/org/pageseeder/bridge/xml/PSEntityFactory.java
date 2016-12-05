@@ -17,7 +17,6 @@ package org.pageseeder.bridge.xml;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSEntityCache;
@@ -75,8 +74,8 @@ public final class PSEntityFactory {
    * @return The membership instance.
    */
   public static PSMembership toMembership(Attributes atts, @Nullable PSMembership membership) {
-    Long id = requiredId(atts);
-    String listed = optional(atts, "email-listed");
+    Long id = getId(atts);
+    String listed = getOptionalString(atts, "email-listed");
     PSNotification notification = PSHandlers.notification(atts.getValue("notification"));
     PSRole role = PSHandlers.role(atts.getValue("role"));
     Date created = PSHandlers.datetime(atts.getValue("created")); // since 5.7
@@ -108,12 +107,12 @@ public final class PSEntityFactory {
    * @return The member instance.
    */
   public static PSMember toMember(Attributes atts, @Nullable PSMember member) {
-    Long id = requiredId(atts);
-    String firstname = optional(atts, "firstname");
-    String surname = optional(atts, "surname");
-    String username = optional(atts, "username");
-    String email = optional(atts, "email");
-    String status = optional(atts, "status");
+    Long id = getId(atts);
+    String firstname = getOptionalString(atts, "firstname");
+    String surname = getOptionalString(atts, "surname");
+    String username = getOptionalString(atts, "username");
+    String email = getOptionalString(atts, "email");
+    String status = getOptionalString(atts, "status");
     PSMember m = tryMemberCache(member, id);
     m.setId(id);
     m.setFirstname(firstname);
@@ -147,12 +146,12 @@ public final class PSEntityFactory {
    * @return The group instance.
    */
   public static PSGroup toGroup(Attributes atts, @Nullable PSGroup group) {
-    Long id = requiredId(atts);
-    String name = required(atts, "name");
-    String description = optional(atts, "description");
-    String owner = optional(atts, "owner");
-    String detailstype = optional(atts, "detailstype");
-    String template = optional(atts, "template");
+    Long id = getId(atts);
+    String name = getString(atts, "name");
+    String description = getOptionalString(atts, "description");
+    String owner = getOptionalString(atts, "owner");
+    String detailstype = getOptionalString(atts, "detailstype");
+    String template = getOptionalString(atts, "template");
     PSRole defaultRole = PSHandlers.role(atts.getValue("defaultrole"));
     PSNotification defaultNotification = PSHandlers.notification(atts.getValue("defaultnotify"));
 
@@ -196,9 +195,9 @@ public final class PSEntityFactory {
    * @return The project instance.
    */
   public static PSProject toProject(Attributes atts, @Nullable PSGroup group) {
-    Long id = requiredId(atts);
-    String name = required(atts, "name");
-    String description = optional(atts, "description");
+    Long id = getId(atts);
+    String name = getString(atts, "name");
+    String description = getOptionalString(atts, "description");
     PSRole defaultRole = PSHandlers.role(atts.getValue("defaultrole"));
     PSNotification defaultNotification = PSHandlers.notification(atts.getValue("defaultnotify"));
     PSProject p = tryProjectCache(group instanceof PSProject ? (PSProject) group : null, id);
@@ -236,23 +235,23 @@ public final class PSEntityFactory {
    * @return The corresponding PSDocument.
    */
   public static PSDocument toDocument(Attributes atts, @Nullable PSDocument document) {
-    Long id = requiredId(atts);
-    String scheme = required(atts, "scheme");
-    String host = required(atts, "host");
-    int port = optionalInt(atts, "port", 80); // XXX Is this the correct default port to use???
-    String path = required(atts, "path");
-    String description = optional(atts, "description");
-    String docid = optional(atts, "docid");
-    String filename = optional(atts, "filename");
-    String labels = optional(atts, "labels", "");
-    String title = optional(atts, "title");
-    String type = optional(atts, "type");
+    Long id = getId(atts);
+    String scheme = getString(atts, "scheme");
+    String host = getString(atts, "host");
+    int port = getInt(atts, "port", 80); // XXX Is this the correct default port to use???
+    String path = getString(atts, "path");
+    String description = getOptionalString(atts, "description");
+    String docid = getOptionalString(atts, "docid");
+    String filename = getOptionalString(atts, "filename");
+    String labels = getString(atts, "labels", "");
+    String title = getOptionalString(atts, "title");
+    String type = getOptionalString(atts, "type");
     if (type == null) {
-      type = optional(atts, "documenttype", "default");
+      type = getString(atts, "documenttype", "default");
     }
-    String mediatype = optional(atts, "mediatype");
-    String created = optional(atts, "created");
-    String modified = optional(atts, "modified");
+    String mediatype = getOptionalString(atts, "mediatype");
+    String created = getOptionalString(atts, "created");
+    String modified = getOptionalString(atts, "modified");
 
     PSDocument d = document;
     if (d == null) {
@@ -305,16 +304,16 @@ public final class PSEntityFactory {
    * @return The corresponding PSDocument.
    */
   public static PSExternalURI toExternalURI(Attributes atts, @Nullable PSExternalURI externaluri) {
-    Long id = requiredId(atts);
-    String scheme = required(atts, "scheme");
-    String host = required(atts, "host");
-    int port = optionalInt(atts, "port", 80); // XXX Is this the correct default port to use???
-    String path = required(atts, "path");
-    String description = optional(atts, "description");
-    String docid = optional(atts, "docid");
-    String labels = optional(atts, "labels", "");
-    String title = optional(atts, "title");
-    String mediatype = optional(atts, "mediatype");
+    Long id = getId(atts);
+    String scheme = getString(atts, "scheme");
+    String host = getString(atts, "host");
+    int port = getInt(atts, "port", 80); // XXX Is this the correct default port to use???
+    String path = getString(atts, "path");
+    String description = getOptionalString(atts, "description");
+    String docid = getOptionalString(atts, "docid");
+    String labels = getString(atts, "labels", "");
+    String title = getOptionalString(atts, "title");
+    String mediatype = getOptionalString(atts, "mediatype");
     boolean folder = "true".equals(atts.getValue("folder"));
 
     PSExternalURI u = externaluri;
@@ -344,14 +343,13 @@ public final class PSEntityFactory {
    * @return The corresponding PSComment
    */
   public static PSComment toComment(Attributes atts, @Nullable PSComment comment) {
-    Long id = requiredId(atts);
-    String status = optional(atts, "status");
-    String priority = optional(atts, "priority");
-    // TODO Due date
-    String due = optional(atts, "due");
-    String labels = optional(atts, "labels", "");
-    String type = optional(atts, "type");
-    String properties = optional(atts, "properties", "");
+    Long id = getId(atts);
+    String status = getOptionalString(atts, "status");
+    String priority = getOptionalString(atts, "priority");
+    Date due = getOptionalDate(atts, "due");
+    String labels = getString(atts, "labels", "");
+    String type = getOptionalString(atts, "type");
+    String properties = getString(atts, "properties", "");
 
     PSComment c = tryCommentCache(comment, id);
     c.setId(id);
@@ -359,11 +357,7 @@ public final class PSEntityFactory {
     c.setStatus(status);
     c.setPriority(priority);
     if (due != null) {
-      try {
-        c.setDue(ISO8601.parseAuto(due));
-      } catch (ParseException ex) {
-        // it should not happen
-      }
+      c.setDue(due);
     }
     c.setType(type);
     c.setProperties(properties);
@@ -392,13 +386,13 @@ public final class PSEntityFactory {
    * @return the corresponding folder instance.
    */
   public static PSFolder toFolder(Attributes atts, @Nullable PSFolder folder) {
-    Long id = requiredId(atts);
-    String path = required(atts, "path");
-    String description = optional(atts, "description");
-    String docid = optional(atts, "docid");
-    String labels = optional(atts, "labels", "");
-    String title = optional(atts, "title");
-    String mediatype = optional(atts, "mediatype");
+    Long id = getId(atts);
+    String path = getString(atts, "path");
+    String description = getOptionalString(atts, "description");
+    String docid = getOptionalString(atts, "docid");
+    String labels = getString(atts, "labels", "");
+    String title = getOptionalString(atts, "title");
+    String mediatype = getOptionalString(atts, "mediatype");
 
     PSFolder f = tryFolderCache(folder, id, path);
     f.setId(id);
@@ -419,11 +413,11 @@ public final class PSEntityFactory {
    * @return The group folder instance.
    */
   public static PSGroupFolder toGroupFolder(Attributes atts, @Nullable PSGroupFolder folder) {
-    Long id = requiredId(atts);
-    String scheme = required(atts, "scheme");
-    String host = required(atts, "host");
-    int port = optionalInt(atts, "port", 80);
-    String path = required(atts, "path");
+    Long id = getId(atts);
+    String scheme = getString(atts, "scheme");
+    String host = getString(atts, "host");
+    int port = getInt(atts, "port", 80);
+    String path = getString(atts, "path");
     boolean isExternal = "true".equals(atts.getValue("external"));
 
     PSGroupFolder f = tryGroupFolderCache(folder, id, path);
@@ -447,23 +441,23 @@ public final class PSEntityFactory {
    * @return The group folder instance.
    */
   public static PSXRef toXRef(Attributes atts, PSURI source, @Nullable PSXRef xref) {
-    Long id = requiredId(atts);
-    Long targetURIId = requiredId(atts, "uriid");
-    String targetHref = required(atts, "href");
-    String targetDocid = optional(atts, "docid");
-    String targetFragment = optional(atts, "frag", "default");
-    String targetURITitle = optional(atts, "urititle");
-    String targetMediaType = optional(atts, "mediatype");
-    PSXRef.Type type = PSXRef.Type.fromString(optional(atts, "type"));
-    boolean reverseLink = !"false".equals(optional(atts, "reverselink"));
-    String reverseTitle = optional(atts, "reversetitle");
-    String sourceFragment = optional(atts, "reversefrag", "default");
-    PSXRef.Type reverseType = PSXRef.Type.fromString(optional(atts, "reversetype"));
-    String title = optional(atts, "title");
-    PSXRef.Display display = PSXRef.Display.fromString(optional(atts, "display"));
-    String labels = optional(atts, "labels", "");
-    String level = optional(atts, "level");
-    boolean external = "true".equals(optional(atts, "external"));
+    Long id = getId(atts);
+    Long targetURIId = getLong(atts, "uriid");
+    String targetHref = getString(atts, "href");
+    String targetDocid = getOptionalString(atts, "docid");
+    String targetFragment = getString(atts, "frag", "default");
+    String targetURITitle = getOptionalString(atts, "urititle");
+    String targetMediaType = getOptionalString(atts, "mediatype");
+    PSXRef.Type type = PSXRef.Type.fromString(getOptionalString(atts, "type"));
+    boolean reverseLink = !"false".equals(getOptionalString(atts, "reverselink"));
+    String reverseTitle = getOptionalString(atts, "reversetitle");
+    String sourceFragment = getString(atts, "reversefrag", "default");
+    PSXRef.Type reverseType = PSXRef.Type.fromString(getOptionalString(atts, "reversetype"));
+    String title = getOptionalString(atts, "title");
+    PSXRef.Display display = PSXRef.Display.fromString(getOptionalString(atts, "display"));
+    String labels = getString(atts, "labels", "");
+    int level = getInt(atts, "level", 0);
+    boolean external = "true".equals(getOptionalString(atts, "external"));
 
     PSXRef x = tryXRefCache(xref, id);
     x.setId(id);
@@ -483,8 +477,8 @@ public final class PSEntityFactory {
     x.setTitle(title);
     x.setDisplay(display);
     x.setLabels(labels);
-    if (level != null) {
-      x.setLevel(PSHandlers.integer(level));
+    if (level > 0) {
+      x.setLevel(level);
     }
     return x;
   }
@@ -499,23 +493,23 @@ public final class PSEntityFactory {
    * @return The group folder instance.
    */
   public static PSXRef toReverseXRef(Attributes atts, PSURI target, @Nullable PSXRef xref) {
-    Long id = requiredId(atts);
-    Long sourceURIId = requiredId(atts, "uriid");
-    String sourceHref = required(atts, "href");
-    String sourceDocid = optional(atts, "docid");
-    String sourceFragment = optional(atts, "frag", "default");
-    String sourceURITitle = optional(atts, "urititle");
-    String sourceMediaType = optional(atts, "mediatype");
+    Long id = getId(atts);
+    Long sourceURIId = getLong(atts, "uriid");
+    String sourceHref = getString(atts, "href");
+    String sourceDocid = getOptionalString(atts, "docid");
+    String sourceFragment = getString(atts, "frag", "default");
+    String sourceURITitle = getOptionalString(atts, "urititle");
+    String sourceMediaType = getOptionalString(atts, "mediatype");
     boolean reverseLink = true;
-    PSXRef.Type reverseType = PSXRef.Type.fromString(optional(atts, "type"));
-    String reverseTitle = optional(atts, "title");
-    PSXRef.Type type = PSXRef.Type.fromString(optional(atts, "forwardtype"));
-    String title = optional(atts, "forwardtitle");
-    String targetFragment = optional(atts, "forwardfrag", "default");
-    PSXRef.Display display = PSXRef.Display.fromString(optional(atts, "forwarddisplay"));
-    String labels = optional(atts, "labels", "");
-    String level = optional(atts, "level");
-    boolean external = "true".equals(optional(atts, "external"));
+    PSXRef.Type reverseType = PSXRef.Type.fromString(getOptionalString(atts, "type"));
+    String reverseTitle = getOptionalString(atts, "title");
+    PSXRef.Type type = PSXRef.Type.fromString(getOptionalString(atts, "forwardtype"));
+    String title = getOptionalString(atts, "forwardtitle");
+    String targetFragment = getString(atts, "forwardfrag", "default");
+    PSXRef.Display display = PSXRef.Display.fromString(getOptionalString(atts, "forwarddisplay"));
+    String labels = getString(atts, "labels", "");
+    int level = getInt(atts, "level", 0);
+    boolean external = "true".equals(getOptionalString(atts, "external"));
 
     PSXRef x = tryXRefCache(xref, id);
     x.setId(id);
@@ -535,8 +529,8 @@ public final class PSEntityFactory {
     x.setTitle(title);
     x.setDisplay(display);
     x.setLabels(labels);
-    if (level != null) {
-      x.setLevel(PSHandlers.integer(level));
+    if (level > 0) {
+      x.setLevel(level);
     }
     return x;
   }
@@ -544,31 +538,42 @@ public final class PSEntityFactory {
   // Attribute retrieval
   // --------------------------------------------------------------------------
 
-  private static Long requiredId(Attributes atts) {
-    return PSHandlers.requiredId(Objects.requireNonNull(atts.getValue("id"), "Missing required attribute ID."));
+  private static Long getId(Attributes atts) {
+    return BasicHandler.getLong(atts, "id");
   }
 
-  private static Long requiredId(Attributes atts, String name) {
-    return PSHandlers.requiredId(Objects.requireNonNull(atts.getValue(name), "Missing required ID attribute '"+name+"'"));
+  private static Long getLong(Attributes atts, String name) {
+    return BasicHandler.getLong(atts, name);
   }
 
-  private static String required(Attributes atts, String name) {
-    return Objects.requireNonNull(atts.getValue(name), "Expected attribute was null");
+  private static String getString(Attributes atts, String name) {
+    return BasicHandler.getString(atts, name);
   }
 
-  private static String optional(Attributes atts, String name, String fallback) {
-    String value = atts.getValue(name);
-    return value != null? value : fallback;
+  private static String getString(Attributes atts, String name, String fallback) {
+    return BasicHandler.getString(atts, name, fallback);
   }
 
-  private static int optionalInt(Attributes atts, String name, int fallback) {
-    String value = atts.getValue(name);
-    return value != null? Integer.parseInt(value) : fallback;
+  private static int getInt(Attributes atts, String name, int fallback) {
+    return BasicHandler.getInt(atts, name, fallback);
   }
 
-  private static @Nullable String optional(Attributes atts, String name) {
+  private static @Nullable String getOptionalString(Attributes atts, String name) {
     return atts.getValue(name);
   }
+
+  private static @Nullable Date getOptionalDate(Attributes atts, String name) {
+    String value = atts.getValue(name);
+    if (value == null) return null;
+    try {
+      return ISO8601.parseAuto(value);
+    } catch (ParseException ex) {
+      throw new InvalidAttributeException(name, ex);
+    }
+  }
+
+
+
 
   // Cache utility methods
   // --------------------------------------------------------------------------

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016 Allette Systems (Australia)
+ * http://www.allette.com.au
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.pageseeder.bridge.xml;
 
 import java.util.ArrayList;
@@ -6,7 +21,9 @@ import java.util.List;
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.http.ContentException;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * Simplifies SAX parsing by providing basic state machine on top of default handler.
@@ -48,6 +65,11 @@ public abstract class BasicHandler<T> extends Handler<T> {
    */
   private @Nullable StringBuilder buffer = null;
 
+  /**
+   * The locator if supplied by the SAX implementation.
+   */
+  private @Nullable Locator locator = null;
+
   public BasicHandler() {
   }
 
@@ -78,7 +100,12 @@ public abstract class BasicHandler<T> extends Handler<T> {
   public final void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
     String element = localName.length() == 0? qName : localName;
     this.ancestorOrSelf.add(element);
-    startElement(element, attributes);
+    try {
+      startElement(element, attributes);
+    } catch (AttributeException ex) {
+      String xpath = "/"+String.join("/", this.ancestorOrSelf)+"/@"+ex.getAttributeName();
+      throw new SAXParseException(ex.getMessage()+" XPath="+xpath, this.locator);
+    }
   }
 
   @Override
@@ -99,6 +126,19 @@ public abstract class BasicHandler<T> extends Handler<T> {
     if (b != null) {
       b.append(ch, start, length);
     }
+  }
+
+  /**
+   * Stores the locator so that it can be used to report issues.
+   *
+   * <p>Subclasses should ensure that this method is called using super to ensure that the
+   * locator is provided for parsing errors.
+   *
+   * @param locator A locator for all SAX document events.
+   */
+  @Override
+  public void setDocumentLocator(Locator locator) {
+    this.locator = locator;
   }
 
   // Working with the character buffer
@@ -177,98 +217,6 @@ public abstract class BasicHandler<T> extends Handler<T> {
   protected final void add(T item) {
     if (item == null) throw new NullPointerException("Cannot add null item to list");
     this.list.add(item);
-  }
-
-  // Attribute utility classes
-  // --------------------------------------------------------------------------
-
-  /**
-   * @param atts Attributes being parsed
-   * @param name The name of the requested attribute.
-   *
-   * @return The corresponding value.
-   *
-   * @throws ContentException If the attribute is missing or could not be parsed as a long.
-   */
-  public static final Long getLong(Attributes atts, String name) {
-    String value = atts.getValue(name);
-    if (value == null) throw new ContentException("Missing required attribute "+name);
-    return toLong(value, name);
-  }
-
-  /**
-   * @param atts     Attributes being parsed
-   * @param name     The name of the requested attribute.
-   * @param fallback The value to return if the attribute is not specified
-   *
-   * @return The corresponding value or the fallback value.
-   *
-   * @throws ContentException If the attribute is missing or could not be parsed as a long.
-   */
-  public static final Long getLong(Attributes atts, String name, Long fallback) {
-    String value = atts.getValue(name);
-    return value != null? toLong(value, name) : fallback;
-  }
-
-  /**
-   * @param atts Attributes being parsed
-   * @param name The name of the requested attribute.
-   *
-   * @return The corresponding value.
-   *
-   * @throws ContentException If the attribute could not be parsed as a long.
-   */
-  public static final @Nullable Long getOptionalLong(Attributes atts, String name) {
-    String value = atts.getValue(name);
-    if (value == null) return null;
-    return toLong(value, name);
-  }
-
-  /**
-   * @param atts Attributes being parsed
-   * @param name The name of the requested attribute.
-   *
-   * @return The corresponding value.
-   *
-   * @throws ContentException If the attribute is missing or could not be parsed as a long.
-   */
-  public static final String getString(Attributes atts, String name) {
-    String value = atts.getValue(name);
-    if (value == null) throw new ContentException("Missing required attribute "+name);
-    return value;
-  }
-
-  /**
-   * @param atts     Attributes being parsed
-   * @param name     The name of the requested attribute.
-   * @param fallback The value to return if the attribute is not specified
-   *
-   * @return The corresponding value or the fallback value.
-   *
-   * @throws ContentException If the attribute is missing.
-   */
-  public static final String getString(Attributes atts, String name, String fallback) {
-    String value = atts.getValue(name);
-    return value != null? value : fallback;
-  }
-
-  /**
-   * @param atts Attributes being parsed
-   * @param name The name of the requested attribute.
-   *
-   * @return The corresponding value.
-   */
-  @Nullable
-  public static final String getOptionalString(Attributes atts, String name) {
-    return atts.getValue(name);
-  }
-
-  private static Long toLong(String value, String name) {
-    try {
-      return Long.valueOf(value);
-    } catch (NumberFormatException ex) {
-      throw new ContentException("Unable to parse required attribute "+name+" as a long");
-    }
   }
 
   // Manage items
@@ -369,6 +317,136 @@ public abstract class BasicHandler<T> extends Handler<T> {
       }
     }
     return false;
+  }
+
+
+  // Attribute utility classes
+  // --------------------------------------------------------------------------
+
+  /**
+   * @param atts Attributes being parsed
+   * @param name The name of the requested attribute.
+   *
+   * @return The corresponding value.
+   *
+   * @throws ContentException If the attribute is missing or could not be parsed as a long.
+   */
+  public final static Long getLong(Attributes atts, String name) {
+    String value = atts.getValue(name);
+    if (value == null) throw new MissingAttributeException(name);
+    return toLong(value, name);
+  }
+
+  /**
+   * @param atts     Attributes being parsed
+   * @param name     The name of the requested attribute.
+   * @param fallback The value to return if the attribute is not specified
+   *
+   * @return The corresponding value or the fallback value.
+   *
+   * @throws ContentException If the attribute is missing or could not be parsed as a long.
+   */
+  public final static Long getLong(Attributes atts, String name, Long fallback) {
+    String value = atts.getValue(name);
+    return value != null? toLong(value, name) : fallback;
+  }
+
+  /**
+   * @param atts Attributes being parsed
+   * @param name The name of the requested attribute.
+   *
+   * @return The corresponding value.
+   *
+   * @throws MissingAttributeException If the attribute could not be parsed as a long.
+   * @throws MissingAttributeException If the attribute could not be parsed as a long.
+   */
+  public final static @Nullable Long getOptionalLong(Attributes atts, String name) {
+    String value = atts.getValue(name);
+    if (value == null) return null;
+    return toLong(value, name);
+  }
+
+  /**
+   * @param atts Attributes being parsed
+   * @param name The name of the requested attribute.
+   *
+   * @return The corresponding value.
+   *
+   * @throws MissingAttributeException If the attribute is missing or could not be parsed as a long.
+   */
+  public final static String getString(Attributes atts, String name) {
+    String value = atts.getValue(name);
+    if (value == null) throw new MissingAttributeException(name);
+    return value;
+  }
+
+  /**
+   * @param atts     Attributes being parsed
+   * @param name     The name of the requested attribute.
+   * @param fallback The value to return if the attribute is not specified
+   *
+   * @return The corresponding value or the fallback value.
+   */
+  public final static String getString(Attributes atts, String name, String fallback) {
+    String value = atts.getValue(name);
+    return value != null? value : fallback;
+  }
+
+  /**
+   * @param atts     Attributes being parsed
+   * @param name     The name of the requested attribute.
+   * @param fallback The value to return if the attribute is not specified
+   *
+   * @return The corresponding value or the fallback value.
+   */
+  public final static int getInt(Attributes atts, String name, int fallback) {
+    String value = atts.getValue(name);
+    return value != null? toInt(value, name) : fallback;
+  }
+
+  /**
+   * @param atts Attributes being parsed
+   * @param name The name of the requested attribute.
+   *
+   * @return The corresponding value.
+   */
+  @Nullable
+  public final static String getOptionalString(Attributes atts, String name) {
+    return atts.getValue(name);
+  }
+
+  /**
+   *
+   * @param value The attribute value
+   * @param name  The name of the attribute
+   *
+   * @return The value of a Long instance.
+   *
+   * @throws InvalidAttributeException If the attribute value could not be parsed as Long object.
+   */
+  private final static Long toLong(String value, String name) {
+    try {
+      return Long.valueOf(value);
+    } catch (NumberFormatException ex) {
+      throw new InvalidAttributeException(name, ex);
+    }
+  }
+
+  /**
+   *
+   * @param value The attribute value
+   * @param name  The name of the attribute
+   *
+   * @return The values as int
+   *
+   * @throws InvalidAttributeException If the attribute value could not be parsed as an int.
+   */
+  private final static int toInt(String value, String name) {
+    try {
+      return Integer.parseInt(value);
+    } catch (NumberFormatException ex) {
+      throw new InvalidAttributeException(name, ex);
+    }
   }
 
   // Handler implementation
