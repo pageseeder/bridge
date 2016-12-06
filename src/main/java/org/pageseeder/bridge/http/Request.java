@@ -332,6 +332,7 @@ public final class Request extends BasicRequest {
   @Override
   public Response response() {
     int status = -1;
+    long t = System.currentTimeMillis();
     try {
       URL url = toURL();
 
@@ -382,7 +383,7 @@ public final class Request extends BasicRequest {
     } catch (IOException ex) {
       return new Response(ex.getMessage());
     } finally {
-      LOGGER.info("{} [{}] -> {}", toURLString(this.config, this._path), this._method, status);
+      LOGGER.info("{} [{}] -> {} in {}ms", toURLString(this.config, this._path), this._method, status, System.currentTimeMillis() -t);
     }
   }
 
