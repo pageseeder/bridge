@@ -81,8 +81,7 @@ public final class DocumentPath {
   public static DocumentPath newLocalPath(String group, String path) {
     String[] g = group.split("-");
     String[] p = path.split("/");
-    String[] steps = Arrays.copyOf(g, g.length+p.length);
-    System.arraycopy(p, 0, steps, g.length, p.length);
+    String[] steps = merge(g, p);
     return new DocumentPath(normalize(steps));
   }
 
@@ -110,6 +109,7 @@ public final class DocumentPath {
    *
    * @return a copy of the steps.
    */
+  @SuppressWarnings("null")
   public String[] steps() {
     return Arrays.copyOf(this._steps, this._steps.length);
   }
@@ -139,6 +139,7 @@ public final class DocumentPath {
    *
    * @return the path corresponding to the parent or <code>null</code>
    */
+  @SuppressWarnings("null")
   public @Nullable DocumentPath parent() {
     if (this._steps.length == 0) return null;
     String[] current = this._steps;
@@ -253,9 +254,23 @@ public final class DocumentPath {
   private String[] descendantOf(DocumentPath original, String subpath) {
     String[] current = this._steps;
     String[] children = normalize(subpath.split("/"));
-    String[] path = Arrays.copyOf(current, current.length+children.length);
-    System.arraycopy(children, 0, path, current.length, children.length);
+    String[] path = merge(current, children);
     return path;
+  }
+
+  /**
+   * Merge two String arrays
+   *
+   * @param a The first array
+   * @param b The second array
+   *
+   * @return the merged array
+   */
+  @SuppressWarnings("null")
+  private static String[] merge(String[] a, String[] b) {
+    String[] merge = Arrays.copyOf(a, a.length+b.length);
+    System.arraycopy(b, 0, merge, a.length, b.length);
+    return merge;
   }
 
 }
