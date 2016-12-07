@@ -82,7 +82,7 @@ import org.slf4j.LoggerFactory;
  * @version 0.10.2
  * @since 0.9.1
  */
-public final class Request extends BasicRequest {
+public final class Request extends BasicRequest implements HttpRequest {
 
   /**
    * Logger for this class.
@@ -210,13 +210,7 @@ public final class Request extends BasicRequest {
     return (Request)super.parameter(name, value);
   }
 
-  /**
-   * Add all the parameters to this request.
-   *
-   * @param parameters A map of parameter names and values to add
-   *
-   * @return This request.
-   */
+  @Override
   public Request parameters(Map<String, String> parameters) {
     for (Entry<String, String> p : parameters.entrySet()) {
       parameter(p.getKey(), p.getValue());
@@ -246,6 +240,7 @@ public final class Request extends BasicRequest {
    *
    * @return this request.
    */
+  @Override
   public Request etag(String etag) {
     return header("If-None-Match", '"'+etag+'"');
   }
@@ -261,6 +256,7 @@ public final class Request extends BasicRequest {
    *
    * @throws NullPointerException if the array is <code>null</code>
    */
+  @Override
   public Request body(String body) {
     this.body = body.getBytes(StandardCharsets.UTF_8);
     return this;
@@ -277,6 +273,7 @@ public final class Request extends BasicRequest {
    *
    * @throws NullPointerException if the array is <code>null</code>
    */
+  @Override
   public Request body(byte[] body) {
     this.body = Arrays.copyOf(body, body.length);
     return this;
@@ -308,6 +305,7 @@ public final class Request extends BasicRequest {
    *
    * @return The list of HTTP headers.
    */
+  @Override
   public List<Header> headers() {
     // We recompute the header for the body content
     computeBodyContent();

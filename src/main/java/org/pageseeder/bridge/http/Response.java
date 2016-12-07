@@ -94,7 +94,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @version 0.10.2
  * @since 0.9.1
  */
-public final class Response implements AutoCloseable {
+public final class Response implements HttpResponse, AutoCloseable {
 
   /**
    * State of this response.
@@ -251,6 +251,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the status code from this request.
    */
+  @Override
   public int code() {
     return this._statusCode;
   }
@@ -260,6 +261,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the reason string.
    */
+  @Override
   public @Nullable String message() {
     return this._message;
   }
@@ -271,6 +273,7 @@ public final class Response implements AutoCloseable {
    *
    * @return The corresponding value or <code>null</code>;
    */
+  @Override
   public @Nullable String header(String name) {
     for (Header h : this._headers) {
       if (h.name().equalsIgnoreCase(name)) return h.value();
@@ -283,6 +286,7 @@ public final class Response implements AutoCloseable {
    *
    * @return The corresponding value or <code>null</code>;
    */
+  @Override
   public List<Header> headers() {
     return Collections.unmodifiableList(this._headers);
   }
@@ -301,6 +305,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the etag of the response derived from the "Etag" response header.
    */
+  @Override
   public @Nullable String etag() {
     return unwrapEtag(header("Etag"));
   }
@@ -329,6 +334,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the value of "Content-Length" response header or -1 if the content length is not known.
    */
+  @Override
   public long length() {
     HttpURLConnection con = this._connection;
     if (con == null) return -1;
@@ -342,6 +348,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the value of "Date" response header or 0 if the date is not known.
    */
+  @Override
   public long date() {
     HttpURLConnection con = this._connection;
     if (con == null) return 0;
@@ -355,6 +362,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the value of "Date" response header or 0 if the date is not known.
    */
+  @Override
   public long modified() {
     HttpURLConnection con = this._connection;
     if (con == null) return 0;
@@ -368,6 +376,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the value of "Expires" response header or 0 if not known.
    */
+  @Override
   public long expires() {
     HttpURLConnection con = this._connection;
     if (con == null) return 0;
@@ -381,6 +390,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the value of "Content-Type" response header.
    */
+  @Override
   public @Nullable String getContentType() {
     HttpURLConnection con = this._connection;
     if (con == null) return null;
@@ -399,6 +409,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the media type of the response content.
    */
+  @Override
   public @Nullable String mediaType() {
     return this._mediaType;
   }
@@ -412,6 +423,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the charset used in the response if detected and applicable.
    */
+  @Override
   public @Nullable Charset charset() {
     return this._charset;
   }
@@ -421,6 +433,7 @@ public final class Response implements AutoCloseable {
    *
    * @return the session if any.
    */
+  @Override
   public @Nullable PSSession session() {
     return this._session;
   }
@@ -437,6 +450,7 @@ public final class Response implements AutoCloseable {
    * @return <code>true</code> if XML;
    *         <code>false</code> otherwise.
    */
+  @Override
   public boolean isXML() {
     return isXML(this._mediaType);
   }
@@ -450,6 +464,7 @@ public final class Response implements AutoCloseable {
    * @return <code>true</code> if the code is between 200 and 299 (included);
    *         <code>false</code>.
    */
+  @Override
   public boolean isSuccessful() {
     return isSuccessful(this._statusCode);
   }
@@ -464,6 +479,7 @@ public final class Response implements AutoCloseable {
    * @return <code>true</code> if the connection can ;
    *         <code>false</code>.
    */
+  @Override
   public boolean isAvailable() {
     return this.state == State.available;
   }
@@ -484,6 +500,7 @@ public final class Response implements AutoCloseable {
    * @throws IOException If the thrown by the underlying connection.
    * @throws IllegalStateException If the response is not available.
    */
+  @Override
   public @Nullable InputStream getInputStream() throws IOException {
     HttpURLConnection con = requireAvailable();
     try {
@@ -506,6 +523,7 @@ public final class Response implements AutoCloseable {
    * @throws IOException If the thrown by the underlying connection.
    * @throws IllegalStateException If the response is not available.
    */
+  @Override
   public @Nullable Reader getReader() throws IOException {
     Charset charset = this._charset;
     if (charset == null)
@@ -526,6 +544,7 @@ public final class Response implements AutoCloseable {
    * @throws IOException If the thrown by the underlying connection.
    * @throws IllegalStateException If the response is not available.
    */
+  @Override
   public @Nullable Reader getReader(Charset charset) throws IOException {
     HttpURLConnection con = requireAvailable();
     try {
@@ -545,6 +564,7 @@ public final class Response implements AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
+  @Override
   public void consumeBytes(OutputStream out) {
     HttpURLConnection con = requireAvailable();
     try {
@@ -568,6 +588,7 @@ public final class Response implements AutoCloseable {
    *
    * @throws ContentException If an error occurred while consuming the content.
    */
+  @Override
   @SuppressWarnings("null")
   public byte[] consumeBytes() {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -583,6 +604,7 @@ public final class Response implements AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
+  @Override
   public void consume() {
     HttpURLConnection con = requireAvailable();
     try {
@@ -609,6 +631,7 @@ public final class Response implements AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
+  @Override
   public void consumeChars(Writer out) {
     HttpURLConnection con = requireAvailable();
     try {
@@ -634,6 +657,7 @@ public final class Response implements AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
+  @Override
   public String consumeString() throws ContentException {
     StringWriter out = new StringWriter();
     consumeChars(out);
@@ -656,6 +680,7 @@ public final class Response implements AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
+  @Override
   public void consumeXML(DefaultHandler handler) throws ContentException {
     try {
       handleXML(this, handler);
@@ -680,6 +705,7 @@ public final class Response implements AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
+  @Override
   public <T> List<T> consumeList(Handler<T> handler) throws ContentException {
     consumeXML(handler);
     return handler.list();
@@ -699,6 +725,7 @@ public final class Response implements AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
+  @Override
   public <T> @Nullable T consumeItem(Handler<T> handler) throws ContentException {
     consumeXML(handler);
     return handler.get();
@@ -716,6 +743,7 @@ public final class Response implements AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
+  @Override
   public void consumeXML(XMLWriter xml) throws ContentException {
     try {
       // Parse with the XML Copy Handler
@@ -742,6 +770,7 @@ public final class Response implements AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
+  @Override
   @SuppressWarnings("null")
   public void consumeXML(XMLWriter xml, Templates templates) throws ContentException {
     consumeXML(xml, templates, Collections.<String,String>emptyMap());
@@ -763,6 +792,7 @@ public final class Response implements AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
+  @Override
   public void consumeXML(XMLWriter xml, Templates templates, Map<String, String> parameters)
       throws ContentException {
     try {
@@ -785,6 +815,7 @@ public final class Response implements AutoCloseable {
    * @throws ContentException If an error occurred while consuming the content.
    * @throws IllegalStateException If the response is not available.
    */
+  @Override
   public @Nullable ServiceError consumeServiceError() {
     this.error = consumeItem(new ServiceErrorHandler());
     return this.error;
@@ -804,6 +835,7 @@ public final class Response implements AutoCloseable {
    * @throws ContentException If an error occurred while consuming the content.
    * @throws IllegalStateException If the response is in a failed state.
    */
+  @Override
   public @Nullable ServiceError getServiceError() {
     if (this.state == State.consumed)
       return this.error;
