@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.spi.FileTypeDetector;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * A file type detector provider for probing PSML files.
  *
@@ -39,7 +41,7 @@ public final class PSMLFileDetector extends FileTypeDetector {
   }
 
   @Override
-  public String probeContentType(Path path) throws IOException {
+  public @Nullable String probeContentType(Path path) throws IOException {
     boolean isPSML = path.toString().toLowerCase().endsWith(".psml");
     if (isPSML) return "application/vnd.pagaseeder.psml+xml";
     return null;
