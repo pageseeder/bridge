@@ -395,6 +395,20 @@ public abstract class BasicHandler<T> extends Handler<T> {
   /**
    * @param atts     Attributes being parsed
    * @param name     The name of the requested attribute.
+   *
+   * @return The corresponding value.
+   *
+   * @throws MissingAttributeException If the attribute is missing or could not be parsed as a long.
+   */
+  public final static int getInt(Attributes atts, String name) {
+    String value = atts.getValue(name);
+    if (value == null) throw new MissingAttributeException(name);
+    return toInt(value, name);
+  }
+
+  /**
+   * @param atts     Attributes being parsed
+   * @param name     The name of the requested attribute.
    * @param fallback The value to return if the attribute is not specified
    *
    * @return The corresponding value or the fallback value.
