@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
@@ -152,7 +153,7 @@ public final class Request extends BasicRequest implements HttpRequest {
    *
    * @return The corresponding request
    */
-  public static Request newService(Method method, String template, Object... variables) {
+  public static Request newService(Method method, String template, @NonNull Object... variables) {
     return new Request(method, ServicePath.newPath(template, variables));
   }
 

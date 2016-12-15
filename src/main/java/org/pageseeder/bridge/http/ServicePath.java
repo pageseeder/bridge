@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.pageseeder.bridge.PSEntity;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
@@ -104,7 +105,7 @@ public final class ServicePath {
    *
    * @throws IllegalArgumentException If the template path is invalid.
    */
-  public static String newPath(String template, Object... variables) {
+  public static String newPath(String template, @NonNull Object... variables) {
     if (!VALID_TEMPLATE.matcher(template).matches())
       throw new IllegalArgumentException("not a valid template: "+template);
     return new ServicePath(template).toPath(variables);
@@ -143,7 +144,7 @@ public final class ServicePath {
    *
    * @throws IllegalArgumentException If the expected number of variables does not match the argument
    */
-  public String toPath(Object... variables) {
+  public String toPath(@NonNull Object... variables) {
     Objects.requireNonNull(variables, "Variables must not be null");
     if (this._count != variables.length)
       throw new IllegalArgumentException("Expected "+this._count+" variables but got "+variables.length);

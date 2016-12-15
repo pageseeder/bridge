@@ -15,6 +15,8 @@
  */
 package org.pageseeder.bridge.http;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 /**
  * A enumeration of all services in PageSeeder.
  *
@@ -1570,7 +1572,7 @@ public enum Service {
    *
    * @see ServicePath#toPath(Object...)
    */
-  public String toPath(Object... variables) {
+  public String toPath(@NonNull Object... variables) {
     return this._path.toPath(variables);
   }
 

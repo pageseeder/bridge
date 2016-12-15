@@ -18,6 +18,7 @@ package org.pageseeder.bridge.http;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSConfig;
 
@@ -109,7 +110,6 @@ public final class DocumentPath {
    *
    * @return a copy of the steps.
    */
-  @SuppressWarnings("null")
   public String[] steps() {
     return Arrays.copyOf(this._steps, this._steps.length);
   }
@@ -139,7 +139,6 @@ public final class DocumentPath {
    *
    * @return the path corresponding to the parent or <code>null</code>
    */
-  @SuppressWarnings("null")
   public @Nullable DocumentPath parent() {
     if (this._steps.length == 0) return null;
     String[] current = this._steps;
@@ -220,7 +219,7 @@ public final class DocumentPath {
   private static String[] normalize(String[] array) {
     // We only copy non-empty steps
     int actual = 0;
-    String[] steps = new String[array.length];
+    String @NonNull[] steps = new String @NonNull[array.length];
     for (String element : array) {
       if (element.length() > 0) {
         if ("..".equals(element)) {
@@ -266,7 +265,6 @@ public final class DocumentPath {
    *
    * @return the merged array
    */
-  @SuppressWarnings("null")
   private static String[] merge(String[] a, String[] b) {
     String[] merge = Arrays.copyOf(a, a.length+b.length);
     System.arraycopy(b, 0, merge, a.length, b.length);

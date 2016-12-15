@@ -280,7 +280,7 @@ public final class PSMembership implements PSEntity  {
    *
    * @throws IndexOutOfBoundsException If the index is less than 1 or greater than 15.
    */
-  public void setField(int i, String value) {
+  public void setField(int i, @Nullable String value) {
     PSDetails d = this.details;
     if (d == null) {
       d = new PSDetails();
