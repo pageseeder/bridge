@@ -656,7 +656,7 @@ public final class PSHTTPConnection {
       s.update();
     } else {
       String cookie = connection.getHeaderField("Set-Cookie");
-      s = PSSession.parseSetCookieHeader(cookie);
+      this.session = s = PSSession.parseSetCookieHeader(cookie);
     }
   }
 
