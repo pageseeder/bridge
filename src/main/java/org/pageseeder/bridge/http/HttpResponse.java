@@ -13,9 +13,6 @@ import javax.xml.transform.Templates;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSSession;
-import org.pageseeder.bridge.http.ContentException;
-import org.pageseeder.bridge.http.Header;
-import org.pageseeder.bridge.http.ServiceError;
 import org.pageseeder.bridge.xml.Handler;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.helpers.DefaultHandler;
@@ -38,8 +35,6 @@ public interface HttpResponse extends AutoCloseable {
    * will return the string "<code>123456789</code>" (without quotes).
    *
    * <p>Note: PageSeeder only uses strong etags.
-   *
-   * @see #unwrapEtag(String)
    *
    * @return the etag of the response derived from the "Etag" response header.
    */

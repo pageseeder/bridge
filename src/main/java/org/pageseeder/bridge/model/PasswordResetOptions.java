@@ -96,7 +96,7 @@ public final class PasswordResetOptions {
   }
 
   /**
-   * @param significantDate the significant date to set
+   * @param date the significant date to set
    *
    * @deprecated The significant date is no longer supported in PageSeeder
    */
