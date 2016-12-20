@@ -40,7 +40,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Christophe Lauret
  * @author Philip Rutherford
- * @version 0.8.1
+ * @version 0.11.1
  */
 public final class PSFragmentHandler extends DefaultHandler {
 
@@ -98,19 +98,19 @@ public final class PSFragmentHandler extends DefaultHandler {
 
     if ("fragment".equals(localName)) {
       String id = Objects.requireNonNull(atts.getValue("id"), "expected id attribute on fragment");
-      String type = Objects.requireNonNull(atts.getValue("type"), "expected type attribute on fragment");
-      this.fragment = new Fragment(id, type);
+      String type = atts.getValue("type");
+      this.fragment = type != null? new Fragment(id, type) : new Fragment(id);
       this.copyAll = true;
 
     } else if ("properties-fragment".equals(localName)) {
       String id = Objects.requireNonNull(atts.getValue("id"), "expected id attribute on properties-fragment");
-      String type = Objects.requireNonNull(atts.getValue("type"), "expected type attribute on properties-fragment");
-      this.fragment = new PropertiesFragment(id, type);
+      String type = atts.getValue("type");
+      this.fragment = type != null? new PropertiesFragment(id, type) : new PropertiesFragment(id);
 
     } else if ("xref-fragment".equals(localName)) {
       String id = Objects.requireNonNull(atts.getValue("id"), "expected id attribute on xref-fragment");
-      String type = Objects.requireNonNull(atts.getValue("type"), "expected type attribute on xref-fragment");
-      this.fragment = new XRefFragment(id, type);
+      String type = atts.getValue("type");
+      this.fragment = type != null? new XRefFragment(id, type) : new XRefFragment(id);
 
     } else if ("media-fragment".equals(localName)) {
       // TODO
