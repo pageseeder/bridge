@@ -25,14 +25,14 @@ import org.pageseeder.bridge.model.PSNotification;
 import org.pageseeder.bridge.model.PSRole;
 
 /**
- * Test the member handler
+ * Test the membership handler
  */
-public class PSMembershipHandlerTest {
+public final class PSMembershipHandlerTest {
 
   @Test
   public void testParseOK() throws Exception {
     PSMembershipHandler handler = new PSMembershipHandler();
-    HandlerTests.parse("memberships1.xml", handler);
+    HandlerTests.parse("membership/memberships1.xml", handler);
     // Check that member is retrieved
     PSMember member = handler.getMember();
     Assert.assertEquals("jsmith@example.org", member.getEmail());

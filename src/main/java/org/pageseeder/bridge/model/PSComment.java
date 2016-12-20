@@ -257,7 +257,9 @@ public final class PSComment implements PSEntity {
   public void setLabels(String labels) {
     this.labels = new ArrayList<>();
     for (String label : labels.split(",")) {
-      this.labels.add(label);
+      if (label.length() > 0) {
+        this.labels.add(label);
+      }
     }
   }
 

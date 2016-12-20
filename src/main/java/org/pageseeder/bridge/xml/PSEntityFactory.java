@@ -376,13 +376,11 @@ public final class PSEntityFactory {
     String status = getOptionalString(atts, "status");
     String priority = getOptionalString(atts, "priority");
     Date due = getOptionalDate(atts, "due");
-    String labels = getString(atts, "labels", "");
     String type = getOptionalString(atts, "type");
     String properties = getString(atts, "properties", "");
 
     PSComment c = tryCommentCache(comment, id);
     c.setId(id);
-    c.setLabels(labels);
     c.setStatus(status);
     c.setPriority(priority);
     if (due != null) {

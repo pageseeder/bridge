@@ -1,0 +1,10 @@
+<comment id="23504" discussionid="23504" contentrole="Comment" created="2016-12-20T11:35:51+11:00">
+  <title>Simple public comment</title>
+  <author>
+    <fullname>Somebody</fullname>
+  </author>
+  <content type="text/plain">This is a simple public comment</content>
+  <context>
+    <group id="1" name="comment-test" description="For unit testing" owner="comment" access="member" common="false" />
+  </context>
+</comment>
