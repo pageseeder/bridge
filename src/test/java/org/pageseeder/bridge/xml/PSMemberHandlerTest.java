@@ -31,7 +31,7 @@ public class PSMemberHandlerTest {
   @Test
   public void testPassBasic() throws IOException, SAXException {
     PSMemberHandler handler = new PSMemberHandler();
-    HandlerTests.parse("member-pass-basic.xml", handler);
+    HandlerTests.parse("member/member-pass-basic.xml", handler);
     PSMember member = handler.get();
     Assert.assertEquals(1L, member.getId().longValue());
     Assert.assertEquals("jsmith@example.org", member.getEmail());
@@ -45,7 +45,7 @@ public class PSMemberHandlerTest {
   @Test
   public void testPassNoEmail() throws IOException, SAXException {
     PSMemberHandler handler = new PSMemberHandler();
-    HandlerTests.parse("member-pass-noemail.xml", handler);
+    HandlerTests.parse("member/member-pass-noemail.xml", handler);
     PSMember member = handler.get();
     Assert.assertEquals(2L, member.getId().longValue());
     Assert.assertEquals("jsmith", member.getUsername());
@@ -60,7 +60,7 @@ public class PSMemberHandlerTest {
   @Test
   public void testPassNoUsername() throws IOException, SAXException {
     PSMemberHandler handler = new PSMemberHandler();
-    HandlerTests.parse("member-pass-nousername.xml", handler);
+    HandlerTests.parse("member/member-pass-nousername.xml", handler);
     PSMember member = handler.get();
     Assert.assertEquals(3L, member.getId().longValue());
     Assert.assertEquals("jsmith@example.org", member.getEmail());
@@ -74,7 +74,7 @@ public class PSMemberHandlerTest {
   @Test
   public void testPassUnactivated() throws IOException, SAXException {
     PSMemberHandler handler = new PSMemberHandler();
-    HandlerTests.parse("member-pass-unactivated.xml", handler);
+    HandlerTests.parse("member/member-pass-unactivated.xml", handler);
     PSMember member = handler.get();
     Assert.assertEquals(4L, member.getId().longValue());
     Assert.assertEquals("jsmith@example.org", member.getEmail());
@@ -88,7 +88,7 @@ public class PSMemberHandlerTest {
   @Test
   public void testPassSetPassword() throws IOException, SAXException {
     PSMemberHandler handler = new PSMemberHandler();
-    HandlerTests.parse("member-pass-setpassword.xml", handler);
+    HandlerTests.parse("member/member-pass-setpassword.xml", handler);
     PSMember member = handler.get();
     Assert.assertEquals(4L, member.getId().longValue());
     Assert.assertEquals("jsmith@example.org", member.getEmail());
@@ -102,37 +102,37 @@ public class PSMemberHandlerTest {
   @Test(expected = InvalidAttributeException.class)
   public void testFailEmptyId() throws IOException, SAXException {
     PSMemberHandler handler = new PSMemberHandler();
-    HandlerTests.parse("member-fail-emptyid.xml", handler);
+    HandlerTests.parse("member/member-fail-emptyid.xml", handler);
   }
 
   @Test(expected = InvalidAttributeException.class)
   public void testFailIllegalId() throws IOException, SAXException {
     PSMemberHandler handler = new PSMemberHandler();
-    HandlerTests.parse("member-fail-illegalid.xml", handler);
+    HandlerTests.parse("member/member-fail-illegalid.xml", handler);
   }
 
   @Test(expected = MissingAttributeException.class)
   public void testFailNoId() throws IOException, SAXException {
     PSMemberHandler handler = new PSMemberHandler();
-    HandlerTests.parse("member-fail-noid.xml", handler);
+    HandlerTests.parse("member/member-fail-noid.xml", handler);
   }
 
   @Test(expected = MissingAttributeException.class)
   public void testFailNoFirstname() throws IOException, SAXException {
     PSMemberHandler handler = new PSMemberHandler();
-    HandlerTests.parse("member-fail-nofirstname.xml", handler);
+    HandlerTests.parse("member/member-fail-nofirstname.xml", handler);
   }
 
   @Test(expected = MissingAttributeException.class)
   public void testFailNoSurname() throws IOException, SAXException {
     PSMemberHandler handler = new PSMemberHandler();
-    HandlerTests.parse("member-fail-nosurname.xml", handler);
+    HandlerTests.parse("member/member-fail-nosurname.xml", handler);
   }
 
   @Test(expected = MissingAttributeException.class)
   public void testFailNoUsername() throws IOException, SAXException {
     PSMemberHandler handler = new PSMemberHandler();
-    HandlerTests.parse("member-fail-nousername.xml", handler);
+    HandlerTests.parse("member/member-fail-nousername.xml", handler);
   }
 
 }

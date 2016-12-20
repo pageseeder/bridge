@@ -1,0 +1,9 @@
+<!-- 
+  PASS: Core group attributes 
+-->
+<group id="11" name="australia-nsw-sydney" 
+       description="For unit testing"
+             owner="Australia" 
+            access="member" 
+            common="false"
+             title="Sydney, NSW (Australia)" />

@@ -1,0 +1,9 @@
+<!-- 
+  PASS: Core project attributes
+-->
+<project id="22" name="australia-nsw"
+         description="For unit testing"
+               owner="Australia" 
+              access="member" 
+              common="false" 
+              title="New South Wales" />

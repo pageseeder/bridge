@@ -54,6 +54,9 @@ public class PSGroup implements PSEntity {
   /** The full name of the group */
   private @Nullable String name;
 
+  /** The title of the group */
+  private @Nullable String title;
+
   /** The owner of the group */
   private @Nullable String owner;
 
@@ -127,6 +130,15 @@ public class PSGroup implements PSEntity {
   }
 
   /**
+   * Returns the title of the group.
+   *
+   * @return the title of the group.
+   */
+  public @Nullable String getTitle() {
+    return this.title;
+  }
+
+  /**
    * Returns the name of the parent project based on the name of this group.
    *
    * <p>The name of the parent is the part of the name that is before the last dash.
@@ -170,6 +182,15 @@ public class PSGroup implements PSEntity {
    */
   public void setName(String name) {
     this.name = name;
+  }
+
+  /**
+   * Sets the title of this group.
+   *
+   * @param title the title to set
+   */
+  public void setTitle(String title) {
+    this.title = title;
   }
 
   /**

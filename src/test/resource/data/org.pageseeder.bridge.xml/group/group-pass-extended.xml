@@ -1,0 +1,20 @@
+<!-- 
+  PASS: All possible group attributes 
+-->
+<group id="111" name="australia-nsw-sydney" 
+       description="For unit testing"
+             owner="Australia" 
+            access="member" 
+            common="false"
+        visibility="australia-nsw-sydney" 
+          template="australia-nsw"
+          editurls="false" 
+        commenting="public" 
+        moderation="reviewer"
+      registration="normal"
+       defaultrole="reviewer" 
+     defaultnotify="immediate"
+      indexversion="5003" 
+        relatedurl="https://example.org/hello.html"
+       detailstype="city" 
+             title="Sydney, NSW (Australia)" />

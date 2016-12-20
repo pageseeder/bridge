@@ -149,8 +149,11 @@ public final class PSEntityFactory {
   public static PSGroup toGroup(Attributes atts, @Nullable PSGroup group) {
     Long id = getId(atts);
     String name = getString(atts, "name");
+    // Core attributes
     String description = getOptionalString(atts, "description");
     String owner = getOptionalString(atts, "owner");
+    String title = getOptionalString(atts, "title");
+    // Extended attributes
     String detailstype = getOptionalString(atts, "detailstype");
     String template = getOptionalString(atts, "template");
     PSRole defaultRole = PSHandlers.role(atts.getValue("defaultrole"));
@@ -159,7 +162,12 @@ public final class PSEntityFactory {
     PSGroup g = tryGroupCache(group, id);
     g.setId(id);
     g.setName(name);
-    g.setDescription(description);
+    if (description != null) {
+      g.setDescription(description);
+    }
+    if (title != null) {
+      g.setTitle(title);
+    }
     if (owner != null) {
       g.setOwner(owner);
     }
@@ -198,15 +206,35 @@ public final class PSEntityFactory {
   public static PSProject toProject(Attributes atts, @Nullable PSGroup group) {
     Long id = getId(atts);
     String name = getString(atts, "name");
+    // Core attributes
     String description = getOptionalString(atts, "description");
+    String owner = getOptionalString(atts, "owner");
+    String title = getOptionalString(atts, "title");
+    // Extended attributes
+    String detailstype = getOptionalString(atts, "detailstype");
+    String template = getOptionalString(atts, "template");
     PSRole defaultRole = PSHandlers.role(atts.getValue("defaultrole"));
     PSNotification defaultNotification = PSHandlers.notification(atts.getValue("defaultnotify"));
     PSProject p = tryProjectCache(group instanceof PSProject ? (PSProject) group : null, id);
     p.setId(id);
     p.setName(name);
-    p.setDescription(description);
+    if (description != null) {
+      p.setDescription(description);
+    }
+    if (title != null) {
+      p.setTitle(title);
+    }
     if (defaultRole != null) {
       p.setDefaultRole(defaultRole);
+    }
+    if (owner != null) {
+      p.setOwner(owner);
+    }
+    if (detailstype != null) {
+      p.setDetailsType(detailstype);
+    }
+    if (template != null) {
+      p.setTemplate(template);
     }
     if (defaultNotification != null) {
       p.setDefaultNotification(defaultNotification);
