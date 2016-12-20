@@ -1,0 +1,19 @@
+<comment id="25067" discussionid="25067" contentrole="Comment"
+  type="mytype1" created="2016-12-20T16:03:54+11:00" status="Open"
+  priority="High" due="2016-12-20T17:00:00+11:00">
+  <title>findSimpleTask</title>
+  <author id="92" firstname="Unit" surname="Test" username="unit-admin"
+    status="activated">
+    <fullname>Unit Test</fullname>
+  </author>
+  <assignedto id="92" firstname="Unit" surname="Test"
+    username="unit-admin" status="activated" date="2016-12-20T16:03:54+11:00">
+    <fullname>Unit Test</fullname>
+  </assignedto>
+  <content type="text/plain">create simple task</content>
+  <context>
+    <group id="335" name="unittest-comment-findcomment"
+      description="For unit testing" owner="unittest" access="member"
+      common="false" />
+  </context>
+</comment>

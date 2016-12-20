@@ -1,0 +1,35 @@
+<comment id="25091" discussionid="25091" contentrole="File Attachment" created="2016-12-20T16:04:01+11:00">
+  <title>createSimpleCommentPublicWithUrlAttachments</title>
+  <author>
+    <fullname>Unit Test</fullname>
+  </author>
+  <content type="text/plain">createSimpleCommentPublicWithUrlAttachments
+  </content>
+  <context>
+    <group id="336" name="unittest-comment-createcomment_18"
+      description="For unit testing" owner="unittest" access="member"
+      common="false" />
+  </context>
+  <attachment>
+    <uri id="9166" scheme="http" host="localhost" port="80"
+      path="/ps/unittest/comment/createcomment_18/doc1PublicUrl.psml"
+      decodedpath="/ps/unittest/comment/createcomment_18/doc1PublicUrl.psml"
+      external="false" mediatype="application/vnd.pageseeder.psml+xml"
+      created="2016-12-20T16:04:00+11:00" modified="2016-12-20T16:04:17+11:00"
+      title="title: createSimpleCommentPublicWithOtherFields - doc1">
+      <displaytitle>title: createSimpleCommentPublicWithOtherFields -
+        doc1</displaytitle>
+    </uri>
+  </attachment>
+  <attachment>
+    <uri id="9167" scheme="http" host="localhost" port="80"
+      path="/ps/unittest/comment/createcomment_18/doc2PublicUrl.psml"
+      decodedpath="/ps/unittest/comment/createcomment_18/doc2PublicUrl.psml"
+      external="false" mediatype="application/vnd.pageseeder.psml+xml"
+      created="2016-12-20T16:04:00+11:00" modified="2016-12-20T16:04:17+11:00"
+      title="title: createSimpleCommentPublicWithOtherFields - doc2">
+      <displaytitle>title: createSimpleCommentPublicWithOtherFields -
+        doc2</displaytitle>
+    </uri>
+  </attachment>
+</comment>

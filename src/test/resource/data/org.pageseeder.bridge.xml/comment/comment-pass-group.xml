@@ -1,0 +1,14 @@
+<comment id="25061" discussionid="25061" contentrole="Comment"
+  created="2016-12-20T16:03:52+11:00">
+  <title>findSimpleComment</title>
+  <author id="92" firstname="Unit" surname="Test" username="unit-admin"
+    status="activated">
+    <fullname>Unit Test</fullname>
+  </author>
+  <content type="text/plain">create Simple Comment</content>
+  <context>
+    <group id="335" name="unittest-comment-findcomment"
+      description="For unit testing" owner="unittest" access="member"
+      common="false" />
+  </context>
+</comment>

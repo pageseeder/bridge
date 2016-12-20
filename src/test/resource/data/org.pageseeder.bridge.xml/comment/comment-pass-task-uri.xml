@@ -1,0 +1,26 @@
+<comment id="25066" discussionid="25066" contentrole="Comment"
+  created="2016-12-20T16:03:54+11:00" status="Open" priority="High"
+  due="2016-12-20T17:00:00+11:00">
+  <title>findSimpleTask</title>
+  <author id="92" firstname="Unit" surname="Test" username="unit-admin"
+    status="activated">
+    <fullname>Unit Test</fullname>
+  </author>
+  <assignedto id="92" firstname="Unit" surname="Test"
+    username="unit-admin" status="activated" date="2016-12-20T16:03:54+11:00">
+    <fullname>Unit Test</fullname>
+  </assignedto>
+  <content type="text/plain">create simple task</content>
+  <context>
+    <uri id="9155" scheme="http" host="localhost" port="80"
+      path="/ps/unittest/comment/findcomment/documents/finddoc.psml"
+      decodedpath="/ps/unittest/comment/findcomment/documents/finddoc.psml"
+      external="false" mediatype="application/vnd.pageseeder.psml+xml"
+      created="2016-12-20T16:03:52+11:00" modified="2016-12-20T16:03:52+11:00"
+      title="finddoc">
+      <displaytitle>finddoc</displaytitle>
+      <description>for searching document</description>
+      <labels>finddoc</labels>
+    </uri>
+  </context>
+</comment>
