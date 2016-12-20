@@ -24,17 +24,17 @@ public enum PSNotification {
   /**
    * No notification.
    */
-  none("None"),
+  none("none"),
 
   /**
    * Immediate notification.
    */
-  immediate("Immediate"),
+  immediate("immediate"),
 
   /**
    * Daily digest at scheduled time.
    */
-  daily("Daily");
+  daily("daily");
 
   /**
    * The value to send as a parameter to services.
