@@ -371,10 +371,10 @@ public final class PSComment implements PSEntity {
    *
    * <p>Implementation note: This method creates a new <code>Author</code> instance.
    *
-   * @param name  the name of the author
+   * @param name  the name of the author (required)
    * @param email the email of the author
    */
-  public void setAuthor(String name, String email) {
+  public void setAuthor(String name, @Nullable String email) {
     this.author = new Author(name, email);
   }
 
@@ -569,7 +569,7 @@ public final class PSComment implements PSEntity {
      * @param name  The name of the author (required)
      * @param email The email of the author
      */
-    public Author(String name, String email) {
+    public Author(String name, @Nullable String email) {
       this._name = name;
       this._member = null;
       this._email = email;

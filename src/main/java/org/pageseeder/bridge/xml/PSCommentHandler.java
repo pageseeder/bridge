@@ -211,7 +211,7 @@ public final class PSCommentHandler extends DefaultHandler {
 
       } else if (("fullname".equals(localName) && this.inAuthor)) {
         String email = this.authorEmail;
-        if (buf != null && email != null) {
+        if (buf != null) {
           comment.setAuthor(buf.toString(), email);
           this.buffer = null;
         }
