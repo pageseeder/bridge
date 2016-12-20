@@ -1,0 +1,13 @@
+<!-- 
+  PASS: Basic and most common use case
+-->
+<member id="1"
+ firstname="John" 
+   surname="Smith" 
+  username="jsmith"
+     email="jsmith@example.org"
+   created="2016-12-20T12:24:17+11:00"
+ activated="2016-12-20T12:24:18+11:00"
+    status="activated">
+  <fullname>John Smith</fullname>
+</member>

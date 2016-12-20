@@ -34,6 +34,7 @@ import org.pageseeder.bridge.model.PSFolder;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSGroupFolder;
 import org.pageseeder.bridge.model.PSMember;
+import org.pageseeder.bridge.model.PSMemberStatus;
 import org.pageseeder.bridge.model.PSMembership;
 import org.pageseeder.bridge.model.PSNotification;
 import org.pageseeder.bridge.model.PSProject;
@@ -108,21 +109,21 @@ public final class PSEntityFactory {
    */
   public static PSMember toMember(Attributes atts, @Nullable PSMember member) {
     Long id = getId(atts);
-    String firstname = getOptionalString(atts, "firstname");
-    String surname = getOptionalString(atts, "surname");
-    String username = getOptionalString(atts, "username");
+    String username = getString(atts, "username");
+    String firstname = getString(atts, "firstname");
+    String surname = getString(atts, "surname");
     String email = getOptionalString(atts, "email");
     String status = getOptionalString(atts, "status");
     PSMember m = tryMemberCache(member, id);
     m.setId(id);
+    m.setUsername(username);
     m.setFirstname(firstname);
     m.setSurname(surname);
-    m.setUsername(username);
     if (email != null) {
       m.setEmail(email);
     }
     if (status != null) {
-      m.setActivated("activated".equals(status));
+      m.setStatus(PSMemberStatus.fromAttribute(status));
     }
     return m;
   }

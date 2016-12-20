@@ -1,0 +1,10 @@
+<!-- 
+  PASS: `email` attribute is omitted when member has no email address
+-->
+<member id="2"
+ firstname="John" 
+   surname="Smith" 
+  username="jsmith"
+    status="activated">
+  <fullname>John Smith</fullname>
+</member>

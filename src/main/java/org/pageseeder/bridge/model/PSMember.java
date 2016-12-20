@@ -50,8 +50,8 @@ public final class PSMember implements PSEntity {
   /** The email address of the member. */
   private @Nullable String email;
 
-  /** Whether the member has been activated. */
-  private boolean activated;
+  /** The member status. */
+  private @Nullable PSMemberStatus status;
 
   /**
    * Construct a new member without an ID or username.
@@ -126,10 +126,17 @@ public final class PSMember implements PSEntity {
   }
 
   /**
+   * @return the member status.
+   */
+  public @Nullable PSMemberStatus getStatus() {
+    return this.status;
+  }
+
+  /**
    * @return the activated
    */
   public boolean isActivated() {
-    return this.activated;
+    return this.status == PSMemberStatus.activated;
   }
 
   /**
@@ -163,8 +170,9 @@ public final class PSMember implements PSEntity {
   /**
    * @param activated the activated to set
    */
+  @Deprecated
   public void setActivated(boolean activated) {
-    this.activated = activated;
+    this.status = activated? PSMemberStatus.activated : null;
   }
 
   /**
@@ -172,6 +180,13 @@ public final class PSMember implements PSEntity {
    */
   public void setEmail(@Nullable String email) {
     this.email = email;
+  }
+
+  /**
+   * @param status The status of the user
+   */
+  public void setStatus(@Nullable PSMemberStatus status) {
+    this.status = status;
   }
 
   /**

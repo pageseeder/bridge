@@ -1,0 +1,11 @@
+<!-- 
+  FAIL: `id` attribute is missing
+-->
+<member
+ firstname="John" 
+   surname="Smith" 
+  username="jsmith"
+     email="jsmith@example.org"
+    status="activated">
+  <fullname>John Smith</fullname>
+</member>

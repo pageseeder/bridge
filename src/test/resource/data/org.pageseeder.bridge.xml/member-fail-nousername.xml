@@ -1,0 +1,10 @@
+<!-- 
+  FAIL: `username` attribute is missing (it should be equal to the `email` attribute instead)
+-->
+<member id="1"
+ firstname="John" 
+   surname="Smith" 
+     email="jsmith@example.org"
+    status="activated">
+  <fullname>John Smith</fullname>
+</member>

@@ -1,0 +1,11 @@
+<!-- 
+  FAIL: `id` attribute is not a valid number
+-->
+<member id="john"
+ firstname="John" 
+   surname="Smith" 
+  username="jsmith"
+     email="jsmith@example.org"
+    status="activated">
+  <fullname>John Smith</fullname>
+</member>

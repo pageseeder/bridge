@@ -1,0 +1,11 @@
+<!-- 
+  PASS: Member with no username (`username` attribute is specified and identical to `email` attribute)
+-->
+<member id="3"
+ firstname="John" 
+   surname="Smith" 
+  username="jsmith@example.org"
+     email="jsmith@example.org"
+    status="activated">
+  <fullname>John Smith</fullname>
+</member>
