@@ -429,7 +429,7 @@ public final class PSComment implements PSEntity {
    * @param document The document
    * @param fragment The document fragment to use as context
    */
-  public void setContext(PSDocument document, String fragment) {
+  public void setContext(PSDocument document, @Nullable String fragment) {
     this.context = new Context(document, fragment);
   }
 
@@ -441,7 +441,7 @@ public final class PSComment implements PSEntity {
    * @param externaluri The external URI to use as context
    * @param fragment    The external URI fragment to use as context
    */
-  public void setContext(PSExternalURI externaluri, String fragment) {
+  public void setContext(PSExternalURI externaluri, @Nullable String fragment) {
     this.context = new Context(externaluri, fragment);
   }
 
@@ -645,7 +645,7 @@ public final class PSComment implements PSEntity {
      * @param uri      The URI to attach
      * @param fragment The fragment ID to attach it to.
      */
-    public Attachment(PSURI uri, String fragment) {
+    public Attachment(PSURI uri, @Nullable String fragment) {
       this._uri = uri;
       this._fragment = fragment;
     }
@@ -711,7 +711,7 @@ public final class PSComment implements PSEntity {
      * @param uri      The uri to use as the context.
      * @param fragment The fragment of the URI to use as context
      */
-    public Context(PSURI uri, String fragment) {
+    public Context(PSURI uri, @Nullable String fragment) {
       this._group = null;
       this._uri = uri;
       this._fragment = fragment;

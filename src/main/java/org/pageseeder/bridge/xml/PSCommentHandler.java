@@ -171,16 +171,14 @@ public final class PSCommentHandler extends DefaultHandler {
           } else {
             u = PSEntityFactory.toDocument(atts, null);
           }
-          String frag = this.fragment; // XXX Should we default to `default` instead of null?
-          if (frag != null) {
-            if (this.attachment) {
-              Attachment attach = new Attachment(u, frag);
-              this.attachments.add(attach);
-            } else if ("true".equals(atts.getValue("external"))) {
-              com.setContext((PSExternalURI)u, frag);
-            } else {
-              com.setContext((PSDocument)u, frag);
-            }
+          String frag = this.fragment;
+          if (this.attachment) {
+            Attachment attach = new Attachment(u, frag);
+            this.attachments.add(attach);
+          } else if ("true".equals(atts.getValue("external"))) {
+            com.setContext((PSExternalURI)u, frag);
+          } else {
+            com.setContext((PSDocument)u, frag);
           }
         }
       }
