@@ -75,13 +75,13 @@ public final class PSEntityFactory {
    * @return The membership instance.
    */
   public static PSMembership toMembership(Attributes atts, @Nullable PSMembership membership) {
-    Long id = getId(atts);
+    // The ID is not always specified (e.g. subgroups)
+    Long id = getOptionalLong(atts, "id");
     String listed = getOptionalString(atts, "email-listed");
     PSNotification notification = PSHandlers.notification(atts.getValue("notification"));
     PSRole role = PSHandlers.role(atts.getValue("role"));
     Date created = PSHandlers.datetime(atts.getValue("created")); // since 5.7
     PSMembership m = tryMembershipCache(membership, id);
-    m.setId(id);
     m.setListed("true".equals(listed));
     m.setNotification(notification);
     m.setRole(role);
@@ -585,6 +585,10 @@ public final class PSEntityFactory {
     return BasicHandler.getInt(atts, name, fallback);
   }
 
+  private static @Nullable Long getOptionalLong(Attributes atts, String name) {
+    return BasicHandler.getOptionalLong(atts, name);
+  }
+
   private static @Nullable String getOptionalString(Attributes atts, String name) {
     return atts.getValue(name);
   }
@@ -605,12 +609,22 @@ public final class PSEntityFactory {
   // Cache utility methods
   // --------------------------------------------------------------------------
 
-
-  private static PSMembership tryMembershipCache(@Nullable PSMembership membership, Long id) {
+  /**
+   * Return the membership from the cache if found.
+   * 
+   * @param membership A membership matching the ID
+   * @param id         The ID of the membership
+   * 
+   * @return the existing membership or a new one if the ID is <code>null</code>
+   *         or the membership wasn't in the cache.
+   */
+  private static PSMembership tryMembershipCache(@Nullable PSMembership membership, @Nullable Long id) {
     PSMembership m = membership;
     if (m == null) {
       PSEntityCache<PSMembership> cache = MembershipManager.getCache();
-      m = cache.get(id);
+      if (id != null) {
+        m = cache.get(id);
+      }
       if (m == null) {
         m = new PSMembership();
       }
@@ -618,6 +632,14 @@ public final class PSEntityFactory {
     return m;
   }
 
+  /**
+   * Return the member from the cache if found.
+   * 
+   * @param member A member matching the ID
+   * @param id     The ID of the member
+   * 
+   * @return the existing member if <code>null</code> or not in cache.
+   */
   private static PSMember tryMemberCache(@Nullable PSMember member, Long id) {
     PSMember m = member;
     if (m == null) {
@@ -630,6 +652,14 @@ public final class PSEntityFactory {
     return m;
   }
 
+  /**
+   * Return the group from the cache if found.
+   * 
+   * @param group A group matching the ID
+   * @param id    The ID of the group
+   * 
+   * @return the existing member if <code>null</code> or not in cache.
+   */
   private static PSGroup tryGroupCache(@Nullable PSGroup group, Long id) {
     PSGroup g = group;
     if (g == null) {
@@ -642,6 +672,14 @@ public final class PSEntityFactory {
     return g;
   }
 
+  /**
+   * Return the project from the cache if found.
+   * 
+   * @param project A project matching the ID
+   * @param id      The ID of the project
+   * 
+   * @return the existing project if <code>null</code> or not in cache.
+   */
   private static PSProject tryProjectCache(@Nullable PSProject project, Long id) {
     PSProject p = project;
     if (p == null) {
@@ -659,6 +697,14 @@ public final class PSEntityFactory {
     return p;
   }
 
+  /**
+   * Return the comment from the cache if found.
+   * 
+   * @param comment A comment matching the ID
+   * @param id      The ID of the comment
+   * 
+   * @return the existing comment if <code>null</code> or not in cache.
+   */
   private static PSComment tryCommentCache(@Nullable PSComment comment, Long id) {
     PSComment g = comment;
     if (g == null) {
@@ -671,6 +717,14 @@ public final class PSEntityFactory {
     return g;
   }
 
+  /**
+   * Return the folder from the cache if found.
+   * 
+   * @param folder A folder matching the ID
+   * @param id     The ID of the folder
+   * 
+   * @return the existing folder if <code>null</code> or not in cache.
+   */
   private static PSFolder tryFolderCache(@Nullable PSFolder folder, Long id, String path) {
     PSFolder f = folder;
     if (f == null) {
@@ -683,6 +737,14 @@ public final class PSEntityFactory {
     return f;
   }
 
+  /**
+   * Return the group folder from the cache if found.
+   * 
+   * @param group A group folder matching the ID
+   * @param id    The ID of the group folder
+   * 
+   * @return the existing group folder if <code>null</code> or not in cache.
+   */
   private static PSGroupFolder tryGroupFolderCache(@Nullable PSGroupFolder folder, Long id, String path) {
     PSGroupFolder f = folder;
     if (f == null) {
@@ -695,6 +757,14 @@ public final class PSEntityFactory {
     return f;
   }
 
+  /**
+   * Return the cross-reference from the cache if found.
+   * 
+   * @param xref A existing cross-reference matching the ID
+   * @param id   The ID of the cross-reference
+   * 
+   * @return the existing cross-reference if <code>null</code> or not in cache.
+   */
   private static PSXRef tryXRefCache(@Nullable PSXRef xref, Long id) {
     PSXRef x = xref;
     if (x == null) {
