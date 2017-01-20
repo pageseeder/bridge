@@ -54,12 +54,14 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
    *
    * @param group  The group this document is part of.
    */
-  public abstract void startResult(@Nullable String group);
+  public void startResult(@Nullable String group) {
+  }
 
   /**
    * This method is called whenever a result document ends.
    */
-  public abstract void endResult();
+  public void endResult() {
+  }
 
   /**
    * This method is called for each field.

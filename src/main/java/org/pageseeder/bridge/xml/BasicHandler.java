@@ -73,7 +73,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
   public BasicHandler() {
   }
 
-  // Abstract methods to implement
+  // Methods to implement
   // ---------------------------------------------------------------------------
 
   /**
@@ -83,7 +83,8 @@ public abstract class BasicHandler<T> extends Handler<T> {
    * @param element The name of the element
    * @param atts The attributes attached to this element.
    */
-  public abstract void startElement(String element, Attributes atts);
+  public void startElement(String element, Attributes atts) {
+  }
 
   /**
    * Method called after the SAX {@link #endElement(String, String, String)} is
