@@ -82,6 +82,7 @@ public final class PSEntityFactory {
     PSRole role = PSHandlers.role(atts.getValue("role"));
     Date created = PSHandlers.datetime(atts.getValue("created")); // since 5.7
     PSMembership m = tryMembershipCache(membership, id);
+    m.setId(id);
     m.setListed("true".equals(listed));
     m.setNotification(notification);
     m.setRole(role);
