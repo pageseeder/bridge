@@ -196,6 +196,8 @@ public final class ServicePath {
         tokens.add(new GroupVariable());
       } else if ("{uri}".equals(var)) {
         tokens.add(new URIVariable());
+      } else if ("{client}".equals(var)) {
+        tokens.add(new ClientVariable());
       } else {
         tokens.add(new Variable());
       }
@@ -314,6 +316,22 @@ public final class ServicePath {
       } else {
         String s = o.toString();
         if (isNumeric(s)) return s;
+        else return '~'+encode(s);
+      }
+    }
+  }
+
+  /**
+   * A client variable
+   */
+  private static class ClientVariable implements Token {
+
+    @Override
+    public String toString(Object o) {
+      if (o instanceof Integer || o instanceof Long) return o.toString();
+      else {
+        String s = o.toString();
+        if (isNumeric(s) && s.length() < 16) return s;
         else return '~'+encode(s);
       }
     }
