@@ -15,6 +15,8 @@
  */
 package org.pageseeder.bridge.model;
 
+import org.pageseeder.bridge.Requires;
+
 /**
  * @author Christophe Lauret
  * @version 0.1.0
@@ -34,7 +36,19 @@ public enum PSNotification {
   /**
    * Daily digest at scheduled time.
    */
-  daily("daily");
+  daily("daily"),
+
+  /**
+   * Weekly digest at scheduled time.
+   */
+  @Requires(minVersion = 59300)
+  weekly("daily"),
+
+  /**
+   * Essential people in the task.
+   */
+  @Requires(minVersion = 59300)
+  essential("essential");
 
   /**
    * The value to send as a parameter to services.
