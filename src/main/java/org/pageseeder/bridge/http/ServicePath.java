@@ -192,7 +192,7 @@ public final class ServicePath {
       String var = m.group();
       if ("{member}".equals(var)) {
         tokens.add(new MemberVariable());
-      } else if ("{group}".equals(var)) {
+      } else if ("{group}".equals(var) || "{project}".equals(var)) {
         tokens.add(new GroupVariable());
       } else if ("{uri}".equals(var)) {
         tokens.add(new URIVariable());
