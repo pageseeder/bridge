@@ -35,7 +35,7 @@ import org.pageseeder.bridge.model.PSURI;
  *
  * @author Christophe Lauret
  *
- * @version 0.10.2
+ * @version 0.10.3
  * @since 0.9.1
  */
 public final class ServicePath {
