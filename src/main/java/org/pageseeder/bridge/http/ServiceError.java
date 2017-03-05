@@ -91,7 +91,7 @@ public final class ServiceError implements Serializable {
 
   @Override
   public String toString() {
-    return "[0x"+code()+"]"+this._message;
+    return "[0x"+code()+"] "+this._message;
   }
 
   /**
