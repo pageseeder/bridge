@@ -32,7 +32,7 @@ import org.pageseeder.bridge.model.PSMember;
  *
  * @author Christophe Lauret
  *
- * @version 0.10.2
+ * @version 0.11.3
  * @since 0.1.0
  */
 public final class Sampler {
