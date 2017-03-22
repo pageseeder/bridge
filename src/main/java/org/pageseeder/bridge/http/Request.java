@@ -434,7 +434,8 @@ public final class Request extends BasicRequest implements HttpRequest {
       this._headers.add(CONTENT_FORM_URLENCODED_UTF8);
     } else if (this.body != null) {
       data = this.body;
-      if (getHeader("Content-Type") != null) {
+      if (getHeader("Content-Type") == null) {
+        // XXX: Why assume utf-8 text, could be binary!! Content sniffing? Maybe we should display a warning
         this._headers.add(CONTENT_TEXT_PLAIN_UTF8);
       }
     }
