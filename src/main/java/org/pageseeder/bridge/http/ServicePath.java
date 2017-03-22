@@ -144,7 +144,8 @@ public final class ServicePath {
    *
    * @throws IllegalArgumentException If the expected number of variables does not match the argument
    */
-  public String toPath(@NonNull Object... variables) {
+  @SafeVarargs
+  public final String toPath(@NonNull Object... variables) {
     Objects.requireNonNull(variables, "Variables must not be null");
     if (this._count != variables.length)
       throw new IllegalArgumentException("Expected "+this._count+" variables but got "+variables.length);

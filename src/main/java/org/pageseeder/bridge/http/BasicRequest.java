@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
@@ -118,7 +119,8 @@ abstract class BasicRequest {
    * @param service   The PageSeeder service to use
    * @param variables The variables to inject in the URL path.
    */
-  public BasicRequest(Method method, Service service, Object... variables) {
+  @SafeVarargs
+  public BasicRequest(Method method, Service service, @NonNull Object... variables) {
     this(method, service.toPath(variables));
   }
 

@@ -1572,7 +1572,8 @@ public enum Service {
    *
    * @see ServicePath#toPath(Object...)
    */
-  public String toPath(@NonNull Object... variables) {
+  @SafeVarargs
+  public final String toPath(@NonNull Object... variables) {
     return this._path.toPath(variables);
   }
 

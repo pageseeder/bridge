@@ -127,7 +127,8 @@ public final class Request extends BasicRequest implements HttpRequest {
    * @param service   The PageSeeder service to use
    * @param variables The variables to inject in the URL path.
    */
-  public Request(Method method, Service service, Object... variables) {
+  @SafeVarargs
+  public Request(Method method, Service service, @NonNull Object... variables) {
     super(method, service, variables);
   }
 
@@ -413,7 +414,8 @@ public final class Request extends BasicRequest implements HttpRequest {
    *
    * @return the corresponding response
    */
-  public static Response response(Method method, Service service, Object... variables) {
+  @SafeVarargs
+  public static Response response(Method method, Service service, @NonNull Object... variables) {
     return new Request(method, service, variables).response();
   }
 

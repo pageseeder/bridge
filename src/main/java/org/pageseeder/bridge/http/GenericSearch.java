@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSCredentials;
 
@@ -172,7 +173,7 @@ public final class GenericSearch implements Serializable {
    * @return A new <code>GenericSearch</code> instance unless the current instance already has the same types.
    */
   @SafeVarargs
-  public final GenericSearch types(Type... types) {
+  public final GenericSearch types(@NonNull Type... types) {
     return types(Arrays.asList(types));
   }
 
@@ -209,7 +210,7 @@ public final class GenericSearch implements Serializable {
    * @param groups the groups to search in.
    */
   @SafeVarargs
-  public final GenericSearch groups(String... groups) {
+  public final GenericSearch groups(@NonNull String... groups) {
     List<String> list = copyOf(Arrays.asList(groups));
     return new GenericSearch(this._question, this._types, this._page, this._pageSize, list, this._facets, this._from, this._to, this._sortBy);
   }
