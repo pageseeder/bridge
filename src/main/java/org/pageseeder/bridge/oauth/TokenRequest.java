@@ -301,7 +301,7 @@ public final class TokenRequest {
    * @return The corresponding token endpoint URL.
    */
   public static String toBaseURL(PSConfig config) {
-    return config.buildHostURL().append(config.getSitePrefix()).append(TOKEN_ENDPOINT).toString();
+    return config.buildWebsiteURL(TOKEN_ENDPOINT);
   }
 
   @Override

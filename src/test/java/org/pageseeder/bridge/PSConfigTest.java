@@ -61,13 +61,13 @@ public final class PSConfigTest {
   public void testNewInstance_Properties() throws Exception{
     PSConfig config = PSConfig.newInstance(new Properties());
     Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.getScheme(), config.getScheme());
-    Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.getHost(), config.getHost());
-    Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.getPort(), config.getPort());
-    Assert.assertEquals(PSConfig.DEFAULT_API.getScheme(), config.getAPIScheme());
-    Assert.assertEquals(PSConfig.DEFAULT_API.getHost(), config.getAPIHost());
-    Assert.assertEquals(PSConfig.DEFAULT_API.getPort(), config.getAPIPort());
-    Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.toString(), config.buildHostURL().toString());
-    Assert.assertEquals(PSConfig.DEFAULT_API.toString(), config.buildAPIURL().toString());
+    Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.getHost(),  config.getHost());
+    Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.getPort(),  config.getPort());
+    Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.getScheme(), config.getAPIScheme());
+    Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.getHost(),  config.getAPIHost());
+    Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.getPort(),  config.getAPIPort());
+    Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.toString(), config.getWebsiteURLBuilder().toString());
+    Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.toString(), config.getAPIURLBuilder().toString());
     Assert.assertEquals(PSConfig.DEFAULT_PREFIX, config.getSitePrefix());
   }
 
@@ -83,8 +83,8 @@ public final class PSConfigTest {
     Assert.assertEquals("https",          config.getAPIScheme());
     Assert.assertEquals("ps.example.org", config.getAPIHost());
     Assert.assertEquals(8444,             config.getAPIPort());
-    Assert.assertEquals(url, config.buildHostURL().append('/').toString());
-    Assert.assertEquals(url, config.buildAPIURL().append('/').toString());
+    Assert.assertEquals(url, config.getWebsiteURLBuilder().append('/').toString());
+    Assert.assertEquals(url, config.getAPIURLBuilder().append('/').toString());
     Assert.assertEquals(PSConfig.DEFAULT_PREFIX, config.getSitePrefix());
   }
 
@@ -102,8 +102,8 @@ public final class PSConfigTest {
     Assert.assertEquals("http",           config.getAPIScheme());
     Assert.assertEquals("ps.example.localhost", config.getAPIHost());
     Assert.assertEquals(8282,             config.getAPIPort());
-    Assert.assertEquals(url, config.buildHostURL().append('/').toString());
-    Assert.assertEquals(apiurl, config.buildAPIURL().append('/').toString());
+    Assert.assertEquals(url, config.getWebsiteURLBuilder().append('/').toString());
+    Assert.assertEquals(apiurl, config.getAPIURLBuilder().append('/').toString());
     Assert.assertEquals(PSConfig.DEFAULT_PREFIX, config.getSitePrefix());
   }
 

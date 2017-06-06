@@ -180,7 +180,7 @@ public final class DocumentPath {
    * @return The full URL corresponding to this document path for the specified config.
    */
   public String toURL(PSConfig config) {
-    return config.buildHostURL().append(config.getSitePrefix()).append(path()).toString();
+    return config.buildDocumentURL(path());
   }
 
   @Override

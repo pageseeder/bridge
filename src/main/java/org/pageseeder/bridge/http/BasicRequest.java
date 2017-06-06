@@ -316,7 +316,7 @@ abstract class BasicRequest {
    */
   public String toURLString() {
     // Start building the URL
-    StringBuilder url = this.config.buildAPIURL();
+    StringBuilder url = this.config.getAPIURLBuilder();
 
     // Path
     url.append(this.config.getSitePrefix()).append(this._path);
@@ -407,7 +407,7 @@ abstract class BasicRequest {
    * @return the full URL to access this resource.
    */
   public static String toURLString(PSConfig config, String path) {
-    return config.buildAPIURL().append(config.getSitePrefix()).append(path).toString();
+    return config.buildAPIURL(path);
   }
 
   // Protected methods (for use by implementations)

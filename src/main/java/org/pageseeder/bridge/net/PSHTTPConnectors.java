@@ -449,9 +449,8 @@ public final class PSHTTPConnectors {
     if (parent != null) {
       connector.addParameter("projectname", parent);
     } else {
-      // we must compute the host URL
-      String hosturl = PSConfig.getDefault().getHostURL();
-      connector.addParameter("hosturl", hosturl.toString());
+      String hostname = PSConfig.getDefault().getDocumentHost();
+      connector.addParameter("host", hostname);
     }
     connector.addParameter("shortname", shortname);
     connector.addParameter("description", description);

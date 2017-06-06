@@ -196,7 +196,7 @@ public final class AuthorizationRequest {
    * @return The corresponding authorization endpoint URL.
    */
   public static String toBaseURL(PSConfig config) {
-    return config.buildHostURL().append(config.getSitePrefix()).append(TOKEN_ENDPOINT).toString();
+    return config.buildWebsiteURL(TOKEN_ENDPOINT);
   }
 
   @Override

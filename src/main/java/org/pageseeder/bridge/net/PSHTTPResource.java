@@ -241,7 +241,7 @@ public final class PSHTTPResource {
     PSConfig ps = PSConfig.getDefault();
 
     // Start building the URL
-    StringBuilder url = ps.buildAPIURL();
+    StringBuilder url = ps.getAPIURLBuilder();
 
     // Decompose the resource (in case it contains a query or fragment part)
     String path  = getURLPath(this._name);

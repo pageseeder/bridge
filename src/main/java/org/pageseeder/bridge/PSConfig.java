@@ -35,17 +35,30 @@ import org.pageseeder.bridge.spi.ConfigProvider;
  */
 public final class PSConfig {
 
-  /** The default URI for user access. */
+  /**
+   * The default URI for Website access.
+   */
   protected static final URI DEFAULT_WEBSITE = URI.create("http://localhost:8080");
 
-  /** The default URI for API access. */
-  protected static final  URI DEFAULT_API = URI.create("http://localhost:8282");
+  /**
+   * The default port for PageSeeder documents.
+   */
+  public static final int DEFAULT_DOCUMENT_PORT = 80;
 
-  /** The default PageSeeder site prefix. */
-  protected static final String DEFAULT_PREFIX = "/ps";
+  /**
+   * The default PageSeeder site prefix.
+   */
+  public static final String DEFAULT_PREFIX = "/ps";
 
-  /** Default config instance. */
+  /**
+   * Default config instance.
+   */
   private static volatile @Nullable PSConfig singleton = null;
+
+  /**
+   * The base URL for the publicly available Website.
+   */
+  private final URL _website;
 
   /**
    * The base URL for the API.
@@ -53,9 +66,9 @@ public final class PSConfig {
   private final URL _api;
 
   /**
-   * The base URL for the server and URIs.
+   * The base URL for documents.
    */
-  private final URL _uri;
+  private final URL _document;
 
   /**
    * Prefix of the PageSeeder Web application (usually "/ps")
@@ -83,13 +96,15 @@ public final class PSConfig {
   /**
    * Create a new configuration.
    *
-   * @param uri    The base URI for PageSeeder user access and URIs
-   * @param api    The base URI for PageSeeder API access
-   * @param prefix The prefix of the PageSeeder application.
+   * @param website  The base URI for the PageSeeder Website
+   * @param api      The base URI for PageSeeder API access
+   * @param document The base URI for PageSeeder documents
+   * @param prefix   The prefix of the PageSeeder application.
    */
-  private PSConfig(URL uri, URL api, String prefix) {
-    this._uri = uri;
+  private PSConfig(URL website, URL api, URL document, String prefix) {
+    this._website = website;
     this._api = api;
+    this._document = document;
     this._sitePrefix = prefix;
   }
 
@@ -97,30 +112,67 @@ public final class PSConfig {
   // ---------------------------------------------------------------------------------------------
 
   /**
-   * The scheme for the Website and documents.
+   * Returns the base URL to use to access the PageSeeder Website.
+   *
+   * <p>This is the URL that end-users would know in order to access the PageSeeder user interface.
+   *
+   * <p>For example "https://example.localhost"
+   *
+   * @return the default base URL for the Website.
+   */
+  public URL getWebsiteBaseURL() {
+    return this._website;
+  }
+
+  /**
+   * Returns the base URL to use for the PageSeeder API.
+   *
+   * <p>For example "http://example.localhost:8282"
+   *
+   * @return the base URL to use for the API.
+   */
+  public URL getAPIBaseURL() {
+    return this._api;
+  }
+
+  /**
+   * Returns the base URL to use to access raw PageSeeder documents.
+   *
+   * <p>It normally corresponds to the default host of PageSeeder documents.
+   *
+   * <p>For example "http://example.localhost"
+   *
+   * @return The default host URL for PageSeeder documents
+   */
+  public URL getDocumentBaseURL() {
+    return this._document;
+  }
+
+  /**
+   * The scheme for the Website.
    *
    * @return the site prefix used by PageSeeder.
    */
   public String getScheme() {
-    return this._uri.getProtocol();
+    return this._website.getProtocol();
   }
 
   /**
-   * The hostname for the Website and documents.
+   * The hostname for the Website.
    *
    * @return the site prefix used by PageSeeder.
    */
   public String getHost() {
-    return this._uri.getHost();
+    return this._website.getHost();
   }
 
   /**
-   * The port used for the Website and documents.
+   * The port used for the Website.
    *
    * @return the site prefix used by PageSeeder.
    */
   public int getPort() {
-    return getActualPort(this._uri);
+    return getActualPort(this._website);
   }
 
   /**
@@ -148,6 +200,33 @@ public final class PSConfig {
    */
   public int getAPIPort() {
     return getActualPort(this._api);
+  }
+
+  /**
+   * The scheme for PageSeeder documents.
+   *
+   * @return the site prefix used by PageSeeder.
+   */
+  public String getDocumentScheme() {
+    return this._document.getProtocol();
+  }
+
+  /**
+   * The hostname for PageSeeder documents.
+   *
+   * @return the site prefix used by PageSeeder.
+   */
+  public String getDocumentHost() {
+    return this._document.getHost();
+  }
+
+  /**
+   * The port used to access PageSeeder documents.
+   *
+   * @return the site prefix used by PageSeeder.
+   */
+  public int getDocumentPort() {
+    return getActualPort(this._document);
   }
 
   /**
@@ -226,48 +305,145 @@ public final class PSConfig {
     this.serviceStrict = strict;
   }
 
-
   // Builders
   // ---------------------------------------------------------------------------------------------
 
   /**
-   * @return the base URL to use to connect.
+   * Returns a builder to constructs a URL to access the Website.
+   *
+   * <p>The returned value has the form <code>[scheme]://[host]:[port]</code>; or
+   * <code>[scheme]://[host]</code> if using the default port for the protocol.
+   *
+   * <p>The returned value is normalized so that it does not include the default
+   * port or any trailing '/'. It does not include the site prefix.
+   *
+   * @return the host URL as a string builder.
    */
-  public URL getAPIBaseURL() {
-    return this._api;
+  public StringBuilder getWebsiteURLBuilder() {
+    return toURLBuilder(this._website);
   }
 
   /**
-   * @return the default base URL for documents.
-   */
-  public URL getDocumentBaseURL() {
-    return this._uri;
-  }
-
-  /**
-   * @return the default base URL for the website.
-   */
-  public URL getWebsiteBaseURL() {
-    return this._uri;
-  }
-
-  /**
+   * Returns a builder to constructs a URL to access the API.
+   *
+   * <p>The returned value has the form <code>[scheme]://[host]:[port]</code>; or
+   * <code>[scheme]://[host]</code> if using the default port for the protocol.
+   *
+   * <p>The returned value is normalized so that it does not include the default
+   * port or any trailing '/'. It does not include the site prefix.
+   *
    * @return the API URL as a string builder.
    */
+  public StringBuilder getAPIURLBuilder() {
+    return toURLBuilder(this._api);
+  }
+
+  /**
+   * Returns a builder to constructs a URL to access documents.
+   *
+   * <p>The returned value has the form <code>[scheme]://[host]:[port]</code>; or
+   * <code>[scheme]://[host]</code> if using the default port for the protocol.
+   *
+   * <p>The returned value is normalized so that it does not include the default
+   * port or any trailing '/'. It does not include the site prefix.
+   *
+   * @return the document URL as a string builder.
+   */
+  public StringBuilder getDocumentURLBuilder() {
+    return toURLBuilder(this._document);
+  }
+
+  /**
+   * Short-hand method to build a URL to access the Website using the specified path.
+   *
+   * <p>It builds the URL as follows:
+   * <pre>
+   *   [scheme]://[host]:[port?][site_prefix][path]
+   * </pre>
+   *
+   * <p>The path must not include the site prefix as it is automatically prepended,
+   * but may include the query and fragment part.
+   *
+   * @param path The path to append to the Website URL and prefix.
+   *
+   * @return the constructed URL
+   */
+  public String buildWebsiteURL(String path) {
+    return toURLBuilder(this._website).append(this._sitePrefix).append(path).toString();
+  }
+
+  /**
+   * Short-hand method to build a URL to access the API using the specified path.
+   *
+   * <p>It builds the URL as follows:
+   * <pre>
+   *   [scheme]://[host]:[port?][site_prefix][path]
+   * </pre>
+   *
+   * <p>The path must not include the site prefix as it is automatically prepended,
+   * but may include the query and fragment part.
+   *
+   * @param path The path to append to the API URL and prefix.
+   *
+   * @return the constructed URL
+   */
+  public String buildAPIURL(String path) {
+    return toURLBuilder(this._website).append(this._sitePrefix).append(path).toString();
+  }
+
+  /**
+   * Short-hand method to build a URL to access the document using the specified path.
+   *
+   * <p>It builds the URL as follows:
+   * <pre>
+   *   [scheme]://[host]:[port?][site_prefix][path]
+   * </pre>
+   *
+   * <p>The path must not include the site prefix as it is automatically prepended,
+   * but may include the query and fragment part.
+   *
+   * @param path The path to append to the document URL and prefix.
+   *
+   * @return the constructed URL
+   */
+  public String buildDocumentURL(String path) {
+    return toURLBuilder(this._website).append(this._sitePrefix).append(path).toString();
+  }
+
+  /**
+   * Returns a builder to constructs a URL to access the API.
+   *
+   * <p>The returned value has the form <code>[scheme]://[host]:[port]</code>; or
+   * <code>[scheme]://[host]</code> if using the default port for the protocol.
+   *
+   * <p>The returned value is normalized so that it does not include the default
+   * port or any trailing '/'. It does not include the site prefix.
+   *
+   * @return the API URL as a string builder.
+   *
+   * @deprecated Use {@link #getAPIURLBuilder()} instead
+   */
+  @Deprecated
   public StringBuilder buildAPIURL() {
     return toURLBuilder(this._api);
   }
 
   /**
    * @return the host URL as a string builder.
+   *
+   * @deprecated Use {@link #buildWebsiteURL()} or {@link #buildDocumentURL()} instead.
    */
+  @Deprecated
   public StringBuilder buildHostURL() {
-    return toURLBuilder(this._uri);
+    return toURLBuilder(this._website);
   }
 
   /**
    * @return the host URL.
+   *
+   * @deprecated Use {@link #buildWebsiteURL()} or {@link #buildDocumentURL()} instead.
    */
+  @Deprecated
   public String getHostURL() {
     return buildHostURL().toString();
   }
@@ -317,10 +493,12 @@ public final class PSConfig {
     @SuppressWarnings("null")
     @NonNull String prefix = p.getProperty("siteprefix", DEFAULT_PREFIX);
     try {
-      // Compute URL
-      URL uri = toBaseURL(p, "uri", DEFAULT_WEBSITE);
-      URL api = toBaseURL(p, "api", DEFAULT_API);
-      PSConfig config = new PSConfig(uri, api, prefix);
+      URL website  = toBaseURL(p, "url", DEFAULT_WEBSITE.toString());
+      URL api      = toBaseURL(p, "api-url", website.toString());
+      URL document = toBaseURL(p, "document-url",  deriveURL(website, DEFAULT_DOCUMENT_PORT));
+      PSConfig config = new PSConfig(website, api, document, prefix);
+
+      // API version and handling
       String apiVersion = p.getProperty("api-version");
       if (apiVersion != null) {
         config.setServiceAPIVersion(Version.parse(apiVersion));
@@ -329,7 +507,7 @@ public final class PSConfig {
         config.setServiceAPIStrict(true);
       }
       return config;
-    } catch (MalformedURLException | IllegalArgumentException ex) {
+    } catch (IllegalArgumentException ex) {
       throw new IllegalArgumentException("PageSeeder properties are not configured properly", ex);
     }
   }
@@ -337,22 +515,35 @@ public final class PSConfig {
   /**
    * For use by service providers to create a new PSConfig instance.
    *
-   * @param uri The URL to use as the base URI for PageSeeder URIs
-   * @param api The URL to use as the base URI for API access
+   * @param website  The URL to use as the base URI to access the PageSeeder Website
+   * @param api      The URL to use as the base URI for the service API
+   * @param document The default host URL for PageSeeder documents
    *
    * @return The corresponding configuration instance.
    *
    * @throws IllegalArgumentException If any or the properties yield to an malformed URL
    */
-  public static PSConfig newInstance(String uri, String api) {
-    try {
-      // Compute URL
-      URL u = toBaseURL(uri);
-      URL a = toBaseURL(api);
-      return new PSConfig(u, a, DEFAULT_PREFIX);
-    } catch (MalformedURLException ex) {
-      throw new IllegalArgumentException("PageSeeder configuration URLs are not configured properly");
-    }
+  public static PSConfig newInstance(String website, String api, String document) {
+    URL w = toBaseURL(website);
+    URL a = toBaseURL(api);
+    URL d = toBaseURL(document);
+    return new PSConfig(w, a, d, DEFAULT_PREFIX);
+  }
+
+  /**
+   * For use by service providers to create a new PSConfig instance.
+   *
+   * @param website  The URL to use as the base URI to access the PageSeeder Website
+   * @param api      The URL to use as the base URI for the service API
+   *
+   * @return The corresponding configuration instance.
+   *
+   * @throws IllegalArgumentException If any or the properties yield to an malformed URL
+   */
+  public static PSConfig newInstance(String website, String api) {
+    URL w = toBaseURL(website);
+    String document = deriveURL(w, DEFAULT_DOCUMENT_PORT);
+    return newInstance(website, api, document);
   }
 
   /**
@@ -374,18 +565,16 @@ public final class PSConfig {
   /**
    * Compute the base URL
    *
-   * @param p
-   * @param start
-   * @param fallback
-   * @return the URL
-   * @throws MalformedURLException
+   * @param p        The properties
+   * @param property The name of the property
+   * @param fallback The fallback value
+   *
+   * @return the URL THe corresponding base URL
    */
-  private static URL toBaseURL(Properties p, String start, URI fallback) throws MalformedURLException {
-    String url = p.getProperty(start+"-url");
-    if (url != null) return toBaseURL(url);
-    url = p.getProperty("url");
-    if (url != null) return toBaseURL(url);
-    return fallback.toURL();
+  private static URL toBaseURL(Properties p, String property, String fallback) {
+    String url = p.getProperty(property);
+    if (url != null && url.length() > 0) return toBaseURL(url);
+    return toBaseURL(fallback);
   }
 
   /**
@@ -397,8 +586,12 @@ public final class PSConfig {
    *
    * @throws MalformedURLException
    */
-  private static URL toBaseURL(String url) throws MalformedURLException {
-    return URI.create(url).resolve("/").toURL();
+  private static URL toBaseURL(String url) {
+    try {
+      return URI.create(url).resolve("/").toURL();
+    } catch (MalformedURLException ex) {
+      throw new IllegalArgumentException("Specified PageSeeder configuration URL is malformed");
+    }
   }
 
   /**
@@ -433,6 +626,22 @@ public final class PSConfig {
       s.append(":").append(port);
     }
     return s;
+  }
+
+  /**
+   * Generate a string builder from the specified URL
+   *
+   * @param url The URL to construct the builder.
+   *
+   * @return A string builder using the url as a base.
+   */
+  private static String deriveURL(URL url, int port) {
+    StringBuilder s = new StringBuilder();
+    s.append("http://").append(url.getHost());
+    if (port != -1 && port != url.getDefaultPort()) {
+      s.append(":").append(port);
+    }
+    return s.toString();
   }
 
   /**
