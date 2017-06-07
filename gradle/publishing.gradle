@@ -15,6 +15,7 @@ publishing {
         classifier 'javadoc'
       }
 
+
       pom.withXml {
         asNode().children().last() + {
           resolveStrategy = Closure.DELEGATE_FIRST
@@ -25,7 +26,8 @@ publishing {
           licenses {
             license {
               name 'The Apache Software License, Version 2.0'
-              url  'http://www.apache.org/licenses/LICENSE-2.0.txt'
+              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+              distribution 'repo'
             }
           }
 
@@ -33,13 +35,12 @@ publishing {
             name 'Allette Systems'
             url  'https://www.allette.com.au'
           }
-  
+
           scm {
             url                 "git@github.com:pageseeder/${gitName}.git"
             connection          "scm:git:git@github.com:pageseeder/${gitName}.git"
             developerConnection "scm:git:git@github.com:pageseeder/${gitName}.git"
           }
-
         }
       }
 
@@ -90,6 +91,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '3.1'
+  gradleVersion = '3.5'
   description 'Generates the Gradle wrapper scripts'
 }

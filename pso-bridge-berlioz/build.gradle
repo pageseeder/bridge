@@ -9,7 +9,7 @@ dependencies {
 
   // module dependencies
   compile rootProject
-  
+
   compile (
     'org.slf4j:slf4j-api:1.7.12',
     'org.pageseeder.xmlwriter:pso-xmlwriter:1.0.0',
