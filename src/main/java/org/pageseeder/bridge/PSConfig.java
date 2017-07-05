@@ -388,7 +388,7 @@ public final class PSConfig {
    * @return the constructed URL
    */
   public String buildAPIURL(String path) {
-    return toURLBuilder(this._website).append(this._sitePrefix).append(path).toString();
+    return toURLBuilder(this._api).append(this._sitePrefix).append(path).toString();
   }
 
   /**
@@ -407,7 +407,7 @@ public final class PSConfig {
    * @return the constructed URL
    */
   public String buildDocumentURL(String path) {
-    return toURLBuilder(this._website).append(this._sitePrefix).append(path).toString();
+    return toURLBuilder(this._document).append(this._sitePrefix).append(path).toString();
   }
 
   /**
