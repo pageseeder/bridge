@@ -12,3 +12,4 @@ buildNumber.properties
 /.settings/
 /.gradle/
 /build/
+/.checkstyle
