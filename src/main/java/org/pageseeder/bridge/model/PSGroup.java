@@ -369,7 +369,7 @@ public class PSGroup implements PSEntity {
     if (dash != -1) {
       pjname = name.substring(0, dash);
     }
-    return name.matches(REGEX_GROUP_NAME) && !RESERVED_GROUP_NAMES.contains(pjname) && !name.endsWith("-silent") && name.indexOf("--") == -1;
+    return name.matches(REGEX_GROUP_NAME) && !RESERVED_GROUP_NAMES.contains(pjname) && !name.endsWith("-silent") && !name.contains("--");
   }
 
   private static boolean checkMaxLength(@Nullable String s, int length) {

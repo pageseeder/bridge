@@ -39,7 +39,7 @@ import net.sf.ehcache.search.Results;
 /**
  * A cache for a PageSeeder entity backed by EHCache.
  *
- * @param <T> The type of entity
+ * @param <E> The type of entity
  *
  * @author Christophe Lauret
  * @version 0.2.4
@@ -264,8 +264,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
       man.addCache(new Cache(config));
       cache = man.getEhcache(name);
     }
-    PSEntityCache<E> ocache = new EHEntityCache<>(cache);
-    return ocache;
+    return new EHEntityCache<>(cache);
   }
 
   /**

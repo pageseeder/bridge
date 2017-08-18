@@ -17,10 +17,8 @@ package org.pageseeder.bridge.net;
 
 import java.security.cert.CertificateException;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -110,12 +108,7 @@ public final class UnsafeSSL {
       // Create an SSL socket factory with our all-trusting manager
       final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
       HttpsURLConnection.setDefaultSSLSocketFactory(sslSocketFactory);
-      HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-        @Override
-        public boolean verify(@Nullable String hostname, @Nullable SSLSession session) {
-          return true;
-        }
-      });
+      HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
       LoggerFactory.getLogger(UnsafeSSL.class).error("Unsafe SSL has been enabled! ALL HTTPS CONNECTIONS ARE POTENTIALLY UNSAFE - USE THIS FEATURES FOR TESTING ONLY");
     } catch (Exception ex) {
       throw new RuntimeException(ex);

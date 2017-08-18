@@ -43,6 +43,7 @@ public final class Rules {
    *
    * @see <a href="http://tools.ietf.org/html/rfc5322#section-3.2.3">Internet Message Format - Atom</a>
    */
+  @SuppressWarnings("Annotator")
   private static final String DOT_ATOM = "a-z0-9!#$%&'*+/=?^_`{|}~-";
 
   /**
@@ -81,8 +82,7 @@ public final class Rules {
    */
   public static boolean isEmail(String email) {
     if (email == null || email.isEmpty()) return false;
-    if (email.indexOf('@') < 0) return false;
-    return EMAIL.matcher(email).matches();
+    return email.indexOf('@') >= 0 && EMAIL.matcher(email).matches();
   }
 
   /**

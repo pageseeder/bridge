@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Allette Systems (Australia)
+ * Copyright 2017 Allette Systems (Australia)
  * http://www.allette.com.au
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -154,7 +154,7 @@ public class XRefFragment extends FragmentBase implements PSMLFragment {
       psml.attribute("type", type.toString());
     }
     if (level != null) {
-      psml.attribute("level", level.intValue());
+      psml.attribute("level", level);
     }
     if (x.getLabels() != null && x.getLabels().size() > 0) {
       psml.attribute("labels", x.getLabelsAsString());

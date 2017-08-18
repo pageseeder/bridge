@@ -50,7 +50,7 @@ public final class CommentProperties {
     return this;
   }
 
-  public static final CommentProperties parse(String properties) {
+  public static CommentProperties parse(String properties) {
     String[] prp = properties.split("\\|");
     Map<String, String> map = new LinkedHashMap<>(prp.length);
     for (String p : prp) {

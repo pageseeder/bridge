@@ -47,7 +47,7 @@ public enum Servlet {
 
   private final String _path;
 
-  private Servlet(String name) {
+  Servlet(String name) {
     this._path = "/servlet/"+name;
   }
 

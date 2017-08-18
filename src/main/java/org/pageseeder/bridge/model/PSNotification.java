@@ -62,7 +62,7 @@ public enum PSNotification {
    *
    * @param p the name of the parameter for PageSeeder services
    */
-  private PSNotification(String p) {
+  PSNotification(String p) {
     this._parameter = p;
   }
 

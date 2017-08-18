@@ -138,7 +138,7 @@ public final class DocumentManager extends Sessionful {
    * @param group The group the document is accessible from.
    */
   public @Nullable PSDocument getDocument(long id, PSGroup group) throws APIException {
-    PSDocument document = cache.get(Long.valueOf(id));
+    PSDocument document = cache.get(id);
     if (document == null) {
       PSHTTPConnector connector = PSHTTPConnectors.getURI(id, group).using(this._credentials);
       PSDocumentHandler handler = new PSDocumentHandler();

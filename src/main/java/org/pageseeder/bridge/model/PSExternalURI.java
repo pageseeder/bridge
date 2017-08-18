@@ -123,8 +123,7 @@ public final class PSExternalURI extends PSURI implements PSEntity {
    */
   @Override
   public EntityValidity checkValid() {
-    EntityValidity validity = super.checkURIValid();
-    return validity;
+    return super.checkURIValid();
   }
 
   @Override

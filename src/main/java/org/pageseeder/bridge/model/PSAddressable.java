@@ -60,7 +60,7 @@ public abstract class PSAddressable implements Addressable, PSEntity {
    *  3. Port
    *  4. Path
    */
-  private static final Pattern URL_DECOMPOSER = Pattern.compile("^(?:(https?):)?(?://([\\da-z\\.-]+)(?:\\:(\\d{1,4}))?)?(/[^\\?]*)?$");
+  private static final Pattern URL_DECOMPOSER = Pattern.compile("^(?:(https?):)?(?://([\\da-z.-]+)(?::(\\d{1,4}))?)?(/[^?]*)?$");
 
   /**
    * The scheme.

@@ -92,7 +92,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    *
    * @param element The name of the element.
    */
-  public void endElement(String element) {};
+  public void endElement(String element) {}
 
   // SAX implementations
   // ---------------------------------------------------------------------------
@@ -332,7 +332,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    *
    * @throws ContentException If the attribute is missing or could not be parsed as a long.
    */
-  public final static Long getLong(Attributes atts, String name) {
+  public static Long getLong(Attributes atts, String name) {
     String value = atts.getValue(name);
     if (value == null) throw new MissingAttributeException(name);
     return toLong(value, name);
@@ -347,7 +347,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    *
    * @throws ContentException If the attribute is missing or could not be parsed as a long.
    */
-  public final static Long getLong(Attributes atts, String name, Long fallback) {
+  public static Long getLong(Attributes atts, String name, Long fallback) {
     String value = atts.getValue(name);
     return value != null? toLong(value, name) : fallback;
   }
@@ -361,7 +361,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    * @throws MissingAttributeException If the attribute could not be parsed as a long.
    * @throws MissingAttributeException If the attribute could not be parsed as a long.
    */
-  public final static @Nullable Long getOptionalLong(Attributes atts, String name) {
+  public static @Nullable Long getOptionalLong(Attributes atts, String name) {
     String value = atts.getValue(name);
     if (value == null) return null;
     return toLong(value, name);
@@ -375,7 +375,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    *
    * @throws MissingAttributeException If the attribute is missing or could not be parsed as a long.
    */
-  public final static String getString(Attributes atts, String name) {
+  public static String getString(Attributes atts, String name) {
     String value = atts.getValue(name);
     if (value == null) throw new MissingAttributeException(name);
     return value;
@@ -388,7 +388,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    *
    * @return The corresponding value or the fallback value.
    */
-  public final static String getString(Attributes atts, String name, String fallback) {
+  public static String getString(Attributes atts, String name, String fallback) {
     String value = atts.getValue(name);
     return value != null? value : fallback;
   }
@@ -401,7 +401,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    *
    * @throws MissingAttributeException If the attribute is missing or could not be parsed as a long.
    */
-  public final static int getInt(Attributes atts, String name) {
+  public static int getInt(Attributes atts, String name) {
     String value = atts.getValue(name);
     if (value == null) throw new MissingAttributeException(name);
     return toInt(value, name);
@@ -414,7 +414,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    *
    * @return The corresponding value or the fallback value.
    */
-  public final static int getInt(Attributes atts, String name, int fallback) {
+  public static int getInt(Attributes atts, String name, int fallback) {
     String value = atts.getValue(name);
     return value != null? toInt(value, name) : fallback;
   }
@@ -426,7 +426,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    * @return The corresponding value.
    */
   @Nullable
-  public final static String getOptionalString(Attributes atts, String name) {
+  public static String getOptionalString(Attributes atts, String name) {
     return atts.getValue(name);
   }
 
@@ -439,7 +439,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    *
    * @throws InvalidAttributeException If the attribute value could not be parsed as Long object.
    */
-  private final static Long toLong(String value, String name) {
+  private static Long toLong(String value, String name) {
     try {
       return Long.valueOf(value);
     } catch (NumberFormatException ex) {
@@ -456,7 +456,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    *
    * @throws InvalidAttributeException If the attribute value could not be parsed as an int.
    */
-  private final static int toInt(String value, String name) {
+  private static int toInt(String value, String name) {
     try {
       return Integer.parseInt(value);
     } catch (NumberFormatException ex) {

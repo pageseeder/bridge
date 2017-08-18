@@ -289,8 +289,7 @@ public final class MemberManager extends Sessionful {
    * @throws APIException If an error occurs while connecting to PageSeeder.
    */
   public boolean logout() throws APIException {
-    if (this._credentials instanceof PSSession) return logout((PSSession)this._credentials);
-    else return false;
+    return this._credentials instanceof PSSession && logout((PSSession) this._credentials);
   }
 
   /**

@@ -63,26 +63,6 @@ public interface PSEntityCache<E extends PSEntity> {
   @Nullable E get(E entity);
 
   /**
-   * Retrieve the object in the cache for the specified key.
-   *
-   * @param attribute An attribute that can be sufficient to identify the entity.
-   * @param value     The value the value
-   *
-   * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
-   */
-//  E get(String attribute, String value);
-
-  /**
-   * Retrieve the object in the cache for the specified key.
-   *
-   * @param attribute An attribute for that entity.
-   * @param value     The value the value
-   *
-   * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
-   */
-//  List<E> list(String attribute, String value);
-
-  /**
    * Return the version of the element for the specified key.
    *
    * @param key The key

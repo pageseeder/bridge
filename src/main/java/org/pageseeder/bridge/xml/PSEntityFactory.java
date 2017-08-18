@@ -743,8 +743,9 @@ public final class PSEntityFactory {
   /**
    * Return the group folder from the cache if found.
    *
-   * @param group A group folder matching the ID
-   * @param id    The ID of the group folder
+   * @param folder A group folder matching the ID
+   * @param id     The ID of the group folder
+   *
    *
    * @return the existing group folder if <code>null</code> or not in cache.
    */

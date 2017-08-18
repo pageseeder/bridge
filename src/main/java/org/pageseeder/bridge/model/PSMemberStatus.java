@@ -50,7 +50,7 @@ public enum PSMemberStatus implements Serializable {
   /** the attribute value of the status. */
   private final String _attribute;
 
-  private PSMemberStatus(String attribute) {
+  PSMemberStatus(String attribute) {
     this._attribute = attribute;
   }
 

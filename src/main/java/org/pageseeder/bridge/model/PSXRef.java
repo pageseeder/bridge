@@ -16,6 +16,7 @@
 package org.pageseeder.bridge.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +40,7 @@ public final class PSXRef implements PSEntity {
   /**
    * XRef titles to display.
    */
-  public static enum Display {
+  public enum Display {
 
     /** manual */
     MANUAL("manual"),
@@ -55,7 +56,7 @@ public final class PSXRef implements PSEntity {
 
     private final String _value;
 
-    private Display(String value) {
+    Display(String value) {
       this._value = value;
     }
 
@@ -87,12 +88,12 @@ public final class PSXRef implements PSEntity {
     public String toString() {
       return this._value;
     }
-  };
+  }
 
   /**
    * XRef type.
    */
-  public static enum Type {
+  public enum Type {
 
     /** none */
     NONE,
@@ -130,7 +131,7 @@ public final class PSXRef implements PSEntity {
       if (this == IMAGE)        return "image";
       return "none";
     }
-  };
+  }
 
   /**
    * The XRef ID
@@ -473,9 +474,7 @@ public final class PSXRef implements PSEntity {
    */
   public final void setLabels(String labels) {
     this.labels.clear();
-    for (String label : labels.split(",")) {
-      this.labels.add(label);
-    }
+    Collections.addAll(this.labels, labels.split(","));
   }
 
   /**

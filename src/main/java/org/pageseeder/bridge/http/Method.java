@@ -35,6 +35,6 @@ public enum Method {
 
   POST,
 
-  PUT;
+  PUT
 
 }

@@ -101,7 +101,7 @@ public final class PSHTTPConnection {
     /** For request using the HTTP PATCH method. */
     PATCH
 
-  };
+  }
 
   /** Version of the API */
   private static final String API_VERSION;
@@ -656,7 +656,7 @@ public final class PSHTTPConnection {
       s.update();
     } else {
       String cookie = connection.getHeaderField("Set-Cookie");
-      this.session = s = PSSession.parseSetCookieHeader(cookie);
+      this.session = PSSession.parseSetCookieHeader(cookie);
     }
   }
 
@@ -668,10 +668,7 @@ public final class PSHTTPConnection {
    *         <code>false</code> otherwise.
    */
   private static boolean isXML(@Nullable String contentType) {
-    if (contentType == null) return false;
-    return "text/xml".equals(contentType)
-        || "application/xml".equals(contentType)
-        || contentType.endsWith("+xml");
+    return contentType != null && ("text/xml".equals(contentType) || "application/xml".equals(contentType) || contentType.endsWith("+xml"));
   }
 
   /**
@@ -693,7 +690,7 @@ public final class PSHTTPConnection {
    */
   protected static PSHTTPConnection connect(PSHTTPResource resource, Method type, @Nullable PSCredentials credentials)
       throws IOException {
-    URL url = resource.toURL(credentials, (type == Method.POST || type == Method.PATCH) ? false : true);
+    URL url = resource.toURL(credentials, type != Method.POST && type != Method.PATCH);
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setDoOutput(true);
     connection.setInstanceFollowRedirects(true);
@@ -715,7 +712,7 @@ public final class PSHTTPConnection {
       connection.addRequestProperty("Authorization", "Bearer "+((PSToken) credentials).token());
     }
     PSSession session = credentials instanceof PSSession ? (PSSession) credentials : null;
-    PSHTTPConnection instance = null;
+    PSHTTPConnection instance;
 
     // POST using "application/x-www-form-urlencoded"
     if (type == Method.POST || type == Method.PATCH) {
@@ -1061,7 +1058,7 @@ public final class PSHTTPConnection {
    */
   private static void copy(InputStream input, OutputStream output) throws IOException {
     byte[] buffer = new byte[4096];
-    int n = 0;
+    int n;
     while (-1 != (n = input.read(buffer))) {
       output.write(buffer, 0, n);
     }
@@ -1215,9 +1212,7 @@ public final class PSHTTPConnection {
         SAXParser parser = factory.newSAXParser();
         PSErrorHandler handler = new PSErrorHandler(response);
         parser.parse(source, handler);
-      } catch (SAXException ex) {
-        LOGGER.warn("Unable to parse error message from PS Response", ex);
-      } catch (ParserConfigurationException ex) {
+      } catch (SAXException | ParserConfigurationException ex) {
         LOGGER.warn("Unable to parse error message from PS Response", ex);
       }
     }

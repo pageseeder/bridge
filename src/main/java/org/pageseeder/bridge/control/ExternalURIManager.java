@@ -80,7 +80,7 @@ public final class ExternalURIManager extends Sessionful {
    * @return the corresponding external URI
    */
   public @Nullable PSExternalURI getExternalURI(long id, PSGroup group) throws APIException {
-    PSExternalURI externaluri = cache.get(Long.valueOf(id));
+    PSExternalURI externaluri = cache.get(id);
     if (externaluri == null) {
       PSHTTPConnector connector = PSHTTPConnectors.getURI(id, group).using(this._credentials);
       PSExternalURIHandler handler = new PSExternalURIHandler();

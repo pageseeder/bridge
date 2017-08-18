@@ -41,7 +41,7 @@ public final class HttpClient {
   /**
    * Creates a new request to a PageSeeder service.
    *
-   * @param servlet  The PageSeeder servlet to use
+   * @param path  The PageSeeder servlet to use
    */
   public HttpRequest newRequest(String path) {
     return new CacheableRequest(this._cache, path);
@@ -50,7 +50,8 @@ public final class HttpClient {
   /**
    * Creates a new request to a PageSeeder service.
    *
-   * @param servlet  The PageSeeder servlet to use
+   * @param method The HTTP method to use
+   * @param path   The PageSeeder servlet to use
    */
   public HttpRequest newRequest(Method method, String path) {
     if (method == Method.GET) return new CacheableRequest(this._cache, path);

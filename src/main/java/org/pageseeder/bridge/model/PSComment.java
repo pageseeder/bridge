@@ -323,13 +323,13 @@ public final class PSComment implements PSEntity {
         if (eq > 0) {
           String name = property.substring(0, eq);
           String value = property.substring(eq + 1);
-          if ("label".equals(name) == false) {
+          if (!"label".equals(name)) {
             p.put(name, value);
           }
         }
         //Otherwise, just use the name without any value
         else if (eq == -1 && !property.isEmpty()) {
-          if ("label".equals(property) == false) {
+          if (!"label".equals(property)) {
             p.put(property, "");
           }
         }

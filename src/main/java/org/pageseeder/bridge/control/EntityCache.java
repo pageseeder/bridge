@@ -29,7 +29,7 @@ import org.pageseeder.bridge.PSEntityCache;
 /**
  * A cache for a PageSeeder entity backed by EHCache.
  *
- * @param <T> The type of entity
+ * @param <E> The type of entity
  *
  * @author Christophe Lauret
  * @version 0.2.4
@@ -131,7 +131,7 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
   /**
    * Put a new element in the underlying cache.
    *
-   * @param value The corresponding element.
+   * @param entity The corresponding element.
    */
   @Override
   public synchronized void put(final E entity) {
@@ -190,7 +190,7 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
   /**
    * Returns a new cache instance.
    *
-   * @param name the name of the cache
+   * @param type the type of the cache
    * @param keys the keys to use for this entity
    *
    * @param <E> The type of element to store
@@ -212,8 +212,7 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
       byId = (Cache<Long, CachedEntity<E>>)manager.createCache(type.getSimpleName()+".id", config);
       byKey = (Cache<String, Long>)manager.createCache(type.getSimpleName()+".key", config);
     }
-    EntityCache<E> ocache = new EntityCache<>(byId, byKey);
-    return ocache;
+    return new EntityCache<>(byId, byKey);
   }
 
   /**

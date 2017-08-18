@@ -18,10 +18,7 @@ package org.pageseeder.bridge.model;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.EntityValidity;
@@ -260,9 +257,7 @@ public abstract class PSURI extends PSAddressable {
    */
   public final void setLabels(String labels) {
     this.labels.clear();
-    for (String label : labels.split(",")) {
-      this.labels.add(label);
-    }
+    Collections.addAll(this.labels, labels.split(","));
   }
 
   /**

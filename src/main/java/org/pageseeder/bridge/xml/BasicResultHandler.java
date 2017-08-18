@@ -30,6 +30,7 @@ import org.xml.sax.Attributes;
  *
  * @param <T> The type of object to build from the search result
  */
+@SuppressWarnings("EmptyMethod")
 public abstract class BasicResultHandler<T> extends BasicHandler<T> {
 
   /**
@@ -76,6 +77,7 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
    *
    * @param score the score of the current document.
    */
+  @SuppressWarnings("EmptyMethod")
   public void score(double score) {
   }
 

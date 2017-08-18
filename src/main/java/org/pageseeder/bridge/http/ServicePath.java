@@ -44,12 +44,12 @@ public final class ServicePath {
    * A valid PageSeeder service URI template.
    */
   private static final Pattern VALID_TEMPLATE =
-      Pattern.compile("/(?:(?:(?:[a-z0-9]+)|(?:\\{[a-z]+\\}))/)*(?:(?:[a-z0-9]+)|(?:\\{[a-z]+\\}))");
+      Pattern.compile("/(?:(?:(?:[a-z0-9]+)|(?:\\{[a-z]+}))/)*(?:(?:[a-z0-9]+)|(?:\\{[a-z]+}))");
 
   /**
    * Matches a URI variable.
    */
-  private static final Pattern VARIABLE = Pattern.compile("\\{[a-z]+\\}");
+  private static final Pattern VARIABLE = Pattern.compile("\\{[a-z]+}");
 
   /**
    * The URI template used for this service.
@@ -178,7 +178,7 @@ public final class ServicePath {
   private static List<Token> toTokens(String template, int count) {
     // No variable return single literal token
     if (count == 0)
-      return Collections.singletonList((Token)new Literal(template));
+      return Collections.singletonList(new Literal(template));
     // Parse
     List<Token> tokens = new ArrayList<>();
     Matcher m = VARIABLE.matcher(template);
@@ -239,14 +239,14 @@ public final class ServicePath {
   /**
    * A token that makes up the URI template.
    */
-  private static interface Token {
+  private interface Token {
 
     /**
      * Returns the token value for the specified variable.
      *
      * NB Only specified to avoid having to cast the implementation
      */
-    public String toString(Object o);
+    String toString(Object o);
 
   }
 

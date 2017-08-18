@@ -17,7 +17,6 @@ package org.pageseeder.bridge.http;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -378,8 +377,6 @@ public final class Request extends BasicRequest implements HttpRequest {
       // Create the response object after requesting status
       return new Response(connection, status, session);
 
-    } catch (ConnectException ex) {
-      return new Response(ex.getMessage());
     } catch (IOException ex) {
       return new Response(ex.getMessage());
     } finally {

@@ -29,6 +29,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +40,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -47,6 +51,8 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.stax.XMLStreamItem;
+import org.pageseeder.bridge.stax.XMLStreamList;
 import org.pageseeder.bridge.xml.DuplexHandler;
 import org.pageseeder.bridge.xml.Handler;
 import org.pageseeder.bridge.xml.ServiceErrorHandler;
@@ -116,7 +122,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     /**
      * The response has already been consumed and the content is no longer available.
      */
-    consumed;
+    consumed
   }
 
   /**
@@ -324,7 +330,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   public static @Nullable String unwrapEtag(@Nullable String etag) {
     if (etag == null) return null;
-    return etag.replaceAll("(?:W/)?\\\"([^\"]+)\\\"", "$1");
+    return etag.replaceAll("(?:W/)?\"([^\"]+)\"", "$1");
   }
 
   /**
@@ -609,6 +615,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     HttpURLConnection con = requireAvailable();
     try {
       try (InputStream in = toInputStream(con)){
+        //noinspection StatementWithEmptyBody
         while (-1 != in.read()) {
           // do nothing
         }
@@ -732,6 +739,57 @@ public final class Response implements HttpResponse, AutoCloseable {
   }
 
   /**
+   * Consumes the output of the response using a handler and returns the collection
+   * of objects from it.
+   *
+   * <p>After calling this method the response content will no longer be available.
+   *
+   * @param handler The object handler for the XML
+   * @param <T> The type of object returned in the list.
+   *
+   * @return A list of items from the XML.
+   *
+   * @throws IllegalStateException If the response is not available.
+   * @throws ContentException If an error occurred while consuming the content.
+   */
+//@Override
+  public <T> List<T> consumeList(XMLStreamList<T> handler) throws ContentException {
+    try {
+      return parseXML(this, handler);
+    } catch (IOException ex) {
+      throw new ContentException("Unable to consume XML", ex);
+    } finally {
+      this.state = State.consumed;
+    }
+  }
+
+  /**
+   * Consumes the output of the response using a handler and returns a single
+   * object from it.
+   *
+   * <p>After calling this method the response content will no longer be available.
+   *
+   * @param handler The object handler for the XML
+   * @param <T> The type of object returned as the item.
+   *
+   * @return A single item from the parsed XML.
+   *
+   * @throws IllegalStateException If the response is not available.
+   * @throws ContentException If an error occurred while consuming the content.
+   */
+//  @Override
+  public <T> @Nullable T consumeItem(XMLStreamItem<T> handler) throws ContentException {
+    try {
+      List<T> list = parseXML(this, handler);
+      return list.size() > 0? list.get(0) : null;
+    } catch (IOException ex) {
+      throw new ContentException("Unable to consume XML", ex);
+    } finally {
+      this.state = State.consumed;
+    }
+  }
+
+  /**
    * Consumes the output of the response and copies it to the specified XML writer.
    *
    * <p>After calling this method the response content will no longer be available.
@@ -773,7 +831,7 @@ public final class Response implements HttpResponse, AutoCloseable {
   @Override
   @SuppressWarnings("null")
   public void consumeXML(XMLWriter xml, Templates templates) throws ContentException {
-    consumeXML(xml, templates, Collections.<String,String>emptyMap());
+    consumeXML(xml, templates, Collections.emptyMap());
   }
 
   /**
@@ -857,14 +915,14 @@ public final class Response implements HttpResponse, AutoCloseable {
    * <p>Response content debug is disabled by default, unless the
    * <code>bridge.http.responseDebug</code> was set to <code>true</code>.
    */
-  public static final void enableDebug() {
+  public static void enableDebug() {
     debugEnabled = true;
   }
 
   /**
    * Disable response content debug.
    */
-  public static final void disableDebug() {
+  public static void disableDebug() {
     debugEnabled = false;
   }
 
@@ -917,7 +975,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    *
    * @return a new list of headers
    */
-  private static final List<Header> extractHeaders(HttpURLConnection connection) {
+  private static List<Header> extractHeaders(HttpURLConnection connection) {
     Map<String, List<String>> headerFields = connection.getHeaderFields();
     // Length is 1 less than headers from connection as we discard the status line
     List<Header> headers = new ArrayList<>(headerFields.size()-1);
@@ -952,7 +1010,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    *
    * @return a new list of headers
    */
-  private static final @Nullable Charset detectCharset(HttpURLConnection connection) {
+  private static @Nullable Charset detectCharset(HttpURLConnection connection) {
     String contentType = connection.getHeaderField("Content-Type");
     return Header.toCharset(contentType);
   }
@@ -994,10 +1052,8 @@ public final class Response implements HttpResponse, AutoCloseable {
   /**
    * Parse the response as XML.
    *
-   * @param connection The HTTP URL connection.
    * @param response   Stores metadata about the response including error details.
    * @param handler    Handles the XML.
-   * @param duplex     Whether to use duplex mode
    *
    * @throws IllegalStateException If the response is not available.
    * @throws IOException If an error occurs while writing the XML.
@@ -1038,9 +1094,108 @@ public final class Response implements HttpResponse, AutoCloseable {
   }
 
   /**
+   * Parse the response as XML.
+   *
+   * @param response   Stores metadata about the response including error details.
+   * @param handler    Handles the XML.
+   *
+   * @throws IllegalStateException If the response is not available.
+   * @throws IOException If an error occurs while writing the XML.
+   */
+  private static <T> List<T> parseXML(Response response, XMLStreamItem<T> handler) throws IOException {
+    // Ensure we a connection that returned XML content
+    HttpURLConnection connection = response.requireAvailable();
+    response.requireXML();
+
+    // Setup the factory
+    XMLInputFactory factory = XMLInputFactory.newInstance();
+    factory.setProperty(XMLInputFactory.IS_COALESCING, true);
+    factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, true);
+    factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+    factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false);
+
+    // Ensure the character encoding is correct
+    Charset charset = response._charset;
+    if (charset == null) {
+      charset = StandardCharsets.UTF_8;
+    }
+
+    List<T> list = new ArrayList<>();
+    if (handler instanceof XMLStreamItem<?>) {
+      try (InputStream in = toInputStream(connection)) {
+        XMLStreamReader source = factory.createXMLStreamReader(in, charset.name());
+
+        while (source.hasNext()) {
+          source.next();
+          if (source.getEventType() == XMLStreamReader.START_ELEMENT) {
+            String element = source.getLocalName();
+            if (element.equals(handler.element())) {
+              list.add(handler.toItem(source));
+            }
+          }
+        }
+
+      } catch (IllegalArgumentException | XMLStreamException ex) {
+        throw new ContentException("Error while parsing XML", ex);
+      }
+    }
+
+    return list;
+  }
+
+  /**
+   * Parse the response as XML.
+   *
+   * @param response   Stores metadata about the response including error details.
+   * @param handler    Handles the XML.
+   *
+   * @throws IllegalStateException If the response is not available.
+   * @throws IOException If an error occurs while writing the XML.
+   */
+  private static <T> List<T> parseXML(Response response, XMLStreamList<T> handler) throws IOException {
+    // Ensure we a connection that returned XML content
+    HttpURLConnection connection = response.requireAvailable();
+    response.requireXML();
+
+    // Setup the factory
+    XMLInputFactory factory = XMLInputFactory.newInstance();
+    factory.setProperty(XMLInputFactory.IS_COALESCING, true);
+    factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, true);
+    factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+    factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false);
+
+    // Ensure the character encoding is correct
+    Charset charset = response._charset;
+    if (charset == null) {
+      charset = StandardCharsets.UTF_8;
+    }
+
+    List<T> list = new ArrayList<>();
+    if (handler instanceof XMLStreamItem<?>) {
+      try (InputStream in = toInputStream(connection)) {
+        XMLStreamReader source = factory.createXMLStreamReader(in, charset.name());
+
+        while (source.hasNext()) {
+          source.next();
+          if (source.getEventType() == XMLStreamReader.START_ELEMENT) {
+            String element = source.getLocalName();
+            if (element.equals(handler.element())) {
+              list.addAll(handler.toList(source));
+            }
+          }
+        }
+
+      } catch (IllegalArgumentException | XMLStreamException ex) {
+        throw new ContentException("Error while parsing XML", ex);
+      }
+    }
+
+    return list;
+  }
+
+  /**
    * Parse the response as XML and transform the output.
    *
-   * @param connection The HTTP URL connection.
    * @param response   Stores metadata about the response including error details.
    * @param xml        Where the final XML goes.
    * @param templates  To transform the XML.
@@ -1105,10 +1260,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    *         <code>false</code> otherwise.
    */
   private static boolean isXML(@Nullable String mediaType) {
-    if (mediaType == null) return false;
-    return "text/xml".equals(mediaType)
-        || "application/xml".equals(mediaType)
-        || mediaType.endsWith("+xml");
+    return mediaType != null && ("text/xml".equals(mediaType) || "application/xml".equals(mediaType) || mediaType.endsWith("+xml"));
   }
 
   /**
@@ -1159,16 +1311,15 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @throws IOException If thrown while processing the stream
    */
   private static InputStream debugStream(InputStream in, int length, PrintStream out) throws IOException {
-    InputStream actual = null;
+    InputStream actual;
     if (debugEnabled) {
-      InputStream tmp = in;
       try {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        copy(tmp, buffer, length);
+        copy(in, buffer, length);
         buffer.writeTo(out);
         actual = new ByteArrayInputStream(buffer.toByteArray());
       } finally {
-        closeQuietly(tmp);
+        closeQuietly(in);
       }
     } else {
       actual = in;
@@ -1203,7 +1354,7 @@ public final class Response implements HttpResponse, AutoCloseable {
   private static void copy(InputStream input, OutputStream output, int length) throws IOException {
     int bufferSize = length <= 0 || length > 4096? 4096 : length;
     byte[] buffer = new byte[bufferSize];
-    int n = 0;
+    int n;
     while (-1 != (n = input.read(buffer))) {
       output.write(buffer, 0, n);
     }
@@ -1212,8 +1363,8 @@ public final class Response implements HttpResponse, AutoCloseable {
   /**
    * Copy the input stream to the output stream as UTF-8 using a buffer of 4096 bytes.
    *
-   * @param input  The data to copy
-   * @param output The output
+   * @param reader  The data to copy
+   * @param writer The output
    * @param length The expected length
    *
    * @throws IOException Any error reported while writing on the output
@@ -1222,7 +1373,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     // NB. length is in bytes, there are more bytes than characters
     int bufferSize = length <= 0 || length > 4096? 4096 : length;
     char[] buffer = new char[bufferSize];
-    int n = 0;
+    int n;
     while (-1 != (n = reader.read(buffer))) {
       writer.write(buffer, 0, n);
     }
@@ -1245,7 +1396,6 @@ public final class Response implements HttpResponse, AutoCloseable {
 
     /**
      * @param reader   The XML currently processing
-     * @param response The response metadata
      * @param handler  THe handler to use unless an error is detected.
      */
     public HandlerDispatcher(XMLReader reader, DefaultHandler handler) {

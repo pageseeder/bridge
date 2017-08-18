@@ -134,8 +134,7 @@ public final class PSMembership implements PSEntity  {
     if (this.id != null) return true;
     PSGroup g = this.group;
     PSMember m = this.member;
-    if (g == null || m == null) return false;
-    return g.isIdentifiable() && m.isIdentifiable();
+    return g != null && m != null && g.isIdentifiable() && m.isIdentifiable();
   }
 
   /**

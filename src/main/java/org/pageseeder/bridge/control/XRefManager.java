@@ -40,7 +40,7 @@ public final class XRefManager extends Sessionful {
   /**
    * Where the documents are cached.
    */
-  private static volatile PSEntityCache<PSXRef> cache = EHEntityCache.newInstance("psxrefs");;
+  private static volatile PSEntityCache<PSXRef> cache = EHEntityCache.newInstance("psxrefs");
 
 
   /**

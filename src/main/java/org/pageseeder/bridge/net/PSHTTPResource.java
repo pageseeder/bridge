@@ -232,7 +232,7 @@ public final class PSHTTPResource {
    * <p>If the user is specified, its details will be included in the URL so that the resource can
    * be accessed on his behalf.
    *
-   * @param credentials       PageSeeder credentials to generathe query string
+   * @param credentials       PageSeeder credentials to generate the query string
    * @param includeParameters Whether to include the parameters for POST requests.
    *
    * @return the URL to access this resource.
@@ -473,7 +473,7 @@ public final class PSHTTPResource {
       String n = this.name;
       if (t == null) throw new IllegalStateException("Unable to build PSResource, type is not set.");
       if (n == null) throw new IllegalStateException("Unable to build PSResource, name is not set.");
-      Map<String, String> parameters = null;
+      Map<String, String> parameters;
       if (this._parameters.isEmpty()) {
         parameters = Collections.emptyMap();
       } else {

@@ -271,10 +271,8 @@ public final class CachedResponse implements HttpResponse {
   /**
    * Parse the response as XML.
    *
-   * @param connection The HTTP URL connection.
-   * @param response   Stores metadata about the response including error details.
-   * @param handler    Handles the XML.
-   * @param duplex     Whether to use duplex mode
+   * @param content The content from the cache
+   * @param handler Handles the XML.
    *
    * @throws IllegalStateException If the response is not available.
    * @throws IOException If an error occurs while writing the XML.
@@ -312,7 +310,7 @@ public final class CachedResponse implements HttpResponse {
    * Copy the input stream to the output stream as UTF-8 using a buffer of 4096 bytes.
    *
    * @param reader The data to copy
-   * @param xml The output
+   * @param output The output
    * @param length The expected length
    *
    * @throws IOException Any error reported while writing on the output
@@ -321,7 +319,7 @@ public final class CachedResponse implements HttpResponse {
     // NB. length is in bytes, there are more bytes than characters
     int bufferSize = length <= 0 || length > 4096 ? 4096 : length;
     char[] buffer = new char[bufferSize];
-    int n = 0;
+    int n;
     while (-1 != (n = reader.read(buffer))) {
       output.write(buffer, 0, n);
     }
@@ -340,7 +338,7 @@ public final class CachedResponse implements HttpResponse {
     // NB. length is in bytes, there are more bytes than characters
     int bufferSize = length <= 0 || length > 4096 ? 4096 : length;
     char[] buffer = new char[bufferSize];
-    int n = 0;
+    int n;
     while (-1 != (n = reader.read(buffer))) {
       xml.writeXML(buffer, 0, n);
     }

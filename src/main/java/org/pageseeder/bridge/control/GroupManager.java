@@ -426,8 +426,7 @@ public final class GroupManager extends Sessionful {
     PSHTTPResponseInfo info = connector.get(handler);
     // TODO We should simply return null?
     if (info.getCode() >= 400) throw new APIException("Unable to list subgroups of '" + group.getName() + "': " + info.getMessage());
-    List<PSGroup> subgroups = handler.list();
-    return subgroups;
+    return handler.list();
   }
 
   /**
@@ -466,8 +465,7 @@ public final class GroupManager extends Sessionful {
     PSGroupHandler handler = new PSGroupHandler();
     PSHTTPResponseInfo info = connector.get(handler);
     if (info.getCode() >= 400) throw new APIException("Unable to list groups for member '" + member.getId() + "': " + info.getMessage());
-    List<PSGroup> groups = handler.list();
-    return groups;
+    return handler.list();
   }
 
   /**

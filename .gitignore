@@ -13,3 +13,5 @@ buildNumber.properties
 /.gradle/
 /build/
 /.checkstyle
+/.idea/
+/pso-bridge.iml

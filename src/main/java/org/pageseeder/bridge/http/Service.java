@@ -1544,7 +1544,7 @@ public enum Service {
    */
   private final ServicePath _path;
 
-  private Service(String template) {
+  Service(String template) {
     this._path = new ServicePath(template);
   }
 

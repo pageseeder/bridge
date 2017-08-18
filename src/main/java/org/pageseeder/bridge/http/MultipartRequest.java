@@ -428,10 +428,6 @@ public final class MultipartRequest extends BasicRequest {
    *   <li>Ignore cache by default</li>
    * </ul>
    *
-   * @param resource    The resource to connect to.
-   * @param type        The type of connection.
-   * @param credentials The user login to use (optional).
-   *
    * @return A newly opened connection to the specified URL
    * @throws IOException Should an exception be returns while opening the connection
    */
@@ -481,7 +477,7 @@ public final class MultipartRequest extends BasicRequest {
    */
   private static void copy(InputStream input, OutputStream output) throws IOException {
     byte[] buffer = new byte[4096];
-    int n = 0;
+    int n;
     while (-1 != (n = input.read(buffer))) {
       output.write(buffer, 0, n);
     }

@@ -54,7 +54,7 @@ public enum PSRole {
    *
    * @param p The name of the parameter for the PageSeeder services.
    */
-  private PSRole(String p) {
+  PSRole(String p) {
     this._parameter = p;
   }
 

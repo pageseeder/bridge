@@ -53,7 +53,7 @@ public final class MailOptions {
     /**
      * Send to the email addresses specified in the parameter <code>recipients</code>.
      */
-    recipients;
+    recipients
 
   }
 
@@ -87,7 +87,7 @@ public final class MailOptions {
     /**
      *
      */
-    private Template() {
+    Template() {
       this._template = name().toLowerCase().replace('_', '-');
     }
 
@@ -197,7 +197,7 @@ public final class MailOptions {
    */
   public List<String> getRecipients() {
     List<String> r = this.recipients;
-    return r != null ? Collections.unmodifiableList(r) : Collections.<String>emptyList();
+    return r != null ? Collections.unmodifiableList(r) : Collections.emptyList();
   }
 
   /**
@@ -237,7 +237,7 @@ public final class MailOptions {
    */
   public List<String> getAttachments() {
     List<String> a = this.attachments;
-    return a != null? Collections.unmodifiableList(a) : Collections.<String>emptyList();
+    return a != null? Collections.unmodifiableList(a) : Collections.emptyList();
   }
 
   /**

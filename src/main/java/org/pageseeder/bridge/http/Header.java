@@ -91,7 +91,7 @@ public final class Header {
    * @return The header long value
    */
   public long longValue() {
-    if (this._value instanceof Long) return ((Long)this._value).longValue();
+    if (this._value instanceof Long) return (Long) this._value;
     if (this._value instanceof Date) return ((Date)this._value).getTime();
     return Long.parseLong(toString());
   }

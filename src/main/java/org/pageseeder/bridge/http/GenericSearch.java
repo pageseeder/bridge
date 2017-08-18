@@ -46,7 +46,7 @@ public final class GenericSearch implements Serializable {
   private static final long serialVersionUID = 3L;
 
   public enum Type {
-    document, url, comment, task, folder;
+    document, url, comment, task, folder
   }
 
   /**
@@ -315,7 +315,7 @@ public final class GenericSearch implements Serializable {
    *
    * <p>This method is a shorthand for <code>facet("psmetadata-"+property, value)</code>.
    *
-   * @see #addFacet(String, String)
+   * @see #facet(String, String)
    *
    * @param property The name of the PSML property
    * @param value    The value it should match (for that facet)
@@ -347,7 +347,7 @@ public final class GenericSearch implements Serializable {
   /**
    * Set the facet "psstatus" to the specified status.
    *
-   * @param mediatype The value of the status facet.
+   * @param status The value of the status facet.
    *
    * @return A new <code>GenericSearch</code> instance including the specified status facet.
    */
@@ -365,7 +365,7 @@ public final class GenericSearch implements Serializable {
   /**
    * Set the facet "pspriority" to the specified priority.
    *
-   * @param mediatype The value of the priority facet.
+   * @param priority The value of the priority facet.
    *
    * @return A new <code>GenericSearch</code> instance including the specified priority facet.
    */
@@ -383,25 +383,23 @@ public final class GenericSearch implements Serializable {
   /**
    * Set the facet "psassignedto" to the specified assignedto.
    *
-   * @param mediatype The value of the assignedto facet.
-   *
    * @return A new <code>GenericSearch</code> instance including the specified assignedto facet.
-   */
-  public @Nullable String assignedTo() {
-    return facet("psassignedto");
-  }
-
-  /**
-   * @return the value of the assignedto facet or <code>null</code> if that facet isn't defined.
    */
   public GenericSearch assignedTo(String assignedTo) {
     return facet("psassignedto", assignedTo);
   }
 
   /**
+   * @return the value of the assignedto facet or <code>null</code> if that facet isn't defined.
+   */
+  public @Nullable String assignedTo() {
+    return facet("psassignedto");
+  }
+
+  /**
    * Set the facet "psfolder" to the specified folder.
    *
-   * @param mediatype The value of the folder facet.
+   * @param folder The value of the folder facet.
    *
    * @return A new <code>GenericSearch</code> instance including the specified folder facet.
    */
@@ -419,7 +417,7 @@ public final class GenericSearch implements Serializable {
   /**
    * Set the facet "psdocumenttype" to the specified PSML document type.
    *
-   * @param mediatype The value of the document type facet.
+   * @param documenttype The value of the document type facet.
    *
    * @return A new <code>GenericSearch</code> instance including the specified document type facet.
    */

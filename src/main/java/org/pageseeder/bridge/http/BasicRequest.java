@@ -487,7 +487,7 @@ abstract class BasicRequest {
   /**
    * Returns the query part of the URL.
    *
-   * @param resource the path to the resource
+   * @param uri the URI we extract the query to the resource from
    *
    * @return the part after and including '?' if it exists; otherwise "".
    */

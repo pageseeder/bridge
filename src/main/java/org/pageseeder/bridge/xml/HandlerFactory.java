@@ -28,6 +28,7 @@ import org.xml.sax.Attributes;
  * @version 0.9.2
  * @since 0.9.2
  */
+@SuppressWarnings("EmptyMethod")
 public final class HandlerFactory {
 
   /**
@@ -55,6 +56,7 @@ public final class HandlerFactory {
   /**
    * @return a handler implementation for groups and projects.
    */
+  @SuppressWarnings("EmptyMethod")
   public static Handler<PSMember> newPSMemberHandler() {
     return new BasicHandler<PSMember>() {
 

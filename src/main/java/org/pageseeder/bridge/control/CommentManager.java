@@ -239,7 +239,7 @@ public final class CommentManager extends Sessionful {
    * @return the matching comment (<code>null</code> if not found)
    */
   public @Nullable PSComment getComment(long id, PSMember member) throws APIException {
-    PSComment comment = cache.get(Long.valueOf(id));
+    PSComment comment = cache.get(id);
     if (comment == null) {
       PSHTTPConnector connector = PSHTTPConnectors.getComment(member, id).using(this._credentials);
       PSCommentHandler handler = new PSCommentHandler();

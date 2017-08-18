@@ -149,7 +149,7 @@ public final class PSHTTPConnectors {
    *
    * @return The corresponding connector
    *
-   * @throws FailedPrecondition If the member is not ientifiable.
+   * @throws FailedPrecondition If the member is not identifiable.
    */
   public static PSHTTPConnector patchMember(PSMember member, boolean forceEmail)
       throws FailedPrecondition, InvalidEntityException {
@@ -173,7 +173,7 @@ public final class PSHTTPConnectors {
    *
    * @return The corresponding connector
    *
-   * @throws FailedPrecondition If the member is not ientifiable.
+   * @throws FailedPrecondition If the member is not identifiable.
    */
   public static PSHTTPConnector createMember(PSMember member, MemberOptions options)
       throws FailedPrecondition, InvalidEntityException {
@@ -405,7 +405,7 @@ public final class PSHTTPConnectors {
 
       // Group properties
       for (Entry<String, String> property : options.getProperties().entrySet()) {
-        connector.addParameter("property." + property.getKey(), property.getValue().toString());
+        connector.addParameter("property." + property.getKey(), property.getValue());
       }
     }
 
@@ -421,8 +421,7 @@ public final class PSHTTPConnectors {
   public static PSHTTPConnector createPersonalGroup(PSMember member) throws FailedPrecondition {
     Long memberId = Preconditions.checkNotNull(member.getId(), "member");
     String service = Services.toCreate(memberId.toString());
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
-    return connector;
+    return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
   }
 
   /**
@@ -473,7 +472,7 @@ public final class PSHTTPConnectors {
 
       // Group properties
       for (Entry<String, String> property : options.getProperties().entrySet()) {
-        connector.addParameter("property." + property.getKey(), property.getValue().toString());
+        connector.addParameter("property." + property.getKey(), property.getValue());
       }
     }
     return connector;
@@ -621,8 +620,7 @@ public final class PSHTTPConnectors {
     String groupIdentifier = Preconditions.checkIdentifiable(group, "group");
     String subgroupIdentifier = Preconditions.checkIdentifiable(subgroup, "subgroup");
     String service = Services.toRemoveSubGroup(groupIdentifier, subgroupIdentifier);
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
-    return connector;
+    return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
   }
 
   /**
@@ -661,8 +659,7 @@ public final class PSHTTPConnectors {
   public static PSHTTPConnector listSubGroups(PSGroup group) throws FailedPrecondition {
     String groupIdentifier = Preconditions.checkIdentifiable(group, "group");
     String service = Services.toListSubGroups(groupIdentifier);
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
-    return connector;
+    return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
   }
 
   /**
@@ -1158,8 +1155,7 @@ public final class PSHTTPConnectors {
   public static PSHTTPConnector getActivate(String member) throws FailedPrecondition {
     Preconditions.isNotEmpty(member, "member");
     String service = Services.toActivateMember(member);
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
-    return connector;
+    return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
   }
 
   /**
@@ -1620,8 +1616,7 @@ public final class PSHTTPConnectors {
     String memberIdentifier = Preconditions.checkIdentifiable(member, "member");
     String commentIdentifier = Preconditions.checkIdentifiable(comment, "comment");
     String service = Services.toArchiveComment(memberIdentifier, commentIdentifier);
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
-    return connector;
+    return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
   }
 
   /**
@@ -1638,8 +1633,7 @@ public final class PSHTTPConnectors {
     String memberIdentifier = Preconditions.checkIdentifiable(member, "member");
     String commentIdentifier = Preconditions.checkIdentifiable(comment, "comment");
     String service = Services.toUnarchiveComment(memberIdentifier, commentIdentifier);
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
-    return connector;
+    return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
   }
 
   // External URIs
@@ -1710,14 +1704,14 @@ public final class PSHTTPConnectors {
     connector.addParameter("page", Integer.toString(page));
     connector.addParameter("pagesize", Integer.toString(pagesize));
     if (includetypes != null) {
-      String types = "";
+      StringBuilder types = new StringBuilder();
       for (int i = 0; i < includetypes.size(); i++) {
         if (i != 0) {
-          types += ",";
+          types.append(",");
         }
-        types += includetypes.get(i).toString();
+        types.append(includetypes.get(i).toString());
       }
-      connector.addParameter("includetypes", types);
+      connector.addParameter("includetypes", types.toString());
     }
     if (version != null) {
       connector.addParameter("version", version);
@@ -1938,8 +1932,7 @@ public final class PSHTTPConnectors {
     String editorIdentifier = Preconditions.checkIdentifiable(editor, "member");
     Preconditions.isNotEmpty(fragment, "fragment");
     String service = Services.toGetFragment(editorIdentifier, groupIdentifier, Long.toString(documentId), fragment);
-    PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
-    return connector;
+    return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
   }
 
   /**

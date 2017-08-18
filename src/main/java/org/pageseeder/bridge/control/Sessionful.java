@@ -40,7 +40,7 @@ abstract class Sessionful {
   /**
    * Create a new manager using the specified user session.
    *
-   * @param session the user session using making the connections.
+   * @param credentials the user session using making the connections.
    */
   public Sessionful(PSCredentials credentials) {
     this._credentials = credentials;

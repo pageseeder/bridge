@@ -197,8 +197,7 @@ public final class DocumentPath {
     if (obj == null) return false;
     if (getClass() != obj.getClass()) return false;
     DocumentPath other = (DocumentPath)obj;
-    if (!Arrays.equals(this._steps, other._steps)) return false;
-    return true;
+    return Arrays.equals(this._steps, other._steps);
   }
 
   @Override
@@ -251,10 +250,8 @@ public final class DocumentPath {
    * @return a single child of this path.
    */
   private String[] descendantOf(DocumentPath original, String subpath) {
-    String[] current = this._steps;
     String[] children = normalize(subpath.split("/"));
-    String[] path = merge(current, children);
-    return path;
+    return merge(this._steps, children);
   }
 
   /**

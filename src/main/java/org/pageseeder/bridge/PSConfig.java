@@ -431,7 +431,7 @@ public final class PSConfig {
   /**
    * @return the host URL as a string builder.
    *
-   * @deprecated Use {@link #buildWebsiteURL()} or {@link #buildDocumentURL()} instead.
+   * @deprecated Use {@link #toURLBuilder(URL)} instead.
    */
   @Deprecated
   public StringBuilder buildHostURL() {
@@ -441,7 +441,7 @@ public final class PSConfig {
   /**
    * @return the host URL.
    *
-   * @deprecated Use {@link #buildWebsiteURL()} or {@link #buildDocumentURL()} instead.
+   * @deprecated Use {@link #toURLBuilder(URL)} instead.
    */
   @Deprecated
   public String getHostURL() {
@@ -584,7 +584,7 @@ public final class PSConfig {
    *
    * @return the URL
    *
-   * @throws MalformedURLException
+   * @throws IllegalArgumentException If the URL is not well-formed
    */
   private static URL toBaseURL(String url) {
     try {

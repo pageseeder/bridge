@@ -91,11 +91,9 @@ public final class PSDocumentHandler extends DefaultHandler {
       this.inURI = true;
       String mediatype = atts.getValue("mediatype");
       if ("folder".equals(mediatype)) {
-        PSFolder folder = PSEntityFactory.toFolder(atts, this.folder);
-        this.folder = folder;
+        this.folder = PSEntityFactory.toFolder(atts, this.folder);
       } else {
-        PSDocument document = PSEntityFactory.toDocument(atts, this.document);
-        this.document = document;
+        this.document = PSEntityFactory.toDocument(atts, this.document);
       }
     // record element content
     } else if (this.inURI && "description".equals(localName)

@@ -21,7 +21,7 @@ package org.pageseeder.bridge.model;
  */
 public final class MemberOptions {
 
-  public enum Invitation {YES, NO, DEFAULT};
+  public enum Invitation {YES, NO, DEFAULT}
 
   /**
    * Whether to send a welcome email to the new member.

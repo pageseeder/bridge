@@ -52,8 +52,7 @@ public class HttpCache {
   public @Nullable CachedContent get(String url) {
     Element element = this._cache.get(url);
     if (element == null) return null;
-    CachedContent content = (CachedContent)element.getObjectValue();
-    return content;
+    return (CachedContent)element.getObjectValue();
   }
 
   public void put(CachedContent content) {

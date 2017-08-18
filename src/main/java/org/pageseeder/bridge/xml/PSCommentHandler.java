@@ -118,8 +118,7 @@ public final class PSCommentHandler extends DefaultHandler {
       }
     }
     if ("comment".equals(localName)) {
-      PSComment comment = PSEntityFactory.toComment(atts, this.comment);
-      this.comment = comment;
+      this.comment = PSEntityFactory.toComment(atts, this.comment);
 
     } else {
       PSComment com = this.comment;
@@ -165,7 +164,7 @@ public final class PSCommentHandler extends DefaultHandler {
           com.setContext(group);
 
         } else if ("uri".equals(localName)) {
-          PSURI u = null;
+          PSURI u;
           if ("true".equals(atts.getValue("external"))) {
             u = PSEntityFactory.toExternalURI(atts, null);
           } else {
