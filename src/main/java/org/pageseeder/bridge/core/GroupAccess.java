@@ -13,26 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.pageseeder.bridge.stax;
+package org.pageseeder.bridge.core;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.util.List;
+import org.eclipse.jdt.annotation.Nullable;
 
-/**
- * Implementations of which can be supplied to a response in order to
- * retrieve an object or a list of objects directly from the PageSeeder XML
- * response.
- *
- * @author Christophe Lauret
- *
- * @param <T> The type of object to return
- */
-public interface XMLStreamList<T> extends XMLStreamHandler<T> {
+public enum GroupAccess {
+
+  MEMBER,
+
+  PUBLIC;
+
+  @Override
+  public String toString() {
+    return name().toLowerCase();
+  }
 
   /**
-   * @return the item that was processed and added to the list.
+   * Match a group access value
+   *
+   * @param s the string value
+   * @return the corresponding GroupAccess
    */
-  List<T> toList(XMLStreamReader xml) throws XMLStreamException;
+  public static GroupAccess forName(@Nullable String s) {
+    for (GroupAccess access : values()) {
+      if (access.name().equalsIgnoreCase(s)) return access;
+    }
+    return MEMBER;
+  }
 
 }

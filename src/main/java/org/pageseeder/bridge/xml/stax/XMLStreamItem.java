@@ -13,10 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.pageseeder.bridge.xml.stax;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 /**
- * PageSeeder core classes for the API.
+ * Implementations of which can be supplied to a response in order to
+ * retrieve an object or a list of objects directly from the PageSeeder XML
+ * response.
  *
  * @author Christophe Lauret
+ *
+ * @param <T> The type of object to return
  */
-@org.eclipse.jdt.annotation.NonNullByDefault
-package org.pageseeder.bridge.stax;
+public interface XMLStreamItem<T> extends XMLStreamHandler<T> {
+
+  /**
+   * @return the item that was processed and added to the list.
+   */
+  T toItem(XMLStreamReader xml) throws XMLStreamException;
+
+}

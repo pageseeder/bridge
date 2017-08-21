@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.pageseeder.bridge.stax;
+package org.pageseeder.bridge.xml.stax;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.xml.InvalidAttributeException;

@@ -13,37 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.pageseeder.bridge.stax;
+package org.pageseeder.bridge.xml.stax;
 
-import org.pageseeder.bridge.model.PSMember;
-import org.pageseeder.bridge.model.PSMemberStatus;
+import org.pageseeder.bridge.core.Project;
+import org.pageseeder.bridge.core.GroupAccess;
+import org.pageseeder.bridge.core.GroupID;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class XMLStreamPSMember extends BasicXMLStreamHandler<PSMember> implements XMLStreamItem<PSMember> {
+public class XMLStreamProject extends BasicXMLStreamHandler<Project> implements XMLStreamItem<Project> {
 
-  public XMLStreamPSMember() {
-    super("member");
+  public XMLStreamProject() {
+    super("project");
   }
 
   @Override
-  public PSMember toItem(XMLStreamReader xml) throws XMLStreamException {
+  public Project toItem(XMLStreamReader xml) throws XMLStreamException {
     if (isOnElement(xml)) {
       long id = attribute(xml, "id", -1);
-      PSMember member = new PSMember(id);
-      String email     = attribute(xml, "email");
-      String firstname = attribute(xml, "firstname");
-      String surname   = attribute(xml, "surname");
-      String username  = attribute(xml, "username");
-      String status    = attribute(xml, "status", "unknown");
-      member.setEmail(email);
-      member.setUsername(username);
-      member.setStatus(PSMemberStatus.fromAttribute(status));
-      member.setFirstname(firstname);
-      member.setSurname(surname);
+      GroupID name = new GroupID(attribute(xml, "name"));
+      String description = attribute(xml, "description");
+      String owner = attribute(xml, "owner");
+      String title = attribute(xml, "title", "");
+      GroupAccess access = GroupAccess.forName(attribute(xml, "access"));
+      String relatedURL = attribute(xml, "relatedurl", "");
+      boolean common = "true".equals(attribute(xml, "common"));
       skipToEndElement(xml, element());
-      return member;
+      return new Project(id, name, title, description, owner, access, common, relatedURL);
     } else throw new IllegalStateException("not a member");
   }
 

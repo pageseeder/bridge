@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.pageseeder.bridge.stax;
+package org.pageseeder.bridge.xml.stax;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.util.List;
 
 /**
  * Implementations of which can be supplied to a response in order to
@@ -21,12 +25,14 @@ package org.pageseeder.bridge.stax;
  * response.
  *
  * @author Christophe Lauret
+ *
+ * @param <T> The type of object to return
  */
-public interface XMLStreamHandler<T> {
+public interface XMLStreamList<T> extends XMLStreamHandler<T> {
 
   /**
-   * @return The name of the element
+   * @return the item that was processed and added to the list.
    */
-  String element();
+  List<T> toList(XMLStreamReader xml) throws XMLStreamException;
 
 }

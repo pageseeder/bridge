@@ -51,8 +51,8 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSSession;
-import org.pageseeder.bridge.stax.XMLStreamItem;
-import org.pageseeder.bridge.stax.XMLStreamList;
+import org.pageseeder.bridge.xml.stax.XMLStreamItem;
+import org.pageseeder.bridge.xml.stax.XMLStreamList;
 import org.pageseeder.bridge.xml.DuplexHandler;
 import org.pageseeder.bridge.xml.Handler;
 import org.pageseeder.bridge.xml.ServiceErrorHandler;

@@ -29,7 +29,10 @@ import org.xml.sax.SAXException;
  *
  * @version 0.9.2
  * @since 0.9.2
+ *
+ * @deprecated Use BasicHandler instead
  */
+@Deprecated
 public abstract class BuildableHandler<T, B> extends BasicHandler<T> {
 
   /**

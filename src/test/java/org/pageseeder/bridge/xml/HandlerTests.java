@@ -27,7 +27,7 @@ public class HandlerTests {
   }
 
   public static final void parse(String filename, DefaultHandler handler) throws SAXException, IOException {
-    File f = new File("src/test/resource/data/org.pageseeder.bridge.xml/"+filename);
+    File f = new File("src/test/resources/org/pageseeder/bridge/xml/"+filename);
     parse(f, handler);
   }
 

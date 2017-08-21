@@ -13,35 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.pageseeder.bridge.stax;
+package org.pageseeder.bridge.xml.stax;
 
-import org.pageseeder.bridge.model.PSGroup;
+import org.pageseeder.bridge.core.Group;
+import org.pageseeder.bridge.core.GroupAccess;
+import org.pageseeder.bridge.core.GroupID;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class XMLStreamPSGroup extends BasicXMLStreamHandler<PSGroup> implements XMLStreamItem<PSGroup> {
+public class XMLStreamGroup extends BasicXMLStreamHandler<Group> implements XMLStreamItem<Group> {
 
-  public XMLStreamPSGroup() {
+  public XMLStreamGroup() {
     super("group");
   }
 
   @Override
-  public PSGroup toItem(XMLStreamReader xml) throws XMLStreamException {
+  public Group toItem(XMLStreamReader xml) throws XMLStreamException {
     if (isOnElement(xml)) {
       long id = attribute(xml, "id", -1);
-      PSGroup group = new PSGroup(id);
-      String name    = attribute(xml, "name");
+      GroupID name = new GroupID(attribute(xml, "name"));
       String description = attribute(xml, "description");
-      String owner   = attribute(xml, "owner");
-//      String access  = attribute(xml, "access");
-//      boolean common = attribute(xml, "common", false);
-
-      group.setName(name);
-      group.setDescription(description);
-      group.setOwner(owner);
+      String owner = attribute(xml, "owner");
+      String title = attribute(xml, "title", "");
+      GroupAccess access = GroupAccess.forName(attribute(xml, "access"));
+      String relatedURL = attribute(xml, "relatedurl", "");
+      boolean common = "true".equals(attribute(xml, "common"));
       skipToEndElement(xml, element());
-      return group;
+      return new Group(id, name, title, description, owner, access, common, relatedURL);
     } else throw new IllegalStateException("not a member");
   }
 

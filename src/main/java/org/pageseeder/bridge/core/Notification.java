@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Allette Systems (Australia)
+ * Copyright 2017 Allette Systems (Australia)
  * http://www.allette.com.au
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,64 +13,67 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.pageseeder.bridge.model;
+package org.pageseeder.bridge.core;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.Requires;
 
 /**
  * @author Christophe Lauret
  *
- * @version 0.11.3
- * @since 0.1.0
+ * @version 0.12.0
+ * @since 0.12.0
  */
-public enum PSNotification {
+public enum Notification {
 
   /**
    * No notification.
    */
-  none("none"),
+  none,
 
   /**
    * Immediate notification.
    */
-  immediate("immediate"),
+  immediate,
 
   /**
    * Daily digest at scheduled time.
    */
-  daily("daily"),
+  daily,
 
   /**
    * Weekly digest at scheduled time.
    */
   @Requires(minVersion = 59300)
-  weekly("weekly"),
+  weekly,
 
   /**
    * Essential people in the task.
    */
   @Requires(minVersion = 59300)
-  essential("essential");
-
-  /**
-   * The value to send as a parameter to services.
-   */
-  private final String _parameter;
-
-  /**
-   * Private constructor.
-   *
-   * @param p the name of the parameter for PageSeeder services
-   */
-  PSNotification(String p) {
-    this._parameter = p;
-  }
+  essential;
 
   /**
    * @return the parameter to use when communicating with PageSeder
    */
   public String parameter() {
-    return this._parameter;
+    return this.name();
   }
 
+  // TODO Check actual values to be passed
+  // TODO Provide safe value
+  // TODO Provide `unknown` option
+
+  /**
+   * Match a group access value
+   *
+   * @param s the string value
+   * @return the corresponding Notification (defaults to none)
+   */
+  public static Notification forName(@Nullable String s) {
+    for (Notification notification : values()) {
+      if (notification.name().equalsIgnoreCase(s)) return notification;
+    }
+    return none;
+  }
 }
