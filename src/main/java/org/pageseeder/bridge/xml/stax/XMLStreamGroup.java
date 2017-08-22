@@ -18,6 +18,7 @@ package org.pageseeder.bridge.xml.stax;
 import org.pageseeder.bridge.core.Group;
 import org.pageseeder.bridge.core.GroupAccess;
 import org.pageseeder.bridge.core.GroupID;
+import org.pageseeder.bridge.xml.InvalidElementException;
 import org.pageseeder.bridge.xml.MissingAttributeException;
 
 import javax.xml.stream.XMLStreamException;
@@ -43,7 +44,7 @@ public class XMLStreamGroup extends BasicXMLStreamHandler<Group> implements XMLS
       boolean common = "true".equals(attribute(xml, "common", "false"));
       skipToEndElement(xml, element());
       return new Group(id, name, title, description, owner, access, common, relatedURL);
-    } else throw new IllegalStateException("not a group");
+    } else throw new InvalidElementException("not a group");
   }
 
 }

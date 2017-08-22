@@ -18,6 +18,7 @@ package org.pageseeder.bridge.xml.stax;
 import org.pageseeder.bridge.core.BasicGroup;
 import org.pageseeder.bridge.core.Member;
 import org.pageseeder.bridge.core.Membership;
+import org.pageseeder.bridge.xml.InvalidElementException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -64,7 +65,7 @@ public class XMLStreamMemberships extends BasicXMLStreamHandler<Membership> impl
         }
       } while (!(xml.isEndElement() &&  "memberships".equals(xml.getLocalName())));
       return memberships;
-    } else throw new IllegalStateException("not a membership list");
+    } else throw new InvalidElementException("not a membership list");
   }
 
 }

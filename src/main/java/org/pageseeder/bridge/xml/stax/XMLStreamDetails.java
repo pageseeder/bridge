@@ -17,6 +17,7 @@ package org.pageseeder.bridge.xml.stax;
 
 import org.pageseeder.bridge.core.Details;
 import org.pageseeder.bridge.core.Field;
+import org.pageseeder.bridge.xml.InvalidElementException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -49,7 +50,7 @@ public class XMLStreamDetails extends BasicXMLStreamHandler<Details> implements 
 
       if (fields.isEmpty()) return Details.NO_DETAILS;
       else return new Details(fields);
-    } else throw new IllegalStateException("not a details");
+    } else throw new InvalidElementException("not a details");
   }
 
 }

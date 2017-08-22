@@ -19,6 +19,7 @@ import org.pageseeder.bridge.core.Email;
 import org.pageseeder.bridge.core.Member;
 import org.pageseeder.bridge.core.MemberStatus;
 import org.pageseeder.bridge.core.Username;
+import org.pageseeder.bridge.xml.InvalidElementException;
 import org.pageseeder.bridge.xml.MissingAttributeException;
 
 import javax.xml.stream.XMLStreamException;
@@ -52,7 +53,7 @@ public class XMLStreamMember extends BasicXMLStreamHandler<Member> implements XM
       if (onVacation) member = member.isOnVacation(true);
       if (attachments) member = member.hasAttachments(true);
       return member;
-    } else throw new IllegalStateException("not a member");
+    } else throw new InvalidElementException("not a member");
   }
 
 }

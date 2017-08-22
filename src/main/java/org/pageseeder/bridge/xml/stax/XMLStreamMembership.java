@@ -16,6 +16,8 @@
 package org.pageseeder.bridge.xml.stax;
 
 import org.pageseeder.bridge.core.*;
+import org.pageseeder.bridge.xml.InvalidElementException;
+import org.pageseeder.bridge.xml.MissingElementException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -81,13 +83,13 @@ public class XMLStreamMembership extends BasicXMLStreamHandler<Membership> imple
 //      override	list	no	Which attributes from subgroups are overridden (i.e not inherited).
 //      subgroups	xs:string	no	Comma-separated list of subgroups
 
-        if (member == null) throw new IllegalStateException("Membership is required for a membership");
-        if (group == null) throw new IllegalStateException("Group or project is required for a membership");
+        if (member == null) throw new MissingElementException("Member is required for a membership");
+        if (group == null) throw new MissingElementException("Group or project is required for a membership");
 
       // TODO
 
       return new Membership(id, member, group, common, notification, role, created, status, deleted, details);
-    } else throw new IllegalStateException("not a member");
+    } else throw new InvalidElementException("not a membership");
   }
 
 }
