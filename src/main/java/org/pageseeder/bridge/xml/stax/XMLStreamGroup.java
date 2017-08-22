@@ -18,6 +18,7 @@ package org.pageseeder.bridge.xml.stax;
 import org.pageseeder.bridge.core.Group;
 import org.pageseeder.bridge.core.GroupAccess;
 import org.pageseeder.bridge.core.GroupID;
+import org.pageseeder.bridge.xml.MissingAttributeException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -32,16 +33,17 @@ public class XMLStreamGroup extends BasicXMLStreamHandler<Group> implements XMLS
   public Group toItem(XMLStreamReader xml) throws XMLStreamException {
     if (isOnElement(xml)) {
       long id = attribute(xml, "id", -1);
+      if (id == -1L) throw new MissingAttributeException("Missing group ID");
       GroupID name = new GroupID(attribute(xml, "name"));
-      String description = attribute(xml, "description");
-      String owner = attribute(xml, "owner");
+      String description = attribute(xml, "description", "");
+      String owner = attribute(xml, "owner","");
       String title = attribute(xml, "title", "");
-      GroupAccess access = GroupAccess.forName(attribute(xml, "access"));
+      GroupAccess access = GroupAccess.forName(attribute(xml, "access", "member"));
       String relatedURL = attribute(xml, "relatedurl", "");
-      boolean common = "true".equals(attribute(xml, "common"));
+      boolean common = "true".equals(attribute(xml, "common", "false"));
       skipToEndElement(xml, element());
       return new Group(id, name, title, description, owner, access, common, relatedURL);
-    } else throw new IllegalStateException("not a member");
+    } else throw new IllegalStateException("not a group");
   }
 
 }

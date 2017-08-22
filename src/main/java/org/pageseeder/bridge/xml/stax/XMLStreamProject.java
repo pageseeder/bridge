@@ -15,9 +15,10 @@
  */
 package org.pageseeder.bridge.xml.stax;
 
-import org.pageseeder.bridge.core.Project;
 import org.pageseeder.bridge.core.GroupAccess;
 import org.pageseeder.bridge.core.GroupID;
+import org.pageseeder.bridge.core.Project;
+import org.pageseeder.bridge.xml.MissingAttributeException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -32,16 +33,17 @@ public class XMLStreamProject extends BasicXMLStreamHandler<Project> implements 
   public Project toItem(XMLStreamReader xml) throws XMLStreamException {
     if (isOnElement(xml)) {
       long id = attribute(xml, "id", -1);
+      if (id == -1L) throw new MissingAttributeException("Missing project ID");
       GroupID name = new GroupID(attribute(xml, "name"));
-      String description = attribute(xml, "description");
-      String owner = attribute(xml, "owner");
+      String description = attribute(xml, "description", "");
+      String owner = attribute(xml, "owner","");
       String title = attribute(xml, "title", "");
-      GroupAccess access = GroupAccess.forName(attribute(xml, "access"));
+      GroupAccess access = GroupAccess.forName(attribute(xml, "access", "member"));
       String relatedURL = attribute(xml, "relatedurl", "");
-      boolean common = "true".equals(attribute(xml, "common"));
+      boolean common = "true".equals(attribute(xml, "common", "false"));
       skipToEndElement(xml, element());
       return new Project(id, name, title, description, owner, access, common, relatedURL);
-    } else throw new IllegalStateException("not a member");
+    } else throw new IllegalStateException("not a project");
   }
 
 }

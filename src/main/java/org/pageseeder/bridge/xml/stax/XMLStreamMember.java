@@ -19,6 +19,7 @@ import org.pageseeder.bridge.core.Email;
 import org.pageseeder.bridge.core.Member;
 import org.pageseeder.bridge.core.MemberStatus;
 import org.pageseeder.bridge.core.Username;
+import org.pageseeder.bridge.xml.MissingAttributeException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -32,7 +33,8 @@ public class XMLStreamMember extends BasicXMLStreamHandler<Member> implements XM
   @Override
   public Member toItem(XMLStreamReader xml) throws XMLStreamException {
     if (isOnElement(xml)) {
-      long id = attribute(xml, "id", -1);
+      long id = attribute(xml, "id", -1L);
+      if (id == -1L) throw new MissingAttributeException("Missing member ID");
       Username username = new Username(attribute(xml, "username"));
       String firstname = attribute(xml, "firstname");
       String surname   = attribute(xml, "surname");
