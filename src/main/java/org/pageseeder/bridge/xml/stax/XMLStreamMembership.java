@@ -81,7 +81,8 @@ public class XMLStreamMembership extends BasicXMLStreamHandler<Membership> imple
 //      override	list	no	Which attributes from subgroups are overridden (i.e not inherited).
 //      subgroups	xs:string	no	Comma-separated list of subgroups
 
-
+        if (member == null) throw new IllegalStateException("Membership is required for a membership");
+        if (group == null) throw new IllegalStateException("Group or project is required for a membership");
 
       // TODO
 

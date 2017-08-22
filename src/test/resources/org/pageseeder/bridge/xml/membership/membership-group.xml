@@ -1,0 +1,21 @@
+<!--
+  ~ Copyright 2017 Allette Systems (Australia)
+  ~ http://www.allette.com.au
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<membership id="102" email-listed="true" notification="immediate" status="normal" role="manager">
+  <member id="123" firstname="John" surname="Smith" username="jsmith" email="jsmith@example.org" lastpasswordchange="2016-02-25T13:48:12+11:00" lastlogin="2016-10-26T14:05:55+11:00" status="activated">
+    <fullname>John Smith</fullname>
+  </member>
+  <group id="203" name="product-support" description="Support group for product" owner="Product" access="member" common="false" relatedurl="https://example.org"/>
+</membership>

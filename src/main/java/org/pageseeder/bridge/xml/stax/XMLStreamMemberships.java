@@ -26,7 +26,7 @@ import java.util.List;
 
 public class XMLStreamMemberships extends BasicXMLStreamHandler<Membership> implements XMLStreamList<Membership> {
 
-  private XMLStreamMemberships() {
+  public XMLStreamMemberships() {
     super("memberships");
   }
 
