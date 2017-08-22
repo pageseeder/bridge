@@ -58,6 +58,25 @@ public class XMLStreamMembership extends BasicXMLStreamHandler<Membership> imple
       OffsetDateTime created = OffsetDateTime.MIN;
       optionalAttribute(xml, "created");
 
+      Member member = this._member;
+      BasicGroup group = this._group;
+      Details details = Details.NO_DETAILS;
+
+      do {
+        xml.next();
+        if (xml.isStartElement()) {
+          String localName = xml.getLocalName();
+          if ("member".equals(localName)) {
+            member = new XMLStreamMember().toItem(xml);
+          } else if ("group".equals(localName)) {
+            group = new XMLStreamGroup().toItem(xml);
+          } else if ("project".equals(localName)) {
+            group = new XMLStreamProject().toItem(xml);
+          } else if ("details".equals(localName)) {
+            details = new XMLStreamDetails().toItem(xml);
+          }
+        }
+      } while (!(xml.isEndElement() &&  "membership".equals(xml.getLocalName())));
 
 //      override	list	no	Which attributes from subgroups are overridden (i.e not inherited).
 //      subgroups	xs:string	no	Comma-separated list of subgroups
@@ -66,7 +85,7 @@ public class XMLStreamMembership extends BasicXMLStreamHandler<Membership> imple
 
       // TODO
 
-      return new Membership(id, _member, _group, common, notification, role, created, status, deleted);
+      return new Membership(id, member, group, common, notification, role, created, status, deleted, details);
     } else throw new IllegalStateException("not a member");
   }
 

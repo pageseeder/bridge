@@ -15,10 +15,14 @@
  */
 package org.pageseeder.bridge.core;
 
-import java.time.OffsetDateTime;
-
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.Requires;
+import org.pageseeder.xmlwriter.XMLWritable;
+import org.pageseeder.xmlwriter.XMLWriter;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
 
 /**
  * A membership to a group or project
@@ -28,7 +32,7 @@ import org.pageseeder.bridge.Requires;
  * @version 0.12.0
  * @since 0.12.0
  */
-public final class Membership  {
+public final class Membership implements Serializable, XMLWritable {
 
   /** As per recommendation */
   private static final long serialVersionUID = 1L;
@@ -93,14 +97,14 @@ public final class Membership  {
   /**
    * Membership detail fields if any
    */
- //TODO private @Nullable PSDetails details = null;
+  private Details _details;
 
   /**
    * Generated key
    */
   private transient @Nullable String key = null;
 
-  public Membership(long id, Member member, BasicGroup group, boolean listed, Notification notification, Role role, OffsetDateTime created, MembershipStatus status, boolean deleted) {
+  public Membership(long id, Member member, BasicGroup group, boolean listed, Notification notification, Role role, OffsetDateTime created, MembershipStatus status, boolean deleted, Details details) {
     this._id = id;
     this._member = member;
     this._group = group;
@@ -110,6 +114,7 @@ public final class Membership  {
     this._created = created;
     this._status = status;
     this._deleted = deleted;
+    this._details = details;
   }
 
   /**
@@ -185,14 +190,38 @@ public final class Membership  {
   /**
    * @return Membership detail fields if any
    */
-//TODO  public @Nullable PSDetails getDetails() {
-//    return this.details;
-//  }
-
+  public Details getDetails() {
+    return this._details;
+  }
 
   @Override
   public String toString() {
     return "Membership("+this._id+":"+getMember()+","+getGroup()+")";
+  }
+
+  @Override
+  public void toXML(XMLWriter xml) throws IOException {
+    xml.openElement("membership");
+    if (this._id > 0)
+      xml.attribute("id", Long.toString(this._id)); // id	xs:long	no	The ID of the membership in PageSeeder
+    xml.attribute("email-listed", Boolean.toString(this._listed)); // email-listed	xs:boolean	yes	Whether the member discloses its email address
+    xml.attribute("status", this._status.toString()); // status	enum	yes	The status of the membership
+    xml.attribute("notification", this._notification.toString()); // notification 	enum	yes	Notification preference for the member
+
+    // TODO datetime formatting
+    if (this._created != OffsetDateTime.MIN)
+      xml.attribute("created", this._created.toString());
+    if (this._role != Role.unknown)
+      xml.attribute("role", this._role.toString());
+    if (this._deleted)
+      xml.attribute("deleted", "true");
+//    xml.attribute("override", ); // override	list	no	Which attributes from subgroups are overridden (i.e not inherited).
+//    xml.attribute("subgroups", );// subgroups	xs:string	no	Comma-separated list of subgroups
+    this._member.toXML(xml);
+    this._group.toXML(xml);
+    if (!this._details.isEmpty())
+      this._details.toXML(xml);
+    xml.closeElement();
   }
 
   public static class Builder {
@@ -206,9 +235,10 @@ public final class Membership  {
     private OffsetDateTime created = OffsetDateTime.MIN;
     private MembershipStatus status = MembershipStatus.unknown;
     private boolean deleted;
+    private Details details = Details.NO_DETAILS;
+
     //TODO  private String override;
     // subgroups	xs:string	no	Comma-separated list of subgroups
-    //TODO private @Nullable PSDetails details = null;
 
     public Builder(Member member) {
       this.member = member;
@@ -282,36 +312,16 @@ public final class Membership  {
     }
 
     /**
-     * @param details Membership detail fields if any
+     * @param details Membership details if any
      */
-   // public Builder setDetails(PSDetails details) {
-//      this.details = details;
-//    }
-
-    /**
-     * Shorthand method to set the detail field on that membership.
-     *
-     * <p>If this membership has no details, this method will add a new empty PSDetails object.
-     *
-     * @param i     the 1-based index of the field.
-     * @param value the value to set.
-     *
-     * @throws IndexOutOfBoundsException If the index is less than 1 or greater than 15.
-
-    public void setField(int i, @Nullable String value) {
-      Details d = this.details;
-      if (d == null) {
-        d = new PSDetails();
-        this.details = d;
-      }
-      d.setField(i, value);
+    public Builder setDetails(Details details) {
+      this.details = details;
+      return this;
     }
-     */
 
     public Membership build() {
-      return new Membership(this.id, this.member, this.group, this.listed, this.notification, this.role, this.created, this.status, this.deleted);
+      return new Membership(this.id, this.member, this.group, this.listed, this.notification, this.role, this.created, this.status, this.deleted, this.details);
     }
-
 
   }
 }
