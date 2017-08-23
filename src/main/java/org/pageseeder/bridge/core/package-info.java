@@ -19,6 +19,7 @@
  * <p>It will ultimately replace the `model` package that will be deprecated</p>
  *
  * @author Christophe Lauret
+ * @since 0.12.0
  * @version 0.12.0
  */
 @org.eclipse.jdt.annotation.NonNullByDefault

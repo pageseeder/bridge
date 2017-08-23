@@ -15,11 +15,11 @@
  */
 package org.pageseeder.bridge.core;
 
-import java.io.IOException;
-
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.xmlwriter.XMLWritable;
 import org.pageseeder.xmlwriter.XMLWriter;
+
+import java.io.IOException;
 
 /**
  * A PageSeeder member.
@@ -177,6 +177,19 @@ public final class Member implements XMLWritable {
   @Override
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement("member");
+    toXMLAttributes(xml);
+    xml.element("fullname", this._firstname+" "+this._surname);
+    xml.closeElement();
+  }
+
+  /**
+   * Writes the attribute for the member
+   *
+   * @param xml XML Writer
+   *
+   * @throws IOException if reported by the writer
+   */
+  public void toXMLAttributes(XMLWriter xml) throws IOException {
     if (this._id > 0) {
       xml.attribute("id", Long.toString(this._id));
     }
@@ -198,7 +211,6 @@ public final class Member implements XMLWritable {
     if (this._attachments) {
       xml.attribute("attachments", "true");
     }
-    xml.closeElement();
   }
 
   /**

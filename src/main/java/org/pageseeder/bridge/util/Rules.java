@@ -18,7 +18,7 @@ package org.pageseeder.bridge.util;
 import java.util.regex.Pattern;
 
 /**
- * Utility class providing rules to applying to various entities and their fielsds.
+ * Utility class providing rules to applying to various entities and their fields.
  *
  * @author christophe Lauret
  */
@@ -81,22 +81,21 @@ public final class Rules {
    *         <code>false</code> otherwise.
    */
   public static boolean isEmail(String email) {
-    if (email == null || email.isEmpty()) return false;
-    return email.indexOf('@') >= 0 && EMAIL.matcher(email).matches();
+    return email != null && !email.isEmpty() && email.indexOf('@') >= 0 && EMAIL.matcher(email).matches();
   }
 
   /**
-   * @param mtype the media type to check
+   * @param mediatype the media type to check
    *
    * @return <code>true</code> if it's an XML media type
    */
-  public static boolean isXMLMediaType(String mtype) {
-    return "text/xml".equals(mtype) ||
-        "application/xml".equals(mtype) ||
-        "text/xml-external-parsed-entity".equals(mtype) ||
-        "application/xml-external-parsed-entity".equals(mtype) ||
-        "application/xml-dtd".equals(mtype) ||
-        (mtype != null && mtype.endsWith("+xml"));
+  public static boolean isXMLMediaType(String mediatype) {
+    return "text/xml".equals(mediatype) ||
+        "application/xml".equals(mediatype) ||
+        "text/xml-external-parsed-entity".equals(mediatype) ||
+        "application/xml-external-parsed-entity".equals(mediatype) ||
+        "application/xml-dtd".equals(mediatype) ||
+        (mediatype != null && mediatype.endsWith("+xml"));
   }
 
 }

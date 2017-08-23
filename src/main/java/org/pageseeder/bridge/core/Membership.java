@@ -203,32 +203,38 @@ public final class Membership implements Serializable, XMLWritable {
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement("membership");
     if (this._id > 0)
+     {
       xml.attribute("id", Long.toString(this._id)); // id	xs:long	no	The ID of the membership in PageSeeder
+    }
     xml.attribute("email-listed", Boolean.toString(this._listed)); // email-listed	xs:boolean	yes	Whether the member discloses its email address
     xml.attribute("status", this._status.toString()); // status	enum	yes	The status of the membership
     xml.attribute("notification", this._notification.toString()); // notification 	enum	yes	Notification preference for the member
 
     // TODO datetime formatting
-    if (this._created != OffsetDateTime.MIN)
+    if (this._created != OffsetDateTime.MIN) {
       xml.attribute("created", this._created.toString());
-    if (this._role != Role.unknown)
+    }
+    if (this._role != Role.unknown) {
       xml.attribute("role", this._role.toString());
-    if (this._deleted)
+    }
+    if (this._deleted) {
       xml.attribute("deleted", "true");
+    }
 //    xml.attribute("override", ); // override	list	no	Which attributes from subgroups are overridden (i.e not inherited).
 //    xml.attribute("subgroups", );// subgroups	xs:string	no	Comma-separated list of subgroups
     this._member.toXML(xml);
     this._group.toXML(xml);
-    if (!this._details.isEmpty())
+    if (!this._details.isEmpty()) {
       this._details.toXML(xml);
+    }
     xml.closeElement();
   }
 
   public static class Builder {
 
     private long id = -1;
-    private Member member;
-    private BasicGroup group;
+    private @Nullable Member member;
+    private @Nullable BasicGroup group;
     private boolean listed;
     private Notification notification = Notification.none;
     private Role role;
@@ -238,13 +244,15 @@ public final class Membership implements Serializable, XMLWritable {
     private Details details = Details.NO_DETAILS;
 
     //TODO  private String override;
-    // subgroups	xs:string	no	Comma-separated list of subgroups
+    // subgroups xs:string no Comma-separated list of subgroups
 
     public Builder(Member member) {
       this.member = member;
+      this.group = null;
     }
 
     public Builder(BasicGroup group) {
+      this.member = null;
       this.group = group;
     }
 
@@ -320,7 +328,11 @@ public final class Membership implements Serializable, XMLWritable {
     }
 
     public Membership build() {
-      return new Membership(this.id, this.member, this.group, this.listed, this.notification, this.role, this.created, this.status, this.deleted, this.details);
+      Member m = this.member;
+      BasicGroup g = this.group;
+      if (m == null) throw new IllegalStateException("Member is required to build a membership");
+      if (g == null) throw new IllegalStateException("Group or Project is required to build a membership");
+      return new Membership(this.id, m, g, this.listed, this.notification, this.role, this.created, this.status, this.deleted, this.details);
     }
 
   }
