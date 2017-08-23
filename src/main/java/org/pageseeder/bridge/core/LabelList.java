@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -33,9 +34,7 @@ import java.util.regex.Pattern;
  */
 public final class LabelList implements Serializable, Iterable<String> {
 
-  /**
-   *
-   */
+  /** As required for Serializable */
   private static final long serialVersionUID = 1L;
 
   private static Pattern VALID_LABEL = Pattern.compile("[a-zA-Z0-9_\\-]+");
@@ -72,10 +71,10 @@ public final class LabelList implements Serializable, Iterable<String> {
    * @param labels the list of labels
    */
   public LabelList(List<String> labels) {
-    this._labels = labels.stream().filter(label ->
-        label != null && label.length() > 0
-    ).map(String::trim).filter(label ->
-        VALID_LABEL.matcher(label).matches()
+    this._labels = labels.stream()
+        .filter(Objects::nonNull)
+        .map(String::trim)
+        .filter(label -> VALID_LABEL.matcher(label).matches()
     ).toArray(String[]::new);
   }
 
@@ -137,10 +136,9 @@ public final class LabelList implements Serializable, Iterable<String> {
     if (labels == null || labels.length() == 0) return NO_LABELS;
     // Filter empty or invalid label values
     String[] filtered = Arrays.stream(labels.split(","))
-        .filter(label -> label.length() > 0)
         .map(String::trim)
-        .filter(label -> VALID_LABEL.matcher(label).matches()
-    ).toArray(String[]::new);
+        .filter(label -> VALID_LABEL.matcher(label).matches())
+        .toArray(String[]::new);
     return filtered.length > 0? new LabelList(filtered): NO_LABELS;
   }
 
