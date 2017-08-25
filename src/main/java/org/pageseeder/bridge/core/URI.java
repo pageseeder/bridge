@@ -196,7 +196,7 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
     xml.closeElement();
   }
 
-  static class Builder extends Addressable.Builder {
+  public static abstract class Builder<B extends Builder<B>> extends Addressable.Builder {
 
     long id = -1;
     @Nullable String docid = null;
@@ -210,75 +210,81 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
     /**
      * @param id the id to set
      */
-    public final Builder id(Long id) {
+    public final B id(Long id) {
       this.id = id;
-      return this;
+      return (B)this;
+    }
+
+    public final B url(String scheme, String host, int port, String path) {
+      scheme(scheme).host(host).port(port).path(path);
+      return (B)this;
     }
 
     /**
      * @param docid the docid to set
      */
-    public final Builder docid(@Nullable String docid) {
+    public final B docid(@Nullable String docid) {
       this.docid = docid;
-      return this;
+      return (B)this;
     }
 
     /**
      * @param description the description to set
      */
-    public final Builder description(@Nullable String description) {
+    public final B description(@Nullable String description) {
       this.description = description;
-      return this;
+      return (B)this;
     }
 
     /**
      * @param title the title to set
      */
-    public final Builder title(@Nullable String title) {
+    public final B title(@Nullable String title) {
       this.title = title;
-      return this;
+      return (B)this;
     }
 
     /**
      * @param labels the labels to set
      */
-    public final Builder labels(List<String> labels) {
+    public final B labels(List<String> labels) {
       this.labels = new LabelList(labels);
-      return this;
+      return (B)this;
     }
 
     /**
      * @param labels The labels as a comma-separated list.
      */
-    public final Builder labels(String labels) {
+    public final B labels(String labels) {
       this.labels = LabelList.parse(labels);
-      return this;
+      return (B)this;
     }
 
     /**
      * @param mediatype the mediatype to set
      */
-    public final Builder mediaType(@Nullable String mediatype) {
+    public final B mediaType(@Nullable String mediatype) {
       this.mediatype = mediatype;
-      return this;
+      return (B)this;
     }
 
     /**
      * @param date the ISO8601 date
      */
-    public final Builder created(@Nullable String date) {
+    public final B created(@Nullable String date) {
       this.created = date != null? OffsetDateTime.parse(date) : null;
-      return this;
+      return (B)this;
     }
 
     /**
      * @param date the ISO8601 date
      */
-    public final Builder modified(@Nullable String date) {
+    public final B modified(@Nullable String date) {
       this.modified = date != null? OffsetDateTime.parse(date) : null;
-      return this;
+      return (B)this;
     }
 
+   // public abstract URI build();
   }
 
 }

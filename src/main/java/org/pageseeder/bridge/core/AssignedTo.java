@@ -22,22 +22,43 @@ import org.pageseeder.xmlwriter.XMLWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
+/**
+ *
+ * @author Christophe Lauret
+ *
+ * @version 0.12.0
+ * @since 0.12.0
+ */
 public final class AssignedTo implements Serializable, XMLWritable {
 
-  public final OffsetDateTime _date;
+  /** As per recommendation */
+  private static final long serialVersionUID = 1L;
 
-  public final Member _member;
+  private final OffsetDateTime _date;
 
+  private final Member _member;
+
+  /**
+   * @param member The member the task is assigned to.
+   * @param date   The date the task was assigned to.
+   */
   public AssignedTo(Member member, OffsetDateTime date) {
-    this._date = date;
-    this._member = member;
+    this._member = Objects.requireNonNull(member, "Member is required");;
+    this._date = Objects.requireNonNull(date, "Date is required");
   }
 
+  /**
+   * @return The member the task is assigned to.
+   */
   public Member getMember() {
     return this._member;
   }
 
+  /**
+   * @return The date the task was assigned to.
+   */
   public OffsetDateTime getDate() {
     return this._date;
   }

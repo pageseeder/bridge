@@ -27,7 +27,9 @@ import java.time.OffsetDateTime;
  * A folder is a URI which acts as a container for other folders and documents.
  *
  * @author Christophe Lauret
- * @version 0.1.0
+ *
+ * @version 0.12.0
+ * @since 0.12.0
  */
 public final class Folder extends URI implements Serializable, XMLWritable {
 
@@ -93,7 +95,7 @@ public final class Folder extends URI implements Serializable, XMLWritable {
     return url.substring(solidus+1);
   }
 
-  public class Builder extends URI.Builder{
+  public static class Builder extends URI.Builder<Builder> {
 
     public Folder build() {
       return new Folder(id, scheme(), host(), port(), path(), title, docid, description, mediatype, created, modified, labels);

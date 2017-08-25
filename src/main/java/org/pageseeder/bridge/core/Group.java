@@ -24,19 +24,19 @@ import org.pageseeder.xmlwriter.XMLWritable;
  *
  * @author Christophe Lauret
  *
- * @version 0.10.2
- * @since 0.2.0
+ * @version 0.12.0
+ * @since 0.12.0
  */
 public final class Group extends BasicGroup implements XMLWritable {
 
   /** As per recommendation */
   private static final long serialVersionUID = 1L;
 
-  public Group(long id, GroupID name, String title, String description, String owner) {
+  public Group(long id, GroupName name, String title, String description, String owner) {
     super(id, name, title, description, owner, GroupAccess.MEMBER, false, "");
   }
 
-  public Group(long id, GroupID name, String title, String description, String owner, GroupAccess access, boolean common, String relatedURL) {
+  public Group(long id, GroupName name, String title, String description, String owner, GroupAccess access, boolean common, String relatedURL) {
     super(id, name, title, description, owner, access, common, relatedURL);
   }
 

@@ -30,7 +30,9 @@ import java.util.Objects;
  * The details of a membership.
  *
  * @author Christophe Lauret
+ *
  * @version 0.12.0
+ * @since 0.12.0
  */
 public final class Details implements Iterable<Field>, Serializable, XMLWritable {
 

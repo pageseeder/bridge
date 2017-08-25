@@ -41,9 +41,9 @@ public class XMLStreamMember extends BasicXMLStreamHandler<Member> implements XM
       String surname   = attribute(xml, "surname");
       Email email = new Email(attribute(xml, "email", ""));
       MemberStatus status = MemberStatus.forAttribute(attribute(xml, "status", "unknown"));
-      boolean locked = "true".equals(attribute(xml, "locked", "true"));
-      boolean onVacation = "true".equals(attribute(xml, "onvacation", "true"));
-      boolean attachments = "true".equals(attribute(xml, "attachments", "true"));
+      boolean locked = "true".equals(attribute(xml, "locked", "false"));
+      boolean onVacation = "true".equals(attribute(xml, "onvacation", "false"));
+      boolean attachments = "true".equals(attribute(xml, "attachments", "false"));
 
       skipToEndElement(xml, element());
 

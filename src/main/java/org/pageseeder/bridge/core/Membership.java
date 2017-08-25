@@ -127,7 +127,7 @@ public final class Membership implements Serializable, XMLWritable {
   public @Nullable String getKey() {
     String k = this.key;
     if (k == null) {
-      GroupID g = this._group.getName();
+      GroupName g = this._group.getName();
       MemberID m = this._member.getUsername();
       k = g+"/"+m;
       this.key = k;

@@ -132,6 +132,10 @@ public final class Member implements XMLWritable {
     return this._username;
   }
 
+  public String getFullname() {
+    return this._firstname+" "+this._surname;
+  }
+
   /**
    * @return the email
    */
@@ -178,7 +182,7 @@ public final class Member implements XMLWritable {
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement("member");
     toXMLAttributes(xml);
-    xml.element("fullname", this._firstname+" "+this._surname);
+    xml.element("fullname", getFullname());
     xml.closeElement();
   }
 
@@ -200,7 +204,7 @@ public final class Member implements XMLWritable {
     xml.attribute("firstname", this._firstname);
     xml.attribute("surname", this._surname);
     if (this._status != MemberStatus.unknown) {
-      xml.attribute("status", this._status.name());
+      xml.attribute("status", this._status.toString());
     }
     if (this._locked) {
       xml.attribute("locked", "true");

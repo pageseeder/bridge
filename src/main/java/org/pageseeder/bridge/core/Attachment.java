@@ -23,6 +23,7 @@ import org.pageseeder.xmlwriter.XMLWriter;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * An attachment to the comment.
@@ -46,7 +47,7 @@ public final class Attachment implements Serializable, XMLWritable {
    * @param uri The URI to attach
    */
   public Attachment(URI uri) {
-    this._uri = uri;
+    this._uri = Objects.requireNonNull(uri, "URI is required");
     this._fragment = null;
   }
 

@@ -21,9 +21,17 @@ import org.pageseeder.xmlwriter.XMLWriter;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * The author of a comment.
+ *
+ * <p>Either the name or the member will be non-null.
+ *
+ * @author Christophe Lauret
+ *
+ * @version 0.12.0
+ * @since 0.12.0
  */
 public final class Author implements Serializable, XMLWritable {
 
@@ -52,7 +60,7 @@ public final class Author implements Serializable, XMLWritable {
    * @param email The email of the author
    */
   public Author(String name, @Nullable Email email) {
-    this._name = name;
+    this._name = Objects.requireNonNull(name,"The name is required");
     this._member = null;
     this._email = email;
   }
@@ -65,7 +73,7 @@ public final class Author implements Serializable, XMLWritable {
    * @param member the member.
    */
   public Author(Member member) {
-    this._member = member;
+    this._member = Objects.requireNonNull(member, "the member is required");
     this._name = null;
     this._email = member.getEmail();
   }

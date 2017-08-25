@@ -30,7 +30,9 @@ import java.time.OffsetDateTime;
  *
  * @author Jean-Baptiste Reure
  * @author Christophe Lauret
- * @version 0.1.0
+ *
+ * @version 0.12.0
+ * @since 0.12.0
  */
 public final class ExternalURI extends URI implements Serializable, XMLWritable {
 
@@ -90,7 +92,7 @@ public final class ExternalURI extends URI implements Serializable, XMLWritable 
   }
 
 
-  public class Builder extends URI.Builder{
+  public static class Builder extends URI.Builder<Builder> {
 
     private boolean isFolder = false;
 

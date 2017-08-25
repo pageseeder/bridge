@@ -28,8 +28,10 @@ import java.util.Map.Entry;
 /**
  * Utility class to manipulate comment properties.
  *
- * @version 0.11.2
- * @since 0.11.2
+ * @author Christophe Lauret
+ *
+ * @version 0.12.0
+ * @since 0.12.0
  */
 public final class CommentProperties implements Serializable, XMLWritable {
 

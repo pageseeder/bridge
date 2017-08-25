@@ -15,11 +15,12 @@
  */
 package org.pageseeder.bridge.core;
 
-import java.io.IOException;
-import java.io.Serializable;
-
 import org.pageseeder.xmlwriter.XMLWritable;
 import org.pageseeder.xmlwriter.XMLWriter;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A base class for PageSeeder groups and projects.
@@ -38,7 +39,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
   private final long _id;
 
   /** The full name of the group */
-  private final GroupID _name;
+  private final GroupName _name;
 
   /** The title of the group */
   private final String _title;
@@ -61,15 +62,15 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
   /**
    * Create a new group
    */
-  public BasicGroup(long id, GroupID name, String title, String description, String owner, GroupAccess access, boolean common, String relatedURL) {
+  public BasicGroup(long id, GroupName name, String title, String description, String owner, GroupAccess access, boolean common, String relatedURL) {
     this._id = id;
-    this._name = name;
-    this._title = title;
-    this._description = description;
-    this._owner = owner;
-    this._access = access;
+    this._name = Objects.requireNonNull(name, "Group name is required");
+    this._title = Objects.requireNonNull(title, "Group title is required");
+    this._description = Objects.requireNonNull(description, "Description is required");
+    this._owner = Objects.requireNonNull(owner, "Owner is required");
+    this._access = Objects.requireNonNull(access, "Access is required");
     this._common = common;
-    this._relatedURL = relatedURL;
+    this._relatedURL = Objects.requireNonNull(relatedURL, "Related URL is required");
   }
 
   public long getId() {
@@ -81,7 +82,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
    *
    * @return the name of the group.
    */
-  public GroupID getName() {
+  public GroupName getName() {
     return this._name;
   }
 
@@ -151,7 +152,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
    *
    * @return the name of the parent or <code>null</code> if the name is <code>null</code> or does not include a dash.
    */
-  public GroupID getParentName() {
+  public GroupName getParentName() {
     return this._name.parent();
   }
 
@@ -191,7 +192,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
   public static class Builder {
 
     long id = -1;
-    GroupID name = GroupID.ROOT;
+    GroupName name = GroupName.ROOT;
     String title = "";
     String description = "";
     String owner = "";
@@ -215,7 +216,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
      * @param name the name to set
      */
     public Builder name(String name) {
-      this.name = new GroupID(name);
+      this.name = new GroupName(name);
       return this;
     }
 

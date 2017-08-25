@@ -155,7 +155,7 @@ public final class Comment implements Serializable, XMLWritable {
    * @return the list of attachments
    */
   public boolean hasAttachments() {
-    return this._attachments.isEmpty();
+    return !this._attachments.isEmpty();
   }
 
   /**
@@ -169,7 +169,7 @@ public final class Comment implements Serializable, XMLWritable {
    * @return the labels
    */
   public boolean hasLabels() {
-    return this._labels.isEmpty();
+    return !this._labels.isEmpty();
   }
 
   /**
@@ -313,7 +313,7 @@ public final class Comment implements Serializable, XMLWritable {
     private String title = "";
     private @Nullable String type;
     private Author author = null;
-    private @Nullable ModifiedBy _modified;
+    private @Nullable ModifiedBy modifiedBy;
     private CommentProperties properties = CommentProperties.EMPTY;
     private @Nullable AssignedTo assignedto;
     private @Nullable String contentRole;
@@ -349,6 +349,14 @@ public final class Comment implements Serializable, XMLWritable {
      */
     public Builder title(String title) {
       this.title = title;
+      return this;
+    }
+
+    /**
+     * @param contentRole the content role to set
+     */
+    public Builder contentRole(String contentRole) {
+      this.contentRole = contentRole;
       return this;
     }
 
@@ -394,9 +402,33 @@ public final class Comment implements Serializable, XMLWritable {
     }
 
     /**
+     * @param assignedTo the assignedto to set
+     */
+    public Builder assignedTo(AssignedTo assignedTo) {
+      this.assignedto = assignedTo;
+      return this;
+    }
+
+    /**
+     * @param modifiedBy the assignedto to set
+     */
+    public Builder modifiedBy(ModifiedBy modifiedBy) {
+      this.modifiedBy = modifiedBy;
+      return this;
+    }
+
+    /**
+     * @param created the created to set
+     */
+    public Builder created(@Nullable OffsetDateTime created) {
+      this.created = created;
+      return this;
+    }
+
+    /**
      * @param due the due to set
      */
-    public Builder setDue(@Nullable OffsetDateTime due) {
+    public Builder due(@Nullable OffsetDateTime due) {
       this.due = due;
       return this;
     }
@@ -413,6 +445,18 @@ public final class Comment implements Serializable, XMLWritable {
         this.attachments = a;
       }
       a.add(new Attachment(document));
+      return this;
+    }
+
+    /**
+     *
+     */
+    public Builder contents(List<Content> contents) {
+      if (contents.isEmpty()) this.contents = Collections.emptyList();
+      else if (contents.size() == 1) this.contents = Collections.singletonList(contents.get(0));
+      else {
+        this.contents = new ArrayList<>(contents);
+      }
       return this;
     }
 
@@ -451,6 +495,14 @@ public final class Comment implements Serializable, XMLWritable {
     /**
      * @param labels The labels as a comma-separated list.
      */
+    public Builder labels(LabelList labels) {
+      this.labels = labels;
+      return this;
+    }
+
+    /**
+     * @param labels The labels as a comma-separated list.
+     */
     public Builder labels(String labels) {
       this.labels = LabelList.parse(labels);
       return this;
@@ -461,6 +513,24 @@ public final class Comment implements Serializable, XMLWritable {
      */
     public Builder properties(String properties) {
       this.properties = CommentProperties.parse(properties);
+      return this;
+    }
+
+    /**
+     * @param properties the properties to set
+     */
+    public Builder properties(CommentProperties properties) {
+      this.properties = properties;
+      return this;
+    }
+
+    public Builder isDraft(boolean draft) {
+      this.draft = draft;
+      return this;
+    }
+
+    public Builder isModerated(boolean moderated) {
+      this.moderated = moderated;
       return this;
     }
 
@@ -496,6 +566,18 @@ public final class Comment implements Serializable, XMLWritable {
      */
     public Builder author(String name, @Nullable Email email) {
       this.author = new Author(name, email);
+      return this;
+    }
+
+    /**
+     * Set the context as a group.
+     *
+     * <p>Implementation note: This method creates a new context instance.
+     *
+     * @param context The group to use as context.
+     */
+    public Builder context(Context context) {
+      this.context = context;
       return this;
     }
 
@@ -562,7 +644,7 @@ public final class Comment implements Serializable, XMLWritable {
     }
 
     public Comment build() {
-      return new Comment(id, discussionId, title,type, labels, author,contents, _modified, properties, assignedto, contentRole, created, status, priority, due, draft, moderated, context, attachments);
+      return new Comment(id, discussionId, title,type, labels, author,contents, modifiedBy, properties, assignedto, contentRole, created, status, priority, due, draft, moderated, context, attachments);
     }
 
   }

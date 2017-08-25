@@ -26,8 +26,8 @@ import java.time.OffsetDateTime;
  *
  * @author Christophe Lauret
  *
- * @version 0.10.2
- * @version 0.1.0
+ * @version 0.12.0
+ * @since 0.12.0
  */
 public final class Document extends URI {
 
@@ -116,7 +116,7 @@ public final class Document extends URI {
     return url.substring(0, solidus);
   }
 
-  public class Builder extends URI.Builder{
+  public static class Builder extends URI.Builder<Document.Builder> {
 
     private String documentType = DEFAULT_DOCUMENT_TYPE;
 

@@ -29,11 +29,11 @@ public final class Project extends BasicGroup implements XMLWritable {
   /** As per recommendation */
   private static final long serialVersionUID = 1L;
 
-  public Project(long id, GroupID name, String title, String description, String owner) {
+  public Project(long id, GroupName name, String title, String description, String owner) {
     super(id, name, title, description, owner, GroupAccess.MEMBER, false, "");
   }
 
-  public Project(long id, GroupID name, String title, String description, String owner, GroupAccess access, boolean common, String relatedURL) {
+  public Project(long id, GroupName name, String title, String description, String owner, GroupAccess access, boolean common, String relatedURL) {
     super(id, name, title, description, owner, access, common, relatedURL);
   }
 

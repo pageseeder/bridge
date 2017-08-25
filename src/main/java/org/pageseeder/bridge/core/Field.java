@@ -25,6 +25,8 @@ import java.io.Serializable;
 /**
  * A membership details field
  *
+ * @author Christophe Lauret
+ *
  * @version 0.12.0
  * @since 0.12.0
  */

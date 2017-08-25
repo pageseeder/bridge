@@ -20,6 +20,11 @@ import java.io.Serializable;
 
 /**
  * An email address: unique system-wide and used by the user to login.
+ *
+ * @author Christophe Lauret
+ *
+ * @version 0.12.0
+ * @since 0.12.0
  */
 public final class Email extends MemberID implements Serializable {
 

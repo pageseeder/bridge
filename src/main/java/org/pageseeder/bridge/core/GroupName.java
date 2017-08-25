@@ -15,17 +15,22 @@
  */
 package org.pageseeder.bridge.core;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 /**
  * Identifier for a group or project
+ *
+ * @author Christophe Lauret
+ *
+ * @version 0.12.0
+ * @since 0.12.0
  */
-public final class GroupID extends ID implements Serializable {
+public final class GroupName extends ID implements Serializable {
 
   /** As per requirement for {@link Serializable} */
   private static final long serialVersionUID = 1L;
@@ -33,21 +38,26 @@ public final class GroupID extends ID implements Serializable {
   /**
    * The root group ID (empty string)
    */
-  public static final GroupID ROOT = new GroupID("");
+  public static final GroupName ROOT = new GroupName("");
 
   /**
    * Create a new Group ID.
    *
    * @param name the full name of the group.
    */
-  public GroupID(String name) {
+  public GroupName(String name) {
     super(name);
   }
 
-  public GroupID parent() {
+  /**
+   * Returns the parent group based on the name
+   *
+   * @return
+   */
+  public GroupName parent() {
     String name = toString();
     int dash = name.lastIndexOf('-');
-    return dash > 0 ? new GroupID(name.substring(0, dash)) : ROOT;
+    return dash > 0 ? new GroupName(name.substring(0, dash)) : ROOT;
   }
 
   /**

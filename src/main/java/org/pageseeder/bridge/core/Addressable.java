@@ -30,7 +30,9 @@ import java.util.stream.Collectors;
  * Base class for objects which can have a URL.
  *
  * @author Christophe Lauret
+ *
  * @version 0.12.0
+ * @since 0.12.0
  */
 public abstract class Addressable implements Serializable {
 
@@ -194,7 +196,7 @@ public abstract class Addressable implements Serializable {
     return url.toString();
   }
 
-  static class Builder {
+  static class Builder<B extends Builder<B>> {
     private String scheme = DEFAULT_SCHEME;
     private String host = DEFAULT_HOST;
     private int port = DEFAULT_PORT;
@@ -216,24 +218,24 @@ public abstract class Addressable implements Serializable {
       return this.path;
     }
 
-    public Builder scheme(String scheme) {
+    public B scheme(String scheme) {
       this.scheme = scheme;
-      return this;
+      return (B)this;
     }
 
-    public Builder host(String host) {
+    public B host(String host) {
       this.host = host;
-      return this;
+      return (B)this;
     }
 
-    public Builder port(int port) {
+    public B port(int port) {
       this.port = port;
-      return this;
+      return (B)this;
     }
 
-    public Builder path(String path) {
+    public B path(String path) {
       this.path = path;
-      return this;
+      return (B)this;
     }
 
 //    /**

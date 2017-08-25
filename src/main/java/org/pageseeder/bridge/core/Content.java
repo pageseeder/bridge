@@ -22,6 +22,14 @@ import org.pageseeder.xmlwriter.XMLWriter;
 import java.io.IOException;
 import java.io.Serializable;
 
+/**
+ *
+ *
+ * @author Christophe Lauret
+ *
+ * @version 0.12.0
+ * @since 0.12.0
+ */
 public class Content implements Serializable, XMLWritable {
 
   public final static String DEFAULT_MEDIATYPE = "text/plain";

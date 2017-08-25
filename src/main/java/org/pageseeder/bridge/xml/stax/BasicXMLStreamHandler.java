@@ -80,13 +80,13 @@ public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
   public static void skipToStartElement(XMLStreamReader xml) throws XMLStreamException {
     do {
       xml.next();
-    } while (xml.isStartElement());
+    } while (!xml.isStartElement());
   }
 
   public static void skipToEndElement(XMLStreamReader xml, String name) throws XMLStreamException {
     do {
       xml.next();
-    } while (xml.isEndElement() && xml.getLocalName().equals(name));
+    } while (!(xml.isEndElement() && xml.getLocalName().equals(name)));
   }
 
 }
