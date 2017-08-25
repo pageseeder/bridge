@@ -17,61 +17,40 @@
 package org.pageseeder.bridge.xml.stax;
 
 import org.junit.Test;
-import org.pageseeder.bridge.core.GroupID;
+import org.pageseeder.bridge.core.BasicGroupTest;
+import org.pageseeder.bridge.core.GroupAccess;
+import org.pageseeder.bridge.core.GroupName;
 import org.pageseeder.bridge.core.Project;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public final class XMLStreamProjectTest {
 
 
   @Test
   public void testGroupPassMinimal() throws IOException, XMLStreamException {
-    Project project = XMLStreamTest.parseItem("group/project-pass-minimal.xml", new XMLStreamProject());
-    assertNotNull(project);
-    // Minimal
-    assertEquals(2L, project.getId());
-    assertEquals(new GroupID("australia-nsw"), project.getName());
-    assertEquals(new GroupID("australia"), project.getParentName());
-    assertEquals("nsw", project.getShortName());
-    // Core
-    assertEquals("", project.getDescription());
-    assertEquals("", project.getOwner());
-    assertEquals("", project.getTitle());
+    Project expected = new Project(2L, new GroupName("australia-nsw"), "", "", "", GroupAccess.MEMBER, false, "");
+    assertParseOK(expected,"group/project-pass-minimal.xml");
   }
 
   @Test
   public void testGroupPassCore() throws IOException, XMLStreamException {
-    Project project = XMLStreamTest.parseItem("group/project-pass-core.xml", new XMLStreamProject());
-    assertNotNull(project);
-    // Minimal
-    assertEquals(22L, project.getId());
-    assertEquals(new GroupID("australia-nsw"), project.getName());
-    assertEquals(new GroupID("australia"), project.getParentName());
-    assertEquals("nsw", project.getShortName());
-    // Core
-    assertEquals("For unit testing", project.getDescription());
-    assertEquals("Australia", project.getOwner());
-    assertEquals("New South Wales", project.getTitle());
+    Project expected = new Project(22L, new GroupName("australia-nsw"), "New South Wales", "For unit testing", "Australia", GroupAccess.MEMBER, false, "");
+    assertParseOK(expected,"group/project-pass-core.xml");
   }
 
   @Test
   public void testGroupPassExtended() throws IOException, XMLStreamException {
-    Project project = XMLStreamTest.parseItem("group/project-pass-extended.xml", new XMLStreamProject());
-    // Minimal
-    assertNotNull(project);
-    assertEquals(222L, project.getId());
-    assertEquals(new GroupID("australia-nsw"), project.getName());
-    assertEquals(new GroupID("australia"), project.getParentName());
-    assertEquals("nsw", project.getShortName());
-    // Core
-    assertEquals("For unit testing", project.getDescription());
-    assertEquals("Australia", project.getOwner());
-    assertEquals("New South Wales", project.getTitle());
+    Project expected = new Project(222L, new GroupName("australia-nsw"), "New South Wales", "For unit testing", "Australia", GroupAccess.MEMBER, false, "");
+    assertParseOK(expected,"group/project-pass-extended.xml");
+  }
+
+  private void assertParseOK(Project expected, String path) throws IOException, XMLStreamException {
+    Project project = XMLStreamTest.parseItem(path, new XMLStreamProject());
+    BasicGroupTest.assertEquals(expected, project);
+    project = XMLStreamTest.parseItem(project, new XMLStreamProject());
+    BasicGroupTest.assertEquals(expected, project);
   }
 
 }
