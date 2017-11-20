@@ -51,12 +51,12 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSSession;
-import org.pageseeder.bridge.xml.stax.XMLStreamItem;
-import org.pageseeder.bridge.xml.stax.XMLStreamList;
 import org.pageseeder.bridge.xml.DuplexHandler;
 import org.pageseeder.bridge.xml.Handler;
 import org.pageseeder.bridge.xml.ServiceErrorHandler;
 import org.pageseeder.bridge.xml.XMLCopy;
+import org.pageseeder.bridge.xml.stax.XMLStreamItem;
+import org.pageseeder.bridge.xml.stax.XMLStreamList;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -643,7 +643,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     HttpURLConnection con = requireAvailable();
     try {
       int length = (int)length();
-      Charset charset = charset();
+      Charset charset = charset() != null ? charset() : StandardCharsets.UTF_8;
       try (Reader r = new InputStreamReader(new BufferedInputStream(toInputStream(con)), charset)) {
         copy(r, out, length);
       }
