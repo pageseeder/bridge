@@ -34,6 +34,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple fluent class to define HTTP multipart requests to PageSeeder.
@@ -57,6 +59,11 @@ import org.pageseeder.bridge.PSSession;
  * @since 0.9.1
  */
 public final class MultipartRequest extends BasicRequest {
+
+  /**
+   * Logger for this class.
+   */
+  private static final Logger LOGGER = LoggerFactory.getLogger(MultipartRequest.class);
 
   /**
    * Byte for carriage return + line feed.
@@ -220,13 +227,17 @@ public final class MultipartRequest extends BasicRequest {
 
   /**
    * Add a part to the request from a file (write the contents directly to the stream).
+   * NOTE: Parameter name is hard coded to "file-1".
    *
    * @param part File for part
    *
    * @return This multipart request for easy chaining
    *
+   * @deprecated Use {@link #addPart(String, File)} instead.
+   *
    * @throws IOException Should any error occur while writing
    */
+  @Deprecated
   public MultipartRequest addPart(File part) throws IOException {
     addPart(new FileInputStream(part), part.getName());
     return this;
@@ -234,7 +245,41 @@ public final class MultipartRequest extends BasicRequest {
 
   /**
    * Add a part to the request from input stream (write the contents directly to the stream).
+   * NOTE: Parameter name is hard coded to "file-1".
    *
+   * @param in          Input stream for part content
+   * @param filename    The filename for the part
+   *
+   * @return This multipart request for easy chaining
+   *
+   * @deprecated Use {@link #addPart(String, InputStream, String)} instead.
+   *
+   * @throws IOException Should any error occur while writing
+   */
+  @Deprecated
+  public MultipartRequest addPart(InputStream in, String filename) throws IOException {
+    return addPart("file-1", in, filename);
+  }
+
+  /**
+   * Add a part to the request from a file (write the contents directly to the stream).
+   *
+   * @param name        the name of the parameter
+   * @param part        the File for part
+   *
+   * @return This multipart request for easy chaining
+   *
+   * @throws IOException Should any error occur while writing
+   */
+  public MultipartRequest addPart(String name, File part) throws IOException {
+    addPart(name, new FileInputStream(part), part.getName());
+    return this;
+  }
+
+  /**
+   * Add a part to the request from input stream (write the contents directly to the stream).
+   *
+   * @param name        the name of the parameter
    * @param in          Input stream for part content
    * @param filename    The filename for the part
    *
@@ -242,7 +287,7 @@ public final class MultipartRequest extends BasicRequest {
    *
    * @throws IOException Should any error occur while writing
    */
-  public MultipartRequest addPart(InputStream in, String filename) throws IOException {
+  public MultipartRequest addPart(String name, InputStream in, String filename) throws IOException {
     DataOutputStream o = this.out;
     if (o == null) {
       o = init();
@@ -255,7 +300,7 @@ public final class MultipartRequest extends BasicRequest {
       writeCRLF(o);
 
       // Write headers
-      write("Content-Disposition: form-data; name=\"file-1\"; filename=\"" + filename + "\"", o);
+      write("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + filename + "\"", o);
       writeCRLF(o);
       write("Content-Type: " + URLConnection.guessContentTypeFromName(filename), o);
       writeCRLF(o);
@@ -349,6 +394,8 @@ public final class MultipartRequest extends BasicRequest {
    */
   @Override
   public Response response() {
+    int status = -1;
+    long t = System.currentTimeMillis();
     try {
       endMultipart();
       PSSession session = null;
@@ -356,10 +403,17 @@ public final class MultipartRequest extends BasicRequest {
         session = (PSSession)this.credentials;
       }
       HttpURLConnection con = this.connection;
-      if (con != null) return new Response(con, con.getResponseCode(), session);
+      if (con != null)  {
+        // Trigger the connection
+        status = this.connection.getResponseCode();
+
+        return new Response(con, con.getResponseCode(), session);
+      }
       else return new Response("No connection or connection was not established yet.");
     } catch (IOException ex) {
       return new Response(ex.getMessage());
+    } finally {
+      LOGGER.info("{} [{}] -> {} in {}ms", toURLString(this.config, this._path), this._method, status, System.currentTimeMillis() -t);
     }
   }
 
