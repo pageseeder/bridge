@@ -15,16 +15,31 @@
  */
 package org.pageseeder.bridge.xml.stax;
 
-import org.pageseeder.bridge.core.*;
-import org.pageseeder.bridge.xml.InvalidElementException;
-import org.pageseeder.bridge.xml.MissingAttributeException;
-import org.pageseeder.bridge.xml.MissingElementException;
-
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.pageseeder.bridge.core.AssignedTo;
+import org.pageseeder.bridge.core.Attachment;
+import org.pageseeder.bridge.core.Author;
+import org.pageseeder.bridge.core.Comment;
+import org.pageseeder.bridge.core.CommentProperties;
+import org.pageseeder.bridge.core.Content;
+import org.pageseeder.bridge.core.Context;
+import org.pageseeder.bridge.core.Email;
+import org.pageseeder.bridge.core.Group;
+import org.pageseeder.bridge.core.LabelList;
+import org.pageseeder.bridge.core.Member;
+import org.pageseeder.bridge.core.MemberStatus;
+import org.pageseeder.bridge.core.ModifiedBy;
+import org.pageseeder.bridge.core.URI;
+import org.pageseeder.bridge.core.Username;
+import org.pageseeder.bridge.xml.InvalidElementException;
+import org.pageseeder.bridge.xml.MissingAttributeException;
+import org.pageseeder.bridge.xml.MissingElementException;
 
 public final class XMLStreamComment extends BasicXMLStreamHandler<Comment> implements XMLStreamItem<Comment> {
 
@@ -45,8 +60,8 @@ public final class XMLStreamComment extends BasicXMLStreamHandler<Comment> imple
       String type = attribute(xml, "type", "");
       CommentProperties properties = CommentProperties.parse(attribute(xml, "properties", ""));
 
-      boolean isDraft = "true".equals(attribute(xml, "draft", "true"));
-      boolean isModerated = "true".equals(attribute(xml, "moderated", "true"));
+      boolean isDraft = "true".equals(attribute(xml, "draft", "false"));
+      boolean isModerated = "true".equals(attribute(xml, "moderated", "false"));
 
       String created = optionalAttribute(xml, "created");
       String due = optionalAttribute(xml, "due");
