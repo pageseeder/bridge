@@ -16,14 +16,15 @@
 
 package org.pageseeder.bridge.xml.stax;
 
+import java.io.IOException;
+
+import javax.xml.stream.XMLStreamException;
+
 import org.junit.Test;
 import org.pageseeder.bridge.core.BasicGroupTest;
 import org.pageseeder.bridge.core.GroupAccess;
 import org.pageseeder.bridge.core.GroupName;
 import org.pageseeder.bridge.core.Project;
-
-import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
 
 public final class XMLStreamProjectTest {
 
@@ -42,7 +43,7 @@ public final class XMLStreamProjectTest {
 
   @Test
   public void testGroupPassExtended() throws IOException, XMLStreamException {
-    Project expected = new Project(222L, new GroupName("australia-nsw"), "New South Wales", "For unit testing", "Australia", GroupAccess.MEMBER, false, "");
+    Project expected = new Project(222L, new GroupName("australia-nsw"), "New South Wales", "For unit testing", "Australia", GroupAccess.MEMBER, false, "https://example.org/hello.html");
     assertParseOK(expected,"group/project-pass-extended.xml");
   }
 
