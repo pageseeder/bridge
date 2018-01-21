@@ -43,9 +43,7 @@ public class XMLStreamTest {
       while (xml.hasNext()) {
         xml.next();
         if (xml.getEventType() == XMLStreamReader.START_ELEMENT) {
-          if (handler.element().equals(xml.getLocalName())) {
-            return handler.toItem(xml);
-          }
+          if (handler.element().equals(xml.getLocalName())) return handler.toItem(xml);
         }
       }
     }
@@ -58,9 +56,7 @@ public class XMLStreamTest {
       while (xml.hasNext()) {
         xml.next();
         if (xml.getEventType() == XMLStreamReader.START_ELEMENT) {
-          if (handler.element().equals(xml.getLocalName())) {
-            return handler.toItem(xml);
-          }
+          if (handler.element().equals(xml.getLocalName())) return handler.toItem(xml);
         }
       }
     }
@@ -73,9 +69,7 @@ public class XMLStreamTest {
       while (xml.hasNext()) {
         xml.next();
         if (xml.getEventType() == XMLStreamReader.START_ELEMENT) {
-          if (handler.element().equals(xml.getLocalName())) {
-            return handler.toList(xml);
-          }
+          if (handler.element().equals(xml.getLocalName())) return handler.toList(xml);
         }
       }
     }
