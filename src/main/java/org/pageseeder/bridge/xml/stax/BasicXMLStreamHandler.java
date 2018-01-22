@@ -35,6 +35,28 @@ public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
     return this._element;
   }
 
+  /**
+   * Indicates whether the handler is ready to handle the XML based on the state of the <code>XMLStreamReader</code>.
+   *
+   * <p>This default implementation returns <code>true</code> if the current event type is <code>START_ELEMENT</code>
+   * and the element name matches the name of the element returned by {@link #element()} method.</p>
+   *
+   * <p>Implementations are free to check for any state of the XML stream reader as long at they do not modify its
+   * state.</p>
+   *
+   * @param xml The XML Stream reader
+   *
+   * @return <code>true</code> if the state of the XMLStreamReader is ready to take over processing;
+   *         <code>false</code> otherwise.
+   *
+   * @throws XMLStreamException If thrown by the XMLStreamReader
+   * @throws UnsupportedOperationException If a method affecting the state of the stream is used.
+   */
+  public boolean isReady(XMLStreamReader xml) throws XMLStreamException {
+    return xml.getEventType() == XMLStreamReader.START_ELEMENT
+        && xml.getLocalName().equals(element());
+  }
+
   // A collection of utility methods to simplify methods
 
   public boolean isOnElement(XMLStreamReader xml) {
