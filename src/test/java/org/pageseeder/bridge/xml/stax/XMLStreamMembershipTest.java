@@ -16,11 +16,13 @@
 
 package org.pageseeder.bridge.xml.stax;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.pageseeder.bridge.core.*;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -76,6 +78,13 @@ public final class XMLStreamMembershipTest {
     assertTrue(membership.getGroup() instanceof Project);
     assertEquals(201L, membership.getGroup().getId());
 
+  }
+
+  @Test
+  public void testMemberships() throws IOException, XMLStreamException {
+    List<Membership> memberships = XMLStreamTest.parseList("membership/memberships-formember.xml", new XMLStreamMembership());
+//    Assert.assertEquals(1L, membership.getId());
+    Assert.assertEquals(3, memberships.size());
   }
 
 }

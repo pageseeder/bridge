@@ -17,14 +17,21 @@ package org.pageseeder.bridge.xml.stax;
 
 import org.pageseeder.bridge.core.Details;
 import org.pageseeder.bridge.core.Field;
-import org.pageseeder.bridge.xml.InvalidElementException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XMLStreamDetails extends BasicXMLStreamHandler<Details> implements XMLStreamHandler<Details> {
+/**
+ * This class returns <code>Details</code> instances from the {@code <details>} elements.
+ *
+ * @author Christophe Lauret
+ *
+ * @version 0.12.0
+ * @since 0.12.0
+ */
+public class XMLStreamDetails extends ElementXMLStreamHandler<Details> implements XMLStreamHandler<Details> {
 
   public XMLStreamDetails() {
     super("details");
@@ -32,25 +39,24 @@ public class XMLStreamDetails extends BasicXMLStreamHandler<Details> implements 
 
   @Override
   public Details get(XMLStreamReader xml) throws XMLStreamException {
-    if (isOnElement(xml)) {
-      List<Field> fields = new ArrayList<>();
-      do {
-        xml.next();
-        if (xml.isStartElement() && "field".equals(xml.getLocalName())) {
-          long position = attribute(xml, "position", -1);
-          boolean editable = "true".equals(attribute(xml, "editable", "false"));
-          String name = attribute(xml, "name");
-          String title = attribute(xml, "title", name);
-          String type = attribute(xml, "type", "text");
-          String value = xml.getElementText();
-          Field field = new Field((int)position , name, value, editable, title, type);
-          fields.add(field);
-        }
-      } while (!(xml.isEndElement() && "details".equals(xml.getLocalName())));
+    checkOnElement(xml);
+    List<Field> fields = new ArrayList<>();
+    do {
+      xml.next();
+      if (xml.isStartElement() && "field".equals(xml.getLocalName())) {
+        long position = attribute(xml, "position", -1);
+        boolean editable = "true".equals(attribute(xml, "editable", "false"));
+        String name = attribute(xml, "name");
+        String title = attribute(xml, "title", name);
+        String type = attribute(xml, "type", "text");
+        String value = xml.getElementText();
+        Field field = new Field((int)position , name, value, editable, title, type);
+        fields.add(field);
+      }
+    } while (!(xml.isEndElement() && "details".equals(xml.getLocalName())));
 
-      if (fields.isEmpty()) return Details.NO_DETAILS;
-      else return new Details(fields);
-    } else throw new InvalidElementException("not a details");
+    if (fields.isEmpty()) return Details.NO_DETAILS;
+    else return new Details(fields);
   }
 
 }

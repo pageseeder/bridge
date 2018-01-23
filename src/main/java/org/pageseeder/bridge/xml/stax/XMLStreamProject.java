@@ -18,13 +18,20 @@ package org.pageseeder.bridge.xml.stax;
 import org.pageseeder.bridge.core.GroupAccess;
 import org.pageseeder.bridge.core.GroupName;
 import org.pageseeder.bridge.core.Project;
-import org.pageseeder.bridge.xml.InvalidElementException;
 import org.pageseeder.bridge.xml.MissingAttributeException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class XMLStreamProject extends BasicXMLStreamHandler<Project> implements XMLStreamHandler<Project> {
+/**
+ * This class returns <code>Project</code> instances from the {@code <project>} elements.
+ *
+ * @author Christophe Lauret
+ *
+ * @version 0.12.0
+ * @since 0.12.0
+ */
+public class XMLStreamProject extends ElementXMLStreamHandler<Project> implements XMLStreamHandler<Project> {
 
   public XMLStreamProject() {
     super("project");
@@ -32,19 +39,18 @@ public class XMLStreamProject extends BasicXMLStreamHandler<Project> implements 
 
   @Override
   public Project get(XMLStreamReader xml) throws XMLStreamException {
-    if (isOnElement(xml)) {
-      long id = attribute(xml, "id", -1);
-      if (id == -1L) throw new MissingAttributeException("Missing project ID");
-      GroupName name = new GroupName(attribute(xml, "name"));
-      String description = attribute(xml, "description", "");
-      String owner = attribute(xml, "owner","");
-      String title = attribute(xml, "title", "");
-      GroupAccess access = GroupAccess.forName(attribute(xml, "access", "member"));
-      String relatedURL = attribute(xml, "relatedurl", "");
-      boolean common = "true".equals(attribute(xml, "common", "false"));
-      skipToEndElement(xml, element());
-      return new Project(id, name, title, description, owner, access, common, relatedURL);
-    } else throw new InvalidElementException("not a project");
+    checkOnElement(xml);
+    long id = attribute(xml, "id", -1);
+    if (id == -1L) throw new MissingAttributeException("Missing project ID");
+    GroupName name = new GroupName(attribute(xml, "name"));
+    String description = attribute(xml, "description", "");
+    String owner = attribute(xml, "owner","");
+    String title = attribute(xml, "title", "");
+    GroupAccess access = GroupAccess.forName(attribute(xml, "access", "member"));
+    String relatedURL = attribute(xml, "relatedurl", "");
+    boolean common = "true".equals(attribute(xml, "common", "false"));
+    skipToEndElement(xml, element());
+    return new Project(id, name, title, description, owner, access, common, relatedURL);
   }
 
 }

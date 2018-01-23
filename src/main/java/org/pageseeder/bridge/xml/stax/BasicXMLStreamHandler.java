@@ -22,74 +22,88 @@ import org.pageseeder.bridge.xml.MissingAttributeException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+/**
+ * A base class providing common utility methods for the {@link XMLStreamHandler} implementations
+ *
+ * @param <T> the type of object returned by the stream handler.
+ */
 public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
 
-  protected final String _element;
-
-  public BasicXMLStreamHandler(String element) {
-    this._element = element;
-  }
-
-  public String element() {
-    return this._element;
-  }
-
-  public boolean find(XMLStreamReader xml) throws XMLStreamException {
-    while (xml.hasNext() && !isOnElement(xml)) {
-      xml.nextTag();
-    }
-    return isOnElement(xml);
-  }
-
-  // A collection of utility methods to simplify methods
-
   /**
-   * Indicates whether the handler is ready to handle the XML based on the state of the <code>XMLStreamReader</code>.
+   * Iterate over the events until the next START_ELEMENT.
    *
-   * <p>This default implementation returns <code>true</code> if the current event type is <code>START_ELEMENT</code>
-   * and the element name matches the name of the element returned by {@link #element()} method.</p>
+   * @param xml The XML Stream
    *
-   * <p>Implementations are free to check for any state of the XML stream reader as long at they do not modify its
-   * state.</p>
-   *
-   * @param xml The XML Stream reader
-   *
-   * @return <code>true</code> if the state of the XMLStreamReader is ready to take over processing;
-   *         <code>false</code> otherwise.
-   *
-   * @throws XMLStreamException If thrown by the XMLStreamReader
-   * @throws UnsupportedOperationException If a method affecting the state of the stream is used.
+   * @throws XMLStreamException if thrown by the underlying XML stream
    */
-  public boolean isOnElement(XMLStreamReader xml) {
-    return xml.isStartElement() && xml.getLocalName().equals(element());
-  }
-
-
-  public static void skipToStartElement(XMLStreamReader xml) throws XMLStreamException {
+  public static void skipToAnyStartElement(XMLStreamReader xml) throws XMLStreamException {
     do {
       xml.next();
     } while (!xml.isStartElement());
   }
 
+  /**
+   * Iterate over the events until the next END_ELEMENT matching the specified name.
+   *
+   * @param xml  The XML Stream
+   * @param name The name of the element
+   *
+   * @throws XMLStreamException if thrown by the underlying XML stream
+   */
   public static void skipToEndElement(XMLStreamReader xml, String name) throws XMLStreamException {
     do {
       xml.next();
     } while (!(xml.isEndElement() && xml.getLocalName().equals(name)));
   }
 
-
+  /**
+   * Return the value of a required attribute.
+   *
+   * @param xml The XML Stream
+   * @param name The name of the attribute
+   *
+   * @return the attribute value
+   *
+   * @throws XMLStreamException if thrown by the underlying XML stream
+   * @throws MissingAttributeException If the attribute was missing.
+   */
   public static String attribute(XMLStreamReader xml, String name) {
     String value = optionalAttribute(xml, name);
     if (value == null) throw new MissingAttributeException("Attribute "+name+" is not specified");
     return value;
   }
 
+  /**
+   * Return the value of a required attribute and defaults to the specific fallback value.
+   *
+   * @param xml The XML Stream
+   * @param name The name of the attribute
+   * @param fallback The fallback value for the attribute
+   *
+   * @return the attribute value or the fallback value if not specified
+   *
+   * @throws XMLStreamException if thrown by the underlying XML stream
+   * @throws MissingAttributeException If the attribute was missing.
+   */
   public static String attribute(XMLStreamReader xml, String name, String fallback) {
     String value = optionalAttribute(xml, name);
     if (value == null) return fallback;
     return value;
   }
 
+
+  /**
+   * Return the long value of a required attribute and defaults to the specific fallback value.
+   *
+   * @param xml The XML Stream
+   * @param name The name of the attribute
+   * @param fallback The fallback value for the attribute
+   *
+   * @return the attribute value or the fallback value if not specified
+   *
+   * @throws XMLStreamException if thrown by the underlying XML stream
+   * @throws InvalidAttributeException If the attribute could not be parsed as a long
+   */
   public static long attribute(XMLStreamReader xml, String name, long fallback) {
     String value = optionalAttribute(xml, name);
     if (value == null) return fallback;
@@ -100,12 +114,34 @@ public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
     }
   }
 
+  /**
+   * Return the boolean value of a required attribute and defaults to the specific fallback value.
+   *
+   * @param xml The XML Stream
+   * @param name The name of the attribute
+   * @param fallback The fallback value for the attribute
+   *
+   * @return <code>true</code> if the attribute value is equal to "true" or the fallback value is <code>true</code>.
+   *
+   * @throws XMLStreamException if thrown by the underlying XML stream
+   */
   public static boolean attribute(XMLStreamReader xml, String name, boolean fallback) {
     String value = optionalAttribute(xml, name);
     if (value == null) return fallback;
     return "true".equals(value);
   }
 
+  /**
+   * Return the value of an optional attribute.
+   *
+   * @param xml The XML Stream
+   * @param name The name of the attribute
+   *
+   * @return the attribute value or <code>null</code>
+   *
+   * @throws XMLStreamException if thrown by the underlying XML stream
+   * @throws MissingAttributeException If the attribute was missing.
+   */
   @Nullable
   public static String optionalAttribute(XMLStreamReader xml, String name) {
     for (int i=0; i< xml.getAttributeCount(); i++) {

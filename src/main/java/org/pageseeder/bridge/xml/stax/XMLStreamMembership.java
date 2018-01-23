@@ -16,14 +16,24 @@
 package org.pageseeder.bridge.xml.stax;
 
 import org.pageseeder.bridge.core.*;
-import org.pageseeder.bridge.xml.InvalidElementException;
 import org.pageseeder.bridge.xml.MissingElementException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.time.OffsetDateTime;
 
-public class XMLStreamMembership extends BasicXMLStreamHandler<Membership> implements XMLStreamHandler<Membership> {
+/**
+ * This class returns <code>Membership</code> instances from the {@code <membership>} elements.
+ *
+ * <p>This handler can also be used in the list of memberships where there is a common member or group/project to
+ * be added to the individual memberships</p>
+ *
+ * @author Christophe Lauret
+ *
+ * @version 0.12.0
+ * @since 0.12.0
+ */
+public class XMLStreamMembership extends ElementXMLStreamHandler<Membership> implements XMLStreamHandler<Membership> {
 
   private Member commonMember;
 
@@ -76,13 +86,13 @@ public class XMLStreamMembership extends BasicXMLStreamHandler<Membership> imple
    */
   @Override
   public boolean find(XMLStreamReader xml) throws XMLStreamException {
-    do {
-      xml.nextTag();
+    while (xml.hasNext() && !isOnElement(xml)) {
+      xml.next();
       // If we encounter a membership we automatically extract the member or group common to the membership
-      if (xml.getLocalName().equals("memberships")) {
+      if (xml.isStartElement() && xml.getLocalName().equals("memberships")) {
         extractCommonMemberOrGroup(xml);
       }
-    } while (xml.hasNext() && !isOnElement(xml));
+    }
     return isOnElement(xml);
   }
 
@@ -98,47 +108,46 @@ public class XMLStreamMembership extends BasicXMLStreamHandler<Membership> imple
    */
   @Override
   public Membership get(XMLStreamReader xml) throws XMLStreamException {
-    if (isOnElement(xml)) {
-      // NB. Note all memberships have an ID (e.g. from subgroups)
-      long id = attribute(xml, "id", -1);
-      boolean common = "true".equals(attribute(xml, "email-listed", "true"));
-      boolean deleted = "true".equals(attribute(xml, "deleted", "false"));
-      Role role = Role.forParameter(attribute(xml, "role", "unknown"));
-      MembershipStatus status = MembershipStatus.forName(attribute(xml, "status", "unknown"));
-      Notification notification = Notification.forName(attribute(xml, "notification"));
-      OffsetDateTime created = OffsetDateTime.MIN;
-      optionalAttribute(xml, "created");
+    checkOnElement(xml);
+    // NB. Note all memberships have an ID (e.g. from subgroups)
+    long id = attribute(xml, "id", -1);
+    boolean common = "true".equals(attribute(xml, "email-listed", "true"));
+    boolean deleted = "true".equals(attribute(xml, "deleted", "false"));
+    Role role = Role.forParameter(attribute(xml, "role", "unknown"));
+    MembershipStatus status = MembershipStatus.forName(attribute(xml, "status", "unknown"));
+    Notification notification = Notification.forName(attribute(xml, "notification"));
+    OffsetDateTime created = OffsetDateTime.MIN;
+    optionalAttribute(xml, "created");
 
-      Member member = this.commonMember;
-      BasicGroup group = this.commonGroup;
-      Details details = Details.NO_DETAILS;
+    Member member = this.commonMember;
+    BasicGroup group = this.commonGroup;
+    Details details = Details.NO_DETAILS;
 
-      do {
-        xml.next();
-        if (xml.isStartElement()) {
-          String localName = xml.getLocalName();
-          if ("member".equals(localName)) {
-            member = new XMLStreamMember().get(xml);
-          } else if ("group".equals(localName)) {
-            group = new XMLStreamGroup().get(xml);
-          } else if ("project".equals(localName)) {
-            group = new XMLStreamProject().get(xml);
-          } else if ("details".equals(localName)) {
-            details = new XMLStreamDetails().get(xml);
-          }
+    do {
+      xml.next();
+      if (xml.isStartElement()) {
+        String localName = xml.getLocalName();
+        if ("member".equals(localName)) {
+          member = new XMLStreamMember().get(xml);
+        } else if ("group".equals(localName)) {
+          group = new XMLStreamGroup().get(xml);
+        } else if ("project".equals(localName)) {
+          group = new XMLStreamProject().get(xml);
+        } else if ("details".equals(localName)) {
+          details = new XMLStreamDetails().get(xml);
         }
-      } while (!(xml.isEndElement() &&  "membership".equals(xml.getLocalName())));
+      }
+    } while (!(xml.isEndElement() &&  "membership".equals(xml.getLocalName())));
 
 //      override	list	no	Which attributes from subgroups are overridden (i.e not inherited).
 //      subgroups	xs:string	no	Comma-separated list of subgroups
 
-        if (member == null) throw new MissingElementException("Member is required for a membership");
-        if (group == null) throw new MissingElementException("Group or project is required for a membership");
+      if (member == null) throw new MissingElementException("Member is required for a membership");
+      if (group == null) throw new MissingElementException("Group or project is required for a membership");
 
-      // TODO
+    // TODO
 
-      return new Membership(id, member, group, common, notification, role, created, status, deleted, details);
-    } else throw new InvalidElementException("not a membership");
+    return new Membership(id, member, group, common, notification, role, created, status, deleted, details);
   }
 
   /**

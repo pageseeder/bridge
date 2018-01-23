@@ -26,7 +26,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class XMLStreamComment extends BasicXMLStreamHandler<Comment> implements XMLStreamHandler<Comment> {
+public final class XMLStreamComment extends ElementXMLStreamHandler<Comment> implements XMLStreamHandler<Comment> {
 
   public XMLStreamComment() {
     super("comment");
@@ -136,7 +136,7 @@ public final class XMLStreamComment extends BasicXMLStreamHandler<Comment> imple
       return new Author(member);
     } else {
       String email = optionalAttribute(xml, "email");
-      skipToStartElement(xml);
+      skipToAnyStartElement(xml);
       String fullname = xml.getElementText();
       skipToEndElement(xml, "author");
       return new Author(fullname, email != null ? new Email(email) : null);
@@ -165,7 +165,7 @@ public final class XMLStreamComment extends BasicXMLStreamHandler<Comment> imple
   }
 
   private Context toContext(XMLStreamReader xml) throws XMLStreamException {
-    skipToStartElement(xml);
+    skipToAnyStartElement(xml);
     String element = xml.getLocalName();
     if ("group".equals(element)) {
       Group group = new XMLStreamGroup().get(xml);
@@ -183,7 +183,7 @@ public final class XMLStreamComment extends BasicXMLStreamHandler<Comment> imple
 
   private Attachment toAttachment(XMLStreamReader xml) throws XMLStreamException {
     String fragment = optionalAttribute(xml, "fragment");
-    skipToStartElement(xml);
+    skipToAnyStartElement(xml);
     if ("uri".equals(xml.getLocalName())) {
       URI uri = new XMLStreamURI().get(xml);
       return new Attachment(uri, fragment);

@@ -53,7 +53,8 @@ public interface XMLStreamHandler<T> {
    * Return the object at the correct position.
    *
    * <p>Precondition: an event from which an object can be constructed</p>
-   * <p>Postcondition: an event after the initial event</p>
+   * <p>Postcondition: an event after the initial event, usually the corresponding END_ELEMENT if the
+   * precondition was a START_ELEMENT event.</p>
    *
    * @param xml The XML Stream reader
    *

@@ -23,6 +23,8 @@ import javax.xml.stream.XMLStreamReader;
  * retrieve an object or a list of objects directly from the PageSeeder XML
  * response.
  *
+ * @deprecated This interface was part of an experimental API and will be removed.
+ *
  * @author Christophe Lauret
  *
  * @param <T> The type of object to return
