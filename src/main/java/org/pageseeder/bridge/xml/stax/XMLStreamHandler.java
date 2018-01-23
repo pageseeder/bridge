@@ -15,43 +15,82 @@
  */
 package org.pageseeder.bridge.xml.stax;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 /**
- * Implementations of which can be supplied to a response in order to
- * retrieve an object or a list of objects directly from the PageSeeder XML
- * response.
+ * Implementations of which can be supplied to a response in order to retrieve objects
+ * directly from the PageSeeder XML response.
  *
  * @param <T> the type of object that this handler returns.
  *
  * @author Christophe Lauret
+ *
+ * @since 0.12.0
+ * @since 0.12.0
  */
 public interface XMLStreamHandler<T> {
 
   /**
-   * @return The name of the element
-   */
-  String element();
-
-  /**
-   * Indicates whether the handler is ready to handle the XML based on the state of the <code>XMLStreamReader</code>.
+   * Find the event that will allow the {@link #get(XMLStreamReader)} method to return a value.
    *
-   * <p>This default implementation returns <code>true</code> if the current event type is <code>START_ELEMENT</code>
-   * and the element name matches the name of the element returned by {@link #element()} method.</p>
-   *
-   * <p>Implementations are free to check for any state of the XML stream reader as long at they do not modify its
-   * state.</p>
+   * <p>Precondition: any event</p>
+   * <p>Postcondition: an event that will return and {@link #get(XMLStreamReader)} is invoked or the
+   * end of the stream</p>
    *
    * @param xml The XML Stream reader
    *
-   * @return <code>true</code> if the state of the XMLStreamReader is ready to take over processing;
+   * @return <code>true</code> if the current event is at the position expected by the {@link #get(XMLStreamReader)} method;
    *         <code>false</code> otherwise.
    *
    * @throws XMLStreamException If thrown by the XMLStreamReader
-   * @throws UnsupportedOperationException If a method affecting the state of the stream is used.
    */
-  boolean isReady(XMLStreamReader xml) throws XMLStreamException;
+  boolean find(XMLStreamReader xml) throws XMLStreamException;
 
+  /**
+   * Return the object at the correct position.
+   *
+   * <p>Precondition: an event from which an object can be constructed</p>
+   * <p>Postcondition: an event after the initial event</p>
+   *
+   * @param xml The XML Stream reader
+   *
+   * @return the get element at the current position.
+   *
+   * @throws XMLStreamException If thrown by the XMLStreamReader or if not at the correct position
+   */
+  T get(XMLStreamReader xml) throws XMLStreamException;
+
+  /**
+   * Returns the next element that this handler can find.
+   *
+   * <p>The default implementation of this method is:</p>
+   * <pre>{@code
+   * if (find(xml)) {
+   *   return get(xml);
+   * } else {
+   *   return null;
+   * }}</pre>
+   *
+   * <p>Precondition: any event</p>
+   * <p>Postcondition: an event after {@link #get(XMLStreamReader)} is invoked or the
+   * end of the stream</p>
+   *
+   * @param xml The XML Stream reader
+   *
+   * @return the get element if there is one or <code>null</code>
+   *
+   * @throws XMLStreamException If thrown by the XMLStreamReader
+   */
+  @Nullable
+  default T next(XMLStreamReader xml) throws XMLStreamException {
+    if (find(xml)) {
+      return get(xml);
+    } else {
+      return null;
+    }
+  }
 
 }

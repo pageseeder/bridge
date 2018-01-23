@@ -24,14 +24,14 @@ import org.pageseeder.bridge.xml.MissingAttributeException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class XMLStreamGroup extends BasicXMLStreamHandler<Group> implements XMLStreamItem<Group> {
+public class XMLStreamGroup extends BasicXMLStreamHandler<Group> implements XMLStreamHandler<Group> {
 
   public XMLStreamGroup() {
     super("group");
   }
 
   @Override
-  public Group toItem(XMLStreamReader xml) throws XMLStreamException {
+  public Group get(XMLStreamReader xml) throws XMLStreamException {
     if (isOnElement(xml)) {
       long id = attribute(xml, "id", -1);
       if (id == -1L) throw new MissingAttributeException("Missing group ID");

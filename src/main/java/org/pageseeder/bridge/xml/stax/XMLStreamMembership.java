@@ -23,11 +23,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.time.OffsetDateTime;
 
-public class XMLStreamMembership extends BasicXMLStreamHandler<Membership> implements XMLStreamItem<Membership> {
+public class XMLStreamMembership extends BasicXMLStreamHandler<Membership> implements XMLStreamHandler<Membership> {
 
-  private final Member _member;
+  private Member commonMember;
 
-  private final BasicGroup _group;
+  private BasicGroup commonGroup;
 
   public XMLStreamMembership() {
     this(null, null);
@@ -43,12 +43,61 @@ public class XMLStreamMembership extends BasicXMLStreamHandler<Membership> imple
 
   private XMLStreamMembership(Member member, BasicGroup group) {
     super("membership");
-    this._member = member;
-    this._group = group;
+    this.commonMember = member;
+    this.commonGroup = group;
   }
 
+  /**
+   * Set the member common to all the memberships.
+   *
+   * @param member The member common to all the memberships
+   */
+  public void setCommonMember(Member member) {
+    this.commonMember = member;
+  }
+
+  /**
+   * Set the group common to all the memberships.
+   *
+   * @param group The member common to all the memberships
+   */
+  public void setCommonGroup(BasicGroup group) {
+    this.commonGroup = group;
+  }
+
+  /**
+   * Skip to the get "membership" element
+   *
+   * @param xml The XML Stream to process
+   *
+   * @return <code>true</code> if the current event is the START_ELEMENT with local name "membership"
+   *
+   * @throws XMLStreamException Should any error occur while processing the stream
+   */
   @Override
-  public Membership toItem(XMLStreamReader xml) throws XMLStreamException {
+  public boolean find(XMLStreamReader xml) throws XMLStreamException {
+    do {
+      xml.nextTag();
+      // If we encounter a membership we automatically extract the member or group common to the membership
+      if (xml.getLocalName().equals("memberships")) {
+        extractCommonMemberOrGroup(xml);
+      }
+    } while (xml.hasNext() && !isOnElement(xml));
+    return isOnElement(xml);
+  }
+
+  /**
+   * Returns a <code>Membership</code> from the current event.
+   *
+   * <p>Precondition: the current event is START_ELEMENT with name "membership"</p>
+   * <p>Postcondition: the current event is END_ELEMENT with name "membership".</p>
+   *
+   * @param xml The XML stream to process
+   *
+   * @throws XMLStreamException If thrown by XML stream or if the precondition failed
+   */
+  @Override
+  public Membership get(XMLStreamReader xml) throws XMLStreamException {
     if (isOnElement(xml)) {
       // NB. Note all memberships have an ID (e.g. from subgroups)
       long id = attribute(xml, "id", -1);
@@ -60,8 +109,8 @@ public class XMLStreamMembership extends BasicXMLStreamHandler<Membership> imple
       OffsetDateTime created = OffsetDateTime.MIN;
       optionalAttribute(xml, "created");
 
-      Member member = this._member;
-      BasicGroup group = this._group;
+      Member member = this.commonMember;
+      BasicGroup group = this.commonGroup;
       Details details = Details.NO_DETAILS;
 
       do {
@@ -69,13 +118,13 @@ public class XMLStreamMembership extends BasicXMLStreamHandler<Membership> imple
         if (xml.isStartElement()) {
           String localName = xml.getLocalName();
           if ("member".equals(localName)) {
-            member = new XMLStreamMember().toItem(xml);
+            member = new XMLStreamMember().get(xml);
           } else if ("group".equals(localName)) {
-            group = new XMLStreamGroup().toItem(xml);
+            group = new XMLStreamGroup().get(xml);
           } else if ("project".equals(localName)) {
-            group = new XMLStreamProject().toItem(xml);
+            group = new XMLStreamProject().get(xml);
           } else if ("details".equals(localName)) {
-            details = new XMLStreamDetails().toItem(xml);
+            details = new XMLStreamDetails().get(xml);
           }
         }
       } while (!(xml.isEndElement() &&  "membership".equals(xml.getLocalName())));
@@ -90,6 +139,35 @@ public class XMLStreamMembership extends BasicXMLStreamHandler<Membership> imple
 
       return new Membership(id, member, group, common, notification, role, created, status, deleted, details);
     } else throw new InvalidElementException("not a membership");
+  }
+
+  /**
+   * Extracts the member or group/project that is common to all the memberships.
+   *
+   * <p>Precondition: the current event is START_ELEMENT with name "memberships"</p>
+   * <p>Postcondition: the current event is START_ELEMENT with name "membership"
+   *  or END_ELEMENT with name "memberships".</p>
+   *
+   * @param xml The XML stream to process
+   *
+   * @throws XMLStreamException If thrown by XML stream or if the precondition failed
+   */
+  private void extractCommonMemberOrGroup(XMLStreamReader xml) throws XMLStreamException {
+    xml.require(XMLStreamReader.START_ELEMENT, null, "memberships");
+    do {
+      xml.next();
+      if (xml.isStartElement()) {
+        String localName = xml.getLocalName();
+        if ("member".equals(localName)) {
+          this.commonMember = new XMLStreamMember().get(xml);
+        } else if ("group".equals(localName)) {
+          this.commonGroup = new XMLStreamGroup().get(xml);
+        } else if ("project".equals(localName)) {
+          this.commonGroup = new XMLStreamProject().get(xml);
+        }
+      }
+    } while (!(xml.isEndElement() &&  "memberships".equals(xml.getLocalName()))
+          && !(xml.isStartElement() &&  "membership".equals(xml.getLocalName())));
   }
 
 }

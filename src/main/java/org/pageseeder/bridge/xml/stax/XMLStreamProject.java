@@ -24,14 +24,14 @@ import org.pageseeder.bridge.xml.MissingAttributeException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class XMLStreamProject extends BasicXMLStreamHandler<Project> implements XMLStreamItem<Project> {
+public class XMLStreamProject extends BasicXMLStreamHandler<Project> implements XMLStreamHandler<Project> {
 
   public XMLStreamProject() {
     super("project");
   }
 
   @Override
-  public Project toItem(XMLStreamReader xml) throws XMLStreamException {
+  public Project get(XMLStreamReader xml) throws XMLStreamException {
     if (isOnElement(xml)) {
       long id = attribute(xml, "id", -1);
       if (id == -1L) throw new MissingAttributeException("Missing project ID");

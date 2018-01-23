@@ -15,6 +15,9 @@
  */
 package org.pageseeder.bridge.util;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.pageseeder.bridge.model.PSMember;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +26,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import org.eclipse.jdt.annotation.NonNull;
-import org.pageseeder.bridge.model.PSMember;
 
 /**
  * A simple class to generate sample data.
@@ -117,7 +117,7 @@ public final class Sampler {
   }
 
   /**
-   * Returns the next item in the list.
+   * Returns the get item in the list.
    *
    * @param list the list
    *
@@ -131,7 +131,7 @@ public final class Sampler {
   }
 
   /**
-   * Returns the next item in the array.
+   * Returns the get item in the array.
    *
    * @param array the array to take object from
    *

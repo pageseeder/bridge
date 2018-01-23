@@ -25,14 +25,18 @@ import org.pageseeder.bridge.xml.MissingAttributeException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class XMLStreamMember extends BasicXMLStreamHandler<Member> implements XMLStreamItem<Member> {
+/**
+ * This handler returns member instances.
+ *
+ */
+public class XMLStreamMember extends BasicXMLStreamHandler<Member> implements XMLStreamHandler<Member> {
 
   public XMLStreamMember() {
     super("member");
   }
 
   @Override
-  public Member toItem(XMLStreamReader xml) throws XMLStreamException {
+  public Member get(XMLStreamReader xml) throws XMLStreamException {
     if (isOnElement(xml)) {
       long id = attribute(xml, "id", -1L);
       if (id == -1L) throw new MissingAttributeException("Missing member ID");

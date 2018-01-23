@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class XMLStreamTest {
@@ -37,43 +37,29 @@ public class XMLStreamTest {
   private final static String FOLDER = "org/pageseeder/bridge/xml/";
 
 
-  public static <T> T parseItem(XMLWritable item, XMLStreamItem<T> handler) throws IOException, XMLStreamException {
+  public static <T> T parseItem(XMLWritable item, XMLStreamHandler<T> handler) throws IOException, XMLStreamException {
     try (Reader r = readXML(item)) {
       XMLStreamReader xml = FACTORY.createXMLStreamReader(r);
-      while (xml.hasNext()) {
-        xml.next();
-        if (xml.getEventType() == XMLStreamReader.START_ELEMENT) {
-          if (handler.element().equals(xml.getLocalName())) return handler.toItem(xml);
-        }
-      }
+      return handler.next(xml);
     }
-    return null;
   }
 
-  public static <T> T parseItem(String filename, XMLStreamItem<T> handler) throws IOException, XMLStreamException {
+  public static <T> T parseItem(String filename, XMLStreamHandler<T> handler) throws IOException, XMLStreamException {
     try (InputStream in = XMLStreamTest.class.getClassLoader().getResourceAsStream(FOLDER+filename)) {
       XMLStreamReader xml = FACTORY.createXMLStreamReader(in);
-      while (xml.hasNext()) {
-        xml.next();
-        if (xml.getEventType() == XMLStreamReader.START_ELEMENT) {
-          if (handler.element().equals(xml.getLocalName())) return handler.toItem(xml);
-        }
-      }
+      return handler.next(xml);
     }
-    return null;
   }
 
-  public static <T> List<T> parseList(String filename, XMLStreamList<T> handler) throws IOException, XMLStreamException {
+  public static <T> List<T> parseList(String filename, XMLStreamHandler<T> handler) throws IOException, XMLStreamException {
+    List<T> items = new ArrayList<>();
     try (InputStream in = XMLStreamTest.class.getClassLoader().getResourceAsStream(FOLDER+filename)) {
       XMLStreamReader xml = FACTORY.createXMLStreamReader(in);
-      while (xml.hasNext()) {
-        xml.next();
-        if (xml.getEventType() == XMLStreamReader.START_ELEMENT) {
-          if (handler.element().equals(xml.getLocalName())) return handler.toList(xml);
-        }
+      while (handler.find(xml)) {
+        items.add(handler.get(xml));
       }
     }
-    return Collections.emptyList();
+    return items;
   }
 
   private static Reader readXML(XMLWritable item) throws IOException {
@@ -81,8 +67,6 @@ public class XMLStreamTest {
     item.toXML(xml);
     return new StringReader(xml.toString());
   }
-
-
 
   private static XMLInputFactory newFactory() {
     XMLInputFactory factory = XMLInputFactory.newInstance();

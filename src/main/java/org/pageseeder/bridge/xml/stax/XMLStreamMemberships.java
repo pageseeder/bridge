@@ -25,10 +25,18 @@ import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class XMLStreamMemberships extends BasicXMLStreamHandler<Membership> implements XMLStreamList<Membership> {
+
+  XMLStreamMembership handler = new XMLStreamMembership();
 
   public XMLStreamMemberships() {
     super("memberships");
+  }
+
+  @Override
+  public Membership get(XMLStreamReader xml) throws XMLStreamException {
+    return handler.get(xml);
   }
 
   @Override
@@ -53,14 +61,14 @@ public class XMLStreamMemberships extends BasicXMLStreamHandler<Membership> impl
                 factory = new XMLStreamMembership();
               }
             }
-            Membership membership = factory.toItem(xml);
+            Membership membership = factory.get(xml);
             memberships.add(membership);
           } else if ("member".equals(localName)) {
-            member = new XMLStreamMember().toItem(xml);
+            member = new XMLStreamMember().get(xml);
           } else if ("group".equals(localName)) {
-            group = new XMLStreamGroup().toItem(xml);
+            group = new XMLStreamGroup().get(xml);
           } else if ("project".equals(localName)) {
-            group = new XMLStreamProject().toItem(xml);
+            group = new XMLStreamProject().get(xml);
           }
         }
       } while (!(xml.isEndElement() &&  "memberships".equals(xml.getLocalName())));

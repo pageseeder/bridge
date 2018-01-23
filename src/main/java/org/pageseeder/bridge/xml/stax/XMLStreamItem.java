@@ -27,11 +27,14 @@ import javax.xml.stream.XMLStreamReader;
  *
  * @param <T> The type of object to return
  */
+@Deprecated
 public interface XMLStreamItem<T> extends XMLStreamHandler<T> {
 
   /**
    * @return the item that was processed and added to the list.
    */
-  T toItem(XMLStreamReader xml) throws XMLStreamException;
+  default T toItem(XMLStreamReader xml) throws XMLStreamException {
+    return get(xml);
+  }
 
 }

@@ -25,14 +25,14 @@ import org.pageseeder.bridge.xml.MissingAttributeException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class XMLStreamURI extends BasicXMLStreamHandler<URI> implements XMLStreamItem<URI> {
+public class XMLStreamURI extends BasicXMLStreamHandler<URI> implements XMLStreamHandler<URI> {
 
   public XMLStreamURI() {
     super("uri");
   }
 
   @Override
-  public URI toItem(XMLStreamReader xml) throws XMLStreamException {
+  public URI get(XMLStreamReader xml) throws XMLStreamException {
     if (isOnElement(xml)) {
       long id = attribute(xml, "id", -1L);
       if (id == -1L) throw new MissingAttributeException("Missing URI ID");

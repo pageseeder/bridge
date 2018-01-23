@@ -24,14 +24,14 @@ import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XMLStreamDetails extends BasicXMLStreamHandler<Details> implements XMLStreamItem<Details> {
+public class XMLStreamDetails extends BasicXMLStreamHandler<Details> implements XMLStreamHandler<Details> {
 
   public XMLStreamDetails() {
     super("details");
   }
 
   @Override
-  public Details toItem(XMLStreamReader xml) throws XMLStreamException {
+  public Details get(XMLStreamReader xml) throws XMLStreamException {
     if (isOnElement(xml)) {
       List<Field> fields = new ArrayList<>();
       do {

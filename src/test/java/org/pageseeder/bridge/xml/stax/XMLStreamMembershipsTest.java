@@ -28,7 +28,7 @@ public final class XMLStreamMembershipsTest {
 
   @Test
   public void testPassBasic() throws IOException, XMLStreamException {
-    List<Membership> memberships = XMLStreamTest.parseList("membership/memberships-formember.xml", new XMLStreamMemberships());
+    List<Membership> memberships = XMLStreamTest.parseList("membership/memberships-formember.xml", new XMLStreamMembership());
 //    Assert.assertEquals(1L, membership.getId());
     Assert.assertEquals(3, memberships.size());
   }

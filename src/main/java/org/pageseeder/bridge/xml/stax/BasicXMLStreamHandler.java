@@ -30,10 +30,18 @@ public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
     this._element = element;
   }
 
-  @Override
   public String element() {
     return this._element;
   }
+
+  public boolean find(XMLStreamReader xml) throws XMLStreamException {
+    while (xml.hasNext() && !isOnElement(xml)) {
+      xml.nextTag();
+    }
+    return isOnElement(xml);
+  }
+
+  // A collection of utility methods to simplify methods
 
   /**
    * Indicates whether the handler is ready to handle the XML based on the state of the <code>XMLStreamReader</code>.
@@ -52,16 +60,23 @@ public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
    * @throws XMLStreamException If thrown by the XMLStreamReader
    * @throws UnsupportedOperationException If a method affecting the state of the stream is used.
    */
-  public boolean isReady(XMLStreamReader xml) throws XMLStreamException {
-    return xml.getEventType() == XMLStreamReader.START_ELEMENT
-        && xml.getLocalName().equals(element());
-  }
-
-  // A collection of utility methods to simplify methods
-
   public boolean isOnElement(XMLStreamReader xml) {
     return xml.isStartElement() && xml.getLocalName().equals(element());
   }
+
+
+  public static void skipToStartElement(XMLStreamReader xml) throws XMLStreamException {
+    do {
+      xml.next();
+    } while (!xml.isStartElement());
+  }
+
+  public static void skipToEndElement(XMLStreamReader xml, String name) throws XMLStreamException {
+    do {
+      xml.next();
+    } while (!(xml.isEndElement() && xml.getLocalName().equals(name)));
+  }
+
 
   public static String attribute(XMLStreamReader xml, String name) {
     String value = optionalAttribute(xml, name);
@@ -97,18 +112,6 @@ public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
       if (name.equals(xml.getAttributeLocalName(i))) return xml.getAttributeValue(i);
     }
     return null;
-  }
-
-  public static void skipToStartElement(XMLStreamReader xml) throws XMLStreamException {
-    do {
-      xml.next();
-    } while (!xml.isStartElement());
-  }
-
-  public static void skipToEndElement(XMLStreamReader xml, String name) throws XMLStreamException {
-    do {
-      xml.next();
-    } while (!(xml.isEndElement() && xml.getLocalName().equals(name)));
   }
 
 }

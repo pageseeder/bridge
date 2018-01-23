@@ -21,10 +21,7 @@ import org.pageseeder.bridge.xml.DuplexHandler;
 import org.pageseeder.bridge.xml.Handler;
 import org.pageseeder.bridge.xml.ServiceErrorHandler;
 import org.pageseeder.bridge.xml.XMLCopy;
-import org.pageseeder.bridge.xml.stax.SafeXMLStreamReader;
 import org.pageseeder.bridge.xml.stax.XMLStreamHandler;
-import org.pageseeder.bridge.xml.stax.XMLStreamItem;
-import org.pageseeder.bridge.xml.stax.XMLStreamList;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -726,31 +723,6 @@ public final class Response implements HttpResponse, AutoCloseable {
   }
 
   /**
-   * Consumes the output of the response using a handler and returns the collection
-   * of objects from it.
-   *
-   * <p>After calling this method the response content will no longer be available.
-   *
-   * @param handler The object handler for the XML
-   * @param <T> The type of object returned in the list.
-   *
-   * @return A list of items from the XML.
-   *
-   * @throws IllegalStateException If the response is not available.
-   * @throws ContentException If an error occurred while consuming the content.
-   */
-//@Override
-  public <T> List<T> consumeList(XMLStreamList<T> handler) throws ContentException {
-    try {
-      return parseXMLStream(this, handler);
-    } catch (IOException ex) {
-      throw new ContentException("Unable to consume XML", ex);
-    } finally {
-      this.state = State.consumed;
-    }
-  }
-
-  /**
    * Consumes the output of the response using a handler and returns a list of objects
    * from it.
    *
@@ -765,7 +737,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @throws ContentException If an error occurred while consuming the content.
    */
 //  @Override
-  public <T> @Nullable List<T> consumeList(XMLStreamItem<T> handler) throws ContentException {
+  public <T> @Nullable List<T> consumeList(XMLStreamHandler<T> handler) throws ContentException {
     try {
       return parseXMLStream(this, handler);
     } catch (IOException ex) {
@@ -790,7 +762,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @throws ContentException If an error occurred while consuming the content.
    */
 //  @Override
-  public <T> @Nullable T consumeItem(XMLStreamItem<T> handler) throws ContentException {
+  public <T> @Nullable T consumeItem(XMLStreamHandler<T> handler) throws ContentException {
     List<T> list = consumeList(handler);
     return list.size() > 0? list.get(0) : null;
   }
@@ -1128,10 +1100,10 @@ public final class Response implements HttpResponse, AutoCloseable {
     List<T> list = new ArrayList<>();
     try (InputStream in = toInputStream(connection)) {
       XMLStreamReader source = factory.createXMLStreamReader(in, charset.name());
-      if (handler instanceof XMLStreamItem<?>) {
-        parseXMLStreamItem(source, (XMLStreamItem<T>)handler, list);
-      } else if (handler instanceof XMLStreamList<?>) {
-        parseXMLStreamList(source, (XMLStreamList<T>)handler, list);
+      while (handler.find(source)) {
+        T next = handler.get(source);
+        if (next != null)
+          list.add(next);
       }
 
     } catch (IllegalArgumentException | IllegalStateException | IndexOutOfBoundsException
@@ -1141,26 +1113,6 @@ public final class Response implements HttpResponse, AutoCloseable {
     }
 
     return list;
-  }
-
-  private static <T> void parseXMLStreamItem(XMLStreamReader source, XMLStreamItem<T> handler, List<T> list) throws XMLStreamException {
-    SafeXMLStreamReader safe = new SafeXMLStreamReader(source);
-    while (source.hasNext()) {
-      source.next();
-      if (handler.isReady(safe)) {
-        list.add(handler.toItem(source));
-      }
-    }
-  }
-
-  private static <T> void parseXMLStreamList(XMLStreamReader source, XMLStreamList<T> handler, List<T> list) throws XMLStreamException {
-    SafeXMLStreamReader safe = new SafeXMLStreamReader(source);
-    while (source.hasNext()) {
-      source.next();
-      if (handler.isReady(safe)) {
-        list.addAll(handler.toList(source));
-      }
-    }
   }
 
   /**
