@@ -325,7 +325,7 @@ For example:
   SomeObject item = response.consumeItem(Handler<SomeObject> handler);
 ```
 
-The `BasicHandler<T>` and `SimpleHandler<T>` implementations can be extended to simplify the development of handlers as they maintains the state of the parser to access the current, parent and ancestor elements and make it easier to extract text data and generate the list.
+The `BasicHandler<T>` implementation can be extended to simplify the development of handlers as they maintains the state of the parser to access the current, parent and ancestor elements and make it easier to extract text data and generate the list.
 
 ### Result handler `BasicResultHandler`
 
@@ -347,4 +347,25 @@ For example, the code below will only report and extract the value of fields `ps
 BasicResultHandler<?> handler = new BasicResultHandler<?>("psid", "pstitle");
 ```
 
+
+## `org.pageseeder.bridge.xml.stax`
+
+StAX handlers to parse XML data.
+
+### XML Stream Handlers
+
+HTTP response can process directly the content if supplied a `XMLStreamHandler<T>` which must implement the following methods:
+```
+  public boolean find(XMLStreamReader xml);
+  public T get(XMLStreamReader xml);
+```
+
+For example:
+```
+  List<SomeObject> list = response.consumeList(XMLStreamHandler<SomeObject> handler);
+  SomeObject item = response.consumeItem(XMLStreamHandler<SomeObject> handler);
+```
+
+The `BasicXMLStreamHandler<T>` base class can be extended to simplify the development of StAX handlers. It also
+provides utility method for common operations. 
 
