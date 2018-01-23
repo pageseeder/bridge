@@ -15,40 +15,34 @@
  */
 package org.pageseeder.bridge.http;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.Templates;
-
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.xml.Handler;
+import org.pageseeder.bridge.xml.stax.XMLStreamHandler;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.Templates;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * An HTTP response wrapping cached content
  *
  * @author Christophe Lauret
  *
- * @version 0.11.4
+ * @version 0.11.5
  * @since 0.11.4
  */
 public final class CachedResponse implements HttpResponse {
@@ -243,6 +237,21 @@ public final class CachedResponse implements HttpResponse {
   }
 
   @Override
+  public <T> List<T> consumeList(XMLStreamHandler<T> handler) throws ContentException {
+    try {
+      return parseXMLStream(this._content, handler);
+    } catch (IOException ex) {
+      throw new ContentException("Unable to consume XML", ex);
+    }
+  }
+
+  @Override
+  public <T> @Nullable T consumeItem(XMLStreamHandler<T> handler) throws ContentException {
+    List<T> list = consumeList(handler);
+    return list.size() > 0? list.get(0) : null;
+  }
+
+  @Override
   public void consumeXML(XMLWriter xml, Templates templates) throws ContentException {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException();
@@ -304,6 +313,47 @@ public final class CachedResponse implements HttpResponse {
     } catch (SAXException ex) {
       throw new ContentException("Error while parsing XML", ex);
     }
+  }
+
+  /**
+   * Parse the response as XML using a StAX stream handler.
+   *
+   * @param content  The cached content
+   * @param handler  Handles a StAX stream
+   *
+   * @throws IllegalStateException If the response is not available.
+   * @throws IOException If an error occurs while writing the XML.
+   */
+  private static <T> List<T> parseXMLStream(CachedContent content, XMLStreamHandler<T> handler) throws IOException {
+    // Setup the factory
+    XMLInputFactory factory = XMLInputFactory.newInstance();
+    factory.setProperty(XMLInputFactory.IS_COALESCING, true);
+    factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, true);
+    factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+    factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false);
+
+    // Get character encoding is correct
+    String charset = content.charset();
+    if (charset != null) {
+      charset = "utf-8";
+    }
+
+    // And parse the stream
+    List<T> list = new ArrayList<>();
+    try (InputStream in = content.getInputStream()) {
+      XMLStreamReader source = factory.createXMLStreamReader(in, charset);
+      while (handler.find(source)) {
+        T next = handler.get(source);
+        list.add(next);
+      }
+
+    } catch (IllegalArgumentException | IllegalStateException | IndexOutOfBoundsException
+        | NoSuchElementException | XMLStreamException | UnsupportedOperationException ex) {
+      // The XMLStreamReader throws a number of runtime exception that we need to catch
+      throw new ContentException("Error while parsing XML", ex);
+    }
+
+    return list;
   }
 
   /**

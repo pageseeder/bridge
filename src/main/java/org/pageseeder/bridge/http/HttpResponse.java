@@ -15,22 +15,18 @@
  */
 package org.pageseeder.bridge.http;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.transform.Templates;
-
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.xml.Handler;
+import org.pageseeder.bridge.xml.stax.XMLStreamHandler;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.transform.Templates;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -348,6 +344,39 @@ public interface HttpResponse extends AutoCloseable {
    * @throws ContentException If an error occurred while consuming the content.
    */
   <T> @Nullable T consumeItem(Handler<T> handler);
+
+
+  /**
+   * Consumes the output of the response using a handler and returns a list of objects
+   * from it.
+   *
+   * <p>After calling this method the response content will no longer be available.
+   *
+   * @param handler The object handler for the XML
+   * @param <T> The type of object returned as the item.
+   *
+   * @return A single item from the parsed XML.
+   *
+   * @throws IllegalStateException If the response is not available.
+   * @throws ContentException If an error occurred while consuming the content.
+   */
+  <T> List<T> consumeList(XMLStreamHandler<T> handler) throws ContentException;
+
+  /**
+   * Consumes the output of the response using a handler and returns a single
+   * object from it.
+   *
+   * <p>After calling this method the response content will no longer be available.
+   *
+   * @param handler The object handler for the XML
+   * @param <T> The type of object returned as the item.
+   *
+   * @return A single item from the parsed XML.
+   *
+   * @throws IllegalStateException If the response is not available.
+   * @throws ContentException If an error occurred while consuming the content.
+   */
+  <T> @Nullable T consumeItem(XMLStreamHandler<T> handler) throws ContentException;
 
   /**
    * Consumes the output of the response and copies it to the specified XML writer.

@@ -736,7 +736,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
-//  @Override
+  @Override
   public <T> @Nullable List<T> consumeList(XMLStreamHandler<T> handler) throws ContentException {
     try {
       return parseXMLStream(this, handler);
@@ -761,7 +761,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
-//  @Override
+  @Override
   public <T> @Nullable T consumeItem(XMLStreamHandler<T> handler) throws ContentException {
     List<T> list = consumeList(handler);
     return list.size() > 0? list.get(0) : null;
