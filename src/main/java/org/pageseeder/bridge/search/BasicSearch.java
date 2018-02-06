@@ -90,7 +90,7 @@ abstract class BasicSearch<T extends BasicSearch> {
    */
   public Response response(PSCredentials credentials) {
     if (this._scope == Scope.EMPTY)
-      throw new IllegalStateException("Your must specified the scope of this search (group or project)");
+      throw new IllegalStateException("You must specified the scope of this search (group or project)");
     Map<String, String> parameters = toParameters();
     String service = service();
     return new Request(Method.GET, service)
