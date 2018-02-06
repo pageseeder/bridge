@@ -118,7 +118,7 @@ public final class PredicateSearch extends BasicSearch<PredicateSearch> implemen
    * @return A new <code>QuestionSearch</code> instance unless the current instance already has the same number of results per page.
    */
   public PredicateSearch pageSize(int pageSize) {
-    Page p = this._page.number(pageSize);
+    Page p = this._page.size(pageSize);
     return new PredicateSearch(this._scope, this._predicate, this._facets, p, this._sortFields);
   }
 

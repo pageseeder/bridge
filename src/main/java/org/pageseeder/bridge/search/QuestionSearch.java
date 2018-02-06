@@ -119,7 +119,7 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
    * @return A new <code>QuestionSearch</code> instance unless the current instance already has the same number of results per page.
    */
   public QuestionSearch pageSize(int pageSize) {
-    Page p = this._page.number(pageSize);
+    Page p = this._page.size(pageSize);
     return new QuestionSearch(this._scope, this._question, this._facets, this._filters, this._ranges, p, this._sortFields);
   }
 
