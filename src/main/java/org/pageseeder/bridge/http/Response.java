@@ -737,7 +737,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @throws ContentException If an error occurred while consuming the content.
    */
   @Override
-  public <T> @Nullable List<T> consumeList(XMLStreamHandler<T> handler) throws ContentException {
+  public <T> List<T> consumeList(XMLStreamHandler<T> handler) throws ContentException {
     try {
       return parseXMLStream(this, handler);
     } catch (IOException ex) {

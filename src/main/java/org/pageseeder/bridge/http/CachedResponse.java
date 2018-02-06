@@ -237,7 +237,7 @@ public final class CachedResponse implements HttpResponse {
   }
 
   @Override
-  public <T> List<T> consumeList(XMLStreamHandler<T> handler) throws ContentException {
+  public <T> @NonNull List<T> consumeList(XMLStreamHandler<T> handler) throws ContentException {
     try {
       return parseXMLStream(this._content, handler);
     } catch (IOException ex) {
