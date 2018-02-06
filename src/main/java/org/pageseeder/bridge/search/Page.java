@@ -80,7 +80,7 @@ public class Page {
   }
 
   public Page size(int size) {
-    return new Page(this._size, size);
+    return new Page(this._number, size);
   }
 
   @Override
