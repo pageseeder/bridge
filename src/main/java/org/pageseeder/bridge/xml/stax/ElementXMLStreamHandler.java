@@ -64,7 +64,7 @@ public abstract class ElementXMLStreamHandler<T> extends BasicXMLStreamHandler<T
    */
   public boolean find(XMLStreamReader xml) throws XMLStreamException {
     while (xml.hasNext() && !isOnElement(xml)) {
-      xml.nextTag();
+      xml.next();
     }
     return isOnElement(xml);
   }
