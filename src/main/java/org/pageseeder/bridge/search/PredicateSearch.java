@@ -87,17 +87,22 @@ public final class PredicateSearch extends BasicSearch<PredicateSearch> implemen
 
   @Override
   public PredicateSearch group(String group) {
-    return new PredicateSearch(Scope.group(group), this._predicate, this._facets, this._page, this._sortFields);
+    return new PredicateSearch(this._scope.group(group), this._predicate, this._facets, this._page, this._sortFields);
   }
 
   @Override
   public PredicateSearch project(String project) {
-    return new PredicateSearch(Scope.project(project), this._predicate, this._facets, this._page, this._sortFields);
+    return new PredicateSearch(this._scope.project(project), this._predicate, this._facets, this._page, this._sortFields);
   }
 
   @Override
   public PredicateSearch project(String project, List<String> groups) {
-    return new PredicateSearch(Scope.project(project, groups), this._predicate, this._facets, this._page, this._sortFields);
+    return new PredicateSearch(this._scope.project(project, groups), this._predicate, this._facets, this._page, this._sortFields);
+  }
+
+  @Override
+  public PredicateSearch member(String member) {
+    return new PredicateSearch(this._scope.member(member), this._predicate, this._facets, this._page, this._sortFields);
   }
 
   /**
@@ -158,8 +163,8 @@ public final class PredicateSearch extends BasicSearch<PredicateSearch> implemen
     parameters = this._predicate.toParameters(parameters);
     parameters = this._facets.toParameters(parameters);
     parameters = this._page.toParameters(parameters);
-    if (this._scope.isProject() && this._scope.getGroups().size() > 0)
-      parameters.put("groups", Search.join(this._scope.getGroups(), ','));
+    if (this._scope.isProject() && this._scope.groups().size() > 0)
+      parameters.put("groups", Search.join(this._scope.groups(), ','));
     if (!_sortFields.isEmpty()) {
       parameters.put("sortfields",this._sortFields.toString());
     }
@@ -176,9 +181,10 @@ public final class PredicateSearch extends BasicSearch<PredicateSearch> implemen
 
 
   public String service() {
+    this._scope.checkReady();
     if (this._scope.isProject())
-      return ServicePath.newPath("/project/{project}/search/predicate", this._scope.getName());
+      return ServicePath.newPath("/members/{member}/projects/{project}/predicate", this._scope.member(), this._scope.name());
     else
-      return ServicePath.newPath("/groups/{group}/search/predicate", this._scope.getName());
+      return ServicePath.newPath("/groups/{group}/search/predicate", this._scope.name());
   }
 }

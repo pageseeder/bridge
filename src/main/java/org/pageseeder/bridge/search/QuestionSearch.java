@@ -225,17 +225,22 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
 
   @Override
   public QuestionSearch group(String group) {
-    return new QuestionSearch(Scope.group(group), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
+    return new QuestionSearch(this._scope.group(group), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
   }
 
   @Override
   public QuestionSearch project(String project) {
-    return new QuestionSearch(Scope.project(project), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
+    return new QuestionSearch(this._scope.project(project), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
   }
 
   @Override
   public QuestionSearch project(String project, List<String> groups) {
-    return new QuestionSearch(Scope.project(project, groups), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
+    return new QuestionSearch(this._scope.project(project, groups), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
+  }
+
+  @Override
+  public QuestionSearch member(String member) {
+    return new QuestionSearch(this._scope.member(member), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
   }
 
   /**
@@ -251,9 +256,9 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
     parameters = this._filters.toParameters(parameters);
     parameters = this._ranges.toParameters(parameters);
     parameters = this._page.toParameters(parameters);
-    if (this._scope.isProject() && this._scope.getGroups().size() > 0)
-      parameters.put("groups", Search.join(this._scope.getGroups(), ','));
-    if (!_sortFields.isEmpty()) {
+    if (this._scope.isProject() && this._scope.groups().size() > 0)
+      parameters.put("groups", Search.join(this._scope.groups(), ','));
+    if (!this._sortFields.isEmpty()) {
       parameters.put("sortfields",this._sortFields.toString());
     }
     return parameters;
@@ -271,9 +276,10 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
 
   @Override
   public String service() {
+    this._scope.checkReady();
     if (this._scope.isProject())
-      return ServicePath.newPath("/project/{project}/search", this._scope.getName());
+      return ServicePath.newPath("/members/{member}/projects/{project}/search", this._scope.member(), this._scope.name());
     else
-      return ServicePath.newPath("/groups/{group}/search", this._scope.getName());
+      return ServicePath.newPath("/groups/{group}/search", this._scope.name());
   }
 }

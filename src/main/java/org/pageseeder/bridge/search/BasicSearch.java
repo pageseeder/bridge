@@ -35,7 +35,6 @@ abstract class BasicSearch<T extends BasicSearch> {
    */
   protected final Scope _scope;
 
-
   protected BasicSearch(Scope scope){
     this._scope = scope;
   }
@@ -57,6 +56,15 @@ abstract class BasicSearch<T extends BasicSearch> {
    * @return A new instance of the implementing class
    */
   public abstract T project(String project);
+
+  /**
+   * Set the member making the search (required for project searches only)
+   *
+   * @param member The id or username of the member making the search
+   *
+   * @return A new instance of the implementing class
+   */
+  public abstract T member(String member);
 
   /**
    * Set the scope of the search to a project.
@@ -89,8 +97,6 @@ abstract class BasicSearch<T extends BasicSearch> {
    * @return The corresponding the response.
    */
   public Response response(PSCredentials credentials) {
-    if (this._scope == Scope.EMPTY)
-      throw new IllegalStateException("You must specified the scope of this search (group or project)");
     Map<String, String> parameters = toParameters();
     String service = service();
     return new Request(Method.GET, service)
