@@ -56,6 +56,14 @@ public class Page {
     this._size = DEFAULT_PAGE_SIZE;
   }
 
+  /**
+   * Create a new page using the specified number and size.
+   *
+   * @param number The request page number
+   * @param size   The maximum number of results per page
+   *
+   * @throws IllegalArgumentException if the number or size is not greater than zero.
+   */
   public Page(int number, int size) {
     this._number = checkNatural(number);
     this._size = checkNatural(size);

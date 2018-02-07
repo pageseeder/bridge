@@ -97,7 +97,7 @@ public final class Question {
    *   <li><code>suggestsize</code></li>
    * </ul>
    *
-   * @return The updated parameters
+   * @return The same parameter map
    */
   public Map<String, String> toParameters(Map<String, String> parameters) {
     if (!this._question.isEmpty()) {
