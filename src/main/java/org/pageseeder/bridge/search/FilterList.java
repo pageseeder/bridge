@@ -17,6 +17,7 @@ package org.pageseeder.bridge.search;
 
 import org.eclipse.jdt.annotation.Nullable;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,17 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
   }
 
   /**
+   * Create a new filters list.
+   *
+   * @param filters A array of filters
+   *
+   * @return An instance using corresponding list of filters
+   */
+  public static FilterList newList(Filter... filters) {
+    return new FilterList(Collections.unmodifiableList(Arrays.asList(filters)));
+  }
+
+  /**
    * Add a filter for the specified index field.
    *
    * <p>This method can be used to add multiple filters.
@@ -62,6 +74,18 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
   }
 
   /**
+   * Create a new filter list with the specified filter.
+   *
+   * @param filter The name of the index field
+   *
+   * @return A new <code>FilterList</code> instance including the specified filter.
+   */
+  public FilterList filter(Filter filter) {
+    List<Filter> filters = plus(this._list, filter);
+    return new FilterList(filters);
+  }
+
+  /**
    * Create anew filter list with the specified filter.
    *
    * @param filter The name of the index field
@@ -69,8 +93,7 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
    * @return A new <code>FilterList</code> instance including the specified filter.
    */
   public FilterList plus(Filter filter) {
-    List<Filter> filters = plus(this._list, filter);
-    return new FilterList(filters);
+    return filter(filter);
   }
 
   /**
@@ -78,7 +101,7 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
    *
    * @param field The name of the index field
    *
-   * @return The filter the field must match; <code>null</code> if no filter is set for that field
+   * @return The first filter the field must match; <code>null</code> if no filter is set for that field
    */
   public @Nullable Filter find(String field) {
     for (Filter f : this._list)
@@ -87,7 +110,7 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
   }
 
   /**
-   * Returns the filter for the specified index field.
+   * Returns all the filter for the specified index field.
    *
    * @param field The name of the index field
    *
@@ -97,6 +120,13 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
     return this._list.stream().filter(it -> it.field().equals(field)).collect(Collectors.toList());
   }
 
+  /**
+   * Returns the value of the filter for the specified field in the filter list.
+   *
+   * @param field The name of the index field
+   *
+   * @return The first matching filter
+   */
   private @Nullable String valueOf(String field) {
     Filter filter = find(field);
     return filter != null? filter.value() : null;
@@ -104,7 +134,6 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
 
   // Shorthand for common filters
   // --------------------------------------------------------------------------
-
 
   /**
    * Add a facet for the specified property.
@@ -262,19 +291,23 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
    */
   Map<String, String> toParameters(Map<String, String> parameters) {
     if (!isEmpty()) {
-      StringBuilder filters = new StringBuilder();
-      for (Filter f : this) {
-        if (filters.length() > 0) {
-          filters.append(',');
-        }
-        String value = f.value().toString().replaceAll(",", "\\,");
-        filters.append(f.occur()).append(f.field()).append(':').append(value);
-      }
-      parameters.put("filters", filters.toString());
+      parameters.put("filters", this.toString());
     }
     return parameters;
   }
 
-  // TODO toString() method
+  @Override
+  public String toString() {
+    StringBuilder filters = new StringBuilder();
+    for (Filter f : this) {
+      if (filters.length() > 0) {
+        filters.append(',');
+      }
+      // We must escape the ',' in values
+      String value = f.value().replaceAll(",", "\\,");
+      filters.append(f.occur()).append(f.field()).append(':').append(value);
+    }
+    return filters.toString();
+  }
 
 }
