@@ -15,30 +15,26 @@
  */
 package org.pageseeder.bridge.oauth;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSConfig;
-import org.pageseeder.bridge.http.Method;
-import org.pageseeder.bridge.http.Request;
-import org.pageseeder.bridge.http.Response;
-import org.pageseeder.bridge.http.ServiceError;
-import org.pageseeder.bridge.http.ServicePath;
+import org.pageseeder.bridge.http.*;
 import org.pageseeder.bridge.net.UsernamePassword;
 import org.pageseeder.bridge.xml.BasicHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Registration of OAuth clients on PageSeeder.
  *
  * <p>This class provides a simple API to register an OAuth client PageSeeder.
  *
- * @version 0.10.2
+ * @version 0.12.0
  * @since 0.9.5
  */
 public final class ClientRegistration {
@@ -61,48 +57,40 @@ public final class ClientRegistration {
     "client_credentials"
   );
 
-  /**
-   * The name of the client
-   */
+  /** The name of the client (required and unique) */
   private final String _clientName;
 
-  /**
-   * The grant type.
-   */
+  /** The grant type. */
   private @Nullable String grantType;
 
-  /**
-   * The redirect URI (for authorization code grant type)
-   */
+  /** The redirect URI (for authorization code grant type) */
   private @Nullable String redirectURI;
 
-  /**
-   * URI of the client.
-   */
+  /** URI of the client. */
   private @Nullable String clientURI;
 
-  /**
-   * Max age for the access token.
-   */
+  /** Name of the application for this client. */
+  private @Nullable String appName;
+
+  /** The webhook client secret. */
+  private @Nullable String webhookSecret;
+
+  /** Max age for the access token in seconds. */
   private long accessTokenMaxAge;
 
-  /**
-   * Max age for the refresh token (if applicable)
-   */
+  /** Max age for the refresh token in seconds (if applicable) */
   private long refreshTokenMaxAge;
 
-  /**
-   * The scope
-   */
+  /** The scope. */
   private String scope = "openid email profile";
 
-  /**
-   * A description for the client.
-   */
+  /** A description for the client. */
   private @Nullable String description;
 
   /**
-   * Create a client registration for a client with the specified name;
+   * Create a client registration for a client with the specified name.
+   *
+   * <p>The client name is required and must be unique.
    *
    * @param clientName the name of the client to register.
    */
@@ -137,6 +125,8 @@ public final class ClientRegistration {
    * </ul>
    *
    * @param grantType The grant type for the client to register.
+   *
+   * @throws IllegalArgumentException If the grant type is invalid.
    */
   public void setGrantType(String grantType) {
     if (!VALID_GRANT_TYPES.contains(grantType))
@@ -164,45 +154,114 @@ public final class ClientRegistration {
     this.redirectURI = redirectURI;
   }
 
-
+  /**
+   * @return The URI of the client.
+   */
   public @Nullable String getClientURI() {
     return this.clientURI;
   }
 
+  /**
+   * Set the URI, URL or Website for the client.
+   *
+   * @param clientURI The URI of the client.
+   */
   public void setClientURI(String clientURI) {
     this.clientURI = clientURI;
   }
 
+  /**
+   * @return Max age for the access token in seconds.
+   */
   public long getAccessTokenMaxAge() {
     return this.accessTokenMaxAge;
   }
 
+  /**
+   * Set the maximum age of access token issued for this client.
+   *
+   * @param age  Max age for the access token.
+   * @param unit THe time unit to use for the specified max age value
+   */
   public void setAccessTokenMaxAge(long age, TimeUnit unit) {
     this.accessTokenMaxAge = TimeUnit.SECONDS.convert(age, unit);
   }
 
+  /**
+   * @return Max age for the refresh token in seconds (if applicable)
+   */
   public long getRefreshTokenMaxAge() {
     return this.refreshTokenMaxAge;
   }
 
+  /**
+   * Set the maximum age of refresh token issued for this client.
+   *
+   * @param age Max age for the refresh token (if applicable)
+   * @param unit THe time unit to use for the specified max age value
+   */
   public void setRefreshTokenMaxAge(long age, TimeUnit unit) {
     this.refreshTokenMaxAge = TimeUnit.SECONDS.convert(age, unit);
   }
 
+  /**
+   * @return The OAuth scope that this client can have.
+   */
   public String getScope() {
     return this.scope;
   }
 
+  /**
+   * The scope for this client.
+   *
+   * <p>To use OpenID for login, the scope must include "openid email profile"
+   *
+   * @param scope The OAuth scope that this client can have.
+   */
   public void setScope(String scope) {
     this.scope = scope;
   }
 
+  /**
+   * @return An optional description for this client.
+   */
   public @Nullable String getDescription() {
     return this.description;
   }
 
+  /**
+   * @param description An optional description for this client.
+   */
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  /**
+   * Set the application name for the client.
+   *
+   * The app name is different from the client name, it is not required to be unique
+   * and is usually specified in the case when multiple clients from the same application
+   * are created.
+   *
+   * @param appName An optional name for the application.
+   */
+  public void setAppName(String appName) {
+    this.appName = appName;
+  }
+
+  /**
+   * @return An optional name for the application.
+   */
+  public @Nullable String getAppName() {
+    return this.appName;
+  }
+
+  public void setWebhookSecret(String webhookSecret) {
+    this.webhookSecret = webhookSecret;
+  }
+
+  public @Nullable String getWebhookSecret() {
+    return this.webhookSecret;
   }
 
   /**
@@ -251,8 +310,13 @@ public final class ClientRegistration {
         request.parameter("refresh-token-max-age", Long.toString(this.refreshTokenMaxAge));
       }
     }
-    if (this.scope != null) {
-      request.parameter("scope", this.scope);
+    String app = this.appName;
+    if (app != null) {
+      request.parameter("app", app);
+    }
+    String webhook = this.webhookSecret;
+    if (webhook != null) {
+      request.parameter("webhook-secret", webhook);
     }
     Response response = request.response();
     if (response.isSuccessful()) return response.consumeItem(new ClientCredentialsHandler());
