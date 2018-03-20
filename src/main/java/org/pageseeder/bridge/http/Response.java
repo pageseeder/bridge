@@ -49,6 +49,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.GZIPInputStream;
 
 /**
  * The response to a connection to PageSeeder.
@@ -81,7 +82,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author Christophe Lauret
  *
- * @version 0.10.2
+ * @version 0.11.12
  * @since 0.9.1
  */
 public final class Response implements HttpResponse, AutoCloseable {
@@ -514,7 +515,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    */
   @Override
-  public @Nullable Reader getReader() throws IOException {
+  public Reader getReader() throws IOException {
     Charset charset = this._charset;
     if (charset == null)
       throw new IllegalStateException("Unable to determine the charset for this resource.");
@@ -535,7 +536,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    */
   @Override
-  public @Nullable Reader getReader(Charset charset) throws IOException {
+  public Reader getReader(Charset charset) throws IOException {
     HttpURLConnection con = requireAvailable();
     try {
       return new InputStreamReader(toInputStream(con), charset);
@@ -610,7 +611,6 @@ public final class Response implements HttpResponse, AutoCloseable {
       this.state = State.consumed;
     }
   }
-
 
   /**
    * Consumes the output of the response.
@@ -1205,17 +1205,30 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @throws IOException If the thrown by the underlying connection.
    */
   private static InputStream toInputStream(HttpURLConnection connection) throws IOException {
+    boolean isCompressed = "gzip".equals(connection.getHeaderField("Content-Encoding"));
     if (isSuccessful(connection.getResponseCode())) {
-      InputStream in = connection.getInputStream();
+      InputStream in = unCompressIf(connection.getInputStream(), isCompressed);
       if (in == null)
         throw new IllegalArgumentException("Unable to read connection output");
       return debugStream(in, connection.getContentLength(), System.out);
     } else {
-      InputStream err = connection.getErrorStream();
+      InputStream err = unCompressIf(connection.getErrorStream(), isCompressed);
       if (err == null)
         throw new IllegalArgumentException("Unable to read connection error output");
       return debugStream(err, connection.getContentLength(), System.err);
     }
+  }
+
+  /**
+   * Wrap the specified input stream in a <code>GZIPInputStream</code> if the it is compressed with gzip.
+   *
+   * @param in The input stream that may need to be ungzipped.
+   * @param isCompressed true to wrap in <code>GZIPInputStream</code>; false otherwise.
+   *
+   * @return an input stream that returns the entity content
+   */
+  private static InputStream unCompressIf(InputStream in, boolean isCompressed) throws IOException{
+    return isCompressed? new GZIPInputStream(in) : in;
   }
 
   /**

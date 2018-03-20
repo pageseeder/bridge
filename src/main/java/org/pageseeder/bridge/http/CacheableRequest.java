@@ -15,21 +15,21 @@
  */
 package org.pageseeder.bridge.http;
 
+import org.eclipse.jdt.annotation.Nullable;
+import org.pageseeder.bridge.PSConfig;
+import org.pageseeder.bridge.PSCredentials;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.eclipse.jdt.annotation.Nullable;
-import org.pageseeder.bridge.PSConfig;
-import org.pageseeder.bridge.PSCredentials;
 
 /**
  * Creates a new request using an HTTP cache and only on GET method.
  *
  * @author Christophe Lauret
  *
- * @version 0.11.4
+ * @version 0.11.12
  * @since 0.11.4
  */
 public final class CacheableRequest implements HttpRequest {
@@ -179,6 +179,11 @@ public final class CacheableRequest implements HttpRequest {
   @Override
   public HttpRequest etag(String etag) {
     return toRequest().etag(etag);
+  }
+
+  @Override
+  public HttpRequest gzip(boolean enable) {
+    return toRequest().gzip(enable);
   }
 
   @Override

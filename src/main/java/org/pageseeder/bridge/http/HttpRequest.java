@@ -15,16 +15,16 @@
  */
 package org.pageseeder.bridge.http;
 
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  *
- * @version 0.11.0
+ * @version 0.11.12
  * @since 0.11.0
  */
 public interface HttpRequest {
@@ -129,6 +129,21 @@ public interface HttpRequest {
    * @throws NullPointerException if the array is <code>null</code>
    */
   HttpRequest body(byte[] body);
+
+  /**
+   * Sets the request as the "Accept-Encoding" request header to "gzip" if enabled.
+   *
+   * <p>Enabling 'gzip' will allow the server to return responses using the gzip compression, which is
+   * useful for larger responses especially as XML and JSON response do compress well.
+   *
+   * <p>NB. there is no guarantee that the returned response will be compressed even if the request
+   * accept gzipped responses.
+   *
+   * @param enable <code>true</code> to accept gzipped response; <code>false</code> otherwise.
+   *
+   * @return this request.
+   */
+  HttpRequest gzip(boolean enable);
 
   /**
    * Returns the HTTP header the specified name.
