@@ -86,7 +86,7 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
   }
 
   /**
-   * Create anew filter list with the specified filter.
+   * Create a new filter list with the specified filter.
    *
    * @param filter The name of the index field
    *

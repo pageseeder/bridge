@@ -16,9 +16,7 @@
 package org.pageseeder.bridge.search;
 
 import org.pageseeder.bridge.PSCredentials;
-import org.pageseeder.bridge.http.Method;
-import org.pageseeder.bridge.http.Request;
-import org.pageseeder.bridge.http.Response;
+import org.pageseeder.bridge.http.*;
 
 import java.util.List;
 import java.util.Map;
@@ -89,6 +87,35 @@ abstract class BasicSearch<T extends BasicSearch> {
   public abstract Map<String, String> toParameters();
 
   /**
+   * Convenience method to make a request from this search.
+   *
+   * <p>This method automatically creates a new request using the service and parameters.</p>
+   *
+   * @return The corresponding the response.
+   */
+  public Request request() {
+    Map<String, String> parameters = toParameters();
+    String service = service();
+    return new Request(Method.GET, service).parameters(parameters);
+  }
+
+  /**
+   * Convenience method to make a request from this search.
+   *
+   * <p>This method automatically creates a new request using the service and parameters.
+   * using the specified client.
+   *
+   * @param client The HTTP client
+   *
+   * @return The corresponding the response.
+   */
+  public HttpRequest request(HttpClient client) {
+    Map<String, String> parameters = toParameters();
+    String service = service();
+    return client.newRequest(Method.GET, service).parameters(parameters);
+  }
+
+  /**
    * Convenience method to make a request from this search and directly return
    * the response using the specified credentials.
    *
@@ -97,11 +124,18 @@ abstract class BasicSearch<T extends BasicSearch> {
    * @return The corresponding the response.
    */
   public Response response(PSCredentials credentials) {
-    Map<String, String> parameters = toParameters();
-    String service = service();
-    return new Request(Method.GET, service)
-        .using(credentials)
-        .parameters(parameters)
-        .response();
+    return request().using(credentials).response();
+  }
+
+  /**
+   * Convenience method to make a request from this search and directly return
+   * the response using the specified credentials.
+   *
+   * @param credentials The credentials
+   *
+   * @return The corresponding the response.
+   */
+  public HttpResponse response(HttpClient client, PSCredentials credentials) {
+    return request(client).using(credentials).response();
   }
 }

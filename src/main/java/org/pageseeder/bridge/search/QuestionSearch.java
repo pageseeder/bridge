@@ -135,12 +135,51 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
    *
    * @param filters The filters to use in this search
    *
-   * @return A new <code>QuestionSearch</code> instance with the specified filter.
+   * @return A new <code>QuestionSearch</code> instance with the specified filters.
    */
   public QuestionSearch filters(FilterList filters) {
     return new QuestionSearch(this._scope, this._question, this._facets, filters, this._ranges, this._page, this._sortFields);
   }
 
+  /**
+   * Adds a single filter to use in this search
+   *
+   * @param filter The filter to add to this search
+   *
+   * @return A new <code>QuestionSearch</code> instance with this additional specified filter.
+   */
+  public QuestionSearch filter(Filter filter) {
+    return filters(this._filters.plus(filter));
+  }
+
+  /**
+   * Adds a single filter to use in this search with DEFAULT Occur.
+   *
+   * @param field The field name of the filter to add
+   * @param value The value of the field to add
+   *
+   * @return A new <code>QuestionSearch</code> instance with this additional specified filter.
+   */
+  public QuestionSearch filter(String field, String value) {
+    return filters(this._filters.plus(new Filter(field, value)));
+  }
+
+  /**
+   * Adds a single filter to use in this search with DEFAULT Occur.
+   *
+   * @param field The field name of the filter to add
+   * @param value The value of the field to add
+   * @param occur the requirement on that filter
+   *
+   * @return A new <code>QuestionSearch</code> instance with this additional specified filter.
+   */
+  public QuestionSearch filter(String field, String value, Filter.Occur occur) {
+    return filters(this._filters.plus(new Filter(field, value, occur)));
+  }
+
+  /**
+   * @return The filter list
+   */
   public FilterList filters() {
     return this._filters;
   }
