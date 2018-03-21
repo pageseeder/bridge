@@ -37,7 +37,7 @@ public interface XMLStreamHandler<T> {
    * Find the event that will allow the {@link #get(XMLStreamReader)} method to return a value.
    *
    * <p>Precondition: any event</p>
-   * <p>Postcondition: an event that will return and {@link #get(XMLStreamReader)} is invoked or the
+   * <p>Postcondition: an event that may return and {@link #get(XMLStreamReader)} is invoked or the
    * end of the stream</p>
    *
    * @param xml The XML Stream reader
@@ -50,7 +50,7 @@ public interface XMLStreamHandler<T> {
   boolean find(XMLStreamReader xml) throws XMLStreamException;
 
   /**
-   * Return the object at the correct position.
+   * Return the object at the current position.
    *
    * <p>Precondition: an event from which an object can be constructed</p>
    * <p>Postcondition: an event after the initial event, usually the corresponding END_ELEMENT if the
@@ -58,10 +58,11 @@ public interface XMLStreamHandler<T> {
    *
    * @param xml The XML Stream reader
    *
-   * @return the get element at the current position.
+   * @return the element at the current position if possible
    *
    * @throws XMLStreamException If thrown by the XMLStreamReader or if not at the correct position
    */
+  @Nullable
   T get(XMLStreamReader xml) throws XMLStreamException;
 
   /**
@@ -69,10 +70,11 @@ public interface XMLStreamHandler<T> {
    *
    * <p>The default implementation of this method is:</p>
    * <pre>{@code
-   * if (find(xml)) {
-   *   return get(xml);
-   * } else {
-   *   return null;
+   *  while (find(xml)) {
+   *    T item = get(xml);
+   *    if (item != null) return item;
+   *  }
+   *  return null;
    * }}</pre>
    *
    * <p>Precondition: any event</p>
@@ -87,11 +89,12 @@ public interface XMLStreamHandler<T> {
    */
   @Nullable
   default T next(XMLStreamReader xml) throws XMLStreamException {
-    if (find(xml)) {
-      return get(xml);
-    } else {
-      return null;
+    while (find(xml)) {
+      T item = get(xml);
+      if (item != null) return item;
     }
+    // No more positions
+    return null;
   }
 
 }
