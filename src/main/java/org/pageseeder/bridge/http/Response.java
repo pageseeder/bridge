@@ -1102,7 +1102,8 @@ public final class Response implements HttpResponse, AutoCloseable {
       XMLStreamReader source = factory.createXMLStreamReader(in, charset.name());
       while (handler.find(source)) {
         T next = handler.get(source);
-        list.add(next);
+        if (next != null)
+          list.add(next);
       }
 
     } catch (IllegalArgumentException | IllegalStateException | IndexOutOfBoundsException
