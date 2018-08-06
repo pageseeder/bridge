@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class Scope {
 
-  protected static final Scope EMPTY = new Scope(false, "", Collections.emptyList(), "");
+  public static final Scope EMPTY = new Scope(false, "", Collections.emptyList(), "");
 
   private final boolean _project;
 
