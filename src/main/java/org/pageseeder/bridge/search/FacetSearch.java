@@ -86,12 +86,25 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
     return this._question.question();
   }
 
+
+  /**
+   * Sets the facets to use in this search
+   *
+   * @param facets The facets to use in this search
+   *
+   * @return A new <code>FacetSearch</code> instance with the specified facet.
+   */
+  public FacetSearch facets(FacetList facets) {
+    if (facets == null) facets = FacetList.EMPTY;
+    return new FacetSearch(this._scope, this._question, facets, this._filters, this._ranges);
+  }
+  
   /**
    * Sets the filters to use in this search
    *
    * @param filters The filters to use in this search
    *
-   * @return A new <code>QuestionSearch</code> instance with the specified filter.
+   * @return A new <code>FacetSearch</code> instance with the specified filter.
    */
   public FacetSearch filters(FilterList filters) {
     return new FacetSearch(this._scope, this._question, this._facets, filters, this._ranges);
