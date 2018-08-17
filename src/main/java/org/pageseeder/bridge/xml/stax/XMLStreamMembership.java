@@ -116,8 +116,9 @@ public class XMLStreamMembership extends ElementXMLStreamHandler<Membership> imp
     Role role = Role.forParameter(attribute(xml, "role", "unknown"));
     MembershipStatus status = MembershipStatus.forName(attribute(xml, "status", "unknown"));
     Notification notification = Notification.forName(attribute(xml, "notification"));
-    OffsetDateTime created = OffsetDateTime.MIN;
-    optionalAttribute(xml, "created");
+    
+    String created = optionalAttribute(xml, "created");
+    OffsetDateTime createdDate =  created != null ? OffsetDateTime.parse(created) : OffsetDateTime.MIN;
 
     Member member = this.commonMember;
     BasicGroup group = this.commonGroup;
@@ -147,7 +148,7 @@ public class XMLStreamMembership extends ElementXMLStreamHandler<Membership> imp
 
     // TODO
 
-    return new Membership(id, member, group, common, notification, role, created, status, deleted, details);
+    return new Membership(id, member, group, common, notification, role, createdDate, status, deleted, details);
   }
 
   /**

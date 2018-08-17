@@ -22,6 +22,7 @@ import org.pageseeder.bridge.core.*;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -38,6 +39,7 @@ public final class XMLStreamMembershipTest {
     assertEquals(Role.manager, membership.getRole());
     assertEquals(MembershipStatus.normal, membership.getStatus());
     assertEquals(Notification.immediate, membership.getNotification());
+    assertEquals(OffsetDateTime.parse("2018-01-01T01:01:01+10:00"), membership.getCreated());
     assertEquals(Details.NO_DETAILS, membership.getDetails());
     assertTrue(membership.getGroup() instanceof Group);
     assertNotNull(membership.getMember());
@@ -55,6 +57,7 @@ public final class XMLStreamMembershipTest {
     assertEquals(Role.manager, membership.getRole());
     assertEquals(MembershipStatus.normal, membership.getStatus());
     assertEquals(Notification.immediate, membership.getNotification());
+    assertEquals(OffsetDateTime.MIN, membership.getCreated());
     assertFalse(membership.getDetails().isEmpty());
     assertTrue(membership.getGroup() instanceof Group);
     assertNotNull(membership.getMember());

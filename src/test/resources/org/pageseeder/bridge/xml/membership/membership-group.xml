@@ -13,7 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<membership id="102" email-listed="true" notification="immediate" status="normal" role="manager">
+<membership id="102" email-listed="true" notification="immediate" status="normal" role="manager" created="2018-01-01T01:01:01+10:00">
   <member id="123" firstname="John" surname="Smith" username="jsmith" email="jsmith@example.org" lastpasswordchange="2016-02-25T13:48:12+11:00" lastlogin="2016-10-26T14:05:55+11:00" status="activated">
     <fullname>John Smith</fullname>
   </member>
