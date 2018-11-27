@@ -20,6 +20,7 @@ import org.pageseeder.xmlwriter.XMLWritable;
 import org.pageseeder.xmlwriter.XMLWriter;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * A PageSeeder member.
@@ -28,7 +29,7 @@ import java.io.IOException;
  * @version 0.12.0
  * @since 0.12.0
  */
-public final class Member implements XMLWritable {
+public final class Member implements Serializable, XMLWritable {
 
   /** As per recommendation */
   private static final long serialVersionUID = 2L;
