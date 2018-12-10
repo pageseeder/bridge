@@ -21,6 +21,8 @@ import org.pageseeder.bridge.core.MemberStatus;
 import org.pageseeder.bridge.core.Username;
 import org.pageseeder.bridge.xml.MissingAttributeException;
 
+import java.time.OffsetDateTime;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -51,7 +53,10 @@ public class XMLStreamMember extends ElementXMLStreamHandler<Member> implements 
     boolean locked = "true".equals(attribute(xml, "locked", "false"));
     boolean onVacation = "true".equals(attribute(xml, "onvacation", "false"));
     boolean attachments = "true".equals(attribute(xml, "attachments", "false"));
-
+    String lastLogin = optionalAttribute(xml, "lastlogin");
+    OffsetDateTime lastLoginDate =  lastLogin != null ? OffsetDateTime.parse(lastLogin) : OffsetDateTime.MIN;
+    
+    
     skipToEndElement(xml, element());
 
     Member member = new Member(id, username, email, firstname, surname, status);
@@ -59,6 +64,12 @@ public class XMLStreamMember extends ElementXMLStreamHandler<Member> implements 
     if (locked) member = member.lock();
     if (onVacation) member = member.isOnVacation(true);
     if (attachments) member = member.hasAttachments(true);
+    
+    //This attribute belongs to the extended member details therefore could be present or no.
+    if (!lastLoginDate.equals(OffsetDateTime.MIN)) {
+      member = member.lastLogin(lastLoginDate);
+    }
+    
     return member;
   }
 

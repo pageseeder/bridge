@@ -31,5 +31,6 @@ public class MemberTest {
     Assert.assertEquals(exp.isLocked(), got.isLocked());
     Assert.assertEquals(exp.isOnVacation(), got.isOnVacation());
     Assert.assertEquals(exp.hasAttachments(), got.hasAttachments());
+    Assert.assertEquals(exp.getLastLogin(), got.getLastLogin());
   }
 }
