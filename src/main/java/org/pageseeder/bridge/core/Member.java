@@ -15,12 +15,15 @@
  */
 package org.pageseeder.bridge.core;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.xmlwriter.XMLWritable;
 import org.pageseeder.xmlwriter.XMLWriter;
-
-import java.io.IOException;
-import java.io.Serializable;
 
 /**
  * A PageSeeder member.
@@ -60,6 +63,11 @@ public final class Member implements Serializable, XMLWritable {
 
   /** Whether the member prefers receiving attachments. */
   private final boolean _attachments;
+  
+  /**
+   * The last time the member logged into pageseeder.
+   */
+  private final OffsetDateTime _lastLogin;
 
   /**
    * Create a new member.
@@ -71,7 +79,8 @@ public final class Member implements Serializable, XMLWritable {
    * @param surname   The surname of the member
    * @param status    The status of the member
    */
-  public Member(long id, Username username, Email email, String firstname, String surname, MemberStatus status, boolean locked, boolean onVacation, boolean attachments) {
+  public Member(long id, Username username, Email email, String firstname, String surname, MemberStatus status, 
+      boolean locked, boolean onVacation, boolean attachments, @NonNull OffsetDateTime lastLogin) {
     this._id = id;
     this._username = username;
     this._email = email;
@@ -81,6 +90,7 @@ public final class Member implements Serializable, XMLWritable {
     this._locked = locked;
     this._onVacation = onVacation;
     this._attachments = attachments;
+    this._lastLogin = lastLogin;
   }
 
   /**
@@ -103,6 +113,7 @@ public final class Member implements Serializable, XMLWritable {
     this._locked = false;
     this._onVacation = false;
     this._attachments = false;
+    this._lastLogin = OffsetDateTime.MIN;
   }
 
   /**
@@ -178,6 +189,13 @@ public final class Member implements Serializable, XMLWritable {
   public boolean hasAttachments() {
     return this._attachments;
   }
+  
+  /**
+   * @return return the last login date and time  of this member (it could have null value). 
+   */
+  public @Nullable OffsetDateTime getLastLogin() {
+    return _lastLogin;
+  }
 
   @Override
   public void toXML(XMLWriter xml) throws IOException {
@@ -216,12 +234,16 @@ public final class Member implements Serializable, XMLWritable {
     if (this._attachments) {
       xml.attribute("attachments", "true");
     }
+    if (this._lastLogin != null && !this._lastLogin.equals(OffsetDateTime.MIN)) {
+      xml.attribute("lastlogin", this._lastLogin.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+    }
+    
   }
 
   /**
    * A convenience method to return a copy of this member with the specified status.
    *
-   * @return a new member with the specified status if the status if different from that of the current member
+   * @return a new member with the specified status if the status is different from that of the current member
    */
   public Member status(MemberStatus status) {
     if (status == this._status) return this;
@@ -231,33 +253,43 @@ public final class Member implements Serializable, XMLWritable {
   /**
    * A convenience method to return a copy of this member with the specified status.
    *
-   * @return a new member with the specified status if the status if different from that of the current member
+   * @return a new member with the specified status if the status is different from that of the current member
    */
   public Member lock() {
     if (this._locked) return this;
-    return new Member(this._id, this._username, this._email, this._firstname, this._surname, this._status, true, this._onVacation, this._attachments);
+    return new Member(this._id, this._username, this._email, this._firstname, this._surname, this._status, true, this._onVacation, this._attachments, this._lastLogin);
   }
 
   /**
    * A convenience method to return a copy of this member with the specified status.
    *
-   * @return a new member with the specified status if the status if different from that of the current member
+   * @return a new member with the specified status if the status is different from that of the current member
    */
   public Member unlock() {
     if (!this._locked) return this;
-    return new Member(this._id, this._username, this._email, this._firstname, this._surname, this._status, false, this._onVacation, this._attachments);
+    return new Member(this._id, this._username, this._email, this._firstname, this._surname, this._status, false, this._onVacation, this._attachments, this._lastLogin);
   }
 
   /**
    * A convenience method to return a copy of this member with the specified status.
    *
-   * @return a new member with the specified status if the status if different from that of the current member
+   * @return a new member with the specified status if the status is different from that of the current member
    */
   public Member isOnVacation(boolean yes) {
     if (yes == this._onVacation) return this;
-    return new Member(this._id, this._username, this._email, this._firstname, this._surname, this._status, this._locked, yes, this._attachments);
+    return new Member(this._id, this._username, this._email, this._firstname, this._surname, this._status, this._locked, yes, this._attachments, this._lastLogin);
   }
 
+  /**
+   * A convenience method to return a copy of this member with the specified last login.
+   *
+   * @return a new member with the specified last login if the last login is different from that of the current member
+   */
+  public Member lastLogin(@NonNull OffsetDateTime lastLogin ) {
+    if (lastLogin.equals(this._lastLogin)) return this;
+    return new Member(this._id, this._username, this._email, this._firstname, this._surname, this._status, this._locked, this._onVacation, this._attachments, lastLogin);
+  }
+  
   /**
    * A convenience method to return a copy of this member with the specified status.
    *
@@ -265,7 +297,7 @@ public final class Member implements Serializable, XMLWritable {
    */
   public Member hasAttachments(boolean yes) {
     if (yes == this._attachments) return this;
-    return new Member(this._id, this._username, this._email, this._firstname, this._surname, this._status, this._locked, this._onVacation, yes);
+    return new Member(this._id, this._username, this._email, this._firstname, this._surname, this._status, this._locked, this._onVacation, yes, this._lastLogin);
   }
 
   @Override
@@ -284,6 +316,7 @@ public final class Member implements Serializable, XMLWritable {
     private boolean locked;
     private boolean onVacation;
     private boolean attachments;
+    private OffsetDateTime lastLogin = OffsetDateTime.MIN;
 
     /**
      * @param id the id to set
@@ -389,8 +422,13 @@ public final class Member implements Serializable, XMLWritable {
       return this;
     }
 
+    public Builder lastLogin(OffsetDateTime lastLogin) {
+      this.lastLogin = lastLogin;
+      return this;
+    }
+    
     public Member build() {
-      return new Member(this.id, this.username, this.email, this.firstname, this.surname, this.status, this.locked, this.onVacation, this.attachments);
+      return new Member(this.id, this.username, this.email, this.firstname, this.surname, this.status, this.locked, this.onVacation, this.attachments, this.lastLogin);
     }
 
   }
