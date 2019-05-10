@@ -304,7 +304,7 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
         filters.append(',');
       }
       // We must escape the ',' in values
-      String value = f.value().replaceAll(",", "\\,");
+      String value = f.value().replaceAll(",", "\\\\,");
       filters.append(f.occur()).append(f.field()).append(':').append(value);
     }
     return filters.toString();
