@@ -18,6 +18,9 @@ package org.pageseeder.bridge.berlioz.servlet;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -64,7 +67,7 @@ public final class LoginServlet extends HttpServlet {
   /**
    * The URI of the default target page.
    */
-  protected static final String DEFAULT_TARGET = "/";
+  private static final String DEFAULT_TARGET = "/";
 
   /**
    * The URI of the login page.
@@ -142,7 +145,7 @@ public final class LoginServlet extends HttpServlet {
   }
 
   @Override
-  public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+  public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
     // Get the authenticator
     HttpSession session = req.getSession();
@@ -157,10 +160,28 @@ public final class LoginServlet extends HttpServlet {
       // Logged in successfully
       if (result == AuthenticationResult.LOGGED_IN || result == AuthenticationResult.ALREADY_LOGGED_IN) {
 
+        // reset session to generate new ID (to prevent Session Fixation attack)
+        if (session != null) {
+          // get attributes
+          Map<String, Object> atts = new HashMap<>();
+          Enumeration<String> names = session.getAttributeNames();
+          while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            atts.put(name, session.getAttribute(name));
+          }
+          LOGGER.debug("Login successful: invalidating current session");
+          session.invalidate();
+          session = req.getSession(true);
+          // set attributes
+          for (Map.Entry<String, Object> attributes : atts.entrySet()) {
+            session.setAttribute(attributes.getKey(), attributes.getValue());
+          }
+        }
+
         // Forward the original request
         if (target != null) {
-          LOGGER.debug("Redirecting to {}", target.toString());
-          res.sendRedirect(target.toString());
+          LOGGER.debug("Redirecting to {}", target);
+          res.sendRedirect(target);
           if (session != null) {
             session.removeAttribute(AuthSessions.REQUEST_ATTRIBUTE);
           }
