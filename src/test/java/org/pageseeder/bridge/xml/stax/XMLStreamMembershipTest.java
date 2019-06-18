@@ -16,11 +16,14 @@
 
 package org.pageseeder.bridge.xml.stax;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.pageseeder.bridge.core.*;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -36,6 +39,7 @@ public final class XMLStreamMembershipTest {
     assertEquals(Role.manager, membership.getRole());
     assertEquals(MembershipStatus.normal, membership.getStatus());
     assertEquals(Notification.immediate, membership.getNotification());
+    assertEquals(OffsetDateTime.parse("2018-01-01T01:01:01+10:00"), membership.getCreated());
     assertEquals(Details.NO_DETAILS, membership.getDetails());
     assertTrue(membership.getGroup() instanceof Group);
     assertNotNull(membership.getMember());
@@ -53,6 +57,7 @@ public final class XMLStreamMembershipTest {
     assertEquals(Role.manager, membership.getRole());
     assertEquals(MembershipStatus.normal, membership.getStatus());
     assertEquals(Notification.immediate, membership.getNotification());
+    assertEquals(OffsetDateTime.MIN, membership.getCreated());
     assertFalse(membership.getDetails().isEmpty());
     assertTrue(membership.getGroup() instanceof Group);
     assertNotNull(membership.getMember());
@@ -76,6 +81,13 @@ public final class XMLStreamMembershipTest {
     assertTrue(membership.getGroup() instanceof Project);
     assertEquals(201L, membership.getGroup().getId());
 
+  }
+
+  @Test
+  public void testMemberships() throws IOException, XMLStreamException {
+    List<Membership> memberships = XMLStreamTest.parseList("membership/memberships-formember.xml", new XMLStreamMembership());
+//    Assert.assertEquals(1L, membership.getId());
+    Assert.assertEquals(3, memberships.size());
   }
 
 }

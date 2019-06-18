@@ -23,6 +23,7 @@ import org.pageseeder.bridge.xml.MissingAttributeException;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 
 public final class XMLStreamMemberTest {
 
@@ -56,6 +57,13 @@ public final class XMLStreamMemberTest {
     assertParseOK(expected, "member/member-pass-setpassword.xml");
   }
 
+  @Test
+  public void testPassLastLogin() throws IOException, XMLStreamException {
+    Member expected = new Member(1L, new Username("jsmith"), new Email("jsmith@example.org"), "John", "Smith", MemberStatus.activated);
+    expected = expected.lastLogin(OffsetDateTime.parse("2018-12-10T12:24:18+11:00"));
+    assertParseOK(expected, "member/member-pass-lastlogin.xml");
+  }
+  
   @Test(expected = InvalidAttributeException.class)
   public void testFailEmptyId() throws IOException, XMLStreamException {
     XMLStreamTest.parseItem("member/member-fail-emptyid.xml", new XMLStreamMember());

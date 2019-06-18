@@ -26,14 +26,14 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class XMLStreamComment extends BasicXMLStreamHandler<Comment> implements XMLStreamItem<Comment> {
+public final class XMLStreamComment extends ElementXMLStreamHandler<Comment> implements XMLStreamHandler<Comment> {
 
   public XMLStreamComment() {
     super("comment");
   }
 
   @Override
-  public Comment toItem(XMLStreamReader xml) throws XMLStreamException {
+  public Comment get(XMLStreamReader xml) throws XMLStreamException {
     if (isOnElement(xml)) {
       Comment.Builder comment = new Comment.Builder();
       long id = attribute(xml, "id", -1L);
@@ -45,8 +45,8 @@ public final class XMLStreamComment extends BasicXMLStreamHandler<Comment> imple
       String type = attribute(xml, "type", "");
       CommentProperties properties = CommentProperties.parse(attribute(xml, "properties", ""));
 
-      boolean isDraft = "true".equals(attribute(xml, "draft", "true"));
-      boolean isModerated = "true".equals(attribute(xml, "moderated", "true"));
+      boolean isDraft = "true".equals(attribute(xml, "draft", "false"));
+      boolean isModerated = "true".equals(attribute(xml, "moderated", "false"));
 
       String created = optionalAttribute(xml, "created");
       String due = optionalAttribute(xml, "due");
@@ -95,7 +95,7 @@ public final class XMLStreamComment extends BasicXMLStreamHandler<Comment> imple
             Attachment attachment = toAttachment(xml);
             attachments.add(attachment);
           } else if ("group".equals(localName)) {
-            Group group = new XMLStreamGroup().toItem(xml);
+            Group group = new XMLStreamGroup().get(xml);
             groups.add(group);
           }
         }
@@ -136,7 +136,7 @@ public final class XMLStreamComment extends BasicXMLStreamHandler<Comment> imple
       return new Author(member);
     } else {
       String email = optionalAttribute(xml, "email");
-      skipToStartElement(xml);
+      skipToAnyStartElement(xml);
       String fullname = xml.getElementText();
       skipToEndElement(xml, "author");
       return new Author(fullname, email != null ? new Email(email) : null);
@@ -165,15 +165,15 @@ public final class XMLStreamComment extends BasicXMLStreamHandler<Comment> imple
   }
 
   private Context toContext(XMLStreamReader xml) throws XMLStreamException {
-    skipToStartElement(xml);
+    skipToAnyStartElement(xml);
     String element = xml.getLocalName();
     if ("group".equals(element)) {
-      Group group = new XMLStreamGroup().toItem(xml);
+      Group group = new XMLStreamGroup().get(xml);
       skipToEndElement(xml, "context");
       return new Context(group);
     } else if ("uri".equals(element)) {
       String fragment = optionalAttribute(xml, "fragment");
-      URI uri = new XMLStreamURI().toItem(xml);
+      URI uri = new XMLStreamURI().get(xml);
       skipToEndElement(xml, "context");
       return new Context(uri, fragment);
     }
@@ -183,9 +183,9 @@ public final class XMLStreamComment extends BasicXMLStreamHandler<Comment> imple
 
   private Attachment toAttachment(XMLStreamReader xml) throws XMLStreamException {
     String fragment = optionalAttribute(xml, "fragment");
-    skipToStartElement(xml);
+    skipToAnyStartElement(xml);
     if ("uri".equals(xml.getLocalName())) {
-      URI uri = new XMLStreamURI().toItem(xml);
+      URI uri = new XMLStreamURI().get(xml);
       return new Attachment(uri, fragment);
     } else throw new MissingElementException("Attachment require URI");
   }

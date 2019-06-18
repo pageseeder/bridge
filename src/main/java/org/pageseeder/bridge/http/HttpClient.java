@@ -21,12 +21,14 @@ import org.eclipse.jdt.annotation.NonNull;
  *
  * @author Christophe Lauret
  *
- * @version 0.11.4
+ * @version 0.11.12
  * @since 0.11.4
  */
 public final class HttpClient {
 
   private static final HttpClient SINGLETON = new HttpClient();
+
+  private static boolean gzipEnabled = true;
 
   private final HttpCache _cache;
 
@@ -39,12 +41,43 @@ public final class HttpClient {
   }
 
   /**
+   * Set whether the client enable 'gzip' transfer encoding for all its requests by default.
+   *
+   * <p>Use this method to override the default (true) when the request is created. Each request
+   * can be modified to enable or disable `gzip` irrespective the default.
+   *
+   * @param enabled true to enable for all requests; false to disable for all requests
+   */
+  public static void setGzipEnabled(boolean enabled) {
+    gzipEnabled = enabled;
+  }
+
+  /**
+   * Indicates whether the 'gzip' transfer encoding is enabled by default for requests created by this client.
+   *
+   * @return <code>true</code> if enabled; <code>false</code> otherwise.
+   */
+  public static boolean isGzipEnabled() {
+    return gzipEnabled;
+  }
+
+  /**
+   * Add the header to the request to accept gzip responses if gzip is enabled
+   *
+   * @param request The request
+   * @return The original request or a new request with the appropriate header
+   */
+  private static HttpRequest enableGzip(HttpRequest request) {
+    return gzipEnabled? request.gzip(true) : request;
+  }
+
+  /**
    * Creates a new request to a PageSeeder service.
    *
    * @param path  The PageSeeder servlet to use
    */
   public HttpRequest newRequest(String path) {
-    return new CacheableRequest(this._cache, path);
+    return enableGzip(new CacheableRequest(this._cache, path));
   }
 
   /**
@@ -54,8 +87,8 @@ public final class HttpClient {
    * @param path   The PageSeeder servlet to use
    */
   public HttpRequest newRequest(Method method, String path) {
-    if (method == Method.GET) return new CacheableRequest(this._cache, path);
-    return new Request(method, path);
+    HttpRequest request = (method == Method.GET)? new CacheableRequest(this._cache, path) : new Request(method, path);
+    return enableGzip(request);
   }
 
   /**
@@ -80,7 +113,7 @@ public final class HttpClient {
    * @return The corresponding request
    */
   public HttpRequest newService(String template, @NonNull Object... variables) {
-    return new CacheableRequest(this._cache, ServicePath.newPath(template, variables));
+    return enableGzip(new CacheableRequest(this._cache, ServicePath.newPath(template, variables)));
   }
 
   /**
@@ -94,7 +127,7 @@ public final class HttpClient {
    */
   public HttpRequest newDocument(long uri) {
     if (uri <= 0) throw new IllegalArgumentException("URI ID must be strictly positive.");
-    return new CacheableRequest(this._cache, "/uri/"+uri);
+    return enableGzip(new CacheableRequest(this._cache, "/uri/"+uri));
   }
 
   /**
@@ -105,7 +138,7 @@ public final class HttpClient {
    * @return The corresponding request
    */
   public HttpRequest newDocument(String path) {
-    return new CacheableRequest(this._cache, path);
+    return enableGzip(new CacheableRequest(this._cache, path));
   }
 
 }

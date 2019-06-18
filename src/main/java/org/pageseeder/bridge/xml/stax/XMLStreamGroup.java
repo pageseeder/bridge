@@ -18,33 +18,39 @@ package org.pageseeder.bridge.xml.stax;
 import org.pageseeder.bridge.core.Group;
 import org.pageseeder.bridge.core.GroupAccess;
 import org.pageseeder.bridge.core.GroupName;
-import org.pageseeder.bridge.xml.InvalidElementException;
 import org.pageseeder.bridge.xml.MissingAttributeException;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class XMLStreamGroup extends BasicXMLStreamHandler<Group> implements XMLStreamItem<Group> {
+/**
+ * This class returns <code>Group</code> instances from the {@code <group>} element.
+ *
+ * @author Christophe Lauret
+ *
+ * @version 0.12.0
+ * @since 0.12.0
+ */
+public class XMLStreamGroup extends ElementXMLStreamHandler<Group> implements XMLStreamHandler<Group> {
 
   public XMLStreamGroup() {
     super("group");
   }
 
   @Override
-  public Group toItem(XMLStreamReader xml) throws XMLStreamException {
-    if (isOnElement(xml)) {
-      long id = attribute(xml, "id", -1);
-      if (id == -1L) throw new MissingAttributeException("Missing group ID");
-      GroupName name = new GroupName(attribute(xml, "name"));
-      String description = attribute(xml, "description", "");
-      String owner = attribute(xml, "owner","");
-      String title = attribute(xml, "title", "");
-      GroupAccess access = GroupAccess.forName(attribute(xml, "access", "member"));
-      String relatedURL = attribute(xml, "relatedurl", "");
-      boolean common = "true".equals(attribute(xml, "common", "false"));
-      skipToEndElement(xml, element());
-      return new Group(id, name, title, description, owner, access, common, relatedURL);
-    } else throw new InvalidElementException("not a group");
+  public Group get(XMLStreamReader xml) throws XMLStreamException {
+    checkOnElement(xml);
+    long id = attribute(xml, "id", -1);
+    if (id == -1L) throw new MissingAttributeException("Missing group ID");
+    GroupName name = new GroupName(attribute(xml, "name"));
+    String description = attribute(xml, "description", "");
+    String owner = attribute(xml, "owner","");
+    String title = attribute(xml, "title", "");
+    GroupAccess access = GroupAccess.forName(attribute(xml, "access", "member"));
+    String relatedURL = attribute(xml, "relatedurl", "");
+    boolean common = "true".equals(attribute(xml, "common", "false"));
+    skipToEndElement(xml, element());
+    return new Group(id, name, title, description, owner, access, common, relatedURL);
   }
 
 }

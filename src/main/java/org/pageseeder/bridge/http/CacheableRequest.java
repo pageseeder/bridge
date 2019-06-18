@@ -15,21 +15,21 @@
  */
 package org.pageseeder.bridge.http;
 
+import org.eclipse.jdt.annotation.Nullable;
+import org.pageseeder.bridge.PSConfig;
+import org.pageseeder.bridge.PSCredentials;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.eclipse.jdt.annotation.Nullable;
-import org.pageseeder.bridge.PSConfig;
-import org.pageseeder.bridge.PSCredentials;
 
 /**
  * Creates a new request using an HTTP cache and only on GET method.
  *
  * @author Christophe Lauret
  *
- * @version 0.11.4
+ * @version 0.11.12
  * @since 0.11.4
  */
 public final class CacheableRequest implements HttpRequest {
@@ -39,16 +39,29 @@ public final class CacheableRequest implements HttpRequest {
    */
   private static final int CACHE_THRESHOLD = 1_000_000;
 
+  /**
+   * HttpCache to check
+   */
   private final HttpCache _cache;
 
+  /**
+   * Path to server
+   */
   private final String _path;
 
+  /**
+   * List of get parameters
+   */
   private final List<Parameter> _parameters = new ArrayList<>();
 
   private PSConfig config = PSConfig.getDefault();
 
-  private @Nullable PSCredentials credentials = null;
+  /**
+   * We just record if gzip is going to be used if we need to make a request
+   */
+  private boolean gzip = false;
 
+  private @Nullable PSCredentials credentials = null;
 
   /**
    * Creates a new request to PageSeeder.
@@ -84,6 +97,12 @@ public final class CacheableRequest implements HttpRequest {
   @Override
   public CacheableRequest using(PSCredentials credentials) {
     this.credentials = credentials;
+    return this;
+  }
+
+  @Override
+  public CacheableRequest gzip(boolean enable) {
+    this.gzip = enable;
     return this;
   }
 
@@ -208,6 +227,8 @@ public final class CacheableRequest implements HttpRequest {
     for (Parameter p : this._parameters) {
       request.parameter(p.name(), p.value());
     }
+    if (this.gzip)
+      request.gzip(true);
     request.config(this.config);
     return request;
   }

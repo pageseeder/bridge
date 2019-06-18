@@ -22,37 +22,88 @@ import org.pageseeder.bridge.xml.MissingAttributeException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+/**
+ * A base class providing common utility methods for the {@link XMLStreamHandler} implementations
+ *
+ * @param <T> the type of object returned by the stream handler.
+ */
 public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
 
-  protected final String _element;
-
-  public BasicXMLStreamHandler(String element) {
-    this._element = element;
+  /**
+   * Iterate over the events until the next START_ELEMENT.
+   *
+   * @param xml The XML Stream
+   *
+   * @throws XMLStreamException if thrown by the underlying XML stream
+   */
+  public static void skipToAnyStartElement(XMLStreamReader xml) throws XMLStreamException {
+    do {
+      xml.next();
+    } while (!xml.isStartElement());
   }
 
-  @Override
-  public String element() {
-    return this._element;
+  /**
+   * Iterate over the events until the next END_ELEMENT matching the specified name.
+   *
+   * @param xml  The XML Stream
+   * @param name The name of the element
+   *
+   * @throws XMLStreamException if thrown by the underlying XML stream
+   */
+  public static void skipToEndElement(XMLStreamReader xml, String name) throws XMLStreamException {
+    do {
+      xml.next();
+    } while (!(xml.isEndElement() && xml.getLocalName().equals(name)));
   }
 
-  // A collection of utility methods to simplify methods
-
-  public boolean isOnElement(XMLStreamReader xml) {
-    return xml.isStartElement() && xml.getLocalName().equals(element());
-  }
-
+  /**
+   * Return the value of a required attribute.
+   *
+   * @param xml The XML Stream
+   * @param name The name of the attribute
+   *
+   * @return the attribute value
+   *
+   * @throws XMLStreamException if thrown by the underlying XML stream
+   * @throws MissingAttributeException If the attribute was missing.
+   */
   public static String attribute(XMLStreamReader xml, String name) {
     String value = optionalAttribute(xml, name);
     if (value == null) throw new MissingAttributeException("Attribute "+name+" is not specified");
     return value;
   }
 
+  /**
+   * Return the value of a required attribute and defaults to the specific fallback value.
+   *
+   * @param xml The XML Stream
+   * @param name The name of the attribute
+   * @param fallback The fallback value for the attribute
+   *
+   * @return the attribute value or the fallback value if not specified
+   *
+   * @throws XMLStreamException if thrown by the underlying XML stream
+   * @throws MissingAttributeException If the attribute was missing.
+   */
   public static String attribute(XMLStreamReader xml, String name, String fallback) {
     String value = optionalAttribute(xml, name);
     if (value == null) return fallback;
     return value;
   }
 
+
+  /**
+   * Return the long value of a required attribute and defaults to the specific fallback value.
+   *
+   * @param xml The XML Stream
+   * @param name The name of the attribute
+   * @param fallback The fallback value for the attribute
+   *
+   * @return the attribute value or the fallback value if not specified
+   *
+   * @throws XMLStreamException if thrown by the underlying XML stream
+   * @throws InvalidAttributeException If the attribute could not be parsed as a long
+   */
   public static long attribute(XMLStreamReader xml, String name, long fallback) {
     String value = optionalAttribute(xml, name);
     if (value == null) return fallback;
@@ -63,30 +114,40 @@ public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
     }
   }
 
+  /**
+   * Return the boolean value of a required attribute and defaults to the specific fallback value.
+   *
+   * @param xml The XML Stream
+   * @param name The name of the attribute
+   * @param fallback The fallback value for the attribute
+   *
+   * @return <code>true</code> if the attribute value is equal to "true" or the fallback value is <code>true</code>.
+   *
+   * @throws XMLStreamException if thrown by the underlying XML stream
+   */
   public static boolean attribute(XMLStreamReader xml, String name, boolean fallback) {
     String value = optionalAttribute(xml, name);
     if (value == null) return fallback;
     return "true".equals(value);
   }
 
+  /**
+   * Return the value of an optional attribute.
+   *
+   * @param xml The XML Stream
+   * @param name The name of the attribute
+   *
+   * @return the attribute value or <code>null</code>
+   *
+   * @throws XMLStreamException if thrown by the underlying XML stream
+   * @throws MissingAttributeException If the attribute was missing.
+   */
   @Nullable
   public static String optionalAttribute(XMLStreamReader xml, String name) {
     for (int i=0; i< xml.getAttributeCount(); i++) {
       if (name.equals(xml.getAttributeLocalName(i))) return xml.getAttributeValue(i);
     }
     return null;
-  }
-
-  public static void skipToStartElement(XMLStreamReader xml) throws XMLStreamException {
-    do {
-      xml.next();
-    } while (!xml.isStartElement());
-  }
-
-  public static void skipToEndElement(XMLStreamReader xml, String name) throws XMLStreamException {
-    do {
-      xml.next();
-    } while (!(xml.isEndElement() && xml.getLocalName().equals(name)));
   }
 
 }

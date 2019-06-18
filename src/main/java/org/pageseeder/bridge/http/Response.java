@@ -15,27 +15,21 @@
  */
 package org.pageseeder.bridge.http;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.HttpURLConnection;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
+import org.eclipse.jdt.annotation.Nullable;
+import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.xml.DuplexHandler;
+import org.pageseeder.bridge.xml.Handler;
+import org.pageseeder.bridge.xml.ServiceErrorHandler;
+import org.pageseeder.bridge.xml.XMLCopy;
+import org.pageseeder.bridge.xml.stax.XMLStreamHandler;
+import org.pageseeder.xmlwriter.XMLWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -48,23 +42,14 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import org.eclipse.jdt.annotation.Nullable;
-import org.pageseeder.bridge.PSSession;
-import org.pageseeder.bridge.xml.DuplexHandler;
-import org.pageseeder.bridge.xml.Handler;
-import org.pageseeder.bridge.xml.ServiceErrorHandler;
-import org.pageseeder.bridge.xml.XMLCopy;
-import org.pageseeder.bridge.xml.stax.XMLStreamItem;
-import org.pageseeder.bridge.xml.stax.XMLStreamList;
-import org.pageseeder.xmlwriter.XMLWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.GZIPInputStream;
 
 /**
  * The response to a connection to PageSeeder.
@@ -97,7 +82,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Christophe Lauret
  *
- * @version 0.10.2
+ * @version 0.11.12
  * @since 0.9.1
  */
 public final class Response implements HttpResponse, AutoCloseable {
@@ -530,7 +515,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    */
   @Override
-  public @Nullable Reader getReader() throws IOException {
+  public Reader getReader() throws IOException {
     Charset charset = this._charset;
     if (charset == null)
       throw new IllegalStateException("Unable to determine the charset for this resource.");
@@ -551,7 +536,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    */
   @Override
-  public @Nullable Reader getReader(Charset charset) throws IOException {
+  public Reader getReader(Charset charset) throws IOException {
     HttpURLConnection con = requireAvailable();
     try {
       return new InputStreamReader(toInputStream(con), charset);
@@ -626,7 +611,6 @@ public final class Response implements HttpResponse, AutoCloseable {
       this.state = State.consumed;
     }
   }
-
 
   /**
    * Consumes the output of the response.
@@ -739,23 +723,23 @@ public final class Response implements HttpResponse, AutoCloseable {
   }
 
   /**
-   * Consumes the output of the response using a handler and returns the collection
-   * of objects from it.
+   * Consumes the output of the response using a handler and returns a list of objects
+   * from it.
    *
    * <p>After calling this method the response content will no longer be available.
    *
    * @param handler The object handler for the XML
-   * @param <T> The type of object returned in the list.
+   * @param <T> The type of object returned as the item.
    *
-   * @return A list of items from the XML.
+   * @return A single item from the parsed XML.
    *
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
-//@Override
-  public <T> List<T> consumeList(XMLStreamList<T> handler) throws ContentException {
+  @Override
+  public <T> List<T> consumeList(XMLStreamHandler<T> handler) throws ContentException {
     try {
-      return parseXML(this, handler);
+      return parseXMLStream(this, handler);
     } catch (IOException ex) {
       throw new ContentException("Unable to consume XML", ex);
     } finally {
@@ -777,16 +761,10 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @throws IllegalStateException If the response is not available.
    * @throws ContentException If an error occurred while consuming the content.
    */
-//  @Override
-  public <T> @Nullable T consumeItem(XMLStreamItem<T> handler) throws ContentException {
-    try {
-      List<T> list = parseXML(this, handler);
-      return list.size() > 0? list.get(0) : null;
-    } catch (IOException ex) {
-      throw new ContentException("Unable to consume XML", ex);
-    } finally {
-      this.state = State.consumed;
-    }
+  @Override
+  public <T> @Nullable T consumeItem(XMLStreamHandler<T> handler) throws ContentException {
+    List<T> list = consumeList(handler);
+    return list.size() > 0? list.get(0) : null;
   }
 
   /**
@@ -1069,7 +1047,6 @@ public final class Response implements HttpResponse, AutoCloseable {
     factory.setValidating(false);
     factory.setNamespaceAware(true);
 
-
     try (InputStream in = toInputStream(connection)) {
       InputSource source = new InputSource(in);
       source.setSystemId(connection.getURL().toString());
@@ -1094,15 +1071,15 @@ public final class Response implements HttpResponse, AutoCloseable {
   }
 
   /**
-   * Parse the response as XML.
+   * Parse the response as XML using a StAX stream handler.
    *
    * @param response   Stores metadata about the response including error details.
-   * @param handler    Handles the XML.
+   * @param handler    Handles a StAX stream
    *
    * @throws IllegalStateException If the response is not available.
    * @throws IOException If an error occurs while writing the XML.
    */
-  private static <T> List<T> parseXML(Response response, XMLStreamItem<T> handler) throws IOException {
+  private static <T> List<T> parseXMLStream(Response response, XMLStreamHandler<T> handler) throws IOException {
     // Ensure we a connection that returned XML content
     HttpURLConnection connection = response.requireAvailable();
     response.requireXML();
@@ -1121,73 +1098,18 @@ public final class Response implements HttpResponse, AutoCloseable {
     }
 
     List<T> list = new ArrayList<>();
-    if (handler instanceof XMLStreamItem<?>) {
-      try (InputStream in = toInputStream(connection)) {
-        XMLStreamReader source = factory.createXMLStreamReader(in, charset.name());
-
-        while (source.hasNext()) {
-          source.next();
-          if (source.getEventType() == XMLStreamReader.START_ELEMENT) {
-            String element = source.getLocalName();
-            if (element.equals(handler.element())) {
-              list.add(handler.toItem(source));
-            }
-          }
-        }
-
-      } catch (IllegalArgumentException | XMLStreamException ex) {
-        throw new ContentException("Error while parsing XML", ex);
+    try (InputStream in = toInputStream(connection)) {
+      XMLStreamReader source = factory.createXMLStreamReader(in, charset.name());
+      while (handler.find(source)) {
+        T next = handler.get(source);
+        if (next != null)
+          list.add(next);
       }
-    }
 
-    return list;
-  }
-
-  /**
-   * Parse the response as XML.
-   *
-   * @param response   Stores metadata about the response including error details.
-   * @param handler    Handles the XML.
-   *
-   * @throws IllegalStateException If the response is not available.
-   * @throws IOException If an error occurs while writing the XML.
-   */
-  private static <T> List<T> parseXML(Response response, XMLStreamList<T> handler) throws IOException {
-    // Ensure we a connection that returned XML content
-    HttpURLConnection connection = response.requireAvailable();
-    response.requireXML();
-
-    // Setup the factory
-    XMLInputFactory factory = XMLInputFactory.newInstance();
-    factory.setProperty(XMLInputFactory.IS_COALESCING, true);
-    factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, true);
-    factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-    factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false);
-
-    // Ensure the character encoding is correct
-    Charset charset = response._charset;
-    if (charset == null) {
-      charset = StandardCharsets.UTF_8;
-    }
-
-    List<T> list = new ArrayList<>();
-    if (handler instanceof XMLStreamItem<?>) {
-      try (InputStream in = toInputStream(connection)) {
-        XMLStreamReader source = factory.createXMLStreamReader(in, charset.name());
-
-        while (source.hasNext()) {
-          source.next();
-          if (source.getEventType() == XMLStreamReader.START_ELEMENT) {
-            String element = source.getLocalName();
-            if (element.equals(handler.element())) {
-              list.addAll(handler.toList(source));
-            }
-          }
-        }
-
-      } catch (IllegalArgumentException | XMLStreamException ex) {
-        throw new ContentException("Error while parsing XML", ex);
-      }
+    } catch (IllegalArgumentException | IllegalStateException | IndexOutOfBoundsException
+           | NoSuchElementException | XMLStreamException | UnsupportedOperationException ex) {
+      // The XMLStreamReader throws a number of runtime exception that we need to catch
+      throw new ContentException("Error while parsing XML", ex);
     }
 
     return list;
@@ -1284,17 +1206,30 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @throws IOException If the thrown by the underlying connection.
    */
   private static InputStream toInputStream(HttpURLConnection connection) throws IOException {
+    boolean isCompressed = "gzip".equals(connection.getHeaderField("Content-Encoding"));
     if (isSuccessful(connection.getResponseCode())) {
-      InputStream in = connection.getInputStream();
+      InputStream in = unCompressIf(connection.getInputStream(), isCompressed);
       if (in == null)
         throw new IllegalArgumentException("Unable to read connection output");
       return debugStream(in, connection.getContentLength(), System.out);
     } else {
-      InputStream err = connection.getErrorStream();
+      InputStream err = unCompressIf(connection.getErrorStream(), isCompressed);
       if (err == null)
         throw new IllegalArgumentException("Unable to read connection error output");
       return debugStream(err, connection.getContentLength(), System.err);
     }
+  }
+
+  /**
+   * Wrap the specified input stream in a <code>GZIPInputStream</code> if the it is compressed with gzip.
+   *
+   * @param in The input stream that may need to be ungzipped.
+   * @param isCompressed true to wrap in <code>GZIPInputStream</code>; false otherwise.
+   *
+   * @return an input stream that returns the entity content
+   */
+  private static InputStream unCompressIf(InputStream in, boolean isCompressed) throws IOException{
+    return isCompressed? new GZIPInputStream(in) : in;
   }
 
   /**

@@ -15,6 +15,14 @@
  */
 package org.pageseeder.bridge.http;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.pageseeder.bridge.PSConfig;
+import org.pageseeder.bridge.PSCredentials;
+import org.pageseeder.bridge.PSSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -25,14 +33,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-import org.pageseeder.bridge.PSConfig;
-import org.pageseeder.bridge.PSCredentials;
-import org.pageseeder.bridge.PSSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Simple fluent class to define HTTP requests to PageSeeder.
@@ -79,7 +79,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Christophe Lauret
  *
- * @version 0.10.2
+ * @version 0.11.12
  * @since 0.9.1
  */
 public final class Request extends BasicRequest implements HttpRequest {
@@ -244,6 +244,24 @@ public final class Request extends BasicRequest implements HttpRequest {
   @Override
   public Request etag(String etag) {
     return header("If-None-Match", '"'+etag+'"');
+  }
+
+  /**
+   * Sets the request as the "Accept-Encoding" request header to "gzip" if enabled and removes
+   * it otherwise.
+   *
+   * @param enable <code>true</code> to accept gzipped response; <code>false</code> otherwise.
+   *
+   * @return this request.
+   */
+  @Override
+  public Request gzip(boolean enable) {
+    if (enable)
+      return header("Accept-Encoding", "gzip");
+    else {
+      removeHeader("Accept-Encoding");
+      return this;
+    }
   }
 
   /**

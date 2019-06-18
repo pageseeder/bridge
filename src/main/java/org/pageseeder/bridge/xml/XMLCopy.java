@@ -15,11 +15,6 @@
  */
 package org.pageseeder.bridge.xml;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.Attributes;
@@ -28,6 +23,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Copy the parsed XML to the specified XML writer.
@@ -48,7 +48,7 @@ public final class XMLCopy extends DefaultHandler implements ContentHandler, Lex
   private final XMLWriter to;
 
   /**
-   * The prefix mapping to add to the next <i>startElement</i> event.
+   * The prefix mapping to add to the get <i>startElement</i> event.
    */
   private final Map<String, String> mapping = new HashMap<>();
 
