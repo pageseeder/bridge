@@ -90,10 +90,20 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
    * @return A new <code>QuestionSearch</code> instance.
    */
   public QuestionSearch question(String question) {
-    Question q = new Question(question, this._question.fields(), this._question.suggestSize());
-    return new QuestionSearch(this._scope, q, this._facets, this._filters, this._ranges, this._page, this._sortFields);
+    return question(new Question(question, this._question.fields(), this._question.suggestSize()));
   }
 
+  /**
+   * Create a new GenericSearch with the specified question (for full-text searches)
+   *
+   * @param question The question.
+   *
+   * @return A new <code>QuestionSearch</code> instance.
+   */
+  public QuestionSearch question(Question question) {
+    return new QuestionSearch(this._scope, question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
+  }
+  
   /**
    * @return the question if any; <code>null</code> otherwise.
    */
@@ -108,9 +118,19 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
    *
    * @return A new <code>QuestionSearch</code> instance unless the current instance already has the same page.
    */
+  public QuestionSearch page(Page page) {
+    return new QuestionSearch(this._scope, this._question, this._facets, this._filters, this._ranges, page, this._sortFields);
+  }
+  
+  /**
+   * @param page the page to set
+   *
+   * @throws IndexOutOfBoundsException if the page is zero or negative.
+   *
+   * @return A new <code>QuestionSearch</code> instance unless the current instance already has the same page.
+   */
   public QuestionSearch page(int page) {
-    Page p = this._page.number(page);
-    return new QuestionSearch(this._scope, this._question, this._facets, this._filters, this._ranges, p, this._sortFields);
+    return page (this._page.number(page));
   }
 
   /**
@@ -119,8 +139,7 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
    * @return A new <code>QuestionSearch</code> instance unless the current instance already has the same number of results per page.
    */
   public QuestionSearch pageSize(int pageSize) {
-    Page p = this._page.size(pageSize);
-    return new QuestionSearch(this._scope, this._question, this._facets, this._filters, this._ranges, p, this._sortFields);
+    return page(this._page.size(pageSize));
   }
 
   /**
@@ -184,6 +203,38 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
     return this._filters;
   }
 
+
+  /**
+   * Sets the facets to use in this search
+   *
+   * @param facets The facets to use in this search
+   *
+   * @return A new <code>QuestionSearch</code> instance with the specified facets.
+   */
+  public QuestionSearch facets(FacetList facets) {
+    return new QuestionSearch(this._scope, this._question, facets, this._filters, this._ranges, this._page, this._sortFields);
+  }
+  
+
+  /**
+   * Adds a single facet to use in this search
+   *
+   * @param facet The facet to add to this search
+   *
+   * @return A new <code>QuestionSearch</code> instance with this additional specified facet.
+   */
+  public QuestionSearch facet(Facet facet) {
+    return facets(this._facets.facet(facet));
+  }
+  
+  /**
+   * @return The filter list
+   */
+  public FacetList facets() {
+    return this._facets;
+  }
+
+  
   /**
    * Add a filter for the specified index field.
    *

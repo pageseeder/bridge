@@ -86,6 +86,19 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
     return new FacetList(facets, this._facetSize);
   }
 
+
+  /**
+   * Create a new facet list with the specified facet.
+   *
+   * @param facet The facet to add to this facet list
+   *
+   * @return A new <code>FacetList</code> instance including the specified facet.
+   */
+  public FacetList facet(Facet facet) {
+    List<Facet> facets = plus(this._list, facet);
+    return new FacetList(facets, this._facetSize);
+  }
+  
   /**
    * @param facetSize the max number of facet values to load (max 1000)
    *
@@ -125,6 +138,7 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
       if (!flexible.isEmpty())
         parameters.put("flexiblefacets", flexible.toString());
     }
+    if (this._facetSize > 0) parameters.put("facetsize", String.valueOf(this._facetSize));
     return parameters;
   }
 
