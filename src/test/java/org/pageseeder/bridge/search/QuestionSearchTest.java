@@ -124,4 +124,11 @@ public class QuestionSearchTest {
     assertTrue(parameters.containsKey("pagesize"));
     assertTrue(parameters.containsValue("200"));
   }
+  
+  @Test
+  public void testGroup() {
+    QuestionSearch search = new QuestionSearch();    
+    search = search.group("project-group");
+    assertEquals("/service/groups/~project-group/search", search.service());
+  }
 }
