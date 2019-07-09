@@ -114,17 +114,17 @@ public class Page {
    */
   public Map<String, String> toParameters(Map<String, String> parameters) {
     // Paging
-    if (this._number > Page.DEFAULT_PAGE_NUMBER) {
+    if (this._number > 0 && this._number != Page.DEFAULT_PAGE_NUMBER) {
       parameters.put("page", Integer.toString(this._number));
     }
-    if (this._size > Page.DEFAULT_PAGE_SIZE) {
+    if (this._size > 0 && this._size != Page.DEFAULT_PAGE_SIZE) {
       parameters.put("pagesize", Integer.toString(this._size));
     }
     return parameters;
   }
 
   private static final int checkNatural(int n) {
-    if (n < 0) throw new IllegalArgumentException("Page and page size must be greater than 0)");
+    if (n <= 0) throw new IllegalArgumentException("Page and page size must be greater than 0)");
     return n;
   }
 
