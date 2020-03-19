@@ -164,13 +164,17 @@ public final class LoginServlet extends HttpServlet {
         if (session != null) {
           // get attributes
           Map<String, Object> atts = new HashMap<>();
-          Enumeration<String> names = session.getAttributeNames();
-          while (names.hasMoreElements()) {
-            String name = names.nextElement();
-            atts.put(name, session.getAttribute(name));
+          try {
+            Enumeration<String> names = session.getAttributeNames();
+            while (names.hasMoreElements()) {
+              String name = names.nextElement();
+              atts.put(name, session.getAttribute(name));
+            }
+            LOGGER.debug("Login successful: invalidating current session");
+            session.invalidate();
+          } catch (IllegalStateException ex) {
+            // thrown when session is invalid so no need to invalidate then
           }
-          LOGGER.debug("Login successful: invalidating current session");
-          session.invalidate();
           session = req.getSession(true);
           // set attributes
           for (Map.Entry<String, Object> attributes : atts.entrySet()) {
