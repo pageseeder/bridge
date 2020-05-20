@@ -127,7 +127,7 @@ public abstract class Addressable implements Serializable {
     // We use the methods to ensure that the values are correctly checked
     this._scheme = Objects.requireNonNull(scheme, "Scheme is required");
     this._host = Objects.requireNonNull(host, "Host is required");
-    this._port = Objects.requireNonNull(port, "Port is required");
+    this._port = port;
     this._path = Objects.requireNonNull(path, "Path is required");
   }
 
