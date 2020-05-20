@@ -84,17 +84,6 @@ public final class Membership implements Serializable, XMLWritable {
   private final boolean _deleted;
 
   /**
-   * Which attributes from subgroups are overridden (i.e not inherited).
-   */
-  //TODO  private String _override;
-
-  /**
-   * List of subgroups
-   */
-  // subgroups	xs:string	no	Comma-separated list of subgroups
-
-
-  /**
    * Membership detail fields if any
    */
   private Details _details;

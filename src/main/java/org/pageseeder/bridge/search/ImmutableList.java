@@ -69,28 +69,6 @@ abstract class ImmutableList<E> implements Iterable<E> {
   }
 
   /**
-   * Create a new list including the specified element at the end of this list.
-   *
-   * @param element the element to add
-   *
-   * @return a new ummodifiable list by adding the specified element.
-   */
-//  protected T plus(E element) {
-//    return plus(this._list, element);
-//  }
-
-  /**
-   * Create a new list without elements matching the specified predicate.
-   *
-   * @param predicate the condition to remove the element
-   *
-   * @return a new list by removing the element matching the specified predicate
-   */
-//  protected List<E> minus(java.util.function.Predicate<? super E> predicate) {
-//    return minus(this._list, predicate);
-//  }
-
-  /**
    * Create a new list without elements matching the specified predicate.
    *
    * @param list The list to transform
