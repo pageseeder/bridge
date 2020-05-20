@@ -1,8 +1,8 @@
 description = "Servlets and Berlioz generators for the bridge in Berlioz"
 
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
-apply from: "$rootDir/gradle/publishing.gradle"
+//apply plugin: 'maven-publish'
+//apply plugin: 'com.jfrog.bintray'
+//apply from: "$rootDir/gradle/publishing.gradle"
 
 // Dependencies of the project
 dependencies {
@@ -10,21 +10,15 @@ dependencies {
   // module dependencies
   compile rootProject
 
-  compile (
-    'org.slf4j:slf4j-api:1.7.12',
-    'org.pageseeder.xmlwriter:pso-xmlwriter:1.0.0',
-    'org.pageseeder.berlioz:pso-berlioz:0.11.0'
-  )
+  api('org.slf4j:slf4j-api:1.7.30')
+  api('org.pageseeder.xmlwriter:pso-xmlwriter:1.0.3')
+  api('org.pageseeder.berlioz:pso-berlioz:0.11.6')
 
-  compileOnly (
-    'javax.servlet:javax.servlet-api:3.1.0',
-    'org.eclipse.jdt:org.eclipse.jdt.annotation:2.0.0'
-  )
+  compileOnly('javax.servlet:javax.servlet-api:3.1.0')
+  compileOnly('org.eclipse.jdt:org.eclipse.jdt.annotation:2.0.0')
 
-  testCompile (
-    'junit:junit:4.12',
-    'org.slf4j:slf4j-simple:1.7.12'
-  )
+  testImplementation('junit:junit:4.12')
+  testImplementation('org.slf4j:slf4j-simple:1.7.30')
 
 }
 

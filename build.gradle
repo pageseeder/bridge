@@ -1,63 +1,39 @@
 plugins {
-  id "com.jfrog.bintray" version "1.7"
+  id 'java-library'
+  id 'maven-publish'
+  id 'com.jfrog.bintray' version '1.8.5'
 }
 
 ext {
   globalVersion = file('version.txt').text
 }
 
-group       = 'org.pageseeder.bridge'
-version     = "$globalVersion"
-description = "$title"
-
-apply plugin: 'java'
-apply plugin: 'maven-publish'
-apply from: 'gradle/publishing.gradle'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 repositories {
-  maven { url 'http://dl.bintray.com/pageseeder/maven' }
+  maven { url 'https://dl.bintray.com/pageseeder/maven' }
   jcenter()
 }
 
-dependencies {
-
-  compile (
-    'org.slf4j:slf4j-api:1.7.21',
-    'org.pageseeder.xmlwriter:pso-xmlwriter:1.0.2',
-    'net.sf.ehcache:ehcache:2.8.8',
-    'javax.cache:cache-api:1.0.0',
-  )
-
-  compileOnly (
-    'org.eclipse.jdt:org.eclipse.jdt.annotation:2.0.0'
-  )
-
-  testCompile (
-    'junit:junit:4.12',
-    'org.slf4j:slf4j-simple:1.7.21'
-  )
-
-}
-
-subprojects {
+allprojects {
   group   = 'org.pageseeder.bridge'
   version = "$globalVersion"
 
-  apply plugin: 'java'
+  apply plugin: 'java-library'
+  apply plugin: 'maven-publish'
+  apply plugin: 'com.jfrog.bintray'
+  apply from: "$rootDir/gradle/publishing.gradle"
 
-  sourceCompatibility = 1.8
-  targetCompatibility = 1.8
+  java {
+    withJavadocJar()
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+  }
 
   repositories {
-    maven { url 'http://dl.bintray.com/pageseeder/maven' }
+    maven { url 'https://dl.bintray.com/pageseeder/maven' }
     jcenter()
   }
-}
 
-allprojects {
   jar {
     manifest {
       attributes 'Implementation-Vendor':  'Allette Systems',
@@ -65,10 +41,36 @@ allprojects {
                  'Implementation-Version': "$globalVersion"
     }
   }
+
+  javadoc {
+
+    // Let's package the javadoc even if there are some lint issues
+    options.addStringOption('Xdoclint:none', '-quiet')
+
+    // Generate better doc if we can
+    if (JavaVersion.current().isJava9Compatible()) {
+      options.addBooleanOption('html5', true)
+    }
+  }
+
 }
 
-task publishAllToBintray(group: 'pageseeder') {
-  allprojects.each {
-    dependsOn("${it.path}:bintrayUpload" )
-  }
+dependencies {
+
+  api('org.pageseeder.xmlwriter:pso-xmlwriter:1.0.3')
+  api('net.sf.ehcache:ehcache:2.8.8')
+  api('javax.cache:cache-api:1.0.0')
+
+  implementation('org.slf4j:slf4j-api:1.7.30')
+
+  compileOnly ('org.eclipse.jdt:org.eclipse.jdt.annotation:2.0.0')
+
+  testImplementation('junit:junit:4.12')
+  testImplementation('org.slf4j:slf4j-simple:1.7.30')
+
+}
+
+wrapper {
+  gradleVersion = '6.4.1'
+  distributionType = Wrapper.DistributionType.ALL
 }
