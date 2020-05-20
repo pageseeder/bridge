@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.pageseeder.bridge.core;
 
 import org.pageseeder.xmlwriter.XMLWritable;
@@ -45,7 +44,7 @@ public final class AssignedTo implements Serializable, XMLWritable {
    * @param date   The date the task was assigned to.
    */
   public AssignedTo(Member member, OffsetDateTime date) {
-    this._member = Objects.requireNonNull(member, "Member is required");;
+    this._member = Objects.requireNonNull(member, "Member is required");
     this._date = Objects.requireNonNull(date, "Date is required");
   }
 
