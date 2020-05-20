@@ -88,8 +88,8 @@ public final class ExtentedAuthenticator<T extends User> implements Authenticato
   public AuthenticationResult login(HttpServletRequest req) throws AuthException {
 
     // Grab the username and password
-    String username = req.getParameter("username") != null ? req.getParameter("username") : null;
-    String password = req.getParameter("password") != null ? req.getParameter("password") : null;
+    String username = req.getParameter("username");
+    String password = req.getParameter("password");
 
     // Required details
     if (username == null || password == null) return AuthenticationResult.INSUFFICIENT_DETAILS;

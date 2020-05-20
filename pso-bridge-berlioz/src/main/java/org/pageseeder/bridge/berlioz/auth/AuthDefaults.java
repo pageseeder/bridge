@@ -44,8 +44,8 @@ public final class AuthDefaults extends AuthProvider {
 
   @Override
   public Authenticator<?> authenticatorForName(final String name) {
-    switch (name) {
-      case "pageseeder": return new PSAuthenticator();
+    if ("pageseeder".equals(name)) {
+      return new PSAuthenticator();
     }
     // All other cases return null
     return null;
