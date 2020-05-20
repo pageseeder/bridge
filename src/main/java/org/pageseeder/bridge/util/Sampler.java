@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -178,7 +179,7 @@ public final class Sampler {
     if (url == null)
       throw new IllegalArgumentException(filename);
     try (InputStream in = url.openStream()){
-      BufferedReader reader = new BufferedReader(new InputStreamReader(in, "utf-8"));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
       String name = reader.readLine();
       List<String> names = new ArrayList<>();
       while (name != null) {

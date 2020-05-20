@@ -713,7 +713,7 @@ public final class PSHTTPConnection {
 
     // POST using "application/x-www-form-urlencoded"
     if (type == Method.POST || type == Method.PATCH) {
-      byte[] parameters = resource.getPOSTFormURLEncodedContent().getBytes("utf-8");
+      byte[] parameters = resource.getPOSTFormURLEncodedContent().getBytes(StandardCharsets.UTF_8);
       connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
       connection.setRequestProperty("Content-Length", Integer.toString(parameters.length));
       connection.setDoInput(true);
@@ -737,7 +737,7 @@ public final class PSHTTPConnection {
     } else if (type == Method.PUT) {
       String body = resource.body();
       if (body != null) {
-        byte[] data = body.getBytes("utf-8");
+        byte[] data = body.getBytes(StandardCharsets.UTF_8);
         connection.setRequestProperty("Content-Type", "text/plain; charset=UTF-8");
         connection.setRequestProperty("Content-Length", Integer.toString(body.length()));
         connection.setDoInput(true);
