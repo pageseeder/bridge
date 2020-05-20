@@ -105,7 +105,7 @@ public final class PSCommentHandler extends DefaultHandler {
   }
 
   @Override
-  public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+  public void startElement(String uri, String localName, String qName, Attributes atts) {
     XMLStringWriter xml = this.xmlContent;
     if (xml != null) {
       xml.openElement(uri, localName, true);
@@ -185,7 +185,7 @@ public final class PSCommentHandler extends DefaultHandler {
   }
 
   @Override
-  public void endElement(String uri, String localName, String qName) throws SAXException {
+  public void endElement(String uri, String localName, String qName) {
     PSComment comment = this.comment;
     if ("comment".equals(localName)) {
       if (comment != null) {
@@ -243,7 +243,7 @@ public final class PSCommentHandler extends DefaultHandler {
   }
 
   @Override
-  public void characters(char[] ch, int start, int length) throws SAXException {
+  public void characters(char[] ch, int start, int length) {
     XMLStringWriter xml = this.xmlContent;
     StringBuilder buf = this.buffer;
     if (xml != null) {

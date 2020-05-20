@@ -76,7 +76,7 @@ public final class SafeXMLStreamReader implements XMLStreamReader {
    * @throws UnsupportedOperationException Always throws
    */
   @Override
-  public String getElementText() throws XMLStreamException {
+  public String getElementText() {
     throw new UnsupportedOperationException(CHANGE_STATE_MESSAGE);
   }
 
@@ -84,7 +84,7 @@ public final class SafeXMLStreamReader implements XMLStreamReader {
    * @throws UnsupportedOperationException Always throws
    */
   @Override
-  public int nextTag() throws XMLStreamException {
+  public int nextTag() {
     throw new UnsupportedOperationException(CHANGE_STATE_MESSAGE);
   }
 
@@ -97,7 +97,7 @@ public final class SafeXMLStreamReader implements XMLStreamReader {
    * @throws UnsupportedOperationException Always throws
    */
   @Override
-  public void close() throws XMLStreamException {
+  public void close() {
     throw new UnsupportedOperationException(CHANGE_STATE_MESSAGE);
   }
 

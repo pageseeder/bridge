@@ -59,7 +59,7 @@ public final class PSResultHandler extends DefaultHandler {
   private @Nullable String field = null;
 
   @Override
-  public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+  public void startElement(String uri, String localName, String qName, Attributes atts) {
     if ("document".equals(localName)) {
       this.result = new PSResult(this.group);
     } else if ("field".equals(localName)) {
@@ -82,14 +82,14 @@ public final class PSResultHandler extends DefaultHandler {
   }
 
   @Override
-  public void characters(char[] ch, int offset, int len) throws SAXException {
+  public void characters(char[] ch, int offset, int len) {
     if (this.field != null) {
       this.buffer.append(ch, offset, len);
     }
   }
 
   @Override
-  public void endElement(String uri, String localName, String qName) throws SAXException {
+  public void endElement(String uri, String localName, String qName) {
     PSResult r = this.result;
     if (r != null) {
       if ("document".equals(localName)) {

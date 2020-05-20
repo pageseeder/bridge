@@ -1020,9 +1020,8 @@ public final class PSHTTPConnectors {
    *
    * @return The corresponding connector
    *
-   * @throws FailedPrecondition Should any precondition fail.
    */
-  public static PSHTTPConnector deleteMembership(String group, String member) throws FailedPrecondition {
+  public static PSHTTPConnector deleteMembership(String group, String member) {
     String service = Services.toMembership(group, member);
     return new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
   }

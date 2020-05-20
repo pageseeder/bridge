@@ -368,9 +368,8 @@ public final class PSHTTPConnection {
    *
    * @see HttpURLConnection#getContentType()
    * @return the content type of the underlying HTTP connection.
-   * @throws IOException If thrown by the underlying HTTP connection.
    */
-  public @Nullable String getContentType() throws IOException {
+  public @Nullable String getContentType() {
     return this._connection.getContentType();
   }
 
@@ -786,10 +785,8 @@ public final class PSHTTPConnection {
    * @param handler    Handles the XML.
    * @param duplex     Whether to use duplex mode
    *
-   * @throws IOException If an error occurs while writing the XML.
    */
-  private static void handleXML(HttpURLConnection connection, PSHTTPResponseInfo response, @Nullable DefaultHandler handler, boolean duplex)
-      throws IOException {
+  private static void handleXML(HttpURLConnection connection, PSHTTPResponseInfo response, @Nullable DefaultHandler handler, boolean duplex) {
     SAXParserFactory factory = SAXParserFactory.newInstance();
     factory.setValidating(false);
     factory.setNamespaceAware(true);
@@ -902,9 +899,8 @@ public final class PSHTTPConnection {
    * @return <code>true</code> if the data was parsed without error;
    *         <code>false</code> otherwise.
    *
-   * @throws IOException If an error occurs while writing the XML.
    */
-  private static boolean copy(HttpURLConnection connection, OutputStream out) throws IOException {
+  private static boolean copy(HttpURLConnection connection, OutputStream out) {
     // Get the source as input stream
     BufferedInputStream in = null;
     boolean ok = true;
@@ -952,9 +948,8 @@ public final class PSHTTPConnection {
    * @param connection The PS Connection.
    * @param info       The response info.
    *
-   * @throws IOException If thrown while writing the XML.
    */
-  private static void parseError(HttpURLConnection connection, PSHTTPResponseInfo info) throws IOException {
+  private static void parseError(HttpURLConnection connection, PSHTTPResponseInfo info) {
     InputStream err = null;
     try {
       err = getErrorStream(connection);

@@ -91,7 +91,7 @@ public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
   }
 
   @Override
-  public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+  public void startElement(String uri, String localName, String qName, Attributes atts) {
     PSMembership membership = this.current;
     if ("membership".equals(localName)) {
       this.current = PSEntityFactory.toMembership(atts, this.current);
@@ -132,14 +132,14 @@ public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
   }
 
   @Override
-  public void characters(char[] ch, int offset, int len) throws SAXException {
+  public void characters(char[] ch, int offset, int len) {
     if (this.field > 0) {
       this.buffer.append(ch, offset, len);
     }
   }
 
   @Override
-  public void endElement(String uri, String localName, String qName) throws SAXException {
+  public void endElement(String uri, String localName, String qName) {
     PSMembership membership = this.current;
     if ("membership".equals(localName)) {
       // Ensure that the group/member is added

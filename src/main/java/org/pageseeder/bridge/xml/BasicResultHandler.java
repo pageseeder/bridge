@@ -148,7 +148,7 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
       String value = buffer(true);
       if (value != null) {
         try {
-          double score = Double.valueOf(value);
+          double score = Double.parseDouble(value);
           score(score);
         } catch (NumberFormatException ex) {
           // Do nothing.

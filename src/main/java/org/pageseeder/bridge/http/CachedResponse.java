@@ -92,17 +92,17 @@ public final class CachedResponse implements HttpResponse {
   }
 
   @Override
-  public InputStream getInputStream() throws IOException {
+  public InputStream getInputStream() {
     return this._content.getInputStream();
   }
 
   @Override
-  public Reader getReader() throws IOException {
+  public Reader getReader() {
     return new InputStreamReader(this._content.getInputStream(), StandardCharsets.UTF_8);
   }
 
   @Override
-  public Reader getReader(Charset charset) throws IOException {
+  public Reader getReader(Charset charset) {
     return new InputStreamReader(this._content.getInputStream(), charset);
   }
 

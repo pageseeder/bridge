@@ -45,7 +45,7 @@ public abstract class SimpleHandler<T> extends BasicHandler<T> {
    * Ensures that the last object that was process is added to list.
    */
   @Override
-  public void endDocument() throws SAXException {
+  public void endDocument() {
     addItem();
   }
 

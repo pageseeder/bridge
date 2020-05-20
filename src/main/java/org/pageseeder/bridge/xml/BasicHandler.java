@@ -110,7 +110,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
   }
 
   @Override
-  public final void endElement(String uri, String localName, String qName) throws SAXException {
+  public final void endElement(String uri, String localName, String qName) {
     String element = localName.length() == 0? qName : localName;
     endElement(element);
     if (!this.ancestorOrSelf.isEmpty()) {
@@ -122,7 +122,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    * Captures the characters reported by SAX if the buffer is not <code>null</code>.
    */
   @Override
-  public final void characters(char[] ch, int start, int length) throws SAXException {
+  public final void characters(char[] ch, int start, int length) {
     StringBuilder b = this.buffer;
     if (b != null) {
       b.append(ch, start, length);

@@ -65,7 +65,7 @@ public final class CommentManager extends Sessionful {
    *
    * @param comment The comment to create
    */
-  public boolean createComment(PSComment comment) throws FailedPrecondition, APIException {
+  public boolean createComment(PSComment comment) throws APIException {
     PSMember member = checkAuthorMember(comment);
     return createComment(comment, member);
   }
@@ -78,7 +78,7 @@ public final class CommentManager extends Sessionful {
    * @param comment The comment to create
    * @param creator The comment's creator (may be different from author)
    */
-  public boolean createComment(PSComment comment, PSMember creator) throws FailedPrecondition, APIException {
+  public boolean createComment(PSComment comment, PSMember creator) throws APIException {
     List<PSGroup> empty = Collections.emptyList();
     return createComment(comment, creator, null, empty);
   }
@@ -90,7 +90,7 @@ public final class CommentManager extends Sessionful {
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param group   The group the comment should be posted against
    */
-  public boolean createComment(PSComment comment, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
+  public boolean createComment(PSComment comment, PSNotify notify, PSGroup group) throws APIException {
     PSMember member = checkAuthorMember(comment);
     return createComment(comment, member, notify, Collections.singletonList(group));
   }
@@ -103,7 +103,7 @@ public final class CommentManager extends Sessionful {
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param group   The group the comment should be posted against
    */
-  public boolean createComment(PSComment comment, PSMember creator, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
+  public boolean createComment(PSComment comment, PSMember creator, PSNotify notify, PSGroup group) throws APIException {
     return createComment(comment, creator, notify, Collections.singletonList(group));
   }
 
@@ -114,7 +114,7 @@ public final class CommentManager extends Sessionful {
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param groups  The group the comment should be posted against
    */
-  public boolean createComment(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
+  public boolean createComment(PSComment comment, PSNotify notify, List<PSGroup> groups) throws APIException {
     PSMember member = checkAuthorMember(comment);
     return createComment(comment, member, notify, groups);
   }
@@ -127,7 +127,7 @@ public final class CommentManager extends Sessionful {
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param groups  The group the comment should be posted against
    */
-  public boolean createComment(PSComment comment, PSMember creator, @Nullable PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
+  public boolean createComment(PSComment comment, PSMember creator, @Nullable PSNotify notify, List<PSGroup> groups) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, creator, notify, groups).using(this._credentials);
     PSCommentHandler handler = new PSCommentHandler(comment);
     PSHTTPResponseInfo info = connector.post(handler);
@@ -143,7 +143,7 @@ public final class CommentManager extends Sessionful {
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param group   The group the comment should be posted against
    */
-  public boolean save(PSComment comment, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
+  public boolean save(PSComment comment, PSNotify notify, PSGroup group) throws APIException {
     PSMember member = checkAuthorMember(comment);
     return save(comment, member, notify, Collections.singletonList(group));
   }
@@ -156,7 +156,7 @@ public final class CommentManager extends Sessionful {
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param group   The group the comment should be posted against
    */
-  public boolean save(PSComment comment, PSMember editor, PSNotify notify, PSGroup group) throws FailedPrecondition, APIException {
+  public boolean save(PSComment comment, PSMember editor, PSNotify notify, PSGroup group) throws APIException {
     return save(comment, editor, notify, Collections.singletonList(group));
   }
 
@@ -167,7 +167,7 @@ public final class CommentManager extends Sessionful {
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param groups  The groups the comment should be posted against
    */
-  public boolean save(PSComment comment, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
+  public boolean save(PSComment comment, PSNotify notify, List<PSGroup> groups) throws APIException {
     PSMember member = checkAuthorMember(comment);
     return save(comment, member, notify, groups);
   }
@@ -180,7 +180,7 @@ public final class CommentManager extends Sessionful {
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param groups  The groups the comment should be posted against
    */
-  public boolean save(PSComment comment, PSMember editor, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition, APIException {
+  public boolean save(PSComment comment, PSMember editor, PSNotify notify, List<PSGroup> groups) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.patchComment(comment, editor, notify, groups).using(this._credentials);
     PSCommentHandler handler = new PSCommentHandler(comment);
     PSHTTPResponseInfo info = connector.patch(handler);
@@ -195,7 +195,7 @@ public final class CommentManager extends Sessionful {
    * @param comment The comment to archive
    * @param member  The member archiving the comment
    */
-  public boolean archiveComment(PSComment comment, PSMember member) throws FailedPrecondition, APIException {
+  public boolean archiveComment(PSComment comment, PSMember member) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.archiveComment(comment, member).using(this._credentials);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
@@ -207,7 +207,7 @@ public final class CommentManager extends Sessionful {
    * @param comment The comment to archive
    * @param member  The member archiving the comment
    */
-  public boolean unarchiveComment(PSComment comment, PSMember member) throws FailedPrecondition, APIException {
+  public boolean unarchiveComment(PSComment comment, PSMember member) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.unarchiveComment(comment, member).using(this._credentials);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
@@ -221,7 +221,7 @@ public final class CommentManager extends Sessionful {
    * @param groups  The group the comment should be posted against
    * @param xlink   The comment to reply to
    */
-  public boolean replyToComment(PSComment comment, PSNotify notify, List<PSGroup> groups, long xlink) throws FailedPrecondition, APIException {
+  public boolean replyToComment(PSComment comment, PSNotify notify, List<PSGroup> groups, long xlink) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.replyToComment(comment, notify, groups, xlink).using(this._credentials);
     PSCommentHandler handler = new PSCommentHandler(comment);
     PSHTTPResponseInfo info = connector.post(handler);

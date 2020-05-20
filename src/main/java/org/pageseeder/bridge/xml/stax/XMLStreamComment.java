@@ -190,7 +190,7 @@ public final class XMLStreamComment extends ElementXMLStreamHandler<Comment> imp
     } else throw new MissingElementException("Attachment require URI");
   }
 
-  private Member toMember(XMLStreamReader xml) throws XMLStreamException {
+  private Member toMember(XMLStreamReader xml) {
     long id = attribute(xml, "id", -1L);
     if (id == -1L) throw new MissingAttributeException("Missing member ID");
     Username username = new Username(attribute(xml, "username"));

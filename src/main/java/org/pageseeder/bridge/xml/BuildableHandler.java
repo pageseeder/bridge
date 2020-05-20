@@ -62,7 +62,7 @@ public abstract class BuildableHandler<T, B> extends BasicHandler<T> {
    * Ensures that the last object that was process is added to list.
    */
   @Override
-  public void endDocument() throws SAXException {
+  public void endDocument() {
     addItem();
   }
 

@@ -46,14 +46,14 @@ public final class PSMemberHandler extends PSEntityHandler<PSMember> {
   }
 
   @Override
-  public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+  public void startElement(String uri, String localName, String qName, Attributes atts) {
     if ("member".equals(localName)) {
       this.current = make(atts, this.current);
     }
   }
 
   @Override
-  public void endElement(String uri, String localName, String qName) throws SAXException {
+  public void endElement(String uri, String localName, String qName) {
     if ("member".equals(localName)) {
       PSMember m = this.current;
       if (m != null) {

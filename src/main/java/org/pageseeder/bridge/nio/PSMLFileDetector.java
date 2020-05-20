@@ -41,7 +41,7 @@ public final class PSMLFileDetector extends FileTypeDetector {
   }
 
   @Override
-  public @Nullable String probeContentType(Path path) throws IOException {
+  public @Nullable String probeContentType(Path path) {
     boolean isPSML = path.toString().toLowerCase().endsWith(".psml");
     if (isPSML) return "application/vnd.pagaseeder.psml+xml";
     return null;

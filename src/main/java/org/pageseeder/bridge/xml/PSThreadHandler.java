@@ -59,7 +59,7 @@ public final class PSThreadHandler extends DefaultHandler {
   private final Stack<String> _elements = new Stack<>();
 
   @Override
-  public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+  public void startElement(String uri, String localName, String qName, Attributes atts) {
     XMLStringWriter xml = this.xmlContent;
     if (xml != null) {
       xml.openElement(uri, localName, true);
@@ -101,7 +101,7 @@ public final class PSThreadHandler extends DefaultHandler {
   }
 
   @Override
-  public void endElement(String uri, String localName, String qName) throws SAXException {
+  public void endElement(String uri, String localName, String qName) {
     StringBuilder buf = this.buffer;
     if ("id".equals(localName) && buf != null && this.oldFormat) {
       this.tempStatus = new PSThreadStatus(buf.toString());
@@ -139,7 +139,7 @@ public final class PSThreadHandler extends DefaultHandler {
   }
 
   @Override
-  public void characters(char[] ch, int start, int length) throws SAXException {
+  public void characters(char[] ch, int start, int length) {
     XMLStringWriter xml = this.xmlContent;
     StringBuilder buf = this.buffer;
     if (xml != null) {

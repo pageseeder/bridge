@@ -76,7 +76,7 @@ public final class PSExternalURIHandler extends DefaultHandler {
   }
 
   @Override
-  public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+  public void startElement(String uri, String localName, String qName, Attributes atts) {
     if ("uri".equals(localName)) {
       this.inURI = true;
       this.externalURI = PSEntityFactory.toExternalURI(atts, this.externalURI);
@@ -89,7 +89,7 @@ public final class PSExternalURIHandler extends DefaultHandler {
   }
 
   @Override
-  public void endElement(String uri, String localName, String qName) throws SAXException {
+  public void endElement(String uri, String localName, String qName) {
     PSExternalURI extURI = this.externalURI;
     if ("uri".equals(localName)) {
       if (extURI != null) {
@@ -111,7 +111,7 @@ public final class PSExternalURIHandler extends DefaultHandler {
   }
 
   @Override
-  public void characters(char[] ch, int start, int length) throws SAXException {
+  public void characters(char[] ch, int start, int length) {
     if (this.record) {
       this.buffer.append(ch, start, length);
     }

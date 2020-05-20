@@ -86,7 +86,7 @@ public final class PSDocumentHandler extends DefaultHandler {
   }
 
   @Override
-  public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+  public void startElement(String uri, String localName, String qName, Attributes atts) {
     if ("uri".equals(localName)) {
       this.inURI = true;
       String mediatype = atts.getValue("mediatype");
@@ -104,7 +104,7 @@ public final class PSDocumentHandler extends DefaultHandler {
   }
 
   @Override
-  public void endElement(String uri, String localName, String qName) throws SAXException {
+  public void endElement(String uri, String localName, String qName) {
     PSDocument doc = this.document;
     if ("uri".equals(localName)) {
       if (doc != null) {
@@ -133,7 +133,7 @@ public final class PSDocumentHandler extends DefaultHandler {
   }
 
   @Override
-  public void characters(char[] ch, int start, int length) throws SAXException {
+  public void characters(char[] ch, int start, int length) {
     if (this.record) {
       this.buffer.append(ch, start, length);
     }

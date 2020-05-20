@@ -45,14 +45,14 @@ public class PSGroupFolderHandler extends PSEntityHandler<PSGroupFolder> {
   }
 
   @Override
-  public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+  public void startElement(String uri, String localName, String qName, Attributes atts) {
     if ("groupfolder".equals(localName)) {
       this.current = make(atts, this.current);
     }
   }
 
   @Override
-  public void endElement(String uri, String localName, String qName) throws SAXException {
+  public void endElement(String uri, String localName, String qName) {
     if ("groupfolder".equals(localName)) {
       PSGroupFolder gf = current();
       if (gf != null) {

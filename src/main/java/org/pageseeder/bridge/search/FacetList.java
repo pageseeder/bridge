@@ -52,7 +52,7 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
    * @return An instance using corresponding list of field names
    */
   public static FacetList newFacetList(String... fields) {
-    List<Facet> facets = Arrays.asList(fields).stream().map(f -> new Facet(f, false)).collect(Collectors.toList());
+    List<Facet> facets = Arrays.stream(fields).map(f -> new Facet(f, false)).collect(Collectors.toList());
     return new FacetList(facets, -1);
   }
 
@@ -64,7 +64,7 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
    * @return An instance using corresponding list of field names
    */
   public static FacetList newFlexibleFacetList(String... fields) {
-    List<Facet> facets = Arrays.asList(fields).stream().map(f -> new Facet(f, true)).collect(Collectors.toList());
+    List<Facet> facets = Arrays.stream(fields).map(f -> new Facet(f, true)).collect(Collectors.toList());
     return new FacetList(facets, -1);
   }
 

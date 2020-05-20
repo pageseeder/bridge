@@ -70,7 +70,7 @@ public final class PSXRefHandler extends DefaultHandler {
   }
 
   @Override
-  public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+  public void startElement(String uri, String localName, String qName, Attributes atts) {
     if ("uri".equals(localName)) {
       if ("true".equals(atts.getValue("external"))) {
         this.uri = PSEntityFactory.toExternalURI(atts, null);
@@ -97,7 +97,7 @@ public final class PSXRefHandler extends DefaultHandler {
   }
 
   @Override
-  public void endElement(String uri, String localName, String qName) throws SAXException {
+  public void endElement(String uri, String localName, String qName) {
     PSXRef x = this.xref;
     if (x != null) {
       if ("xref".equals(localName) || "blockxref".equals(localName)) {
