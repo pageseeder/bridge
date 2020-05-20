@@ -105,13 +105,12 @@ public final class FileTreeWatcher {
    * @return a new recursive watcher with the default settings for a PSML directory.
    */
   public static FileTreeWatcher newPSMLWatcher(WatchListener listener) {
-    File r = GlobalSettings.getRepository();
+    File r = GlobalSettings.getAppData();
     File psml = new File(r, "psml");
     Path root = Paths.get(psml.toURI());
     Path ignore = root.resolve("META-INF");
     List<Path> ignorePaths = Collections.singletonList(ignore);
-    FileTreeWatcher watcher = new FileTreeWatcher(root, ignorePaths, listener);
-    return watcher;
+    return new FileTreeWatcher(root, ignorePaths, listener);
   }
 
   /**

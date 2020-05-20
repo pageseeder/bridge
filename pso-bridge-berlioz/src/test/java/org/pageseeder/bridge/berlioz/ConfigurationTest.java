@@ -17,7 +17,7 @@ public final class ConfigurationTest {
   @Test
   public void testConfigProvider() {
     File dir = new File("src/test/data");
-    GlobalSettings.setRepository(dir);
+    GlobalSettings.setup(dir);
     GlobalSettings.setMode("local");
     PSConfig manual = PSConfig.newInstance(new Properties());
     PSConfig auto = PSConfig.getDefault();

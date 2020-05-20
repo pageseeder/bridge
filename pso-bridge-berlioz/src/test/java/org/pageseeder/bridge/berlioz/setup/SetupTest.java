@@ -16,7 +16,7 @@ public final class SetupTest {
   @Test
   public void testSetup() throws SetupException, IOException {
     File dir = new File("src/test/data");
-    GlobalSettings.setRepository(dir);
+    GlobalSettings.setup(dir);
     GlobalSettings.setMode("local");
     File f = new File("src/test/data/setup/setup.xml");
     Setup setup = Setup.parse(f);
