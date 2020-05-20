@@ -261,7 +261,7 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
     private final E _entity;
 
     /** The version of the entity */
-    private long _version = System.currentTimeMillis();
+    private final long _version = System.currentTimeMillis();
 
     public CachedEntity(E entity) {
       this._entity = entity;

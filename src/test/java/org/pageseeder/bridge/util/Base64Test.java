@@ -11,7 +11,7 @@ import org.junit.Test;
 
 public class Base64Test {
 
-  private static byte[] ZERO_BYTES = new byte[0];
+  private static final byte[] ZERO_BYTES = new byte[0];
 
   private static final List<String> SAMPLES = Arrays
       .asList(" ", "Test", "Hello", "~~~", "Me?", "~~~Me? ", "Café");
