@@ -69,7 +69,7 @@ public final class SafeXMLStreamReader implements XMLStreamReader {
 
   @Override
   public void require(int type, String namespaceURI, String localName) throws XMLStreamException {
-    this.require(type, namespaceURI, localName);
+    this._xml.require(type, namespaceURI, localName);
   }
 
   /**
