@@ -108,14 +108,12 @@ public final class CachedResponse implements HttpResponse {
 
   @Override
   public @Nullable String header(String name) {
-    if ("Content-Type".equals(name))
-      return getContentType();
-    else if ("Content-Length".equals(name))
-      return Long.toString(length());
-    else if ("Etag".equals(name))
-      return etag();
-    else
-      return null;
+    switch (name) {
+      case "Content-Type": return getContentType();
+      case "Content-Length": return Long.toString(length());
+      case "Etag": return etag();
+      default: return null;
+    }
   }
 
   @Override
