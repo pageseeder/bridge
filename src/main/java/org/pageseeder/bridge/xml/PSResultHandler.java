@@ -22,7 +22,6 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSResult;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**

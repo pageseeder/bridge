@@ -18,7 +18,6 @@ package org.pageseeder.bridge.xml;
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSGroupFolder;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * Handler for group folders.

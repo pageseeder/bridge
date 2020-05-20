@@ -24,7 +24,7 @@ public final class RequestTest {
   // --------------------------------------------------------------------------
 
   @Test
-  public void testHeaders() throws IOException {
+  public void testHeaders() {
     Request request = new Request(Method.GET, Service.get_version);
     request.header("a", "1");
     request.header("b", "2");
@@ -130,7 +130,7 @@ public final class RequestTest {
   }
 
   @Test
-  public void testParameters() throws IOException {
+  public void testParameters() {
     Request request = new Request(Method.GET, Service.get_version);
     request.parameter("a", "1");
     request.parameter("b", "2");
@@ -146,7 +146,7 @@ public final class RequestTest {
   }
 
   @Test
-  public void testEncodeParameters() throws IOException {
+  public void testEncodeParameters() {
     Request request = new Request(Method.GET, Service.get_version);
     request.parameter("a", "1");
     request.parameter("b", "2");
@@ -159,13 +159,13 @@ public final class RequestTest {
   }
 
   @Test
-  public void testToURL() throws IOException {
+  public void testToURL() {
     // Raw path
     Assert.assertEquals("https://ps.pageseeder.com/ps/", new Request(Method.GET, "/").toURLString());
   }
 
   @Test
-  public void testPath_Raw() throws IOException {
+  public void testPath_Raw() {
     // Raw path
     Assert.assertEquals("/",           new Request(Method.GET, "/").path());
     Assert.assertEquals("/index.html", new Request(Method.GET, "/index.html").path());
@@ -178,17 +178,17 @@ public final class RequestTest {
   }
 
   @Test
-  public void testPath_Service() throws IOException {
+  public void testPath_Service() {
     Assert.assertTrue(new Request(Method.GET, Service.get_version).path().startsWith("/service/"));
   }
 
   @Test
-  public void testPath_Servlet() throws IOException {
+  public void testPath_Servlet() {
     Assert.assertTrue(new Request(Method.GET, Servlet.UPLOAD).path().startsWith("/servlet/"));
   }
 
   @Test
-  public void testQuery() throws IOException {
+  public void testQuery() {
     // Raw path
     Assert.assertEquals("",            new Request(Method.GET, "/").encodeParameters());
     Assert.assertEquals("",            new Request(Method.GET, "/index.html").encodeParameters());
@@ -205,7 +205,7 @@ public final class RequestTest {
   // --------------------------------------------------------------------------
 
   @Test
-  public void testOK() throws IOException {
+  public void testOK() {
     Response response = Request.response(Method.GET, Service.get_version);
     Assert.assertTrue(response.isSuccessful());
     Assert.assertEquals(200, response.code());
@@ -213,7 +213,7 @@ public final class RequestTest {
   }
 
   @Test
-  public void testMalformedURL() throws IOException {
+  public void testMalformedURL() {
     Response response = Request.response(Method.GET, ":%*<>\n:/ %1%");
     Assert.assertFalse(response.isSuccessful());
     Assert.assertTrue(response.code() < 0);
@@ -271,7 +271,7 @@ public final class RequestTest {
   }
 
   @Test
-  public void testEtag() throws IOException {
+  public void testEtag() {
     // Get the etag
     String etag = Request.response(Method.GET, Service.get_version).etag();
     // Try request with etag

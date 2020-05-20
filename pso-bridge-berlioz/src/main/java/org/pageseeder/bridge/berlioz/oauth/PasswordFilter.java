@@ -73,7 +73,7 @@ public final class PasswordFilter implements Filter {
   private String defaultTarget = DEFAULT_TARGET;
 
   @Override
-  public void init(FilterConfig filterConfig) throws ServletException {
+  public void init(FilterConfig filterConfig) {
     String contextPath = filterConfig.getServletContext().getContextPath();
     this.loginForm = contextPath+Objects.toString(filterConfig.getInitParameter("login-form"), DEFAULT_LOGIN);
     this.loginAction = contextPath+Objects.toString(filterConfig.getInitParameter("login-action"), DEFAULT_LOGIN);
@@ -162,10 +162,9 @@ public final class PasswordFilter implements Filter {
    * @param res The servlet response
    *
    * @throws IOException
-   * @throws ServletException
    */
   public void login(HttpServletRequest req, HttpServletResponse res)
-      throws IOException, ServletException {
+      throws IOException {
 
     // Client credentials
     Properties p = GlobalSettings.getNode("oauth.password-credentials");
@@ -221,7 +220,7 @@ public final class PasswordFilter implements Filter {
 
 
   private void loginForm(HttpServletRequest req, HttpServletResponse res)
-      throws IOException, ServletException {
+      throws IOException {
     // Save the protected request
     String url  = req.getRequestURI();
     String query = req.getQueryString();

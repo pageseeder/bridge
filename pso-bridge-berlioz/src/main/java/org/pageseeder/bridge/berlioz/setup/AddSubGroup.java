@@ -34,7 +34,7 @@ import org.pageseeder.xmlwriter.XMLWriter;
 public final class AddSubGroup implements Action {
 
   /** Used for the status of an execution task */
-  private enum Status {added, failed, skipped};
+  private enum Status {added, failed, skipped}
 
   /** The group to add as a subgroup */
   PSGroup group = null;
@@ -62,7 +62,7 @@ public final class AddSubGroup implements Action {
   }
 
   @Override
-  public void simulate(SetupEnvironment env, XMLWriter xml) throws SetupException, IOException {
+  public void simulate(SetupEnvironment env, XMLWriter xml) throws IOException {
     toXML(xml, this.group, this.to, Status.added);
   }
 

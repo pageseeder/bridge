@@ -15,8 +15,6 @@
  */
 package org.pageseeder.bridge.net;
 
-import java.security.cert.CertificateException;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;

@@ -14,7 +14,7 @@ import org.pageseeder.xmlwriter.XMLWriterNSImpl;
 public final class SetupTest {
 
   @Test
-  public void testSetup() throws SetupException, IOException {
+  public void testSetup() throws SetupException {
     File dir = new File("src/test/data");
     GlobalSettings.setup(dir);
     GlobalSettings.setMode("local");

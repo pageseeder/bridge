@@ -89,7 +89,7 @@ public final class PSUser implements User {
     this._surname = member.getSurname();
     this._username = member.getUsername();
     this._session = session;
-    this._roles = roles.toArray(new String[]{});;
+    this._roles = roles.toArray(new String[]{});
   }
 
   /**

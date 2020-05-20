@@ -40,6 +40,6 @@ public enum AuthorizationResult {
    * The user is not authorised to access the resource due to lack of credentials.
    * (The user is logged in, but he is not allowed to access the resource)
    */
-  FORBIDDEN;
+  FORBIDDEN
 
 }

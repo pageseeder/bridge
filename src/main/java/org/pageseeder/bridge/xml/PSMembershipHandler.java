@@ -22,7 +22,6 @@ import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSMembership;
 import org.pageseeder.bridge.model.PSProject;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * Handler for PageSeeder memberships.

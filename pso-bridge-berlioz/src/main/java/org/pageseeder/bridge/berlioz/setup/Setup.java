@@ -140,8 +140,7 @@ public final class Setup {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-      final String element = localName;
-      switch (element) {
+      switch (localName) {
         case "group-options":
           String id = attributes.getValue("id");
           GroupOptions options = handleGroupOption(attributes);

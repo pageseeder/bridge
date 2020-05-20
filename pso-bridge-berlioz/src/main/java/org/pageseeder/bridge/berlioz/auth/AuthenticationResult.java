@@ -58,6 +58,6 @@ public enum AuthenticationResult {
   /**
    * The user account is locked.
    */
-  ACCOUNT_LOCKED;
+  ACCOUNT_LOCKED
 
 }

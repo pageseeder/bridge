@@ -80,7 +80,7 @@ public final class ImageProxyServlet extends HttpServlet implements Servlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
     String pathInfo = req.getPathInfo();
     String imageURIID = pathInfo;

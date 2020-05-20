@@ -20,7 +20,7 @@ public class ResponseTest {
    * Simple request unauthenticated request
    */
   @Test
-  public void testOK() throws IOException {
+  public void testOK() {
     Response response = Request.response(Method.GET, Service.get_version);
     Assert.assertTrue(response.isSuccessful());
     Assert.assertTrue(response.isXML());
@@ -30,7 +30,7 @@ public class ResponseTest {
    * Check that the response is NotXML
    */
   @Test
-  public void testNotXML() throws IOException {
+  public void testNotXML() {
     Response response = Request.response(Method.GET, "/weborganic/favicon.ico");
     Assert.assertTrue(response.isSuccessful());
     Assert.assertFalse(response.isXML());
@@ -40,14 +40,14 @@ public class ResponseTest {
    * Check that the response is XML
    */
   @Test
-  public void testIsXML() throws IOException {
+  public void testIsXML() {
     Response response = Request.response(Method.GET, Service.get_version);
     Assert.assertTrue(response.isSuccessful());
     Assert.assertTrue(response.isXML());
   }
 
   @Test
-  public void testETag() throws IOException {
+  public void testETag() {
     Response response = Request.response(Method.GET, Service.get_version);
     Assert.assertTrue(response.isSuccessful());
     String etag = response.etag();
@@ -57,7 +57,7 @@ public class ResponseTest {
   }
 
   @Test
-  public void testSession() throws IOException {
+  public void testSession() {
     Response response = Request.response(Method.GET, Service.get_version);
     Assert.assertTrue(response.isSuccessful());
     if (response.header("Set-Cookie") != null) {
@@ -69,7 +69,7 @@ public class ResponseTest {
   }
 
   @Test
-  public void testConsume() throws IOException {
+  public void testConsume() {
     Response response = Request.response(Method.HEAD, Service.get_version);
     Assert.assertTrue(response.isSuccessful());
     Assert.assertTrue(response.isXML());
@@ -77,7 +77,7 @@ public class ResponseTest {
   }
 
   @Test
-  public void testConsumeAndWrite() throws IOException {
+  public void testConsumeAndWrite() {
     Response response = Request.response(Method.HEAD, Service.get_version);
     Assert.assertTrue(response.isSuccessful());
     Assert.assertTrue(response.isXML());

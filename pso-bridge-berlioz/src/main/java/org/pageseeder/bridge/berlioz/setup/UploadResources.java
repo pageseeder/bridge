@@ -37,7 +37,7 @@ import org.pageseeder.xmlwriter.XMLWriter;
  */
 public final class UploadResources implements Action {
 
-  private enum Status {failed, uploaded};
+  private enum Status {failed, uploaded}
 
   /**
    * Projects the resources should be uploaded to.
@@ -141,7 +141,7 @@ public final class UploadResources implements Action {
         this._xml.closeElement();
       }
       return FileVisitResult.CONTINUE;
-    };
+    }
 
   }
 

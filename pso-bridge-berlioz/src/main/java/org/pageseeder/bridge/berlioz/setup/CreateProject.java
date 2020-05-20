@@ -35,7 +35,7 @@ import org.pageseeder.xmlwriter.XMLWriter;
 public final class CreateProject implements Action {
 
   /** Used for the status of an execution task */
-  private enum Status {created, failed, skipped};
+  private enum Status {created, failed, skipped}
 
   /** The project to create */
   PSProject project = null;

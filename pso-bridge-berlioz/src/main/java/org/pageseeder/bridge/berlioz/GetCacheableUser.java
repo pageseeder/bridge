@@ -43,7 +43,7 @@ public final class GetCacheableUser implements ContentGenerator, Cacheable {
   }
 
   @Override
-  public final void process(ContentRequest req, XMLWriter xml) throws BerliozException, IOException {
+  public final void process(ContentRequest req, XMLWriter xml) throws IOException {
     User user = AuthSessions.getUser(req);
     if (user != null) {
       user.toXML(xml);

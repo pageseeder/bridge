@@ -2,7 +2,6 @@ package org.pageseeder.bridge.xml;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 /**
  * Simplifies SAX parsing by providing basic state machine on top of default handler.

@@ -21,7 +21,6 @@ import java.util.List;
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.model.PSExternalURI;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**

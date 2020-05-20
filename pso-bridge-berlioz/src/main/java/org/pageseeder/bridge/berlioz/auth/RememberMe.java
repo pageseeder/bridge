@@ -230,9 +230,8 @@ public final class RememberMe {
     cipher.init(Cipher.DECRYPT_MODE, key, s);
 
     byte[] raw = Arrays.copyOfRange(encrypted, IV_LENGTH_BYTES, encrypted.length);
-    byte [] message = cipher.doFinal(raw);
 
-    return message;
+    return cipher.doFinal(raw);
   }
 
   /**

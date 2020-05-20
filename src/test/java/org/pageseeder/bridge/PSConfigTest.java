@@ -23,7 +23,7 @@ import org.junit.Test;
 public final class PSConfigTest {
 
   @Test
-  public void testNewInstance_URI() throws Exception{
+  public void testNewInstance_URI() {
     // Test with default ports
     PSConfig config = PSConfig.newInstance("https://ps.example.org:8444/");
     Assert.assertEquals("https",          config.getScheme());
@@ -42,7 +42,7 @@ public final class PSConfigTest {
   }
 
   @Test
-  public void testNewInstance_URIs() throws Exception{
+  public void testNewInstance_URIs() {
     // Test with default ports
     PSConfig config = PSConfig.newInstance("https://localhost/", "http://localhost/");
     Assert.assertEquals("https",     config.getScheme());
@@ -77,7 +77,7 @@ public final class PSConfigTest {
   }
 
   @Test
-  public void testNewInstance_Properties() throws Exception{
+  public void testNewInstance_Properties() {
     PSConfig config = PSConfig.newInstance(new Properties());
     Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.getScheme(), config.getScheme());
     Assert.assertEquals(PSConfig.DEFAULT_WEBSITE.getHost(),   config.getHost());
@@ -94,7 +94,7 @@ public final class PSConfigTest {
   }
 
   @Test
-  public void testNewInstance_Properties_single() throws Exception{
+  public void testNewInstance_Properties_single() {
     Properties p = new Properties();
     String url = "https://ps.example.org:8444/";
     p.setProperty("url", url);
@@ -111,7 +111,7 @@ public final class PSConfigTest {
   }
 
   @Test
-  public void testNewInstance_Properties_dual() throws Exception{
+  public void testNewInstance_Properties_dual() {
     Properties p = new Properties();
     String url = "https://ps.example.org/";
     String apiurl = "http://ps.example.localhost:8282/";
