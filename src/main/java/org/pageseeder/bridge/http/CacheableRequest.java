@@ -128,10 +128,6 @@ public final class CacheableRequest implements HttpRequest {
 
   /**
    * Fetch the content from PageSeeder and return the corresponding request.
-   *
-   * @param url
-   *
-   * @return
    */
   private HttpResponse fetch(String url) {
     Response response = toRequest().response();

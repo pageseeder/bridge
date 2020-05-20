@@ -291,8 +291,6 @@ public final class DocumentManager extends Sessionful {
    * @param file  The file to upload
    *
    * @return The uploaded document.
-   *
-   * @throws APIException
    */
   public @Nullable PSDocument upload(PSGroup group, String url, File file) throws APIException {
     String groupName = checkNotNull(group.getName(), "group name");
@@ -326,8 +324,6 @@ public final class DocumentManager extends Sessionful {
    * @param filename    The filename for the file
    *
    * @return The uploaded document.
-   *
-   * @throws APIException
    */
   public @Nullable PSDocument upload(PSGroup group, String url, InputStream in, String filename) throws APIException {
     String groupName = checkNotNull(group.getName(), "group name");

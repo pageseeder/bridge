@@ -153,10 +153,6 @@ public class RangeFilterList extends ImmutableList<RangeFilter> implements Itera
     return filter("psmodifieddate", range);
   }
 
-  /**
-   *
-   * @return
-   */
   Map<String, String> toParameters(Map<String, String> parameters) {
     // Filters and ranges
     if (!isEmpty()) {

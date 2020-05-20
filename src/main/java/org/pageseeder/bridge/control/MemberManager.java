@@ -63,8 +63,6 @@ public final class MemberManager extends Sessionful {
    * @param username The username of that member
    *
    * @return the corresponding member
-   *
-   * @throws APIException
    */
   public @Nullable PSMember getByUsername(String username) throws APIException {
     String identifier = Objects.requireNonNull(username);
@@ -120,8 +118,6 @@ public final class MemberManager extends Sessionful {
    * @param member The member (id or username must be set).
    *
    * @return the corresponding member
-   *
-   * @throws APIException
    */
   public @Nullable PSMember get(PSMember member) throws APIException {
     PSMember m = cache.get(Objects.requireNonNull(member));

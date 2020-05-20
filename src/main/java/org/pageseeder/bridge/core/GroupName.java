@@ -51,8 +51,6 @@ public final class GroupName extends ID implements Serializable {
 
   /**
    * Returns the parent group based on the name
-   *
-   * @return
    */
   public GroupName parent() {
     String name = toString();

@@ -515,8 +515,6 @@ public final class PSHTTPConnectors {
    * @param newname the new group name
    *
    * @return the connector
-   *
-   * @throws FailedPrecondition
    */
   public static PSHTTPConnector renameGroup(PSGroup group, PSMember editor, String newname) throws FailedPrecondition {
     String groupIdentifier = Preconditions.checkIdentifiable(group, "group");
@@ -534,8 +532,6 @@ public final class PSHTTPConnectors {
    * @param editor  the author of the archive
    *
    * @return the connector
-   *
-   * @throws FailedPrecondition
    */
   public static PSHTTPConnector archiveGroup(PSGroup group, PSMember editor) throws FailedPrecondition {
     String groupIdentifier = Preconditions.checkIdentifiable(group, "group");
@@ -551,8 +547,6 @@ public final class PSHTTPConnectors {
    * @param editor  the author of the edit
    *
    * @return the connector
-   *
-   * @throws FailedPrecondition
    */
   public static PSHTTPConnector patchGroup(PSGroup group, PSMember editor, @Nullable GroupOptions options) throws FailedPrecondition {
     Preconditions.isIdentifiable(group, "group");
@@ -1256,10 +1250,9 @@ public final class PSHTTPConnectors {
    * @param groups  The groups the comment is posted on
    *
    * @return the corresponding connector
-   *
-   * @throws FailedPrecondition
    */
-  public static PSHTTPConnector createComment(PSComment comment, PSMember creator, @Nullable PSNotify notify, List<PSGroup> groups) throws FailedPrecondition {
+  public static PSHTTPConnector createComment(PSComment comment, PSMember creator, @Nullable PSNotify notify, List<PSGroup> groups)
+      throws FailedPrecondition {
     // Basic preconditions to create a comment
     String title = Preconditions.checkNotEmpty(comment.getTitle(), "title");
     String content = Preconditions.checkNotEmpty(comment.getContent(), "content");
@@ -1380,8 +1373,6 @@ public final class PSHTTPConnectors {
    * @param groups  The groups the comment is posted on
    *
    * @return the corresponding connector
-   *
-   * @throws FailedPrecondition
    */
   public static PSHTTPConnector replyToComment(PSComment comment, PSNotify notify, List<PSGroup> groups, long xlink) throws FailedPrecondition {
     // The author and context determine the service
@@ -1490,8 +1481,6 @@ public final class PSHTTPConnectors {
    * @param groups  The groups the comment is posted on
    *
    * @return the connector
-   *
-   * @throws FailedPrecondition
    */
   public static PSHTTPConnector patchComment(PSComment comment, PSMember editor, PSNotify notify, List<PSGroup> groups) throws FailedPrecondition {
     // Basic preconditions to editing a comment
@@ -1794,10 +1783,6 @@ public final class PSHTTPConnectors {
   }
 
   /**
-   *
-   * @param url
-   * @param group
-   *
    * @return The corresponding connector
    *
    * @throws FailedPrecondition Should any precondition fail.
@@ -1835,8 +1820,6 @@ public final class PSHTTPConnectors {
    * @param max    the maximum number of documents to return
    *
    * @return the corresponding connector
-   *
-   * @throws FailedPrecondition
    */
   public static PSHTTPConnector listDocumentsInGroup(PSGroup group, String url, int max) throws FailedPrecondition {
     Preconditions.isNotNull(url, "url");
@@ -1859,8 +1842,6 @@ public final class PSHTTPConnectors {
    * @param max    the maximum number of documents to return
    *
    * @return the corresponding connector
-   *
-   * @throws FailedPrecondition
    */
   public static PSHTTPConnector listFoldersInGroup(PSGroup group, String url, int max) throws FailedPrecondition {
     Preconditions.isNotNull(url, "url");

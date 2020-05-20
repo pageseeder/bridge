@@ -123,7 +123,7 @@ public class Page {
     return parameters;
   }
 
-  private static final int checkNatural(int n) {
+  private static int checkNatural(int n) {
     if (n <= 0) throw new IllegalArgumentException("Page and page size must be greater than 0)");
     return n;
   }

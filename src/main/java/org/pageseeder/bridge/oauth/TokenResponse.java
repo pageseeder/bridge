@@ -77,12 +77,12 @@ public final class TokenResponse {
   /**
    * The actual response as a string.
    */
-  private @Nullable String _response;
+  private @Nullable final String _response;
 
   /**
    * The parsed JSON values.
    */
-  private Map<@NonNull String, @NonNull String> _json;
+  private final Map<@NonNull String, @NonNull String> _json;
 
   /**
    * Creates a new token response.

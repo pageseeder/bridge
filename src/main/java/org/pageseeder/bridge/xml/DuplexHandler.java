@@ -50,12 +50,6 @@ public final class DuplexHandler extends DefaultHandler {
    */
   private final DefaultHandler _second;
 
-  /**
-   * Creates
-   *
-   * @param first
-   * @param second
-   */
   public DuplexHandler(DefaultHandler first, DefaultHandler second) {
     this._first = Objects.requireNonNull(first);
     this._second = Objects.requireNonNull(second);

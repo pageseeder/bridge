@@ -372,8 +372,6 @@ public final class GroupManager extends Sessionful {
    *
    * @param group    The group accepting the subgroup.
    * @param subgroup The subgroup to add to the group.
-   *
-   * @throws APIException
    */
   public void addSubGroup(PSGroup group, PSGroup subgroup) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.addSubGroup(group, subgroup).using(this._credentials);
@@ -389,8 +387,6 @@ public final class GroupManager extends Sessionful {
    * @param notification The notification options for users added via the subgroup.
    * @param role         The role for users added via the subgroup.
    * @param listed       Whether users added via the subgroup should have their email address listed.
-   *
-   * @throws APIException
    */
   public void addSubGroup(PSGroup group, PSGroup subgroup, PSNotification notification, PSRole role, boolean listed)
       throws APIException {
@@ -404,8 +400,6 @@ public final class GroupManager extends Sessionful {
    *
    * @param group    The "parent" group.
    * @param subgroup The subgroup to remove.
-   *
-   * @throws APIException
    */
   public void deleteSubGroup(PSGroup group, PSGroup subgroup) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.deleteSubGroup(group, subgroup).using(this._credentials);
@@ -417,8 +411,6 @@ public final class GroupManager extends Sessionful {
    * Returns the list of subgroups for the specified group.
    *
    * @param group The group.
-   *
-   * @throws APIException
    */
   public List<PSGroup> listSubGroups(PSGroup group) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.listSubGroups(group).using(this._credentials);
@@ -438,8 +430,6 @@ public final class GroupManager extends Sessionful {
    * @param max the maximum number of projects/groups to return (may be more results as ancestors are added).
    *
    * @return the list of projects and groups for the given member.
-   *
-   * @throws APIException
    */
   public List<PSGroup> listProjectTree(PSMember member, String nameprefix, int max) throws APIException {
     return listProjectTree(member, nameprefix, max, true, false);
@@ -456,8 +446,6 @@ public final class GroupManager extends Sessionful {
    * @param showAll Whether to return all projects/groups for server (Administrator only)
    *
    * @return the list of projects and groups for the given member.
-   *
-   * @throws APIException
    */
   public List<PSGroup> listProjectTree(PSMember member, String nameprefix, int max, boolean showGroup, boolean showAll) throws APIException {
     Objects.requireNonNull(member);
@@ -475,8 +463,6 @@ public final class GroupManager extends Sessionful {
    * @param member      The member
    * @param prefix      The prefix of project/group name
    * @param includeAll  Whether to return all projects/groups for server (Administrator only)
-   *
-   * @throws APIException
    */
   public List<PSGroup> findGroups(PSMember member, String prefix, boolean includeAll) throws APIException {
     return findGroups(member, prefix, 1000, includeAll);
@@ -490,8 +476,6 @@ public final class GroupManager extends Sessionful {
    * @param prefix      The prefix of project/group name
    * @param max         The maximum number of projects/groups to return.
    * @param includeAll  Whether to return all projects/groups for server (Administrator only)
-   *
-   * @throws APIException
    */
   public List<PSGroup> findGroups(PSMember member, String prefix, int max, boolean includeAll) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.findProjects(member, prefix, max, includeAll).using(this._credentials);

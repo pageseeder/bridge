@@ -176,8 +176,6 @@ public final class PSHTTPConnection {
 
   /**
    * Close the multipart boundary.
-   *
-   * @throws IOException
    */
   private void endMultipart() throws IOException {
     DataOutputStream o = this.out;

@@ -50,7 +50,7 @@ public final class ClientRegistration {
   /**
    * Valid grant types that can be assigned to a client.
    */
-  private static List<String> VALID_GRANT_TYPES = Arrays.asList(
+  private static final List<String> VALID_GRANT_TYPES = Arrays.asList(
     "authorization_code",
     "implicit",
     "password",

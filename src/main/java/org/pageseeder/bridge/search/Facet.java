@@ -40,8 +40,6 @@ public final class Facet {
   }
 
   /**
-   *
-   * @param flexible
    * @return A new facet with the same definition.
    */
   public Facet flexible(boolean flexible) {

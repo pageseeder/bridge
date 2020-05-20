@@ -482,7 +482,6 @@ public final class MultipartRequest extends BasicRequest {
    *   <li>Ignore cache by default</li>
    * </ul>
    *
-   * @return A newly opened connection to the specified URL
    * @throws IOException Should an exception be returns while opening the connection
    */
   private void endMultipart() throws IOException {

@@ -285,10 +285,6 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
     return valueOf("psdocumenttype");
   }
 
-  /**
-   *
-   * @return
-   */
   Map<String, String> toParameters(Map<String, String> parameters) {
     if (!isEmpty()) {
       parameters.put("filters", this.toString());

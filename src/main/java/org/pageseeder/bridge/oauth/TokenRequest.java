@@ -260,8 +260,6 @@ public final class TokenRequest {
    * Make the request using POST method and returns the corresponding response.
    *
    * @return The corresponding response.
-   *
-   * @throws IOException If an error occurs while consuming the response
    */
   public TokenResponse post() {
     try {
