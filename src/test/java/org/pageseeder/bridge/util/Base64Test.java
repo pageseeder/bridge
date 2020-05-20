@@ -10,11 +10,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class Base64Test {
+
   private static byte[] ZERO_BYTES = new byte[0];
 
-
   private static final List<String> SAMPLES = Arrays
-      .asList(new String[] { " ", "Test", "Hello", "~~~", "Me?", "~~~Me? ", "Café" });
+      .asList(" ", "Test", "Hello", "~~~", "Me?", "~~~Me? ", "Café");
 
   @Test
   public void testEncodeBase64Empty() {
@@ -27,7 +27,7 @@ public class Base64Test {
     for (String sample : SAMPLES) {
       byte[] bytes = sample.getBytes(StandardCharsets.UTF_8);
       String exp = DatatypeConverter.printBase64Binary(bytes);
-      String got = new String(Base64.encode(bytes));
+      String got = Base64.encode(bytes);
       Assert.assertEquals(exp, got);
     }
   }
@@ -116,18 +116,17 @@ public class Base64Test {
     Base64.decode("abc");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testDecodeBase64urlIllegalLength() {
-    // XXX: Datatype converter is lenient with strings of incorrect length
     Base64.decodeURL("a");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testDecodeBase64IllegalChar() {
     Assert.assertArrayEquals(ZERO_BYTES, Base64.decode("abc#"));
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void testDecodeBase64urlIllegalChar() {
     Assert.assertArrayEquals(ZERO_BYTES, Base64.decodeURL("abc#"));
   }

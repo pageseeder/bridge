@@ -22,11 +22,7 @@ import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import javax.crypto.Cipher;
@@ -38,9 +34,6 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.Cookie;
 import javax.xml.bind.DatatypeConverter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Implements the remember me functionality.
  *
@@ -49,11 +42,6 @@ import org.slf4j.LoggerFactory;
  * @author Christophe Lauret
  */
 public final class RememberMe {
-
-  /**
-   * Issues should be reported here.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(RememberMe.class);
 
   /** Required for IV generation */
   private final static SecureRandom R = new SecureRandom();
@@ -105,11 +93,6 @@ public final class RememberMe {
 
   /**
    * Initialise the remeber functionality using the configuration at the specified path.
-   *
-   * @param auth
-   *
-   * @throws GeneralSecurityException
-   * @throws IOException
    */
   public void init(Path auth) throws GeneralSecurityException, IOException {
 //    Security.addProvider(new BouncyCastleProvider());
@@ -172,11 +155,9 @@ public final class RememberMe {
    * @return The remember me cookie or <code>null</code> if not found.
    */
   public Cookie getCookie(Cookie[] cookies) {
-    if (cookies == null) return null;
-    if (cookies != null) {
-      for (Cookie cookie : cookies) {
-        if (this._cookieName.equals(cookie.getName())) return cookie;
-      }
+    if (cookies == null || cookies.length == 0) return null;
+    for (Cookie cookie : cookies) {
+      if (this._cookieName.equals(cookie.getName())) return cookie;
     }
     return null;
   }
@@ -224,11 +205,6 @@ public final class RememberMe {
 
   /**
    * Encrypt the specified message using the key.
-   *
-   * @param message
-   * @param key
-   * @return
-   * @throws GeneralSecurityException
    */
   private static byte[] encrypt(byte[] message, Key key) throws GeneralSecurityException {
     byte[] iv = newRandomBytes(IV_LENGTH_BYTES);
@@ -242,12 +218,10 @@ public final class RememberMe {
   /**
    * Decrypt the specified message using the key.
    *
-   * @param message The encrypted message.
-   * @param key     The key
+   * @param encrypted The encrypted message.
+   * @param key       The key
    *
    * @return the decrypted message.
-   *
-   * @throws GeneralSecurityException
    */
   private static byte[] decrypt(byte[] encrypted, Key key) throws GeneralSecurityException {
     byte[] iv = Arrays.copyOf(encrypted, IV_LENGTH_BYTES);
@@ -291,17 +265,11 @@ public final class RememberMe {
 
   /**
    * Retrieve the key to use to encode user data.
-   *
-   * @param auth
-   * @param master
-   * @return
-   * @throws IOException
-   * @throws GeneralSecurityException
    */
   private static SecretKeySpec getKey(Path auth, SecretKeySpec master) throws IOException, GeneralSecurityException {
     // Initializes the key
     Path keyStore = auth.resolve("common.key");
-    byte[] keyBytes = null;
+    byte[] keyBytes;
     if (Files.exists(keyStore)) {
       byte[] encrypted = Files.readAllBytes(keyStore);
       keyBytes = decrypt(encrypted, master);
@@ -319,8 +287,6 @@ public final class RememberMe {
    * @param password The password to use to generate the master key.
    *
    * @return A new secret key to encode the user specific password.
-   *
-   * @throws GeneralSecurityException
    */
   private static SecretKeySpec generateMaster(String password) throws GeneralSecurityException {
     SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
@@ -359,13 +325,12 @@ public final class RememberMe {
   }
 
   private String toBase64URL(byte[] data) {
-    return DatatypeConverter.printBase64Binary(data).replace('+', '-').replace('/', '_');
+    return Base64.getUrlEncoder().encodeToString(data);
   }
 
   private byte[] parseBase64URL(String data) {
-    return DatatypeConverter.parseBase64Binary(data.replace('-', '+').replace('_', '/'));
+    return Base64.getDecoder().decode(data);
   }
-
 
   public static final class Credentials {
     private final String _username;

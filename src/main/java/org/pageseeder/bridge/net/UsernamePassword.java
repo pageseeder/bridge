@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Allette Systems (Australia)
+ * Copyright 2020 Allette Systems (Australia)
  * http://www.allette.com.au
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,7 @@
 package org.pageseeder.bridge.net;
 
 import java.nio.charset.StandardCharsets;
-
-import javax.xml.bind.DatatypeConverter;
+import java.util.Base64;
 
 import org.pageseeder.bridge.PSCredentials;
 
@@ -26,7 +25,7 @@ import org.pageseeder.bridge.PSCredentials;
  *
  * @author Christophe Lauret
  *
- * @version 0.3.32
+ * @version 0.11.22
  * @since 0.3.32
  */
 public final class UsernamePassword implements PSCredentials {
@@ -75,7 +74,7 @@ public final class UsernamePassword implements PSCredentials {
    */
   public String toBasicAuthorization() {
     byte[] bc = (this._username+":"+this._password).getBytes(StandardCharsets.UTF_8);
-    return "Basic "+DatatypeConverter.printBase64Binary(bc);
+    return "Basic "+ Base64.getEncoder().encodeToString(bc);
   }
 
 }

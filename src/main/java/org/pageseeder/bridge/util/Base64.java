@@ -17,15 +17,13 @@ package org.pageseeder.bridge.util;
 
 import java.nio.charset.Charset;
 
-import javax.xml.bind.DatatypeConverter;
-
 /**
  * A base utility class for Base64 until we switch to Java 8.
  */
 public final class Base64 {
 
   public static String encode(byte[] bytes) {
-    return DatatypeConverter.printBase64Binary(bytes);
+    return java.util.Base64.getEncoder().encodeToString(bytes);
   }
 
   public static String encode(String data, Charset charset) {
@@ -33,7 +31,7 @@ public final class Base64 {
   }
 
   public static byte[] decode(String base64) throws IllegalArgumentException {
-    return DatatypeConverter.parseBase64Binary(base64);
+    return java.util.Base64.getDecoder().decode(base64);
   }
 
   public static String decode(String data, Charset charset) {
@@ -42,12 +40,7 @@ public final class Base64 {
   }
 
   public static String encodeURL(byte[] bytes) {
-    String base64url = DatatypeConverter.printBase64Binary(bytes).replace('+', '-').replace('/', '_');
-    int padding = base64url.indexOf('=');
-    if (padding >= 0) {
-      base64url = base64url.substring(0, padding);
-    }
-    return base64url;
+    return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
   }
 
   public static String encodeURL(String data, Charset charset) {
@@ -55,16 +48,7 @@ public final class Base64 {
   }
 
   public static byte[] decodeURL(String base64url) throws IllegalArgumentException {
-    String base64 = base64url.replace('-', '+').replace('_', '/');
-    int padding = base64.length() % 4;
-    if (padding == 1) {
-      base64 += "===";
-    } else if (padding == 2) {
-      base64 += "==";
-    } else if (padding == 3) {
-      base64 += "=";
-    }
-    return DatatypeConverter.parseBase64Binary(base64);
+    return java.util.Base64.getUrlDecoder().decode(base64url);
   }
 
   public static String decodeURL(String data, Charset charset) {
