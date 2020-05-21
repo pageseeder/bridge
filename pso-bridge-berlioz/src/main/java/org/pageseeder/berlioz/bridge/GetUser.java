@@ -17,7 +17,6 @@ package org.pageseeder.berlioz.bridge;
 
 import java.io.IOException;
 
-import org.pageseeder.berlioz.BerliozException;
 import org.pageseeder.berlioz.content.ContentGenerator;
 import org.pageseeder.berlioz.content.ContentRequest;
 import org.pageseeder.xmlwriter.XMLWriter;
@@ -33,7 +32,7 @@ public final class GetUser implements ContentGenerator {
   private final org.pageseeder.bridge.berlioz.GetUser _generator = new org.pageseeder.bridge.berlioz.GetUser();
 
   @Override
-  public final void process(ContentRequest req, XMLWriter xml) throws BerliozException, IOException {
+  public final void process(ContentRequest req, XMLWriter xml) throws IOException {
     this._generator.process(req, xml);
   }
 

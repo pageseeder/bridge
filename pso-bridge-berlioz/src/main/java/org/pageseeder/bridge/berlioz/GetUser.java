@@ -17,7 +17,6 @@ package org.pageseeder.bridge.berlioz;
 
 import java.io.IOException;
 
-import org.pageseeder.berlioz.BerliozException;
 import org.pageseeder.berlioz.content.ContentGenerator;
 import org.pageseeder.berlioz.content.ContentRequest;
 import org.pageseeder.bridge.berlioz.auth.AuthSessions;

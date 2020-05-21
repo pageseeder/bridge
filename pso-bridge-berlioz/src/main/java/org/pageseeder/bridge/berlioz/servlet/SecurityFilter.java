@@ -50,7 +50,7 @@ public final class SecurityFilter implements Filter {
    * {@inheritDoc}
    */
   @Override
-  public void init(FilterConfig config) throws ServletException {
+  public void init(FilterConfig config) {
   }
 
   /**

@@ -17,7 +17,6 @@ package org.pageseeder.berlioz.bridge;
 
 import java.io.IOException;
 
-import org.pageseeder.berlioz.BerliozException;
 import org.pageseeder.berlioz.content.Cacheable;
 import org.pageseeder.berlioz.content.ContentGenerator;
 import org.pageseeder.berlioz.content.ContentRequest;
@@ -41,7 +40,7 @@ public final class GetCacheableUser implements ContentGenerator, Cacheable {
   }
 
   @Override
-  public final void process(ContentRequest req, XMLWriter xml) throws BerliozException, IOException {
+  public final void process(ContentRequest req, XMLWriter xml) throws IOException {
     this._generator.process(req, xml);
   }
 

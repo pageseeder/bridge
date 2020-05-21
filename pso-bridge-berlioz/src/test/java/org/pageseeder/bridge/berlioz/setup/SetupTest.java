@@ -1,13 +1,10 @@
 package org.pageseeder.bridge.berlioz.setup;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.junit.Test;
 import org.pageseeder.berlioz.GlobalSettings;
-import org.pageseeder.bridge.berlioz.setup.Setup;
-import org.pageseeder.bridge.berlioz.setup.SetupException;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.pageseeder.xmlwriter.XMLWriterNSImpl;
 

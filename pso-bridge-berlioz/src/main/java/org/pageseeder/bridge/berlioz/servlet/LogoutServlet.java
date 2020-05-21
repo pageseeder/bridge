@@ -18,7 +18,6 @@ package org.pageseeder.bridge.berlioz.servlet;
 import java.io.IOException;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +26,6 @@ import javax.servlet.http.HttpSession;
 
 import org.pageseeder.bridge.berlioz.util.IOUtils;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * A Servlet to log the user out by invalidating the session.
@@ -109,7 +107,7 @@ public final class LogoutServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
     doGet(req, res);
   }
 

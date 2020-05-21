@@ -1,7 +1,5 @@
 package org.pageseeder.bridge.http;
 
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
