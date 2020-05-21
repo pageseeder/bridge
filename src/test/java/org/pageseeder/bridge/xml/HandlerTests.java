@@ -12,9 +12,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class HandlerTests {
 
-
-
-  public static final void parse(File f, DefaultHandler handler) throws SAXException, IOException {
+  public static void parse(File f, DefaultHandler handler) throws SAXException, IOException {
     try {
       SAXParserFactory factory = SAXParserFactory.newInstance();
       factory.setValidating(false);
@@ -26,7 +24,7 @@ public class HandlerTests {
     }
   }
 
-  public static final void parse(String filename, DefaultHandler handler) throws SAXException, IOException {
+  public static void parse(String filename, DefaultHandler handler) throws SAXException, IOException {
     File f = new File("src/test/resources/org/pageseeder/bridge/xml/"+filename);
     parse(f, handler);
   }
