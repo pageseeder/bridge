@@ -15,6 +15,6 @@ public class TokenRequestTest {
     UsernamePassword user= new UsernamePassword("ali_baba", password);
     ClientCredentials client = new ClientCredentials("123456789123456789", "hfcnosty78cfgertfgai4");
     TokenRequest request = TokenRequest.newPassword(user, client);
-    Assert.assertTrue(!request.toString().contains(password));
+    Assert.assertFalse(request.toString().contains(password));
   }
 }
