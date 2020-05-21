@@ -41,15 +41,15 @@ public final class LabelListTest {
   @Test
   public void testListConstructorEmpty() {
     assertEquals(LabelList.NO_LABELS, new LabelList(Collections.emptyList()));
-    assertEquals(LabelList.NO_LABELS, new LabelList(Arrays.asList("")));
-    assertEquals(LabelList.NO_LABELS, new LabelList(Arrays.asList(" ")));
-    assertEquals(LabelList.NO_LABELS, new LabelList(Arrays.asList(",")));
+    assertEquals(LabelList.NO_LABELS, new LabelList(Collections.singletonList("")));
+    assertEquals(LabelList.NO_LABELS, new LabelList(Collections.singletonList(" ")));
+    assertEquals(LabelList.NO_LABELS, new LabelList(Collections.singletonList(",")));
     assertEquals(LabelList.NO_LABELS, new LabelList(Arrays.asList(""," ", null, ",","@")));
   }
 
   @Test
   public void testListConstructorFilter() {
-    assertEquals(Arrays.asList("a"), new LabelList(Arrays.asList("a")).toList());
+    assertEquals(Collections.singletonList("a"), new LabelList(Collections.singletonList("a")).toList());
     assertEquals(Arrays.asList("a","b"), new LabelList(Arrays.asList("a", "b")).toList());
     assertEquals(Arrays.asList("a","b"), new LabelList(Arrays.asList("a", "", "b")).toList());
     assertEquals(Arrays.asList("a","b"), new LabelList(Arrays.asList("a", "", null, "b", ",", " ")).toList());
@@ -74,7 +74,7 @@ public final class LabelListTest {
 
   @Test
   public void testParseFilter() {
-    assertEquals(Arrays.asList("a"), LabelList.parse("a").toList());
+    assertEquals(Collections.singletonList("a"), LabelList.parse("a").toList());
     assertEquals(Arrays.asList("a","b"), LabelList.parse("a,b").toList());
     assertEquals(Arrays.asList("a","b"), LabelList.parse("a,,b").toList());
     assertEquals(Arrays.asList("a","b"), LabelList.parse(",,a,,b,,").toList());
@@ -84,9 +84,9 @@ public final class LabelListTest {
 
   @Test
   public void testParseTrim() {
-    assertEquals(Arrays.asList("a"), LabelList.parse("  a").toList());
-    assertEquals(Arrays.asList("b"), LabelList.parse(" \tb\n ").toList());
-    assertEquals(Arrays.asList("c"), LabelList.parse("c\t ").toList());
+    assertEquals(Collections.singletonList("a"), LabelList.parse("  a").toList());
+    assertEquals(Collections.singletonList("b"), LabelList.parse(" \tb\n ").toList());
+    assertEquals(Collections.singletonList("c"), LabelList.parse("c\t ").toList());
     assertEquals(Arrays.asList("a","b"), LabelList.parse("a,b").toList());
     assertEquals(Arrays.asList("a","b"), LabelList.parse(" a,b").toList());
     assertEquals(Arrays.asList("a","b"), LabelList.parse(" a,b ").toList());
