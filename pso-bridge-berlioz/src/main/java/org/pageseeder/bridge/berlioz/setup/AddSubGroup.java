@@ -77,6 +77,7 @@ public final class AddSubGroup implements Action {
       for (PSGroup g : subgroups) {
         if (g.getName().equals(this.group.getName())) {
           add = false;
+          break;
         }
       }
       // If not add the subgroup
