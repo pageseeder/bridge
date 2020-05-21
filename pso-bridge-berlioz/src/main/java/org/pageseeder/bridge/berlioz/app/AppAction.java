@@ -32,7 +32,7 @@ public interface AppAction {
   /**
    * @return the name of the action.
    */
-  public String getName();
+  String getName();
 
   /**
    * Executes the action based on the request and write the response as JSON.
@@ -42,5 +42,5 @@ public interface AppAction {
    *
    * @return The HTTP response code as a result of the action.
    */
-  public int process(HttpServletRequest req, JSONWriter json);
+  int process(HttpServletRequest req, JSONWriter json);
 }
