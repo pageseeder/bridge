@@ -124,56 +124,53 @@ public final class FileTreeWatcher {
    */
   public void start() throws IOException {
     this.watchService = FileSystems.getDefault().newWatchService();
-    this.watchThread = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        WatchListener listener = FileTreeWatcher.this._listener;
-        FileTreeWatcher.this.running.set(true);
-        registerAll(FileTreeWatcher.this._root);
-        while (FileTreeWatcher.this.running.get()) {
-          try {
-            WatchKey key = FileTreeWatcher.this.watchService.take();
+    this.watchThread = new Thread(() -> {
+      WatchListener listener = FileTreeWatcher.this._listener;
+      FileTreeWatcher.this.running.set(true);
+      registerAll(FileTreeWatcher.this._root);
+      while (FileTreeWatcher.this.running.get()) {
+        try {
+          WatchKey key = FileTreeWatcher.this.watchService.take();
 
-            Path dir = FileTreeWatcher.this._keys.get(key);
-            if (dir == null) {
-              LOGGER.warn("WatchKey not recognized!!");
-              continue;
-            }
-
-            // Iterate through events
-            for (WatchEvent<?> event: key.pollEvents()) {
-              WatchEvent.Kind<?> kind = event.kind();
-              if (kind == OVERFLOW) { continue; }
-
-              // Context for directory entry event is the file name of entry
-              WatchEvent<Path> ev = cast(event);
-              Path name = ev.context();
-              Path child = dir.resolve(name);
-
-              // Register new directories
-              if (kind == ENTRY_CREATE && Files.isDirectory(child, LinkOption.NOFOLLOW_LINKS)) {
-                registerAll(child);
-              }
-
-              // Report all other events to the listener
-              else if (listener != null) {
-                listener.received(child, ev.kind());
-              }
-            }
-
-            // Remove deleted directories
-            boolean valid = key.reset();
-            if (!valid) {
-              FileTreeWatcher.this._keys.remove(key);
-              // all directories are inaccessible
-              if (FileTreeWatcher.this._keys.isEmpty()) {
-                break;
-              }
-            }
-
-          } catch (InterruptedException | ClosedWatchServiceException ex) {
-            FileTreeWatcher.this.running.set(false);
+          Path dir = FileTreeWatcher.this._keys.get(key);
+          if (dir == null) {
+            LOGGER.warn("WatchKey not recognized!!");
+            continue;
           }
+
+          // Iterate through events
+          for (WatchEvent<?> event: key.pollEvents()) {
+            WatchEvent.Kind<?> kind = event.kind();
+            if (kind == OVERFLOW) { continue; }
+
+            // Context for directory entry event is the file name of entry
+            WatchEvent<Path> ev = cast(event);
+            Path name = ev.context();
+            Path child = dir.resolve(name);
+
+            // Register new directories
+            if (kind == ENTRY_CREATE && Files.isDirectory(child, LinkOption.NOFOLLOW_LINKS)) {
+              registerAll(child);
+            }
+
+            // Report all other events to the listener
+            else if (listener != null) {
+              listener.received(child, ev.kind());
+            }
+          }
+
+          // Remove deleted directories
+          boolean valid = key.reset();
+          if (!valid) {
+            FileTreeWatcher.this._keys.remove(key);
+            // all directories are inaccessible
+            if (FileTreeWatcher.this._keys.isEmpty()) {
+              break;
+            }
+          }
+
+        } catch (InterruptedException | ClosedWatchServiceException ex) {
+          FileTreeWatcher.this.running.set(false);
         }
       }
     }, "Watcher");

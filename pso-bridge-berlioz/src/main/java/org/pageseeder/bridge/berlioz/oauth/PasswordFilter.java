@@ -160,11 +160,8 @@ public final class PasswordFilter implements Filter {
    *
    * @param req The servlet request
    * @param res The servlet response
-   *
-   * @throws IOException
    */
-  public void login(HttpServletRequest req, HttpServletResponse res)
-      throws IOException {
+  public void login(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
     // Client credentials
     Properties p = GlobalSettings.getNode("oauth.password-credentials");

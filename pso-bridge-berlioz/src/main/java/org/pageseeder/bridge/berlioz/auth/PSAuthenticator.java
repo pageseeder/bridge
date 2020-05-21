@@ -89,8 +89,6 @@ public final class PSAuthenticator implements Authenticator<PSUser> {
 
   /**
    * Set the filters to group
-   *
-   * @param filter
    */
   public void setGroupFilter(String filter) {
     this.groupFilter = filter;

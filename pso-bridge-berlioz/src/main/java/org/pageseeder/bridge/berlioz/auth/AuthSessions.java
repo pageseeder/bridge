@@ -187,7 +187,7 @@ public final class AuthSessions {
    * }</pre>
    *
    * @return The PageSeeder setup member or <code>null</code> if it is not configured properly or could not login.
-   * @throws IOException If an error occurs while trying to login the setup user.
+   * @throws APIException If an error occurs while trying to login the setup user.
    */
   public static PSMember getAdminMember() throws APIException {
     PSUser user = AuthSessions.getConfiguredUser(ADMIN_USER_PROPERTY);
@@ -222,7 +222,7 @@ public final class AuthSessions {
    * }</pre>
    *
    * @return The PageSeeder setup member or <code>null</code> if it is not configured properly or could not login.
-   * @throws IOException If an error occurs while trying to login the setup user.
+   * @throws APIException If an error occurs while trying to login the setup user.
    */
   public static PSMember getSetupMember() throws APIException {
     PSUser user = AuthSessions.getConfiguredUser(SETUP_USER_PROPERTY);
@@ -240,7 +240,7 @@ public final class AuthSessions {
    * }</pre>
    *
    * @return The PageSeeder setup member or <code>null</code> if it is not configured properly or could not login.
-   * @throws IOException If an error occurs while trying to login the setup user.
+   * @throws APIException If an error occurs while trying to login the setup user.
    */
   public static PSSession getConfiguredSession(String property) throws APIException {
     return toSession(AuthSessions.getConfiguredUser(property));
@@ -308,7 +308,7 @@ public final class AuthSessions {
    *
    * @return The user or <code>null</code> if it is not configured properly or could not login.
    *
-   * @throws IOException Should an error occur while attempting login
+   * @throws APIException Should an error occur while attempting login
    */
   public static PSUser getConfiguredUser(String property) throws APIException {
     String username = GlobalSettings.get(property+".username");

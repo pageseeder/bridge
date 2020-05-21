@@ -39,9 +39,6 @@ public final class XMLStreamCommentTest {
    *     <group id="335" name="unittest-comment-findcomment" description="For unit testing" owner="unittest" access="member" common="false" />
    *   </context>
    * </comment>
-   *
-   * @throws IOException
-   * @throws XMLStreamException
    */
   @Test
   public void testCommentGroup() throws IOException, XMLStreamException {

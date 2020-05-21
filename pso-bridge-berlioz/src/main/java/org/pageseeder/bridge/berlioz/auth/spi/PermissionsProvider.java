@@ -29,9 +29,6 @@ public abstract class PermissionsProvider {
 
   /**
    * Returns a permission manager for the specified name.
-   *
-   * @param name
-   * @return
    */
   abstract Authenticator<?> authenticatorForName(String name);
 
