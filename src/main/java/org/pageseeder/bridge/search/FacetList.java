@@ -133,10 +133,10 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
     if (!isEmpty()) {
       String facets = this._list.stream().filter(f -> !f.isFlexible()).map(Facet::field).collect(Collectors.joining(","));
       if (!facets.isEmpty())
-        parameters.put("facets", facets.toString());
+        parameters.put("facets", facets);
       String flexible = this._list.stream().filter(Facet::isFlexible).map(Facet::field).collect(Collectors.joining(","));
       if (!flexible.isEmpty())
-        parameters.put("flexiblefacets", flexible.toString());
+        parameters.put("flexiblefacets", flexible);
     }
     if (this._facetSize > 0) parameters.put("facetsize", String.valueOf(this._facetSize));
     return parameters;

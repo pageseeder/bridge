@@ -98,7 +98,7 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
     if (facets == null) facets = FacetList.EMPTY;
     return new FacetSearch(this._scope, this._question, facets, this._filters, this._ranges);
   }
-  
+
   /**
    * Sets the filters to use in this search
    *
@@ -169,12 +169,7 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
 
   @Override
   public String toString() {
-    StringBuilder s = new StringBuilder();
-    // TODO
-    s.append(this._question.toString());
-    s.append(this._filters.toString());
-    s.append(this._ranges.toString());
-    return s.toString();
+    return this._question.toString() + this._filters.toString() + this._ranges.toString();
   }
 
   @Override

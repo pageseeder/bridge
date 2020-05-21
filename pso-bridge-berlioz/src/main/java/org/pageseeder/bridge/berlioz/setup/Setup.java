@@ -208,8 +208,6 @@ public final class Setup {
           default:
             if (name.startsWith("property-")) {
               options.setProperty(name.substring("property-".length()), attributes.getValue(i));
-            } else {
-
             }
         }
       }

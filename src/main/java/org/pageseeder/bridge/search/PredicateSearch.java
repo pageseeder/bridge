@@ -173,12 +173,8 @@ public final class PredicateSearch extends BasicSearch<PredicateSearch> implemen
 
   @Override
   public String toString() {
-    StringBuilder s = new StringBuilder();
-    // TODO
-    s.append(this._predicate.toString());
-    return s.toString();
+    return this._predicate.toString();
   }
-
 
   public String service() {
     this._scope.checkReady();

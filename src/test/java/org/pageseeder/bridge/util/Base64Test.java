@@ -40,7 +40,7 @@ public class Base64Test {
       if (exp.indexOf('=') >= 0) {
         exp = exp.substring(0, exp.indexOf(61));
       }
-      String got = new String(Base64.encodeURL(bytes));
+      String got = Base64.encodeURL(bytes);
       Assert.assertEquals(exp, got);
     }
   }

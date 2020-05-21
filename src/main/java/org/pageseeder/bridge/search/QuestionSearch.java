@@ -103,7 +103,7 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
   public QuestionSearch question(Question question) {
     return new QuestionSearch(this._scope, question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
   }
-  
+
   /**
    * @return the question if any; <code>null</code> otherwise.
    */
@@ -121,7 +121,7 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
   public QuestionSearch page(Page page) {
     return new QuestionSearch(this._scope, this._question, this._facets, this._filters, this._ranges, page, this._sortFields);
   }
-  
+
   /**
    * @param page the page to set
    *
@@ -214,7 +214,7 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
   public QuestionSearch facets(FacetList facets) {
     return new QuestionSearch(this._scope, this._question, facets, this._filters, this._ranges, this._page, this._sortFields);
   }
-  
+
 
   /**
    * Adds a single facet to use in this search
@@ -226,7 +226,7 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
   public QuestionSearch facet(Facet facet) {
     return facets(this._facets.facet(facet));
   }
-  
+
   /**
    * @return The filter list
    */
@@ -234,7 +234,7 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
     return this._facets;
   }
 
-  
+
   /**
    * Add a filter for the specified index field.
    *
@@ -356,12 +356,7 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
 
   @Override
   public String toString() {
-    StringBuilder s = new StringBuilder();
-    // TODO
-    s.append(this._question.toString());
-    s.append(this._filters.toString());
-    s.append(this._ranges.toString());
-    return s.toString();
+    return this._question.toString() + this._filters.toString() + this._ranges.toString();
   }
 
   @Override
