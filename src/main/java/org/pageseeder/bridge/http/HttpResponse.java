@@ -413,7 +413,7 @@ public interface HttpResponse extends AutoCloseable {
    * writes the results of the transformation to the XML writer.
    *
    * <p>Templates must be specified to transform the XML. The parameters are
-   * transmitted to the XSLT tranformer.
+   * transmitted to the XSLT transformer.
    *
    * <p>After calling this method the response content will no longer be available.
    *

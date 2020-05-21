@@ -49,7 +49,7 @@ public final class PSCommentHandlerTest {
     Assert.assertEquals("comment-test", context.group().getName());
     Assert.assertNull(context.fragment());
     Assert.assertNull(context.uri());
-    // Attachements
+    // Attachments
     Assert.assertNotNull(comment.getAttachments());
     Assert.assertTrue(comment.getAttachments().isEmpty());
     // Other semantics

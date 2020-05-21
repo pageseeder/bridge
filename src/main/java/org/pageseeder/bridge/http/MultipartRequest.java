@@ -149,7 +149,7 @@ public final class MultipartRequest extends BasicRequest {
    * Specify which credentials to use with this request.
    *
    * <p>Only one set of credentials can be used a time, this method will replace
-   * any credentials that may have been set priori
+   * any credentials that may have been set priority
    *
    * @param credentials The username/password, token or session to use as credentials
    *

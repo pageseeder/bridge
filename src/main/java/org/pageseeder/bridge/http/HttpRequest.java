@@ -67,7 +67,7 @@ public interface HttpRequest {
    * Specify which credentials to use with this request.
    *
    * <p>Only one set of credentials can be used a time, this method will replace
-   * any credentials that may have been set priori.
+   * any credentials that may have been set priority.
    *
    * <p>This method will automatically update the "Authorization" header field.
    *

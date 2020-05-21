@@ -203,9 +203,9 @@ public final class LoginServlet extends HttpServlet {
           session.setAttribute(AuthSessions.REQUEST_ATTRIBUTE, target);
         }
         if (this.loginPage != null) {
-          String ctxt = req.getContextPath() == null ? "" : req.getContextPath();
-          LOGGER.debug("Redirecting to "+ctxt+this.loginPage+"?message=Login failed");
-          res.sendRedirect(ctxt+this.loginPage+"?message=Login failed");
+          String context = req.getContextPath() == null ? "" : req.getContextPath();
+          LOGGER.debug("Redirecting to "+context+this.loginPage+"?message=Login failed");
+          res.sendRedirect(context+this.loginPage+"?message=Login failed");
         } else {
           res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Login failed");
         }
