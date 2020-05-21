@@ -35,7 +35,7 @@ import java.util.Map.Entry;
 public final class CacheableRequest implements HttpRequest {
 
   /**
-   * Max size to cache a reponse.
+   * Max size to cache a response.
    */
   private static final int CACHE_THRESHOLD = 1_000_000;
 

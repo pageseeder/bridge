@@ -63,7 +63,7 @@ public interface Authenticator<U extends User> {
    *
    * @return The user instance.
    *
-   * @throws AuthException Should an error occur while logging the usering.
+   * @throws AuthException Should an error occur while logging the user in.
    */
   U login(String username, String password) throws AuthException;
 

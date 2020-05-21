@@ -40,7 +40,7 @@ import org.pageseeder.bridge.model.PSProject;
 public final class SetupEnvironment {
 
   /**
-   * Group options defined in this enviroment.
+   * Group options defined in this environment.
    */
   final Map<String, GroupOptions> _groupOptions = new HashMap<>();
 
@@ -108,7 +108,7 @@ public final class SetupEnvironment {
    * @throws IllegalStateException If the {@link #init()} method was not called previously.
    */
   public PSSession getSession() {
-    if (this.user == null) throw new IllegalStateException("Environment must be initialiazed first with init()");
+    if (this.user == null) throw new IllegalStateException("Environment must be initialized first with init()");
     return this.user.getSession();
   }
 
@@ -120,7 +120,7 @@ public final class SetupEnvironment {
    * @throws IllegalStateException If the {@link #init()} method was not called previously.
    */
   public PSMember getMember() {
-    if (this.user == null) throw new IllegalStateException("Environment must be initialiazed first with init()");
+    if (this.user == null) throw new IllegalStateException("Environment must be initialized first with init()");
     if (this.member == null) {
       this.member = this.user.toMember();
     }

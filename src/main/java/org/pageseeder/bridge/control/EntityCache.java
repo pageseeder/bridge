@@ -197,7 +197,6 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
    *
    * @return A new cache wrapper instance.
    */
-//  @SuppressWarnings("rawtypes")
   protected static synchronized <E extends PSEntity> EntityCache<E> newInstance(Class<E> type, String... keys) {
     CachingProvider provider = Caching.getCachingProvider();
     CacheManager manager = provider.getCacheManager();

@@ -271,7 +271,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * Shutdown the caching for users.
    */
   public static synchronized void shutdown() {
-    // shutdown the mananer to release resources
+    // shutdown the manager to release resources
     CacheManager man = manager;
     if (man != null) {
       manager = null;

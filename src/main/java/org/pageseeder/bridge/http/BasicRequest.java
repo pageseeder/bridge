@@ -170,7 +170,7 @@ abstract class BasicRequest {
    * Specify which credentials to use with this request.
    *
    * <p>Only one set of credentials can be used a time, this method will replace
-   * any credentials that may have been set priori.
+   * any credentials that may have been set priority.
    *
    * <p>This method will automatically update the "Authorization" header field.
    *
@@ -379,11 +379,11 @@ abstract class BasicRequest {
   public static String getUserAgentString() {
     Package p = Package.getPackage("org.pageseeder.bridge");
     String version = p != null ? Objects.toString(p.getImplementationVersion(), "SNAPSHOT") : "SNAPSHOT";
-    String osname = System.getProperty("os.name");
-    String osarch = System.getProperty("os.arch");
-    String jversion = System.getProperty("java.version");
-    String jvendor = System.getProperty("java.vendor");
-    return "Bridge/"+version+" ("+osname+"; "+osarch+") Java/"+jversion+" ("+jvendor+")";
+    String osName = System.getProperty("os.name");
+    String osArch = System.getProperty("os.arch");
+    String javaVersion = System.getProperty("java.version");
+    String javaVendor = System.getProperty("java.vendor");
+    return "Bridge/"+version+" ("+osName+"; "+osArch+") Java/"+javaVersion+" ("+javaVendor+")";
   }
 
   /**

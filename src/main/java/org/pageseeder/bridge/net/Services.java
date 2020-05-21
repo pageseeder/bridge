@@ -169,7 +169,7 @@ public final class Services {
   }
 
   /**
-   * Returns the URL for a member to ivite himself to a group.
+   * Returns the URL for a member to invite himself to a group.
    *
    * @param group  the group name or id
    *

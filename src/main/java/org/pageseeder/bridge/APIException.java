@@ -22,7 +22,7 @@ package org.pageseeder.bridge;
  * <p>They may wrap the root cause of the problem such as an IO or parsing error.
  *
  * <p>Or they may be thrown when an would have been caused in PageSeeder and the API
- * pre-emptively threw an exception to abort the method.
+ * preemptively threw an exception to abort the method.
  *
  * @author Christophe Lauret
  * @version 0.1.0

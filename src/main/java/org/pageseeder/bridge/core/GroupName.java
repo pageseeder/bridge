@@ -88,12 +88,12 @@ public final class GroupName extends ID implements Serializable {
    */
   public static boolean isValidGroupName(@Nullable String name) {
     if (name == null || name.length() == 0) return false;
-    String pjname = name;
+    String topProjectName = name;
     int dash = name.indexOf('-');
     if (dash != -1) {
-      pjname = name.substring(0, dash);
+      topProjectName = name.substring(0, dash);
     }
-    return name.matches(REGEX_GROUP_NAME) && !RESERVED_GROUP_NAMES.contains(pjname) && !name.endsWith("-silent") && !name.contains("--");
+    return name.matches(REGEX_GROUP_NAME) && !RESERVED_GROUP_NAMES.contains(topProjectName) && !name.endsWith("-silent") && !name.contains("--");
   }
 
 }

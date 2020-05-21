@@ -60,7 +60,7 @@ public abstract class ElementXMLStreamHandler<T> extends BasicXMLStreamHandler<T
    * @return <code>true</code> if the current event is the start element;
    *         <code>false</code> otherwise.
    *
-   * @throws XMLStreamException if thrown while iteraring over the events in the stream.
+   * @throws XMLStreamException if thrown while iterating over the events in the stream.
    */
   public boolean find(XMLStreamReader xml) throws XMLStreamException {
     while (xml.hasNext() && !isOnElement(xml)) {
