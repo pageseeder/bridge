@@ -154,8 +154,22 @@ public final class TokenRequest {
    * @return the corresponding token request.
    */
   public static TokenRequest newClientCredentials(ClientCredentials client) {
+    return newClientCredentials(client, PSConfig.getDefault());
+  }
+
+
+  /**
+   * Construct a token request for the "client_credentials" credential grant.
+   *
+   * @param client   The client credentials
+   * @param psConfig The PS Config
+   *
+   * @return the corresponding token request.
+   */
+  public static TokenRequest newClientCredentials(ClientCredentials client, PSConfig psConfig) {
     Objects.requireNonNull(client, "The client credentials are required");
-    String url = toBaseURL(PSConfig.getDefault());
+    Objects.requireNonNull(psConfig, "The ps config is required");
+    String url = toBaseURL(psConfig);
     Map<String, String> parameters = new LinkedHashMap<>(3);
     parameters.put("grant_type", "client_credentials");
     return new TokenRequest(url, parameters, client);
