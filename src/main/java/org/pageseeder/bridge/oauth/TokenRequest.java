@@ -184,7 +184,7 @@ public final class TokenRequest {
    * @return the corresponding token request.
    */
   public static TokenRequest newRefreshToken(String refreshToken, ClientCredentials client) {
-    Objects.requireNonNull(client, "The refresh_token parameter is required");
+    Objects.requireNonNull(refreshToken, "The refresh_token parameter is required");
     Objects.requireNonNull(client, "The client credentials are required");
     String url = toBaseURL(PSConfig.getDefault());
     Map<String, String> parameters = new LinkedHashMap<>(3);
