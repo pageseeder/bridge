@@ -303,7 +303,7 @@ public final class ClientRegistration {
     if (this.accessTokenMaxAge > 0) {
       request.parameter("access-token-max-age", Long.toString(this.accessTokenMaxAge));
     }
-    if (this.refreshTokenMaxAge > 0) {
+    if (this.refreshTokenMaxAge >= 0) {
       if ("client_credentials".equals(this.grantType)) {
         LOGGER.warn("Ignoring refresh token for client credentials grant type");
       } else {
