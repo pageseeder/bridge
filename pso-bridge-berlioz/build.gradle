@@ -1,14 +1,10 @@
 description = "Servlets and Berlioz generators for the bridge in Berlioz"
 
-//apply plugin: 'maven-publish'
-//apply plugin: 'com.jfrog.bintray'
-//apply from: "$rootDir/gradle/publishing.gradle"
-
 // Dependencies of the project
 dependencies {
 
   // module dependencies
-  compile rootProject
+  api (rootProject)
 
   api('org.slf4j:slf4j-api:1.7.30')
   api('org.pageseeder.xmlwriter:pso-xmlwriter:1.0.3')

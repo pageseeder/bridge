@@ -1,4 +1,5 @@
-[ ![Download](https://api.bintray.com/packages/pageseeder/maven/bridge/images/download.svg) ](https://bintray.com/pageseeder/maven/bridge/_latestVersion)
+[![Maven Central](https://img.shields.io/maven-central/v/org.pageseeder.bridge/pso-bridge.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.pageseeder.bridge%22%20AND%20a:%22pso-bridge%22)
+
 
 # PageSeeder Bridge
 
