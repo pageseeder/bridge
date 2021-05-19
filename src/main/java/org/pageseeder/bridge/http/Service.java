@@ -240,8 +240,9 @@ public enum Service {
   /**
    * Invite self to a group <code>/groups/{group}/members/inviteself</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/invite-self-GET.html">invite-self (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/invite-self-deprecated-POST.html">invite-self (POST)</a>
    */
+  @Deprecated
   invite_self("/groups/{group}/members/inviteself"),
 
   /**
@@ -406,15 +407,17 @@ public enum Service {
   /**
    * Get a group's group folders <code>/groups/{group}/groupfolders</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/list-groupfolders-GET.html">list-groupfolders (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/groupfolders-deprecated-GET.html">list-groupfolders (GET)</a>
    */
+  @Deprecated
   list_groupfolders("/groups/{group}/groupfolders"),
 
   /**
    * Create a group folder <code>/groups/{group}/groupfolders/create</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/create-groupfolder-GET.html">create-groupfolder (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/create-groupfolder-POST.html">create-groupfolder (POST)</a>
    */
+  @Deprecated
   create_groupfolder("/groups/{group}/groupfolders/create"),
 
   /**
@@ -422,6 +425,7 @@ public enum Service {
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-groupfolder-forurl-GET.html">get-groupfolder-forurl (GET)</a>
    */
+  @Deprecated
   get_groupfolder_forurl("/groups/{group}/groupfolders/forurl"),
 
   /**
@@ -434,8 +438,9 @@ public enum Service {
   /**
    * Edit a group folder <code>/groups/{group}/groupfolders/{id}</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/edit-groupfolder-GET.html">edit-groupfolder (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/edit-groupfolder-PATCH.html">edit-groupfolder (PATCH)</a>
    */
+  @Deprecated
   edit_groupfolder("/groups/{group}/groupfolders/{id}"),
 
   /**
@@ -448,7 +453,7 @@ public enum Service {
   /**
    * Edits a group <code>/members/{member}/groups/{group}</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/edit-group-GET.html">edit-group (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/edit-group-PATCH.html">edit-group (PATCH)</a>
    */
   edit_group("/members/{member}/groups/{group}"),
 
@@ -565,6 +570,7 @@ public enum Service {
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/autocomplete-group-field-GET.html">autocomplete-group-field (GET)</a>
    */
+  @Deprecated
   autocomplete_group_field("/groups/{group}/autocomplete/{field}"),
 
   /**
@@ -593,6 +599,7 @@ public enum Service {
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/autosuggest-group-fields-GET.html">autosuggest-group-fields (GET)</a>
    */
+  @Deprecated
   autosuggest_group_fields("/groups/{group}/autosuggest/fields"),
 
   /**
@@ -626,15 +633,16 @@ public enum Service {
   /**
    * Convert documents to PSML for a group <code>/members/{member}/groups/{group}/converttopsml</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/convert-to-psml-GET.html">convert-to-psml (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/convert-to-psml-POST.html">convert-to-psml (POST)</a>
    */
   convert_to_psml("/members/{member}/groups/{group}/converttopsml"),
 
   /**
    * Resolve PS standard documents <code>/members/{member}/resolvestandard</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/resolve-standard-GET.html">resolve-standard (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/resolve-standard-POST.html">resolve-standard (POST)</a>
    */
+  @Deprecated
   resolve_standard("/members/{member}/resolvestandard"),
 
   /**
@@ -642,6 +650,7 @@ public enum Service {
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/find-group-image-GET.html">find-group-image (GET)</a>
    */
+  @Deprecated
   find_group_image("/groups/{group}/images/find"),
 
   /**
@@ -741,6 +750,7 @@ public enum Service {
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/list-externaluri-externaluris-forurl-GET.html">list-externaluri-externaluris-forurl (GET)</a>
    */
+  @Deprecated
   list_externaluri_externaluris_forurl("/groups/{group}/externaluris/forurl/externaluris"),
 
   /**
@@ -748,20 +758,23 @@ public enum Service {
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/list-externaluri-externaluris-GET.html">list-externaluri-externaluris (GET)</a>
    */
+  @Deprecated
   list_externaluri_externaluris("/groups/{group}/externaluris/{uri}/externaluris"),
 
   /**
    * Load a single URI object <code>/groups/{group}/uris/forurl</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-uri-forurl-GET.html">get-uri-forurl (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-uri-forurl-deprecated-GET.html">get-uri-forurl (GET)</a>
    */
+  @Deprecated
   get_uri_forurl("/groups/{group}/uris/forurl"),
 
   /**
    * Load a single URI object <code>/groups/{group}/uris/{uri}</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-uri-GET.html">get-uri (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-uri-deprecated-GET.html">get-uri (GET)</a>
    */
+  @Deprecated
   get_uri("/groups/{group}/uris/{uri}"),
 
   /**
@@ -769,6 +782,7 @@ public enum Service {
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-uri-sharing-forurl-GET.html">get-uri-sharing-forurl (GET)</a>
    */
+  @Deprecated
   get_uri_sharing_forurl("/members/{member}/groups/{group}/uris/forurl"),
 
   /**
@@ -782,29 +796,33 @@ public enum Service {
   /**
    * Create an external URI <code>/members/{member}/groups/{group}/externaluris</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/create-externaluri-GET.html">create-externaluri (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/create-externaluri-deprecated-POST.html">create-externaluri (POST)</a>
    */
+  @Deprecated
   create_externaluri("/members/{member}/groups/{group}/externaluris"),
 
   /**
    * Edit an external URI <code>/members/{member}/groups/{group}/externaluris/{uri}</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/edit-externaluri-GET.html">edit-externaluri (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/edit-externaluri-deprecated-POST.html">edit-externaluri (POST)</a>
    */
+  @Deprecated
   edit_externaluri("/members/{member}/groups/{group}/externaluris/{uri}"),
 
   /**
    * Archive an external URI <code>/members/{member}/groups/{group}/externaluris/{uri}/archive</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/archive-externaluri-GET.html">archive-externaluri (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/archive-externaluri-deprecated-POST.html">archive-externaluri (POST)</a>
    */
+  @Deprecated
   archive_externaluri("/members/{member}/groups/{group}/externaluris/{uri}/archive"),
 
   /**
    * Unarchive an external URI <code>/members/{member}/groups/{group}/externaluris/{uri}/unarchive</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/unarchive-externaluri-GET.html">unarchive-externaluri (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/unarchive-externaluri-deprecated-POST.html">unarchive-externaluri (POST)</a>
    */
+  @Deprecated
   unarchive_externaluri("/members/{member}/groups/{group}/externaluris/{uri}/unarchive"),
 
   /**
@@ -880,15 +898,17 @@ public enum Service {
   /**
    * Create a new xref <code>/members/{member}/groups/{group}/uris/{uri}/xrefs</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/create-uri-xref-GET.html">create-uri-xref (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/create-uri-xref-POST.html">create-uri-xref (POST)</a>
    */
+  @Deprecated
   create_uri_xref("/members/{member}/groups/{group}/uris/{uri}/xrefs"),
 
   /**
    * Archive a URI's xref <code>/members/{member}/groups/{group}/uris/{uri}/xrefs/{xrefid}/archive</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/archive-uri-xref-GET.html">archive-uri-xref (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/archive-uri-xref-POST.html">archive-uri-xref (POST)</a>
    */
+  @Deprecated
   archive_uri_xref("/members/{member}/groups/{group}/uris/{uri}/xrefs/{xrefid}/archive"),
 
   /**
@@ -1072,8 +1092,9 @@ public enum Service {
   /**
    * Delete a specific draft <code>/members/{member}/groups/{group}/uris/{uri}/drafts/{editid}/delete</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/delete-uri-draft-GET.html">delete-uri-draft (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/delete-uri-draft-deprecated-POST.html">delete-uri-draft (GET)</a>
    */
+  @Deprecated
   delete_uri_draft("/members/{member}/groups/{group}/uris/{uri}/drafts/{editid}/delete"),
 
   /**
@@ -1100,8 +1121,9 @@ public enum Service {
   /**
    * Delete a uri <code>/members/{member}/groups/{group}/uris/{uri}/delete</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/delete-uri-GET.html">delete-uri (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/delete-uri-POST.html">delete-uri (POST)</a>
    */
+  @Deprecated
   delete_uri("/members/{member}/groups/{group}/uris/{uri}/delete"),
 
   /**
@@ -1149,8 +1171,9 @@ public enum Service {
   /**
    * Update host's group URIs and URIs with new scheme/port <code>/members/{member}/hosts/{host}/update</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/update-host-GET.html">update-host (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/update-host-POST.html">update-host (POST)</a>
    */
+  @Deprecated
   update_host("/members/{member}/hosts/{host}/update"),
 
   /**
@@ -1327,8 +1350,9 @@ public enum Service {
   /**
    * Create a new group reply from member <code>/members/{member}/groups/{group}/comments/{xlinkid}/reply</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/reply-group-comment-GET.html">reply-group-comment (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/reply-group-comment-POST.html">reply-group-comment (POST)</a>
    */
+  @Deprecated
   reply_group_comment("/members/{member}/groups/{group}/comments/{xlinkid}/reply"),
 
   /**
@@ -1336,6 +1360,7 @@ public enum Service {
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/reply-group-comment-public-GET.html">reply-group-comment-public (GET)</a>
    */
+  @Deprecated
   reply_group_comment_public("/groups/{group}/comments/{xlinkid}/reply"),
 
   /**
@@ -1427,28 +1452,28 @@ public enum Service {
   /**
    * Deleting the content of a member loading zone <code>/members/{member}/groups/{group}/loadingzone/delete</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/delete-member-loaded-content-GET.html">delete-member-loaded-content (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/delete-loading-zone-content-POST.html">delete-loading-zone-content (POST)</a>
    */
   delete_member_loaded_content("/members/{member}/groups/{group}/loadingzone/delete"),
 
   /**
    * Unzipping content in a member loading zone <code>/members/{member}/groups/{group}/loadingzone/unzip</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/unzip-member-loaded-content-GET.html">unzip-member-loaded-content (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/unzip-loading-zone-content-POST.html">unzip-loading-zone-content (POST)</a>
    */
   unzip_member_loaded_content("/members/{member}/groups/{group}/loadingzone/unzip"),
 
   /**
    * Clearing the content in a member loading zone <code>/members/{member}/groups/{group}/loadingzone/clear</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/clear-member-loading-zone-GET.html">clear-member-loading-zone (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/clear-loading-zone-POST.html">clear-loading-zone (POST)</a>
    */
   clear_member_loading_zone("/members/{member}/groups/{group}/loadingzone/clear"),
 
   /**
    * Uploaded URIs <code>/members/{member}/groups/{group}/loadingzone/uris</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-member-loaded-uris-GET.html">get-member-loaded-uris (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-loaded-uris-GET.html">get-loaded-uris (GET)</a>
    */
   get_member_loaded_uris("/members/{member}/groups/{group}/loadingzone/uris"),
 
@@ -1535,8 +1560,9 @@ public enum Service {
   /**
    * Convert document types to PSML <code>/groups/{group}/documenttypes/converttopsml</code>
    *
-   * @see <a href="https://dev.pageseeder.com/api/web_services/services/convert-documenttypes-to-psml-GET.html">convert-documenttypes-to-psml (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/convert-documenttypes-to-psml-POST.html">convert-documenttypes-to-psml (POST)</a>
    */
+  @Deprecated
   convert_documenttypes_to_psml("/groups/{group}/documenttypes/converttopsml");
 
   /**

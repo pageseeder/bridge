@@ -27,11 +27,13 @@ public enum Servlet {
   /**
    * The document browser Servlet <code>com.pageseeder.review.DocumentBrowser</code>.
    */
+  @Deprecated
   DOCUMENT_BROWSER("com.pageseeder.review.DocumentBrowser"),
 
   /**
    * The generic search Servlet <code>com.pageseeder.search.GenericSearch</code>.
    */
+  @Deprecated
   GENERIC_SEARCH("com.pageseeder.search.GenericSearch"),
 
   /**
@@ -42,6 +44,7 @@ public enum Servlet {
   /**
    * The upload search Servlet <code>com.pageseeder.upload.servlets.UploadServlet</code>.
    */
+  @Deprecated
   UPLOAD("com.pageseeder.upload.servlets.UploadServlet");
 
 
