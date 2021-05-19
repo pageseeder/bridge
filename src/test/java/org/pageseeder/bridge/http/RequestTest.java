@@ -90,7 +90,7 @@ public final class RequestTest {
     Assert.assertEquals("PATCH", r1.header("X-HTTP-Method-Override"));
     Request r2 = new Request(Method.PATCH, Service.get_version);
     Assert.assertEquals("PATCH", r2.header("X-HTTP-Method-Override"));
-    Request r3 = new Request(Method.PATCH, Servlet.GENERIC_SEARCH);
+    Request r3 = new Request(Method.PATCH, Servlet.LOGIN);
     Assert.assertEquals("PATCH", r3.header("X-HTTP-Method-Override"));
   }
 
@@ -104,7 +104,7 @@ public final class RequestTest {
     Assert.assertEquals(userAgent, r1.header("User-Agent"));
     Request r2 = new Request(Method.GET, Service.get_version);
     Assert.assertEquals(userAgent, r2.header("User-Agent"));
-    Request r3 = new Request(Method.GET, Servlet.GENERIC_SEARCH);
+    Request r3 = new Request(Method.GET, Servlet.LOGIN);
     Assert.assertEquals(userAgent, r3.header("User-Agent"));
   }
 
@@ -113,7 +113,7 @@ public final class RequestTest {
    */
   @Test
   public void testServletXFormat() {
-    Request request = new Request(Method.GET, Servlet.GENERIC_SEARCH);
+    Request request = new Request(Method.GET, Servlet.LOGIN);
     Assert.assertEquals("xml", request.parameter("xformat"));
   }
 
@@ -122,7 +122,7 @@ public final class RequestTest {
    */
   @Test
   public void testTimeout() {
-    Request request = new Request(Method.GET, Servlet.GENERIC_SEARCH);
+    Request request = new Request(Method.GET, Servlet.LOGIN);
     Assert.assertEquals(-1, request.timeout());
     request.timeout(30_000);
     Assert.assertEquals(30_000, request.timeout());
@@ -183,7 +183,7 @@ public final class RequestTest {
 
   @Test
   public void testPath_Servlet() {
-    Assert.assertTrue(new Request(Method.GET, Servlet.UPLOAD).path().startsWith("/servlet/"));
+    Assert.assertTrue(new Request(Method.GET, Servlet.LOGIN).path().startsWith("/servlet/"));
   }
 
   @Test

@@ -39,7 +39,10 @@ import org.pageseeder.bridge.PSCredentials;
  *
  * @version 0.11.4
  * @since 0.11.4
+ *
+ * @deprecated Not support in PageSeeder v6
  */
+@Deprecated
 public final class GenericSearch implements Serializable {
 
   /** As per recommendation */
