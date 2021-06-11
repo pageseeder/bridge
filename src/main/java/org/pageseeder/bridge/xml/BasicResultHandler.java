@@ -49,6 +49,11 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
   private @Nullable String fieldname = null;
 
   /**
+   * State variable to indicate the value of the current field.
+   */
+  private @Nullable String fieldvalue = null;
+
+  /**
    * This method is called whenever a new result document starts.
    *
    * <p>If the group is not known, a <code>null</code> value is sent.
@@ -108,15 +113,28 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
 
   @Override
   public final void startElement(String element, Attributes attributes) {
-    if ("document".equals(element)) {
+    if ("document".equals(element) || "result".equals(element)) {
       startResult(this.group);
+      if ("result".equals(element)) {
+        String value = attributes.getValue("score");
+        if (value != null) {
+          try {
+            double score = Double.parseDouble(value);
+            score(score);
+          } catch (NumberFormatException ex) {
+            // Do nothing.
+          }
+        }
+      }
 
-    } else if (isParent("document")) {
+    } else if (isParent("document") || isParent("result")) {
       if ("field".equals(element)) {
         String name = getString(attributes, "name");
         List<String> fields = this._fields;
         if (fields.contains(name) || fields.isEmpty()) {
           this.fieldname = name;
+          this.fieldvalue = getString(attributes, "datetime",
+                  getString(attributes, "date", null));
           newBuffer();
         }
       } else if ("score".equals(element)) {
@@ -133,16 +151,17 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
 
   @Override
   public final void endElement(String element) {
-    if (isElement("document")) {
+    if (isElement("document") || "result".equals(element)) {
       endResult();
-    } else if (isElement("field") && isParent("document")) {
+    } else if (isElement("field") && (isParent("document") || isParent("result"))) {
       String name = this.fieldname;
       if (name != null) {
-        String value = buffer(true);
+        String value = this.fieldvalue != null ? this.fieldvalue : buffer(true);
         if (value != null) {
           field(name, value);
         }
         this.fieldname = null;
+        this.fieldvalue = null;
       }
     } else if ("score".equals(element) && isParent("document")) {
       String value = buffer(true);
