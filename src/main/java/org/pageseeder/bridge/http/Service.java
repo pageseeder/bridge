@@ -774,7 +774,6 @@ public enum Service {
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-uri-deprecated-GET.html">get-uri (GET)</a>
    */
-  @Deprecated
   get_uri("/groups/{group}/uris/{uri}"),
 
   /**
