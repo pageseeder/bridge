@@ -251,23 +251,11 @@ public final class PSThreadStatus implements Serializable, XMLWritable {
    */
   public void toXML (XMLWriter writer) throws IOException {
     writer.openElement("thread");
-    writer.attribute("id", this.getThreadID());
-
-    if (this.getThreadName() != null) {
-      writer.attribute("name", this.getThreadName());
-    }
-
-    if (this.getUsername() != null) {
-      writer.attribute("username", this.getUsername());
-    }
-
-    if (this.getGroupID() != null) {
-      writer.attribute("groupid", String.valueOf(this.getGroupID()));
-    }
-
-    if (this.getStatus() != null) {
-      writer.attribute("inprogress", this.getStatus().name().toLowerCase());
-    }
+    writer.attribute("id", this.getThreadID() != null ? this.getThreadID() : "");
+    writer.attribute("name", this.getThreadName() != null ? this.getThreadName() : "");
+    writer.attribute("username", this.getUsername() != null ? this.getUsername() : "");
+    writer.attribute("groupid", this.getGroupID() != null ? String.valueOf(this.getGroupID()) : "");
+    writer.attribute("inprogress", this.getStatus() != null ? this.getStatus().name().toLowerCase() : "");
 
     //messages
     for (String message : this.getMessages()) {
