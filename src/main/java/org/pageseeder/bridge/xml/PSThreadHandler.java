@@ -59,9 +59,10 @@ public final class PSThreadHandler extends DefaultHandler {
 
   @Override
   public void startElement(String uri, String localName, String qName, Attributes atts) {
+    String element = localName != null && !localName.isEmpty() ? localName : qName;
     XMLStringWriter xml = this.xmlContent;
     if (xml != null) {
-      xml.openElement(uri, localName, true);
+      xml.openElement(uri, element, true);
       for (int i = 0; i < atts.getLength(); i++) {
         String name = atts.getLocalName(i);
         String value = atts.getValue(i);
@@ -70,7 +71,7 @@ public final class PSThreadHandler extends DefaultHandler {
         }
       }
     }
-    if ("thread".equals(localName)) {
+    if ("thread".equals(element)) {
       String id = atts.getValue("id");
       if (id != null) {
         this.oldFormat = false;
@@ -85,42 +86,43 @@ public final class PSThreadHandler extends DefaultHandler {
       }
     }
     String dad = this._elements.isEmpty() ? null : this._elements.peek();
-    if ("thread".equals(dad) && ("id".equals(localName) ||
-                           "username".equals(localName) ||
-                               "name".equals(localName) ||
-                            "groupid".equals(localName)) && this.oldFormat) {
+    if ("thread".equals(dad) && ("id".equals(element) ||
+                           "username".equals(element) ||
+                               "name".equals(element) ||
+                            "groupid".equals(element)) && this.oldFormat) {
       this.buffer = new StringBuilder();
-    } else if ("threadstatus".equals(dad) && "status".equals(localName) && this.oldFormat) {
+    } else if ("threadstatus".equals(dad) && "status".equals(element) && this.oldFormat) {
       this.buffer = new StringBuilder();
-    } else if ("message".equals(localName) &&
+    } else if ("message".equals(element) &&
         ((this.oldFormat && "threadstatus".equals(dad)) || (!this.oldFormat && "thread".equals(dad)))) {
       this.xmlContent = new XMLStringWriter(NamespaceAware.No);
     }
-    this._elements.push(localName);
+    this._elements.push(element);
   }
 
   @Override
   public void endElement(String uri, String localName, String qName) {
+    String element = localName != null && !localName.isEmpty() ? localName : qName;
     StringBuilder buf = this.buffer;
-    if ("id".equals(localName) && buf != null && this.oldFormat) {
+    if ("id".equals(element) && buf != null && this.oldFormat) {
       this.tempStatus = new PSThreadStatus(buf.toString());
       this.buffer = null;
     } else {
       PSThreadStatus tmp = this.tempStatus;
       if (tmp != null) {
-        if ("name".equals(localName) && buf != null && this.oldFormat) {
+        if ("name".equals(element) && buf != null && this.oldFormat) {
           tmp.setName(buf.toString());
           this.buffer = null;
-        } else if ("username".equals(localName) && buf != null && this.oldFormat) {
+        } else if ("username".equals(element) && buf != null && this.oldFormat) {
           tmp.setUsername(buf.toString());
           this.buffer = null;
-        } else if ("groupid".equals(localName) && buf != null && this.oldFormat) {
+        } else if ("groupid".equals(element) && buf != null && this.oldFormat) {
           tmp.setGroupID(Long.parseLong(buf.toString()));
           this.buffer = null;
-        } else if ("status".equals(localName) && buf != null && this.oldFormat) {
+        } else if ("status".equals(element) && buf != null && this.oldFormat) {
           tmp.setStatus(buf.toString());
           this.buffer = null;
-        } else if ("message".equals(localName)) {
+        } else if ("message".equals(element)) {
           XMLStringWriter xml = this.xmlContent;
           if (xml != null) {
             tmp.addMessage(xml.toString());
