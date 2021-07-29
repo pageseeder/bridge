@@ -15,11 +15,14 @@
  */
 package org.pageseeder.bridge.model;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
+import org.pageseeder.xmlwriter.XMLWritable;
+import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
  * A status for a process thread.
@@ -30,13 +33,22 @@ import org.eclipse.jdt.annotation.Nullable;
  * @version 0.10.2
  * @version 0.3.10
  */
-public final class PSThreadStatus implements Serializable {
+public final class PSThreadStatus implements Serializable, XMLWritable {
 
   /** As per recommendation */
   private static final long serialVersionUID = 1L;
 
   /**
    * List of possible status.
+   *
+   * The error and warning are only transitory states, and the thread will always terminate only with one of completed,
+   * failed, or cancelled which are final states.
+   *
+   * This is because there may be several errors or warnings.
+   *
+   * Threads that include warnings would usually result in a completed state and errors in a failed state.
+   *
+   * There is only one initial state: initialised.
    *
    * @author Jean-Baptiste Reure
    * @version 22 March 2011
@@ -206,6 +218,9 @@ public final class PSThreadStatus implements Serializable {
   }
 
   /**
+   * The error and warning are only transitory states, and the thread will always terminate only with one of completed,
+   * failed, or cancelled which are final states.
+   *
    * @return <code>true</code> if the thread is finished (success, failed or cancelled)
    */
   public boolean isCompleted() {
@@ -225,6 +240,42 @@ public final class PSThreadStatus implements Serializable {
   public @Nullable String getLastMessage() {
     if (this.messages.isEmpty()) return null;
     return this.messages.get(this.messages.size()-1);
+  }
+
+  /**
+   *
+   * it writes the username in the XML if it is a sensitive information in your application you should avoid.
+   *
+   * @param writer
+   * @throws IOException
+   */
+  public void toXML (XMLWriter writer) throws IOException {
+    writer.openElement("thread");
+    writer.attribute("id", this.getThreadID());
+
+    if (this.getThreadName() != null) {
+      writer.attribute("name", this.getThreadName());
+    }
+
+    if (this.getUsername() != null) {
+      writer.attribute("username", this.getUsername());
+    }
+
+    if (this.getGroupID() != null) {
+      writer.attribute("groupid", String.valueOf(this.getGroupID()));
+    }
+
+    if (this.getStatus() != null) {
+      writer.attribute("inprogress", this.getStatus().name().toLowerCase());
+    }
+
+    //messages
+    for (String message : this.getMessages()) {
+      if (message != null && !message.isEmpty()) {
+        writer.element("message", message);
+      }
+    }
+    writer.closeElement();//thread
   }
 
 }
