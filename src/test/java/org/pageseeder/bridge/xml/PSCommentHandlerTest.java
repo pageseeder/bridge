@@ -68,4 +68,35 @@ public final class PSCommentHandlerTest {
     Assert.assertNull("jsmith", comment.getStatus());
   }
 
+  @Test
+  public void testPassTypeXHTML() throws Exception {
+    PSCommentHandler handler = new PSCommentHandler();
+    HandlerTests.parse("comment/comment-pass-type-xhtml+xml.xml", handler);
+    // Check that member is retrieved
+    PSComment comment = handler.getComment();
+    Assert.assertEquals(2674355L, comment.getId().longValue());
+    Assert.assertEquals("forum", comment.getType());
+    Assert.assertEquals("Occaecat sunt proident velit cupidatat commodo pariatur.", comment.getTitle());
+    System.out.println(comment.getContent());
+    Assert.assertEquals("<p>Enim aliquip ad ad sunt voluptate deserunt culpa ex consectetur voluptate. Quis duis nostrud anim anim do quis exercitation. Laboris enim ut non officia excepteur officia deserunt tempor sit mol</p>", comment.getContent());
+    Assert.assertEquals("application/xhtml+xml", comment.getMediaType());
+    // Author
+    Author author = comment.getAuthor();
+    Assert.assertNotNull(author);
+    Assert.assertEquals("Clark Smith", author.name());
+    Assert.assertNull(author.email());
+    Assert.assertNotNull(author.member());
+    Assert.assertEquals(Long.valueOf(6l), author.member().getId());
+    Assert.assertEquals("Clark", author.member().getFirstname());
+    Assert.assertEquals("Smith", author.member().getSurname());
+    Assert.assertEquals("csmith", author.member().getUsername());
+    // Context
+    Context context = comment.getContext();
+    Assert.assertNotNull(context);
+    Assert.assertNotNull(context.group());
+    Assert.assertEquals("dev_site-simple", context.group().getName());
+
+  }
+
+
 }

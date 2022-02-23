@@ -1,0 +1,12 @@
+<comment-creation>
+  <comment id="2674355" discussionid="2674355" contentrole="File Attachment" type="forum" created="2022-02-24T05:38:37+11:00">
+    <title>Occaecat sunt proident velit cupidatat commodo pariatur.</title>
+    <author id="6" firstname="Clark" surname="Smith" username="csmith" status="activated">
+      <fullname>Clark Smith</fullname>
+    </author>
+    <content type="application/xhtml+xml"><p>Enim aliquip ad ad sunt voluptate deserunt culpa ex consectetur voluptate. Quis duis nostrud anim anim do quis exercitation. Laboris enim ut non officia excepteur officia deserunt tempor sit mol</p></content>
+    <context>
+      <group id="32" name="dev_site-simple" title="simple" description="Dev site using simple" owner="dev_site" access="member" common="false" />
+    </context>
+  </comment>
+</comment-creation>

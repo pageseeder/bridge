@@ -146,7 +146,7 @@ public final class PSCommentHandler extends DefaultHandler {
           }
           com.setMediaType(type);
           if (Rules.isXMLMediaType(type)) {
-            this.xmlContent = new XMLStringWriter(NamespaceAware.No);
+            this.xmlContent = new XMLStringWriter(NamespaceAware.Yes);
           } else {
             this.buffer = new StringBuilder();
           }
