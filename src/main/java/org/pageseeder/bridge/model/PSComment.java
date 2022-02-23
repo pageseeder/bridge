@@ -586,7 +586,11 @@ public final class PSComment implements PSEntity {
      */
     public Author(PSMember member) {
       this._member = member;
-      this._name = null;
+      if (member.getFirstname() != null && member.getSurname() != null) {
+        this._name = String.join(" ", member.getFirstname(), member.getSurname());
+      } else {
+        this._name = null;
+      }
       this._email = member.getEmail();
     }
 
