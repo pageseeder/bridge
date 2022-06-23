@@ -1470,6 +1470,13 @@ public enum Service {
   clear_member_loading_zone("/members/{member}/groups/{group}/loadingzone/clear"),
 
   /**
+   * Start loading the specific loading zone <code>/members/{member}/groups/{group}/loadingzone/start</code>
+   *
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/start-loading-POST.html">start loading (POST)</a>
+   */
+  start_member_loading_content("/members/{member}/groups/{group}/loadingzone/start"),
+
+  /**
    * Uploaded URIs <code>/members/{member}/groups/{group}/loadingzone/uris</code>
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-loaded-uris-GET.html">get-loaded-uris (GET)</a>
