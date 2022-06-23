@@ -266,7 +266,7 @@ public final class RequestTest {
     Response response = Request.response(Method.GET, "/does/not.exist");
     Assert.assertFalse(response.isSuccessful());
     Assert.assertEquals(404, response.code() );
-    Assert.assertTrue(response.length() > 0);
+    Assert.assertTrue(response.length() > -1);
   }
 
   @Test

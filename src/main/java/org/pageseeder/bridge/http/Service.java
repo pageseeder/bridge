@@ -135,6 +135,7 @@ public enum Service {
    * Get or edit a member <code>/members/{member}</code>
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/member-GET.html">member (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/member-PATCH.html">member (PATCH)</a>
    */
   member("/members/{member}"),
 
@@ -608,6 +609,21 @@ public enum Service {
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-group-facet-GET.html">get-group-facet (GET)</a>
    */
   get_group_facet("/groups/{group}/facet"),
+
+  /**
+   * Get search facets for a single group <code>/groups/{group}/search/facets</code>
+   *
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/group-search-facets-GET.html">group-search-facet (GET)</a>
+   */
+  group_search_facet("/groups/{group}/search/facets"),
+
+
+  /**
+   * The purpose of this service is to query the index of a single group by a question. <code>/groups/{group}/search</code>
+   *
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/group-search-GET.html">group-search (GET)</a>
+   */
+  group_search("/groups/{group}/search"),
 
   /**
    * Gets the publish config for a group <code>/members/{member}/groups/{group}/publishconfig</code>
@@ -1263,6 +1279,13 @@ public enum Service {
   list_url_discussions("/members/{member}/discussions/forurl"),
 
   /**
+   * Find discussions <code>/members/{member}/discussions/find</code>
+   *
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/find-discussions-GET.html">find-discussions (GET)</a>
+   */
+  find_discussions("/members/{member}/discussions/find"),
+
+  /**
    * Load a discussion <code>/members/{member}/discussions/{discussion}</code>
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-discussion-GET.html">get-discussion (GET)</a>
@@ -1470,6 +1493,13 @@ public enum Service {
   clear_member_loading_zone("/members/{member}/groups/{group}/loadingzone/clear"),
 
   /**
+   * Start loading the specific loading zone <code>/members/{member}/groups/{group}/loadingzone/start</code>
+   *
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/start-loading-POST.html">start loading (POST)</a>
+   */
+  start_member_loading_content("/members/{member}/groups/{group}/loadingzone/start"),
+
+  /**
    * Uploaded URIs <code>/members/{member}/groups/{group}/loadingzone/uris</code>
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-loaded-uris-GET.html">get-loaded-uris (GET)</a>
@@ -1557,12 +1587,20 @@ public enum Service {
   get_resource_history("/groups/{group}/resources/history"),
 
   /**
+   * Get publication toc <code>/members/{member}/groups/{group}/uris/{uri}/toc</code>
+   *
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-toc-GET.html">get-toc (GET)</a>
+   */
+  get_toc("/members/{member}/groups/{group}/uris/{uri}/toc"),
+
+  /**
    * Convert document types to PSML <code>/groups/{group}/documenttypes/converttopsml</code>
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/convert-documenttypes-to-psml-POST.html">convert-documenttypes-to-psml (POST)</a>
    */
   @Deprecated
   convert_documenttypes_to_psml("/groups/{group}/documenttypes/converttopsml");
+
 
   /**
    * The service path template.
