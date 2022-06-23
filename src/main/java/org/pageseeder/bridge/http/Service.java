@@ -611,6 +611,13 @@ public enum Service {
   get_group_facet("/groups/{group}/facet"),
 
   /**
+   * Get search facets for a single group <code>/groups/{group}/search/facets</code>
+   *
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/group-search-facets-GET.html">group-search-facet (GET)</a>
+   */
+  group_search_facet("/groups/{group}/search/facets"),
+
+  /**
    * Gets the publish config for a group <code>/members/{member}/groups/{group}/publishconfig</code>
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-group-publish-config-GET.html">get-group-publish-config (GET)</a>
