@@ -1587,12 +1587,20 @@ public enum Service {
   get_resource_history("/groups/{group}/resources/history"),
 
   /**
+   * Get publication toc <code>/members/{member}/groups/{group}/uris/{uri}/toc</code>
+   *
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-toc-GET.html">get-toc (GET)</a>
+   */
+  get_toc("/members/{member}/groups/{group}/uris/{uri}/toc"),
+
+  /**
    * Convert document types to PSML <code>/groups/{group}/documenttypes/converttopsml</code>
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/convert-documenttypes-to-psml-POST.html">convert-documenttypes-to-psml (POST)</a>
    */
   @Deprecated
   convert_documenttypes_to_psml("/groups/{group}/documenttypes/converttopsml");
+
 
   /**
    * The service path template.
