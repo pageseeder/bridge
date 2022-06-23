@@ -617,6 +617,14 @@ public enum Service {
    */
   group_search_facet("/groups/{group}/search/facets"),
 
+
+  /**
+   * The purpose of this service is to query the index of a single group by a question. <code>/groups/{group}/search</code>
+   *
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/group-search-GET.html">group-search (GET)</a>
+   */
+  group_search("/groups/{group}/search"),
+
   /**
    * Gets the publish config for a group <code>/members/{member}/groups/{group}/publishconfig</code>
    *
