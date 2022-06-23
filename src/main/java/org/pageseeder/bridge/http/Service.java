@@ -1264,6 +1264,13 @@ public enum Service {
   list_url_discussions("/members/{member}/discussions/forurl"),
 
   /**
+   * Find discussions <code>/members/{member}/discussions/find</code>
+   *
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/find-discussions-GET.html">find-discussions (GET)</a>
+   */
+  find_discussions("/members/{member}/discussions/find"),
+
+  /**
    * Load a discussion <code>/members/{member}/discussions/{discussion}</code>
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-discussion-GET.html">get-discussion (GET)</a>
