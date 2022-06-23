@@ -135,6 +135,7 @@ public enum Service {
    * Get or edit a member <code>/members/{member}</code>
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/member-GET.html">member (GET)</a>
+   * @see <a href="https://dev.pageseeder.com/api/web_services/services/member-PATCH.html">member (PATCH)</a>
    */
   member("/members/{member}"),
 
