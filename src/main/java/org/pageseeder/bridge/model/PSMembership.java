@@ -81,6 +81,12 @@ public final class PSMembership implements PSEntity  {
    */
   private transient @Nullable String key = null;
 
+
+  /**
+   * Membership status.
+   */
+  private @Nullable PSMembershipStatus status = null;
+
   /**
    * Create a new membership without setting the group of member.
    */
@@ -199,6 +205,13 @@ public final class PSMembership implements PSEntity  {
   }
 
   /**
+   * @return the notification
+   */
+  public @Nullable PSMembershipStatus getStatus() {
+    return this.status;
+  }
+
+  /**
    * @param id the id to set
    */
   public void setId(Long id) {
@@ -254,6 +267,13 @@ public final class PSMembership implements PSEntity  {
    */
   public void setDetails(PSDetails details) {
     this.details = details;
+  }
+
+  /**
+   * @param status the status to set
+   */
+  public void setStatus(@Nullable PSMembershipStatus status) {
+    this.status = status;
   }
 
   /**
