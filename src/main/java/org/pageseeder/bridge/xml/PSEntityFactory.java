@@ -27,20 +27,7 @@ import org.pageseeder.bridge.control.GroupManager;
 import org.pageseeder.bridge.control.MemberManager;
 import org.pageseeder.bridge.control.MembershipManager;
 import org.pageseeder.bridge.control.XRefManager;
-import org.pageseeder.bridge.model.PSComment;
-import org.pageseeder.bridge.model.PSDocument;
-import org.pageseeder.bridge.model.PSExternalURI;
-import org.pageseeder.bridge.model.PSFolder;
-import org.pageseeder.bridge.model.PSGroup;
-import org.pageseeder.bridge.model.PSGroupFolder;
-import org.pageseeder.bridge.model.PSMember;
-import org.pageseeder.bridge.model.PSMemberStatus;
-import org.pageseeder.bridge.model.PSMembership;
-import org.pageseeder.bridge.model.PSNotification;
-import org.pageseeder.bridge.model.PSProject;
-import org.pageseeder.bridge.model.PSRole;
-import org.pageseeder.bridge.model.PSURI;
-import org.pageseeder.bridge.model.PSXRef;
+import org.pageseeder.bridge.model.*;
 import org.pageseeder.bridge.util.ISO8601;
 import org.xml.sax.Attributes;
 
@@ -81,6 +68,7 @@ public final class PSEntityFactory {
     PSNotification notification = PSHandlers.notification(atts.getValue("notification"));
     PSRole role = PSHandlers.role(atts.getValue("role"));
     Date created = PSHandlers.datetime(atts.getValue("created")); // since 5.7
+    String status = getOptionalString(atts, "status");
     PSMembership m = tryMembershipCache(membership, id);
     if (id != null) {
       m.setId(id);
@@ -89,6 +77,9 @@ public final class PSEntityFactory {
     m.setNotification(notification);
     m.setRole(role);
     m.setCreated(created);
+    if (status != null) {
+      m.setStatus(PSMembershipStatus.fromAttribute(status));
+    }
     return m;
   }
 

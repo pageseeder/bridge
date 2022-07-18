@@ -19,10 +19,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.pageseeder.bridge.model.PSMember;
-import org.pageseeder.bridge.model.PSMembership;
-import org.pageseeder.bridge.model.PSNotification;
-import org.pageseeder.bridge.model.PSRole;
+import org.pageseeder.bridge.model.*;
 
 /**
  * Test the membership handler
@@ -48,6 +45,17 @@ public final class PSMembershipHandlerTest {
     Assert.assertEquals(PSRole.manager , membership1.getRole());
     Assert.assertNotNull(membership1.getGroup());
     Assert.assertEquals("acme" , membership1.getGroup().getName());
+    Assert.assertEquals(PSMembershipStatus.normal, membership1.getStatus());
+
+    PSMembership membership2 = memberships.get(1);
+    Assert.assertEquals(PSNotification.essential , membership2.getNotification());
+    Assert.assertEquals(PSRole.contributor , membership2.getRole());
+    Assert.assertNotNull(membership2.getGroup());
+    Assert.assertEquals("acme-info" , membership2.getGroup().getName());
+    Assert.assertEquals(PSMembershipStatus.self_invited, membership2.getStatus());
+
+    PSMembership membership3 = memberships.get(2);
+    Assert.assertEquals(null, membership3.getStatus());
   }
 
 }

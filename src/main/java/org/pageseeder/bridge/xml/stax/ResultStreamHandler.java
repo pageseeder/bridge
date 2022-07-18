@@ -27,7 +27,7 @@ import java.util.Objects;
  *
  * <p>Implementation note: this is an experimental class: DO NOT USE IN PRODUCTION!</p>
  *
- * <p>Implementations must supply an implementation of `result(Map<String,String)`
+ * <p>Implementations must supply an implementation of `result(Map<String,String)`</p>
  *
  * @param <T> The type of object that can be created from a single result
  */
