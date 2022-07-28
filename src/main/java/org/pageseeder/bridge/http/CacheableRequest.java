@@ -108,7 +108,7 @@ public final class CacheableRequest implements HttpRequest {
 
   @Override
   public HttpResponse response() {
-    String url = Request.toURLString(this._path);
+    String url = this.config != null ? Request.toURLString(this.config, this._path) : Request.toURLString(this._path);
     if (this._parameters.size() > 0) {
       StringBuilder q = new StringBuilder();
       for (Parameter p : this._parameters) {
