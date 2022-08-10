@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.pageseeder.bridge.APIException;
+import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.berlioz.auth.PSUser.Builder;
 import org.pageseeder.bridge.control.MemberManager;
@@ -78,6 +79,12 @@ public final class PSAuthenticator implements Authenticator<PSUser> {
   private boolean hardLogout = true;
 
   /**
+   * The pageseeder configuration that will be used to login and logout. By default, it will use the default
+   * configuration. However, it will be initialized as null. Only when request it will be set to default in case the
+   * caller does not specify one.
+   */
+  private PSConfig config = null;
+  /**
    * Indicates whether this authenticator should perform a hard logout
    *
    * @param hardLogout <code>true</code> to invalidate the session on PageSeeder;
@@ -95,6 +102,16 @@ public final class PSAuthenticator implements Authenticator<PSUser> {
   }
 
   /**
+   * Set the pageseeder configuration that will be used to login and logout. By default, it will use the default
+   * configuration. However, it will be initialized as null. Only when request it will be set to default in case the
+   * caller does not specify one.
+   * @param config
+   */
+  public void setConfig(PSConfig config) {
+    this.config = config;
+  }
+
+  /**
    * Indicates whether this authenticator will perform a hard logout on PageSeeder
    *
    * @return <code>true</code> to invalidate the session on PageSeeder;
@@ -102,6 +119,17 @@ public final class PSAuthenticator implements Authenticator<PSUser> {
    */
   public boolean isHardLogout() {
     return this.hardLogout;
+  }
+
+  /**
+   * Returns the Pageseeder configuration. If it is still null, then sets to the default and return.
+   * @return <code>PSConfig</code>
+   */
+  private PSConfig getConfig() {
+    if (this.config == null) {
+      this.setConfig(PSConfig.getDefault());
+    }
+    return this.config;
   }
 
   /**
@@ -210,7 +238,7 @@ public final class PSAuthenticator implements Authenticator<PSUser> {
       PSSession session = u.getSession();
       try {
         if (session != null) {
-          logout = MemberManager.logout(session);
+          logout = MemberManager.logout(session, this.getConfig());
         }
       } catch (APIException ex) {
         throw new AuthException("Unable to log out from PageSeeder", ex);
@@ -259,7 +287,7 @@ public final class PSAuthenticator implements Authenticator<PSUser> {
     PSUser user = null;
     String service = ServicePath.newPath("/self");
     UsernamePassword credentials = new UsernamePassword(username, password);
-    try (Response response = new Request(Method.GET, service).using(credentials).response()) {
+    try (Response response = new Request(Method.GET, service).config(this.getConfig()).using(credentials).response()) {
       if (response.isSuccessful()) {
         PSSession session = response.session();
         PSMember member = response.consumeItem(HandlerFactory.newPSMemberHandler());
@@ -280,7 +308,7 @@ public final class PSAuthenticator implements Authenticator<PSUser> {
     PSUser user = null;
     String service = ServicePath.newPath("/self/memberships");
     UsernamePassword credentials = new UsernamePassword(username, password);
-    try (Response response = new Request(Method.GET, service).using(credentials).response()) {
+    try (Response response = new Request(Method.GET, service).config(this.getConfig()).using(credentials).response()) {
       if (response.isSuccessful()) {
         PSMembershipHandler handler = new PSMembershipHandler();
         response.consumeXML(handler);
