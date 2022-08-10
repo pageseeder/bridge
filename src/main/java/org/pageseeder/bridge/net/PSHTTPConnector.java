@@ -24,6 +24,7 @@ import javax.xml.transform.Templates;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.APIException;
+import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.model.PSNotification;
@@ -148,6 +149,16 @@ public final class PSHTTPConnector {
    */
   public @Nullable PSSession getSession() {
     return this.session;
+  }
+
+  /**
+   * Set the pageseeder configuration that will be used to login or logout or connect . By default, it will use the
+   * default configuration. However, it will be initialized as null. Only when request it will be set to default in case
+   * the caller does not specify one.
+   * @param config
+   */
+  public void setConfig(PSConfig config) {
+    this._resource.config(config);
   }
 
   /**
