@@ -18,10 +18,7 @@ package org.pageseeder.bridge.control;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.pageseeder.bridge.APIException;
-import org.pageseeder.bridge.PSCredentials;
-import org.pageseeder.bridge.PSEntityCache;
-import org.pageseeder.bridge.PSSession;
+import org.pageseeder.bridge.*;
 import org.pageseeder.bridge.model.MemberOptions;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
@@ -378,9 +375,29 @@ public final class MemberManager extends Sessionful {
    * @throws APIException If an error occurs while connecting to PageSeeder.
    */
   public static boolean logout(PSSession session) throws APIException {
+    return logout(session, PSConfig.getDefault());
+  }
+
+  /**
+   * Logout the user from the current session in PageSeeder.
+   *
+   * <p>This will invalidate the session on PageSeeder, the session should no longer
+   * be used and be discarded.
+   *
+   * @param session The session to use to logout.
+   * @param config  Pageseeder configuration to logout.
+   *
+   * @return <code>true</code> if the user was successfully logout;
+   *         <code>false</code> if it was not.
+   *
+   * @throws APIException If an error occurs while connecting to PageSeeder.
+   */
+  public static boolean logout(PSSession session, PSConfig config) throws APIException {
     Objects.requireNonNull(session, "Session is required to logout.");
+    Objects.requireNonNull(config, "Pageseeder configuration is required to logout.");
     String servlet = Servlets.LOGIN_SERVLET;
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, servlet);
+    connector.setConfig(config);
     connector.using(session);
     connector.addParameter("action", "logout");
     return connector.get().isSuccessful();
