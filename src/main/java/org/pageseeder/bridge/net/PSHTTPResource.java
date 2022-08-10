@@ -66,17 +66,21 @@ public final class PSHTTPResource {
   private final boolean _includeErrorContent;
 
   /**
+   * The pageseeder configuration that will be used to login and logout. By default, it will use the default
+   * configuration. However, it will be initialized as null. Only when request it will be set to default in case the
+   * caller does not specify one.
+   */
+  private final PSConfig _config;
+  /**
    * Creates a new connection to the specified resource.
    *
    * @param type The type of resource.
    * @param name The name of the resource to access (depends on the type of resource)
    */
   public PSHTTPResource(PSHTTPResourceType type, String name) {
-    this._type = type;
-    this._name = name;
-    this._body = null;
-    this._parameters = Collections.emptyMap();
-    this._includeErrorContent = this._type == PSHTTPResourceType.SERVICE;
+    this (type, name, null, Collections.emptyMap(), type == PSHTTPResourceType.SERVICE,
+        PSConfig.getDefault());
+
   }
 
   /**
@@ -87,13 +91,16 @@ public final class PSHTTPResource {
    * @param body       The body of the resource (used for PUT requests).
    * @param parameters The parameters to access the resource.
    * @param include    Whether to include the response content.
+   * @param config     The pageseeder that will be accessed.
    */
-  private PSHTTPResource(PSHTTPResourceType type, String name, @Nullable String body, Map<String, String> parameters, boolean include) {
+  private PSHTTPResource(PSHTTPResourceType type, String name, @Nullable String body, Map<String, String> parameters,
+                         boolean include, PSConfig config) {
     this._type = type;
     this._name = name;
     this._body = body;
     this._parameters = parameters;
     this._includeErrorContent = include;
+    this._config = config;
   }
 
   // Getters
@@ -153,6 +160,13 @@ public final class PSHTTPResource {
     return this._includeErrorContent;
   }
 
+  /**
+   * The pageseeder configuration.
+   * @return <code>PSConfig</code>
+   */
+  public PSConfig config() {
+    return this._config;
+  }
   /**
    * Returns the URL to access this resource.
    *
@@ -238,10 +252,8 @@ public final class PSHTTPResource {
    * @return the URL to access this resource.
    */
   private String toURLString(@Nullable PSCredentials credentials, boolean includeParameters) {
-    PSConfig ps = PSConfig.getDefault();
-
     // Start building the URL
-    StringBuilder url = ps.getAPIURLBuilder();
+    StringBuilder url = this.config().getAPIURLBuilder();
 
     // Decompose the resource (in case it contains a query or fragment part)
     String path  = getURLPath(this._name);
@@ -250,12 +262,12 @@ public final class PSHTTPResource {
 
     // Servlets
     if (this._type == PSHTTPResourceType.SERVLET) {
-      url.append(ps.getSitePrefix()).append("/servlet/");
+      url.append(this.config().getSitePrefix()).append("/servlet/");
       url.append(path);
 
     // Services
     } else if (this._type == PSHTTPResourceType.SERVICE) {
-      url.append(ps.getSitePrefix()).append("/service");
+      url.append(this.config().getSitePrefix()).append("/service");
       url.append(path);
 
     // Any other resource
@@ -389,6 +401,10 @@ public final class PSHTTPResource {
     private boolean includeError = false;
 
     /**
+     * The pageseeder configuration.
+     */
+    private PSConfig config;
+    /**
      * The parameters to send.
      */
     private final Map<String, String> _parameters = new HashMap<>();
@@ -453,6 +469,15 @@ public final class PSHTTPResource {
     }
 
     /**
+     * Define which pageseeder will be used.
+     * @param config The Pageseeder configuration.
+     * @return this builder.
+     */
+    public Builder config (PSConfig config) {
+      this.config = config;
+      return this;
+    }
+    /**
      * Add a parameter to this request.
      *
      * @param name  The name of the parameter
@@ -473,13 +498,18 @@ public final class PSHTTPResource {
       String n = this.name;
       if (t == null) throw new IllegalStateException("Unable to build PSResource, type is not set.");
       if (n == null) throw new IllegalStateException("Unable to build PSResource, name is not set.");
+
       Map<String, String> parameters;
       if (this._parameters.isEmpty()) {
         parameters = Collections.emptyMap();
       } else {
         parameters = new HashMap<>(this._parameters);
       }
-      return new PSHTTPResource(t, n, this.body, parameters, this.includeError);
+
+      if (this.config == null) {
+        config = PSConfig.getDefault();
+      }
+      return new PSHTTPResource(t, n, this.body, parameters, this.includeError, this.config);
     }
 
   }
