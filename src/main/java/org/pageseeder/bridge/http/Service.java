@@ -793,6 +793,13 @@ public enum Service {
   get_uri("/groups/{group}/uris/{uri}"),
 
   /**
+   * Load a single URI object <code>/members/{member}/uris/{uri}</code>
+   *
+   * @see <a href="https://dev.pageseeder.com/api/services/get-uri-GET.html">get-uri (GET)</a>
+   */
+  get_uri_using_member("/members/{member}/uris/{uri}"),
+
+  /**
    * Load a URI object with sharing information <code>/members/{member}/groups/{group}/uris/forurl</code>
    *
    * @see <a href="https://dev.pageseeder.com/api/web_services/services/get-uri-sharing-forurl-GET.html">get-uri-sharing-forurl (GET)</a>
