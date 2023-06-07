@@ -450,7 +450,7 @@ public final class MultipartRequest extends BasicRequest {
     }
 
     // Multipart is always POST
-    connection.setRequestMethod("POST");
+    connection.setRequestMethod(this._method.name());
     connection.setDefaultUseCaches(false);
 
     // Set the headers
