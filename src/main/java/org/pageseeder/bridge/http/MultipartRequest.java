@@ -88,25 +88,12 @@ public final class MultipartRequest extends BasicRequest {
   /**
    * Creates a new multipart request to PageSeeder.
    *
-   * @param method The HTTP method. It can be PUT or Post. It will depend on which service it will use.
-   *               Example:
-   *               @see <a href="https://dev.pageseeder.com/api/services/upload-POST.html">/upload [POST]</a>
-   *               @see <a href="https://dev.pageseeder.com/api/services/upload-PUT.html">/upload [PUT]</a>
-   * @param path   The path without the site prefix (e.g. <code>/ps</code>)
-   */
-  public MultipartRequest(Method method, String path) {
-    super(method, path);
-    this._boundary = newBoundary();
-    this._headers.add(new Header("Content-Type", "multipart/form-data; boundary=\"" + this._boundary+ "\""));
-  }
-
-  /**
-   * Creates a new multipart request to PageSeeder.
-   *
    * @param path   The path without the site prefix (e.g. <code>/ps</code>)
    */
   public MultipartRequest(String path) {
-    this(Method.POST, path);
+    super(Method.POST, path);
+    this._boundary = newBoundary();
+    this._headers.add(new Header("Content-Type", "multipart/form-data; boundary=\"" + this._boundary+ "\""));
   }
 
   /**
@@ -450,7 +437,7 @@ public final class MultipartRequest extends BasicRequest {
     }
 
     // Multipart is always POST
-    connection.setRequestMethod(this._method.name());
+    connection.setRequestMethod("POST");
     connection.setDefaultUseCaches(false);
 
     // Set the headers

@@ -344,7 +344,7 @@ abstract class BasicRequest {
     }
 
     // When not using the "application/x-www-form-urlencoded"
-    if (this._method != Method.POST && this._method != Method.PATCH && this._method != Method.PUT) {
+    if (this._method != Method.POST && this._method != Method.PATCH) {
       if (!this._parameters.isEmpty()) {
         url.append('?').append(encodeParameters());
       }
