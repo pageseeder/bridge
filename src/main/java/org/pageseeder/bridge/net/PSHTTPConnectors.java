@@ -1965,9 +1965,7 @@ public final class PSHTTPConnectors {
     Preconditions.isNotEmpty(fragment.id(), "fragment id");
     String service = Services.toGetFragment(editorIdentifier, groupIdentifier, Long.toString(documentId), fragment.id());
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVICE, service);
-    //connector.setBody(fragment.toPSML());
-    // TODO need to add content parameter due to bug in 5.8, fix for 5.9
-    connector.addParameter("content", fragment.toPSML());
+    connector.setBody(fragment.toPSML());
     return connector;
   }
 
