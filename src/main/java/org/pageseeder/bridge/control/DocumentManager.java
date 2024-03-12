@@ -379,9 +379,7 @@ public final class DocumentManager extends Sessionful {
   public @Nullable PSMLFragment putFragment(PSDocument document, PSGroup group, PSMember editor, PSMLFragment fragment) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.putFragment(document, group, editor, fragment).using(this._credentials);
     PSFragmentHandler handler = new PSFragmentHandler(document);
-    //connector.put(handler);
-    // TODO changed to post due to bug in 5.8, fix for 5.9
-    connector.post(handler);
+    connector.put(handler);
     return handler.getFragment();
   }
 
