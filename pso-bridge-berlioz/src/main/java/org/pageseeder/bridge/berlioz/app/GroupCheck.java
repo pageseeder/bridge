@@ -46,12 +46,15 @@ import org.pageseeder.bridge.xml.HandlerFactory;
  *
  * @since 0.9.9
  * @version 0.9.9
+ *
+ * @deprecated Use `ClientGroupCheck` instead.
  */
+@Deprecated
 public final class GroupCheck implements AppAction {
 
   @Override
   public String getName() {
-    return "check-pageseeder";
+    return "check-group";
   }
 
   @Override

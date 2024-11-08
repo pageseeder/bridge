@@ -34,7 +34,10 @@ import org.pageseeder.xmlwriter.XMLWriter;
  *
  * @version 0.1.0
  * @since 0.1.0
+ *
+ * @deprecated Use `OAuthUser` instead.
  */
+@Deprecated
 public final class PSUser implements User {
 
   /** As per requirement for the {@link Serializable} interface. */
