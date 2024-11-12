@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.pageseeder.berlioz.aeson.JSONWriter;
 import org.pageseeder.bridge.http.Response;
 import org.pageseeder.bridge.http.ServiceError;
+import org.pageseeder.bridge.oauth.TokenResponse;
 
 /**
  * Utility class to write JSON response.
@@ -152,6 +153,38 @@ public final class JSONResponses {
     .property("description", error.message())
     .end()
     .end();
+    return HttpServletResponse.SC_BAD_REQUEST;
+  }
+
+  /**
+   * Writes an error response for the action when a PageSeeder service error has occurred.
+   *
+   * <pre>
+   *  {
+   *    "action": "[action_name]"
+   *    "error": {
+   *      "code": "[error_code]"
+   *      "description": "[error_message]"
+   *    }
+   *  }
+   * </pre>
+   *
+   * @param action   The action triggered
+   * @param json     The JSON writer for the response
+   * @param response The PageSeeder service response
+   *
+   * @return Always 400 (BAD REQUEST)
+   */
+  public static int serviceError(AppAction action, JSONWriter json, TokenResponse response) {
+    String error = response.getError() == null ? "" : response.getError();
+    String description = response.getErrorDescription() == null ? "" : (" : " + response.getErrorDescription());
+    json.startObject()
+            .property("action", action.getName())
+            .startObject("error")
+            .property("code", response.getResponseCode())
+            .property("description", error + description )
+            .end()
+            .end();
     return HttpServletResponse.SC_BAD_REQUEST;
   }
 

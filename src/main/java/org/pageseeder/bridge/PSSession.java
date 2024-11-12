@@ -25,7 +25,10 @@ import org.eclipse.jdt.annotation.Nullable;
  * @author Christophe Lauret
  * @version 0.2.27
  * @since 0.1.0
+ *
+ * @deprecated Use `PSToken` instead.
  */
+@Deprecated
 public final class PSSession implements PSCredentials, Serializable {
 
   /**

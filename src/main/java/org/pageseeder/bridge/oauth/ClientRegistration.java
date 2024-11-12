@@ -17,6 +17,8 @@ package org.pageseeder.bridge.oauth;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.pageseeder.bridge.PSConfig;
+import org.pageseeder.bridge.PSCredentials;
+import org.pageseeder.bridge.core.Username;
 import org.pageseeder.bridge.http.*;
 import org.pageseeder.bridge.net.UsernamePassword;
 import org.pageseeder.bridge.xml.BasicHandler;
@@ -273,7 +275,20 @@ public final class ClientRegistration {
    * @return The credentials for client.
    */
   public @Nullable ClientCredentials register(UsernamePassword credentials, PSConfig config) {
-    String service = ServicePath.newPath("/oauth/members/{member}/clients", credentials.username());
+    return register(credentials.username(), credentials, config);
+  }
+
+  /**
+   * Register the new OAuth client.
+   *
+   * @param username    The username of the client member
+   * @param credentials The credentials for connecting to PageSeeder
+   * @param config      The PageSeeder configuration to use.
+   *
+   * @return The credentials for client.
+   */
+  public @Nullable ClientCredentials register(String username, PSCredentials credentials, PSConfig config) {
+    String service = ServicePath.newPath("/oauth/members/{member}/clients", username);
     Request request = new Request(Method.POST, service).using(credentials).config(config);
     request.parameter("name", this._clientName);
     String d = this.description;
@@ -313,6 +328,9 @@ public final class ClientRegistration {
     String app = this.appName;
     if (app != null) {
       request.parameter("app", app);
+    }
+    if (this.scope != null) {
+      request.parameter("scope", this.scope);
     }
     String webhook = this.webhookSecret;
     if (webhook != null) {

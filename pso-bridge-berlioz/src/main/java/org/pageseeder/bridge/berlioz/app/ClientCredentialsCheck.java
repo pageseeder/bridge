@@ -15,11 +15,6 @@
  */
 package org.pageseeder.bridge.berlioz.app;
 
-import java.util.Collections;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.pageseeder.berlioz.aeson.JSONWriter;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
@@ -29,55 +24,59 @@ import org.pageseeder.bridge.http.Response;
 import org.pageseeder.bridge.http.Service;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.net.UsernamePassword;
+import org.pageseeder.bridge.oauth.ClientCredentials;
+import org.pageseeder.bridge.oauth.TokenRequest;
+import org.pageseeder.bridge.oauth.TokenResponse;
 import org.pageseeder.bridge.xml.HandlerFactory;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Collections;
+
 /**
- * Verifies the credentials of the user.
+ * Verifies the OAuth client credentials.
  *
  * <ul>
  *   <li><code>setup-url</code>: the PageSeeder base URL</li>
- *   <li><code>setup-username</code>: the username of the user to check</li>
- *   <li><code>setup-password</code>: the password of the user to check</li>
+ *   <li><code>setup-client</code>: the client to check</li>
+ *   <li><code>setup-secret</code>: the secret of the client to check</li>
  * </ul>
  *
  * <p>If the "setup-url" is valid the config is stored in the "psconfig" attribute.
  *
  *
- * @author Christophe Lauret
+ * @author Philip Rutherford
  *
- * @since 0.9.9
- * @version 0.9.9
- *
- * @deprecated Use `ClientCredentialsCheck` instead.
+ * @since 0.11.38
+ * @version 0.11.38
  */
-@Deprecated
-public final class CredentialsCheck implements AppAction {
+public final class ClientCredentialsCheck implements AppAction {
 
   @Override
   public String getName() {
-    return "check-credentials";
+    return "check-client-credentials";
   }
 
   @Override
   public int process(HttpServletRequest req, JSONWriter json) {
     HttpSession session = req.getSession();
     String url = req.getParameter("setup-url");
-    String username = req.getParameter("setup-username");
-    String password = req.getParameter("setup-password");
+    String client = req.getParameter("setup-client");
+    String secret = req.getParameter("setup-secret");
 
     // Checks
     if (url == null || "".equals(url)) return JSONResponses.requiresParameter(this, json, "setup-url");
-    if (username == null || "".equals(username)) return JSONResponses.requiresParameter(this, json, "setup-username");
-    if (password == null || "".equals(password)) return JSONResponses.requiresParameter(this, json, "setup-password");
+    if (client == null || "".equals(client)) return JSONResponses.requiresParameter(this, json, "setup-client");
+    if (secret == null || "".equals(secret)) return JSONResponses.requiresParameter(this, json, "setup-secret");
 
     // Try the config
     PSConfig config = PSConfig.newInstance(url);
-    PSCredentials credentials = new UsernamePassword(username, password);
-    Response response = new Request(Method.GET, Service.get_self).config(config).using(credentials).response();
+    ClientCredentials clientCredentials = new ClientCredentials(client, secret);
+    TokenResponse response = TokenRequest.newClientCredentials(clientCredentials, config).post();
 
-    // We check 200 as we don't accept redirects
-    if (response.code() == 200) {
-      PSMember member = response.consumeItem(HandlerFactory.newPSMemberHandler());
+    // We check successful
+    if (response.isSuccessful()) {
+      PSMember member = response.getMember();
       session.setAttribute("psconfig", config);
       return JSONResponses.ok(this, json, Collections.singletonMap("name", member.getFirstname()));
     } else return JSONResponses.serviceError(this, json, response);

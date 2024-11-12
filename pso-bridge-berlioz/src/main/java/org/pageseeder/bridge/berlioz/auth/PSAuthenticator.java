@@ -48,7 +48,10 @@ import org.slf4j.LoggerFactory;
  *
  * @version 0.4.0
  * @since 0.1.0
+ *
+ * @deprecated Use `oauth.PasswordFilter` instead.
  */
+@Deprecated
 public final class PSAuthenticator implements Authenticator<PSUser> {
 
   /**
