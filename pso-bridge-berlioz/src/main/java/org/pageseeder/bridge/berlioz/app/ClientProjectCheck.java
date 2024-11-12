@@ -70,8 +70,9 @@ public final class ClientProjectCheck implements AppAction {
     if (name == null || "".equals(name)) return JSONResponses.requiresParameter(this, json, "setup-project");
 
     // Get OAuth token
+    PSConfig config = PSConfig.newInstance(url);
     ClientCredentials clientCredentials = new ClientCredentials(client, secret);
-    TokenResponse response = TokenRequest.newClientCredentials(clientCredentials).post();
+    TokenResponse response = TokenRequest.newClientCredentials(clientCredentials, config).post();
 
     // Check successful
     if (!response.isSuccessful()) {
@@ -79,7 +80,6 @@ public final class ClientProjectCheck implements AppAction {
     }
 
     // Get project
-    PSConfig config = PSConfig.newInstance(url);
     PSCredentials credentials = response.getAccessToken();
     PSGroup project = Request.newService(Method.GET, "/projects/{group}", name)
         .config(config)

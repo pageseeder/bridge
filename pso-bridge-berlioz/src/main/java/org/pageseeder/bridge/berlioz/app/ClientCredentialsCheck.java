@@ -72,7 +72,7 @@ public final class ClientCredentialsCheck implements AppAction {
     // Try the config
     PSConfig config = PSConfig.newInstance(url);
     ClientCredentials clientCredentials = new ClientCredentials(client, secret);
-    TokenResponse response = TokenRequest.newClientCredentials(clientCredentials).post();
+    TokenResponse response = TokenRequest.newClientCredentials(clientCredentials, config).post();
 
     // We check successful
     if (response.isSuccessful()) {

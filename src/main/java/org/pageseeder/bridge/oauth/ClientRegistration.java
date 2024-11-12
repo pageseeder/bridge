@@ -329,6 +329,9 @@ public final class ClientRegistration {
     if (app != null) {
       request.parameter("app", app);
     }
+    if (this.scope != null) {
+      request.parameter("scope", this.scope);
+    }
     String webhook = this.webhookSecret;
     if (webhook != null) {
       request.parameter("webhook-secret", webhook);
