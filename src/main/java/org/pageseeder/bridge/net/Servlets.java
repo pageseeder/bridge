@@ -36,22 +36,31 @@ public final class Servlets {
 
   /**
    * The document browser Servlet <code>com.pageseeder.review.DocumentBrowser</code>.
+   *
+   * @deprecated Use URI services instead.
    */
+  @Deprecated
   public static final String DOCUMENT_BROWSER = "com.pageseeder.review.DocumentBrowser";
 
   /**
    * The generic search Servlet <code>com.pageseeder.search.GenericSearch</code>.
+   *
+   * @deprecated Use Search services instead.
    */
+  @Deprecated
   public static final String GENERIC_SEARCH = "com.pageseeder.search.GenericSearch";
 
   /**
    * The login Servlet.
+   *
+   * @deprecated Use OAuth services instead.
    */
+  @Deprecated
   public static final String LOGIN_SERVLET = "com.pageseeder.Login";
 
   /**
-   * The upload search Servlet <code>com.pageseeder.upload.servlets.UploadServlet</code>.
+   * The upload Servlet.
    */
-  public static final String UPLOAD_SERVLET = "com.pageseeder.upload.servlets.UploadServlet";
+  public static final String UPLOAD_SERVLET = "upload";
 
 }

@@ -39,6 +39,7 @@ public enum Servlet {
   /**
    * The login Servlet.
    */
+  @Deprecated
   LOGIN("com.pageseeder.Login"),
 
   /**
