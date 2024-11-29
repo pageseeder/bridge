@@ -1978,7 +1978,10 @@ public final class PSHTTPConnectors {
    * @return The corresponding connector
    *
    * @throws FailedPrecondition If the group name if not specified.
+   *
+   * @deprecated Use Search services instead.
    */
+  @Deprecated
   public static PSHTTPConnector find(PSPredicate predicate, PSGroup group) throws FailedPrecondition {
     String groupName = Preconditions.checkNotEmpty(group.getName(), "group name");
     String servlet = Servlets.GENERIC_SEARCH;
@@ -2007,7 +2010,10 @@ public final class PSHTTPConnectors {
    * @return The corresponding connector
    *
    * @throws FailedPrecondition If the group name if not specified.
+   *
+   * @deprecated Use Search services instead.
    */
+  @Deprecated
   public static PSHTTPConnector find(PSPredicate predicate, List<PSGroup> groups) throws FailedPrecondition {
     if (groups.isEmpty()) throw new FailedPrecondition("At one group must be specified");
     String servlet = Servlets.GENERIC_SEARCH;

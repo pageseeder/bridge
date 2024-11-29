@@ -348,7 +348,10 @@ public final class MemberManager extends Sessionful {
    * @return <code>true</code> if successful.
    *
    * @throws APIException If an error occurs while connecting to PageSeeder.
+   *
+   * @deprecated Use Edit member email service instead.
    */
+  @Deprecated
   public boolean confirmEmailChange(String username, String email, String key) throws APIException {
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, "com.pageseeder.ChangeDetailsForm");
     connector.using(this._credentials);
