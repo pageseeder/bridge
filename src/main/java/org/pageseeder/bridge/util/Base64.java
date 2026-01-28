@@ -52,7 +52,7 @@ public final class Base64 {
   }
 
   public static String decodeURL(String data, Charset charset) {
-    byte[] bytes = decode(data);
+    byte[] bytes = decodeURL(data);
     return new String(bytes, charset);
   }
 
