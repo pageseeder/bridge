@@ -54,18 +54,18 @@ allprojects {
 
 dependencies {
 
-  api('org.pageseeder.xmlwriter:pso-xmlwriter:1.0.3')
-  api('net.sf.ehcache:ehcache:2.8.8')
-  api('javax.cache:cache-api:1.0.0')
+  api(libs.xmlwriter)
+  api(libs.ecache)
+  api(libs.cache.api)
   //JDK 11 does not java this module (xml.bind) http://openjdk.java.net/jeps/320
-  api('jakarta.xml.bind:jakarta.xml.bind-api:2.3.2')
+  api(libs.jakarta.xml.bind)
 
-  implementation('org.slf4j:slf4j-api:1.7.30')
+  implementation(libs.slf4j.api)
 
-  compileOnly ('org.eclipse.jdt:org.eclipse.jdt.annotation:2.0.0')
+  compileOnly (libs.annotations)
 
-  testImplementation('junit:junit:4.12')
-  testImplementation('org.slf4j:slf4j-simple:1.7.30')
+  testImplementation(libs.junit)
+  testImplementation(libs.slf4j.simple)
 
 }
 
