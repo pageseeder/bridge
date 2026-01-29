@@ -6,17 +6,16 @@ dependencies {
   // module dependencies
   api (rootProject)
 
-  api('org.slf4j:slf4j-api:1.7.30')
-  api('org.pageseeder.xmlwriter:pso-xmlwriter:1.0.3')
-  api('org.pageseeder.berlioz:pso-berlioz:0.11.6')
-  //JDK 11 does not java this module (xml.bind) http://openjdk.java.net/jeps/320
-  api('jakarta.xml.bind:jakarta.xml.bind-api:2.3.2')
+  api(libs.slf4j.api)
+  api(libs.xmlwriter)
+  api(libs.berlioz)
+  api(libs.jakarta.xml.bind)
 
-  compileOnly('javax.servlet:javax.servlet-api:3.1.0')
-  compileOnly('org.eclipse.jdt:org.eclipse.jdt.annotation:2.0.0')
+  compileOnly(libs.servlet.api)
+  compileOnly(libs.annotations)
 
-  testImplementation('junit:junit:4.12')
-  testImplementation('org.slf4j:slf4j-simple:1.7.30')
+  testImplementation(libs.junit)
+  testImplementation(libs.slf4j.simple)
 
 }
 
