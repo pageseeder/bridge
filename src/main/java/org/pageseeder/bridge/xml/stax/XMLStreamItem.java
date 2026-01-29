@@ -33,7 +33,12 @@ import javax.xml.stream.XMLStreamReader;
 public interface XMLStreamItem<T> extends XMLStreamHandler<T> {
 
   /**
+   * Generates an item from the XML Stream.
+   *
+   * @param xml The XML Stream reader.
    * @return the item that was processed and added to the list.
+   *
+   * @throws XMLStreamException If an error occurs while processing the XML stream.
    */
   default T toItem(XMLStreamReader xml) throws XMLStreamException {
     return get(xml);

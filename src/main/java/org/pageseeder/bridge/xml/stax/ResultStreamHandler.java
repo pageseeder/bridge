@@ -27,7 +27,7 @@ import java.util.Objects;
  *
  * <p>Implementation note: this is an experimental class: DO NOT USE IN PRODUCTION!</p>
  *
- * <p>Implementations must supply an implementation of `result(Map<String,String)`</p>
+ * <p>Implementations must supply an implementation of {@code result(Map<String,String)}</p>
  *
  * @param <T> The type of object that can be created from a single result
  */
@@ -36,16 +36,16 @@ public abstract class ResultStreamHandler<T> extends ElementXMLStreamHandler<T> 
   /**
    * List of fields to extract from the search results.
    */
-  private List<String> _fieldNames;
+  private List<String> fieldNames;
 
   public ResultStreamHandler() {
     super("result");
-    this._fieldNames = Collections.emptyList();
+    this.fieldNames = Collections.emptyList();
   }
 
   public ResultStreamHandler(List<String> fieldNames) {
     super("result");
-    this._fieldNames = fieldNames;
+    this.fieldNames = fieldNames;
   }
 
   public T get(XMLStreamReader xml) throws XMLStreamException {
@@ -54,7 +54,7 @@ public abstract class ResultStreamHandler<T> extends ElementXMLStreamHandler<T> 
         xml.next();
         if (xml.isStartElement() && "field".equals(xml.getLocalName())) {
           String name = attribute(xml, "name");
-           if (this._fieldNames.isEmpty() || this._fieldNames.contains(name)) {
+           if (this.fieldNames.isEmpty() || this.fieldNames.contains(name)) {
              String value = optionalAttribute(xml, "datetime");
              if (value == null)
                value = optionalAttribute(xml, "date");
@@ -99,6 +99,15 @@ public abstract class ResultStreamHandler<T> extends ElementXMLStreamHandler<T> 
 
     public int hashCode() {
       return this.name.hashCode()* 31 + this.value.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof Field) {
+        Field other = (Field)obj;
+        return this.name.equals(other.name) && this.value.equals(other.value);
+      }
+      return false;
     }
   }
 }
