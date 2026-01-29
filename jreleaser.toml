@@ -1,0 +1,40 @@
+[project]
+name = "bridge"
+description = "Java API to connect to a PageSeeder server"
+longDescription = """
+
+"""
+tags = ["xml", "psml", "html", "api", "pageseeder", "java", "berlioz"]
+authors = ["Carlos Cabral", "Christophe Lauret", "Jean-Baptiste Reure", "Philip Rutherford"]
+license = "Apache-2.0"
+inceptionYear = "2016"
+vendor = "Allette Systems"
+
+# Organization info
+[project.links]
+homepage = "https://github.com/pageseeder/bridge"
+documentation = "https://dev.pageseeder.com"
+license = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+
+# Java-specific configuration
+[project.languages.java]
+groupId = "org.pageseeder.bridge"
+
+# Git configuration
+[release.github]
+owner = "pageseeder"
+name = "bridge"
+username = "pageseeder"
+branch = "main"
+
+# Signing configuration
+[signing]
+active = "ALWAYS"
+armored = true
+mode = "FILE"
+
+# Maven deployment configuration
+[deploy.maven.mavenCentral.sonatype]
+active = "ALWAYS"
+url = "https://central.sonatype.com/api/v1/publisher"
+stagingRepositories = ["build/staging-deploy"]

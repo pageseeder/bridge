@@ -19,6 +19,6 @@ dependencies {
 
 }
 
-javadoc {
-  failOnError= false
+tasks.withType<Javadoc>().configureEach {
+  isFailOnError = false
 }
