@@ -1,0 +1,74 @@
+[project]
+name = "bridge"
+description = "Java API to connect to a PageSeeder server"
+longDescription = """
+# PageSeeder Bridge
+
+PageSeeder Bridge is a Java API that provides a convenient way to integrate with the **PageSeeder Service API**.
+
+It is designed for two complementary styles of integration:
+
+- **Low-level access** when you want precise control over HTTP calls, headers, parameters, authentication, caching/ETags, and response handling.
+- **Higher-level managers** when you want common operations packaged into simple, reusable entry points (at the cost of some flexibility and visibility).
+
+## What’s included
+
+- A built-in HTTP client with fluent request/response handling
+- Authentication support including sessions, Basic Auth, and OAuth/OpenID (for compatible PageSeeder versions)
+- A basic object model (POJOs) mapping to PageSeeder concepts (members, groups, projects, folders, URIs, etc.)
+- XML parsing utilities (SAX and StAX handlers) to consume API responses into objects and lists
+- Convenience “manager” classes for common operations on PageSeeder objects
+- Optional caching behavior (where supported/configured) to reduce repeated retrieval costs
+
+## Package overview
+
+- `org.pageseeder.bridge.control` — manager layer for common operations
+- `org.pageseeder.bridge.http` — fluent HTTP API (requests, responses, headers, parameters, session updates, consumers)
+- `org.pageseeder.bridge.model` — PageSeeder object model as simple Java POJOs
+- `org.pageseeder.bridge.oauth` — OAuth/OpenID client utilities (where supported by the server)
+- `org.pageseeder.bridge.xml` / `org.pageseeder.bridge.xml.stax` — SAX and StAX handlers for parsing response XML
+- `org.pageseeder.bridge.nio` — PSML file type detection support
+
+## When to use it
+
+Use PageSeeder Bridge if you need a clean, well-structured Java integration with PageSeeder services—whether you prefer direct, explicit service calls or a more “batteries-included” manager-based approach.
+"""
+tags = [
+    "java", "sdk", "client", "http", "rest",
+    "authentication", "oauth2", "openid-connect",
+    "xml", "sax", "stax", "psml", "html",
+    "pageseeder", "berlioz"
+]
+authors = ["Carlos Cabral", "Christophe Lauret", "Jean-Baptiste Reure", "Philip Rutherford"]
+license = "Apache-2.0"
+inceptionYear = "2016"
+vendor = "Allette Systems"
+
+# Organization info
+[project.links]
+homepage = "https://github.com/pageseeder/bridge"
+documentation = "https://dev.pageseeder.com"
+license = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+
+# Java-specific configuration
+[project.languages.java]
+groupId = "org.pageseeder.bridge"
+
+# Git configuration
+[release.github]
+owner = "pageseeder"
+name = "bridge"
+username = "pageseeder"
+branch = "main"
+
+# Signing configuration
+[signing]
+active = "ALWAYS"
+armored = true
+mode = "FILE"
+
+# Maven deployment configuration
+[deploy.maven.mavenCentral.sonatype]
+active = "ALWAYS"
+url = "https://central.sonatype.com/api/v1/publisher"
+stagingRepositories = ["build/staging-deploy"]

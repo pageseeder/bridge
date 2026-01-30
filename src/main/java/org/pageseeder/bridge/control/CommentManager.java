@@ -64,6 +64,10 @@ public final class CommentManager extends Sessionful {
    * <p>This method only works for comments posted against a group.
    *
    * @param comment The comment to create
+   *
+   * @return <code>true</code> if the comment was successfully created.
+   *
+   * @throws APIException If an error occurs while creating the comment.
    */
   public boolean createComment(PSComment comment) throws APIException {
     PSMember member = checkAuthorMember(comment);
@@ -77,6 +81,10 @@ public final class CommentManager extends Sessionful {
    *
    * @param comment The comment to create
    * @param creator The comment's creator (may be different from author)
+   *
+   * @return <code>true</code> if the comment was successfully created.
+   *
+   * @throws APIException If an error occurs while creating the comment.
    */
   public boolean createComment(PSComment comment, PSMember creator) throws APIException {
     List<PSGroup> empty = Collections.emptyList();
@@ -89,6 +97,10 @@ public final class CommentManager extends Sessionful {
    * @param comment The comment to create
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param group   The group the comment should be posted against
+   *
+   * @return <code>true</code> if the comment was successfully created.
+   *
+   * @throws APIException If an error occurs while creating the comment.
    */
   public boolean createComment(PSComment comment, PSNotify notify, PSGroup group) throws APIException {
     PSMember member = checkAuthorMember(comment);

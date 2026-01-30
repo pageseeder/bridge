@@ -1,0 +1,24 @@
+description = "Servlets and Berlioz generators for the bridge in Berlioz"
+
+// Dependencies of the project
+dependencies {
+
+  // module dependencies
+  api (rootProject)
+
+  api(libs.slf4j.api)
+  api(libs.xmlwriter)
+  api(libs.berlioz)
+  api(libs.jakarta.xml.bind)
+
+  compileOnly(libs.servlet.api)
+  compileOnly(libs.annotations)
+
+  testImplementation(libs.junit)
+  testImplementation(libs.slf4j.simple)
+
+}
+
+tasks.withType<Javadoc>().configureEach {
+  isFailOnError = false
+}

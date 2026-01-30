@@ -64,7 +64,6 @@ public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
    *
    * @return the attribute value
    *
-   * @throws XMLStreamException if thrown by the underlying XML stream
    * @throws MissingAttributeException If the attribute was missing.
    */
   public static String attribute(XMLStreamReader xml, String name) {
@@ -82,7 +81,6 @@ public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
    *
    * @return the attribute value or the fallback value if not specified
    *
-   * @throws XMLStreamException if thrown by the underlying XML stream
    * @throws MissingAttributeException If the attribute was missing.
    */
   public static String attribute(XMLStreamReader xml, String name, String fallback) {
@@ -101,7 +99,6 @@ public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
    *
    * @return the attribute value or the fallback value if not specified
    *
-   * @throws XMLStreamException if thrown by the underlying XML stream
    * @throws InvalidAttributeException If the attribute could not be parsed as a long
    */
   public static long attribute(XMLStreamReader xml, String name, long fallback) {
@@ -122,8 +119,6 @@ public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
    * @param fallback The fallback value for the attribute
    *
    * @return <code>true</code> if the attribute value is equal to "true" or the fallback value is <code>true</code>.
-   *
-   * @throws XMLStreamException if thrown by the underlying XML stream
    */
   public static boolean attribute(XMLStreamReader xml, String name, boolean fallback) {
     String value = optionalAttribute(xml, name);
@@ -139,7 +134,6 @@ public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
    *
    * @return the attribute value or <code>null</code>
    *
-   * @throws XMLStreamException if thrown by the underlying XML stream
    * @throws MissingAttributeException If the attribute was missing.
    */
   @Nullable
