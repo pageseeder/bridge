@@ -18,7 +18,7 @@ package org.pageseeder.bridge.model;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSEntity;
 

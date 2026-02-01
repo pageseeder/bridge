@@ -21,8 +21,8 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.ServiceLoader;
 
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.spi.ConfigProvider;
 
 /**

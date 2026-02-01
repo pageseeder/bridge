@@ -15,7 +15,7 @@
  */
 package org.pageseeder.bridge.http;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  *

@@ -88,7 +88,7 @@ dependencies {
 
   implementation(libs.slf4j.api)
 
-  compileOnly (libs.annotations)
+  compileOnly (libs.jspecify)
 
   testImplementation(libs.junit)
   testImplementation(libs.slf4j.simple)

@@ -15,7 +15,7 @@
  */
 package org.pageseeder.bridge.xml.stax;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.xml.InvalidAttributeException;
 import org.pageseeder.bridge.xml.MissingAttributeException;
 

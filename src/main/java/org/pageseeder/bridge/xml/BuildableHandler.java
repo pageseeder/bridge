@@ -15,7 +15,7 @@
  */
 package org.pageseeder.bridge.xml;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Extends the basic handler by providing methods to create immutable objects.

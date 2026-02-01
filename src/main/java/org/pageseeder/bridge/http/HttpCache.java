@@ -15,7 +15,7 @@
  */
 package org.pageseeder.bridge.http;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;

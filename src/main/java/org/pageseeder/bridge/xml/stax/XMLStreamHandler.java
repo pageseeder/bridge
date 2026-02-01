@@ -15,7 +15,7 @@
  */
 package org.pageseeder.bridge.xml.stax;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;

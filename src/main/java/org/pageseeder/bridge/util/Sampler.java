@@ -15,7 +15,7 @@
  */
 package org.pageseeder.bridge.util;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.pageseeder.bridge.model.PSMember;
 
 import java.io.BufferedReader;

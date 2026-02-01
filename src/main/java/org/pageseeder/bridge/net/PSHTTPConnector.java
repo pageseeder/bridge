@@ -22,7 +22,7 @@ import java.util.Map;
 
 import javax.xml.transform.Templates;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;

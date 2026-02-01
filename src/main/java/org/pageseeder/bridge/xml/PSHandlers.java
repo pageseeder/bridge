@@ -18,7 +18,7 @@ package org.pageseeder.bridge.xml;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.model.PSNotification;
 import org.pageseeder.bridge.model.PSRole;
 import org.pageseeder.bridge.util.ISO8601;

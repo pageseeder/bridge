@@ -18,7 +18,7 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSResult;
 import org.xml.sax.Attributes;

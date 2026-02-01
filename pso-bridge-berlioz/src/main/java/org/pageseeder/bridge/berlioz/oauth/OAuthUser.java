@@ -17,7 +17,7 @@ package org.pageseeder.bridge.berlioz.oauth;
 
 import java.io.IOException;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSToken;
 import org.pageseeder.bridge.berlioz.auth.User;
 import org.pageseeder.bridge.model.PSMember;

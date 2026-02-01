@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A simple object to hold the content of a cached response.

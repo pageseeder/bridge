@@ -22,7 +22,7 @@ import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.EternalExpiryPolicy;
 import javax.cache.spi.CachingProvider;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSEntity;
 import org.pageseeder.bridge.PSEntityCache;
 

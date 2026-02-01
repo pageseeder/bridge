@@ -18,7 +18,7 @@ package org.pageseeder.bridge.xml;
 import java.util.Objects;
 import java.util.Stack;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.model.PSThreadStatus;
 import org.pageseeder.xmlwriter.XML.NamespaceAware;
 import org.pageseeder.xmlwriter.XMLStringWriter;

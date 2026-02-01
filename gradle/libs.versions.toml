@@ -4,7 +4,6 @@ slf4j = "2.0.17"
 xmlwriter = "1.1.1"
 
 [libraries]
-annotations = { module = "org.eclipse.jdt:org.eclipse.jdt.annotation", version = "2.4.100" }
 berlioz = { module = "org.pageseeder.berlioz:pso-berlioz", version = "0.12.6" }
 cache-api = { module = "javax.cache:cache-api", version= "1.0.0" }
 ecache = { module = "net.sf.ehcache:ehcache", version = "2.10.9.2" }

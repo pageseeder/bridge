@@ -18,7 +18,7 @@ package org.pageseeder.bridge.net;
 import java.net.HttpURLConnection;
 import java.util.Objects;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Provides metadata about a response to an HTTP request made to PageSeeder.

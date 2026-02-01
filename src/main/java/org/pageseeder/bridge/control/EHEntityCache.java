@@ -18,7 +18,7 @@ package org.pageseeder.bridge.control;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSEntity;
 import org.pageseeder.bridge.PSEntityCache;
 import org.slf4j.Logger;

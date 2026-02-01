@@ -15,7 +15,7 @@
  */
 package org.pageseeder.bridge;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Interface for all entity caches.

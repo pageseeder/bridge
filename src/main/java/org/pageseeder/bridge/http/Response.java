@@ -15,7 +15,7 @@
  */
 package org.pageseeder.bridge.http;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.xml.DuplexHandler;
 import org.pageseeder.bridge.xml.Handler;

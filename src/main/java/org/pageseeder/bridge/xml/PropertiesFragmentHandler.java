@@ -1,6 +1,6 @@
 package org.pageseeder.bridge.xml;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.psml.PropertiesFragment;
 import org.pageseeder.bridge.psml.Property;
 import org.xml.sax.Attributes;

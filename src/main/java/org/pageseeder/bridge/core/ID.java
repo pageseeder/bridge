@@ -18,7 +18,7 @@ package org.pageseeder.bridge.core;
 import java.io.Serializable;
 import java.util.Objects;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Define an identifier.

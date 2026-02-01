@@ -19,5 +19,5 @@
  * @author Christophe Lauret
  * @version 0.1.0
  */
-@org.eclipse.jdt.annotation.NonNullByDefault
+@org.jspecify.annotations.NullMarked
 package org.pageseeder.bridge.xml;

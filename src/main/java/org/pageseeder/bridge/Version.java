@@ -15,7 +15,7 @@
  */
 package org.pageseeder.bridge;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.http.Method;
 import org.pageseeder.bridge.http.Request;
 import org.pageseeder.bridge.http.Response;

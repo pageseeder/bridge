@@ -18,7 +18,7 @@ package org.pageseeder.bridge.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Additional options when creating a group which aren't part of the group entity.

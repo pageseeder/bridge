@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.net.HTTP;
 import org.pageseeder.bridge.net.UsernamePassword;

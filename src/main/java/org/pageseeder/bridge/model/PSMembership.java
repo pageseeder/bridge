@@ -17,7 +17,7 @@ package org.pageseeder.bridge.model;
 
 import java.util.Date;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.PSEntity;
 import org.pageseeder.bridge.Requires;

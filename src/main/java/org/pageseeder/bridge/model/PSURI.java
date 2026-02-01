@@ -20,7 +20,7 @@ import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.*;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.util.ISO8601;
 

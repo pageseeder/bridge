@@ -17,7 +17,7 @@ package org.pageseeder.bridge.control;
 
 import java.util.Objects;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.*;
 import org.pageseeder.bridge.model.MemberOptions;
 import org.pageseeder.bridge.model.PSGroup;

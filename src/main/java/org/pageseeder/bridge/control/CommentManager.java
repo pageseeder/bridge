@@ -18,7 +18,7 @@ package org.pageseeder.bridge.control;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.PSCredentials;

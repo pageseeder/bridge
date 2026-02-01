@@ -17,7 +17,7 @@ package org.pageseeder.bridge;
 
 import java.io.Serializable;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A simple object to represent a PageSeeder session.

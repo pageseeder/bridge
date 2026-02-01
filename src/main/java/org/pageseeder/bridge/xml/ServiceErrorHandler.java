@@ -1,6 +1,6 @@
 package org.pageseeder.bridge.xml;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.http.ServiceError;
 import org.xml.sax.Attributes;
 

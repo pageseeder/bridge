@@ -18,7 +18,7 @@ package org.pageseeder.bridge.net;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.Requires;
 import org.pageseeder.bridge.model.PSComment.Author;
 import org.pageseeder.bridge.model.PSComment.Context;

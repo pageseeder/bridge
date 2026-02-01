@@ -18,7 +18,7 @@ package org.pageseeder.bridge.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.http.ContentException;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;

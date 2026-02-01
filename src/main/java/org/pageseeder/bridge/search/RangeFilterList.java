@@ -15,7 +15,7 @@
  */
 package org.pageseeder.bridge.search;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDateTime;
 import java.util.Collections;

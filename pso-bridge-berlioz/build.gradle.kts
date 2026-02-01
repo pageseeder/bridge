@@ -12,7 +12,7 @@ dependencies {
   api(libs.jakarta.xml.bind)
 
   compileOnly(libs.servlet.api)
-  compileOnly(libs.annotations)
+  compileOnly(libs.jspecify)
 
   testImplementation(libs.junit)
   testImplementation(libs.slf4j.simple)

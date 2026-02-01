@@ -22,5 +22,5 @@
  * @since 0.12.0
  * @version 0.12.0
  */
-@org.eclipse.jdt.annotation.NonNullByDefault
+@org.jspecify.annotations.NullMarked
 package org.pageseeder.bridge.core;

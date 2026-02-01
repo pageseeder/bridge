@@ -15,7 +15,7 @@
  */
 package org.pageseeder.bridge.net;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSSession;
 
 /**

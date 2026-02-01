@@ -26,7 +26,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A HTTP header

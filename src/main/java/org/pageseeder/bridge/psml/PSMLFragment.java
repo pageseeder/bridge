@@ -15,7 +15,7 @@
  */
 package org.pageseeder.bridge.psml;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.xmlwriter.XMLWritable;
 
 /**

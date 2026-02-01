@@ -18,7 +18,7 @@ package org.pageseeder.bridge.xml;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSEntityCache;
 import org.pageseeder.bridge.control.CommentManager;
 import org.pageseeder.bridge.control.DocumentManager;

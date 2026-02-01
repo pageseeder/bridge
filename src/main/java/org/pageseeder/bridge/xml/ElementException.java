@@ -15,7 +15,7 @@
  */
 package org.pageseeder.bridge.xml;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Superclass for exceptions caused by error during the processing of element.
