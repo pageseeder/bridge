@@ -257,23 +257,23 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
   private static final class CachedEntity<E> {
 
     /** The wrapped entity (never <code>null</code>) */
-    private final E _entity;
+    private final E entity;
 
     /** The version of the entity */
-    private final long _version = System.currentTimeMillis();
+    private final long version = System.currentTimeMillis();
 
     public CachedEntity(E entity) {
-      this._entity = entity;
+      this.entity = entity;
     }
 
     /** @return the cached entity */
     public E entity() {
-      return this._entity;
+      return this.entity;
     }
 
     /** @return the version of this entity */
     public long version() {
-      return this._version;
+      return this.version;
     }
 
   }

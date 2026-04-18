@@ -99,11 +99,11 @@ abstract class BasicRequest {
    * @param method The HTTP method
    * @param path   The path
    */
-  public BasicRequest(Method method, String path) {
+  protected BasicRequest(Method method, String path) {
     this._method = Objects.requireNonNull(method, "the HTTP method is required");
     this._path = extractPath(path);
     String query = extractQuery(path);
-    if (query.length() > 0) {
+    if (!query.isEmpty()) {
       addQueryToParameters(query, this._parameters);
     }
     if (method == Method.PATCH) {
@@ -120,7 +120,7 @@ abstract class BasicRequest {
    * @param variables The variables to inject in the URL path.
    */
   @SafeVarargs
-  public BasicRequest(Method method, Service service, @NonNull Object... variables) {
+  protected BasicRequest(Method method, Service service, @NonNull Object... variables) {
     this(method, service.toPath(variables));
   }
 
@@ -130,7 +130,7 @@ abstract class BasicRequest {
    * @param method   The HTTP method
    * @param servlet  The PageSeeder servlet to use
    */
-  public BasicRequest(Method method, Servlet servlet) {
+  protected BasicRequest(Method method, Servlet servlet) {
     this(method, servlet.toPath());
     this._parameters.add(XFORMAT);
   }

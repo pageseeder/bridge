@@ -25,28 +25,28 @@ import java.time.OffsetDateTime;
 
 public final class ModifiedBy implements Serializable, XMLWritable {
 
-  public final OffsetDateTime _date;
+  public final OffsetDateTime date;
 
-  public final Member _member;
+  public final Member member;
 
   public ModifiedBy(Member member, OffsetDateTime date) {
-    this._date = date;
-    this._member = member;
+    this.date = date;
+    this.member = member;
   }
 
   public Member getMember() {
-    return this._member;
+    return this.member;
   }
 
   public OffsetDateTime getDate() {
-    return this._date;
+    return this.date;
   }
 
   @Override
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement("modifiedby");
-    xml.attribute("date", this._date.toString()); // TODO date formatting
-    this._member.toXMLAttributes(xml);
+    xml.attribute("date", this.date.toString()); // TODO date formatting
+    this.member.toXMLAttributes(xml);
     xml.closeElement();
   }
 

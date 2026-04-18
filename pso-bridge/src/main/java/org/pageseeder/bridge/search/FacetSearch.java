@@ -37,22 +37,22 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
   /**
    * The question
    */
-  private final Question _question;
+  private final Question question;
 
   /**
    * A list of facets to compute
    */
-  private final FacetList _facets;
+  private final FacetList facets;
 
   /**
    * A list of field:term pairs to use as filters
    */
-  private final FilterList _filters;
+  private final FilterList filters;
 
   /**
    * List of range searches.
    */
-  private final RangeFilterList _ranges;
+  private final RangeFilterList ranges;
 
   public FacetSearch() {
     this(Scope.EMPTY, Question.EMPTY, FacetList.EMPTY, FilterList.EMPTY, RangeFilterList.EMPTY);
@@ -61,10 +61,10 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
   // DO not make this constructor public as it takes the raw parameters without ensuring that lists and maps are unmodifiable
   private FacetSearch(Scope scope, Question question, FacetList facets, FilterList filters, RangeFilterList ranges) {
     super(scope);
-    this._question = question;
-    this._facets = facets;
-    this._filters = filters;
-    this._ranges = ranges;
+    this.question = question;
+    this.facets = facets;
+    this.filters = filters;
+    this.ranges = ranges;
   }
 
   /**
@@ -75,15 +75,15 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
    * @return A new <code>QuestionSearch</code> instance.
    */
   public FacetSearch question(String question) {
-    Question q = new Question(question, this._question.fields(), this._question.suggestSize());
-    return new FacetSearch(this.scope, q, this._facets, this._filters, this._ranges);
+    Question q = new Question(question, this.question.fields(), this.question.suggestSize());
+    return new FacetSearch(this.scope, q, this.facets, this.filters, this.ranges);
   }
 
   /**
    * @return the question if any; <code>null</code> otherwise.
    */
   public @Nullable String question() {
-    return this._question.question();
+    return this.question.question();
   }
 
 
@@ -96,7 +96,7 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
    */
   public FacetSearch facets(FacetList facets) {
     if (facets == null) facets = FacetList.EMPTY;
-    return new FacetSearch(this.scope, this._question, facets, this._filters, this._ranges);
+    return new FacetSearch(this.scope, this.question, facets, this.filters, this.ranges);
   }
 
   /**
@@ -107,11 +107,11 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
    * @return A new <code>FacetSearch</code> instance with the specified filter.
    */
   public FacetSearch filters(FilterList filters) {
-    return new FacetSearch(this.scope, this._question, this._facets, filters, this._ranges);
+    return new FacetSearch(this.scope, this.question, this.facets, filters, this.ranges);
   }
 
   public FilterList filters() {
-    return this._filters;
+    return this.filters;
   }
 
   /**
@@ -126,28 +126,28 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
    * @return A new <code>QuestionSearch</code> instance including the specified facet.
    */
   public FacetSearch range(String field, Range range) {
-    RangeFilterList ranges = this._ranges.filter(field, range);
-    return new FacetSearch(this.scope, this._question, this._facets, this._filters, ranges);
+    RangeFilterList updatedRanges = this.ranges.filter(field, range);
+    return new FacetSearch(this.scope, this.question, this.facets, this.filters, updatedRanges);
   }
 
   @Override
   public FacetSearch group(String group) {
-    return new FacetSearch(this.scope.group(group), this._question, this._facets, this._filters, this._ranges);
+    return new FacetSearch(this.scope.group(group), this.question, this.facets, this.filters, this.ranges);
   }
 
   @Override
   public FacetSearch project(String project) {
-    return new FacetSearch(this.scope.project(project), this._question, this._facets, this._filters, this._ranges);
+    return new FacetSearch(this.scope.project(project), this.question, this.facets, this.filters, this.ranges);
   }
 
   @Override
   public FacetSearch project(String project, List<String> groups) {
-    return new FacetSearch(this.scope.project(project, groups), this._question, this._facets, this._filters, this._ranges);
+    return new FacetSearch(this.scope.project(project, groups), this.question, this.facets, this.filters, this.ranges);
   }
 
   @Override
   public FacetSearch member(String member) {
-    return new FacetSearch(this.scope.member(member), this._question, this._facets, this._filters, this._ranges);
+    return new FacetSearch(this.scope.member(member), this.question, this.facets, this.filters, this.ranges);
   }
 
   /**
@@ -158,18 +158,18 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
   @Override
   public Map<String, String> toParameters() {
     Map<String, String> parameters = new LinkedHashMap<>();
-    parameters = this._question.toParameters(parameters);
-    parameters = this._facets.toParameters(parameters);
-    parameters = this._filters.toParameters(parameters);
-    parameters = this._ranges.toParameters(parameters);
-    if (this.scope.isProject() && this.scope.groups().size() > 0)
+    parameters = this.question.toParameters(parameters);
+    parameters = this.facets.toParameters(parameters);
+    parameters = this.filters.toParameters(parameters);
+    parameters = this.ranges.toParameters(parameters);
+    if (this.scope.isProject() && !this.scope.groups().isEmpty())
       parameters.put("groups", Search.join(this.scope.groups(), ','));
     return parameters;
   }
 
   @Override
   public String toString() {
-    return this._question.toString() + this._filters.toString() + this._ranges.toString();
+    return this.question.toString() + this.filters.toString() + this.ranges.toString();
   }
 
   @Override

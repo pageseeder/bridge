@@ -189,7 +189,7 @@ public final class MailOptions {
    */
   public boolean hasRecipients() {
     List<String> r = this.recipients;
-    return r != null && r.size() > 0;
+    return r != null && !r.isEmpty();
   }
 
   /**

@@ -35,39 +35,39 @@ import org.pageseeder.xmlwriter.XMLWriter;
 public final class Member implements Serializable, XMLWritable {
 
   /** As per recommendation */
-  private static final long serialVersionUID = 2L;
+  private static final long serialVersionUID = 3L;
 
   /** The PageSeeder database ID. */
-  private final long _id;
+  private final long id;
 
   /** The username of the member. */
-  private final Username _username;
+  private final Username username;
 
   /** The email address of the member. */
-  private final Email _email;
+  private final Email email;
 
   /** The first name of the member. */
-  private final String _firstname;
+  private final String firstname;
 
   /** The last name of the member. */
-  private final String _surname;
+  private final String surname;
 
   /** The member status. */
-  private final MemberStatus _status;
+  private final MemberStatus status;
 
   /** Whether the member is locked. */
-  private final boolean _locked;
+  private final boolean locked;
 
   /** Whether the member is on vacation */
-  private final boolean _onVacation;
+  private final boolean onVacation;
 
   /** Whether the member prefers receiving attachments. */
-  private final boolean _attachments;
+  private final boolean attachments;
   
   /**
    * The last time the member logged into pageseeder.
    */
-  private final OffsetDateTime _lastLogin;
+  private final OffsetDateTime lastLogin;
 
   /**
    * Create a new member.
@@ -80,17 +80,17 @@ public final class Member implements Serializable, XMLWritable {
    * @param status    The status of the member
    */
   public Member(long id, Username username, Email email, String firstname, String surname, MemberStatus status, 
-      boolean locked, boolean onVacation, boolean attachments, @NonNull OffsetDateTime lastLogin) {
-    this._id = id;
-    this._username = username;
-    this._email = email;
-    this._firstname = firstname;
-    this._surname = surname;
-    this._status = status;
-    this._locked = locked;
-    this._onVacation = onVacation;
-    this._attachments = attachments;
-    this._lastLogin = lastLogin;
+      boolean locked, boolean onVacation, boolean attachments, OffsetDateTime lastLogin) {
+    this.id = id;
+    this.username = username;
+    this.email = email;
+    this.firstname = firstname;
+    this.surname = surname;
+    this.status = status;
+    this.locked = locked;
+    this.onVacation = onVacation;
+    this.attachments = attachments;
+    this.lastLogin = lastLogin;
   }
 
   /**
@@ -104,97 +104,97 @@ public final class Member implements Serializable, XMLWritable {
    * @param status    The status of the member
    */
   public Member(long id, Username username, Email email, String firstname, String surname, MemberStatus status) {
-    this._id = id;
-    this._username = username;
-    this._email = email;
-    this._firstname = firstname;
-    this._surname = surname;
-    this._status = status;
-    this._locked = false;
-    this._onVacation = false;
-    this._attachments = false;
-    this._lastLogin = OffsetDateTime.MIN;
+    this.id = id;
+    this.username = username;
+    this.email = email;
+    this.firstname = firstname;
+    this.surname = surname;
+    this.status = status;
+    this.locked = false;
+    this.onVacation = false;
+    this.attachments = false;
+    this.lastLogin = OffsetDateTime.MIN;
   }
 
   /**
    * @return The PageSeeder database ID or -1 if unknown or new member
    */
   public long getId() {
-    return this._id;
+    return this.id;
   }
 
   /**
    * @return the firstname
    */
   public String getFirstname() {
-    return this._firstname;
+    return this.firstname;
   }
 
   /**
    * @return the surname
    */
   public String getSurname() {
-    return this._surname;
+    return this.surname;
   }
 
   /**
    * @return the username
    */
   public Username getUsername() {
-    return this._username;
+    return this.username;
   }
 
   public String getFullname() {
-    return this._firstname+" "+this._surname;
+    return this.firstname +" "+this.surname;
   }
 
   /**
    * @return the email
    */
   public @Nullable Email getEmail() {
-    return this._email;
+    return this.email;
   }
 
   /**
    * @return the member status.
    */
   public @Nullable MemberStatus getStatus() {
-    return this._status;
+    return this.status;
   }
 
   /**
    * @return true if the member status is `activated`
    */
   public boolean isActivated() {
-    return this._status == MemberStatus.activated;
+    return this.status == MemberStatus.activated;
   }
 
   /**
    * @return true if the member is locked.
    */
   public boolean isLocked() {
-    return this._locked;
+    return this.locked;
   }
 
   /**
    * @return true if the member status is on vacation.
    */
   public boolean isOnVacation() {
-    return this._onVacation;
+    return this.onVacation;
   }
 
   /**
    * @return true if the member prefers receiving attachments
    */
   public boolean hasAttachments() {
-    return this._attachments;
+    return this.attachments;
   }
   
   /**
    * @return return the last login date and time  of this member (it could have null value). 
    */
   public @Nullable OffsetDateTime getLastLogin() {
-    return _lastLogin;
+    return lastLogin;
   }
 
   @Override
@@ -213,29 +213,29 @@ public final class Member implements Serializable, XMLWritable {
    * @throws IOException if reported by the writer
    */
   public void toXMLAttributes(XMLWriter xml) throws IOException {
-    if (this._id > 0) {
-      xml.attribute("id", Long.toString(this._id));
+    if (this.id > 0) {
+      xml.attribute("id", Long.toString(this.id));
     }
-    xml.attribute("username", this._username.toString());
-    if (!this._email.equals(Email.NO_EMAIL)) {
-      xml.attribute("email", this._email.toString());
+    xml.attribute("username", this.username.toString());
+    if (!this.email.equals(Email.NO_EMAIL)) {
+      xml.attribute("email", this.email.toString());
     }
-    xml.attribute("firstname", this._firstname);
-    xml.attribute("surname", this._surname);
-    if (this._status != MemberStatus.unknown) {
-      xml.attribute("status", this._status.toString());
+    xml.attribute("firstname", this.firstname);
+    xml.attribute("surname", this.surname);
+    if (this.status != MemberStatus.unknown) {
+      xml.attribute("status", this.status.toString());
     }
-    if (this._locked) {
+    if (this.locked) {
       xml.attribute("locked", "true");
     }
-    if (this._onVacation) {
+    if (this.onVacation) {
       xml.attribute("onvacation", "true");
     }
-    if (this._attachments) {
+    if (this.attachments) {
       xml.attribute("attachments", "true");
     }
-    if (this._lastLogin != null && !this._lastLogin.equals(OffsetDateTime.MIN)) {
-      xml.attribute("lastlogin", this._lastLogin.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+    if (this.lastLogin != null && !this.lastLogin.equals(OffsetDateTime.MIN)) {
+      xml.attribute("lastlogin", this.lastLogin.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
     }
     
   }
@@ -246,8 +246,8 @@ public final class Member implements Serializable, XMLWritable {
    * @return a new member with the specified status if the status is different from that of the current member
    */
   public Member status(MemberStatus status) {
-    if (status == this._status) return this;
-    return new Member(this._id, this._username, this._email, this._firstname, this._surname, status);
+    if (status == this.status) return this;
+    return new Member(this.id, this.username, this.email, this.firstname, this.surname, status);
   }
 
   /**
@@ -256,8 +256,8 @@ public final class Member implements Serializable, XMLWritable {
    * @return a new member with the specified status if the status is different from that of the current member
    */
   public Member lock() {
-    if (this._locked) return this;
-    return new Member(this._id, this._username, this._email, this._firstname, this._surname, this._status, true, this._onVacation, this._attachments, this._lastLogin);
+    if (this.locked) return this;
+    return new Member(this.id, this.username, this.email, this.firstname, this.surname, this.status, true, this.onVacation, this.attachments, this.lastLogin);
   }
 
   /**
@@ -266,8 +266,8 @@ public final class Member implements Serializable, XMLWritable {
    * @return a new member with the specified status if the status is different from that of the current member
    */
   public Member unlock() {
-    if (!this._locked) return this;
-    return new Member(this._id, this._username, this._email, this._firstname, this._surname, this._status, false, this._onVacation, this._attachments, this._lastLogin);
+    if (!this.locked) return this;
+    return new Member(this.id, this.username, this.email, this.firstname, this.surname, this.status, false, this.onVacation, this.attachments, this.lastLogin);
   }
 
   /**
@@ -276,8 +276,8 @@ public final class Member implements Serializable, XMLWritable {
    * @return a new member with the specified status if the status is different from that of the current member
    */
   public Member isOnVacation(boolean yes) {
-    if (yes == this._onVacation) return this;
-    return new Member(this._id, this._username, this._email, this._firstname, this._surname, this._status, this._locked, yes, this._attachments, this._lastLogin);
+    if (yes == this.onVacation) return this;
+    return new Member(this.id, this.username, this.email, this.firstname, this.surname, this.status, this.locked, yes, this.attachments, this.lastLogin);
   }
 
   /**
@@ -286,8 +286,8 @@ public final class Member implements Serializable, XMLWritable {
    * @return a new member with the specified last login if the last login is different from that of the current member
    */
   public Member lastLogin(@NonNull OffsetDateTime lastLogin ) {
-    if (lastLogin.equals(this._lastLogin)) return this;
-    return new Member(this._id, this._username, this._email, this._firstname, this._surname, this._status, this._locked, this._onVacation, this._attachments, lastLogin);
+    if (lastLogin.equals(this.lastLogin)) return this;
+    return new Member(this.id, this.username, this.email, this.firstname, this.surname, this.status, this.locked, this.onVacation, this.attachments, lastLogin);
   }
   
   /**
@@ -296,13 +296,13 @@ public final class Member implements Serializable, XMLWritable {
    * @return a new member with the specified status if the status if different from that of the current member
    */
   public Member hasAttachments(boolean yes) {
-    if (yes == this._attachments) return this;
-    return new Member(this._id, this._username, this._email, this._firstname, this._surname, this._status, this._locked, this._onVacation, yes, this._lastLogin);
+    if (yes == this.attachments) return this;
+    return new Member(this.id, this.username, this.email, this.firstname, this.surname, this.status, this.locked, this.onVacation, yes, this.lastLogin);
   }
 
   @Override
   public String toString() {
-    return "Member("+this._id+":"+this._username+")";
+    return "Member("+this.id +":"+this.username +")";
   }
 
   public static class Builder {

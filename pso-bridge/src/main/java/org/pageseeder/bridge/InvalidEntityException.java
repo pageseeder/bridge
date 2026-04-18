@@ -37,12 +37,12 @@ public final class InvalidEntityException extends APIException {
   /**
    * The type of entity.
    */
-  private final Class<? extends PSEntity> _entityType;
+  private final Class<? extends PSEntity> entityType;
 
   /**
    * The type of entity.
    */
-  private final EntityValidity _validity;
+  private final EntityValidity validity;
 
   /**
    * Create a new exception.
@@ -52,22 +52,22 @@ public final class InvalidEntityException extends APIException {
    */
   public InvalidEntityException(Class<? extends PSEntity> entity, EntityValidity validity) {
     super(entity.getSimpleName());
-    this._entityType = entity;
-    this._validity = validity;
+    this.entityType = entity;
+    this.validity = validity;
   }
 
   /**
    * @return the kind of entity
    */
   public Class<? extends PSEntity> getEntityType() {
-    return this._entityType;
+    return this.entityType;
   }
 
   /**
    * @return the validity
    */
   public EntityValidity getValidity() {
-    return this._validity;
+    return this.validity;
   }
 
 }

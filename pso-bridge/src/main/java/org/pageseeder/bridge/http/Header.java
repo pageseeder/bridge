@@ -41,14 +41,14 @@ public final class Header {
   /**
    * The header name.
    */
-  private final String _name;
+  private final String name;
 
   /**
    * The header value.
    *
-   * The Object can be an instance of String, Long or Date.
+   * <p>The Object can be an instance of String, Long or Date.
    */
-  private final Object _value;
+  private final Object value;
 
   /**
    * Create a new parameter
@@ -57,8 +57,8 @@ public final class Header {
    * @param value The parameter value (not URL encoded)
    */
   public Header(String name, String value) {
-    this._name = Objects.requireNonNull(name, "Header name must not be null");
-    this._value = Objects.requireNonNull(value, "Header value must not be null");
+    this.name = Objects.requireNonNull(name, "Header name must not be null");
+    this.value = Objects.requireNonNull(value, "Header value must not be null");
   }
 
   /**
@@ -68,37 +68,37 @@ public final class Header {
    * @param value The parameter value (not URL encoded)
    */
   public Header(String name, long value) {
-    this._name = Objects.requireNonNull(name, "Header name must not be null");
-    this._value = value;
+    this.name = Objects.requireNonNull(name, "Header name must not be null");
+    this.value = value;
   }
 
   /**
    * @return The header name
    */
   public String name() {
-    return this._name;
+    return this.name;
   }
 
   /**
    * @return The header string value
    */
   public String value() {
-    if (this._value instanceof Date) return formatHTTPDate(((Date)this._value));
-    return this._value.toString();
+    if (this.value instanceof Date) return formatHTTPDate(((Date)this.value));
+    return this.value.toString();
   }
 
   /**
    * @return The header long value
    */
   public long longValue() {
-    if (this._value instanceof Long) return (Long) this._value;
-    if (this._value instanceof Date) return ((Date)this._value).getTime();
+    if (this.value instanceof Long) return (Long) this.value;
+    if (this.value instanceof Date) return ((Date)this.value).getTime();
     return Long.parseLong(toString());
   }
 
   @Override
   public String toString() {
-    return this._name+":"+value();
+    return this.name +":"+value();
   }
 
   /**

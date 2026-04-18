@@ -16,6 +16,7 @@
 package org.pageseeder.bridge.oauth;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -48,16 +49,16 @@ final class JSONParameter {
   /** Utility class. */
   private JSONParameter(){}
 
-  static Map<@NonNull String, @NonNull String> parse(String s) {
+  static Map<String, String> parse(String s) {
     return  parse(new Scanner(s));
   }
 
-  static Map<@NonNull String, @NonNull String> parse(InputStream in) {
-    return parse(new Scanner(in, "utf-8"));
+  static Map<String, String> parse(InputStream in) {
+    return parse(new Scanner(in, StandardCharsets.UTF_8));
   }
 
-  private static Map<@NonNull String, @NonNull String> parse(Scanner scanner) {
-    Map<@NonNull  String, @NonNull String> map = new HashMap<>(4);
+  private static Map<String, String> parse(Scanner scanner) {
+    Map<String, String> map = new HashMap<>(4);
     scanner.useDelimiter("\\s*[{,}]\\s*");
     while (scanner.hasNext()) {
       if (scanner.hasNext(JSON_STRING)) {

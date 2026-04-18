@@ -34,11 +34,11 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
  */
 public class HttpCache {
 
-  private final Cache _cache;
+  private final Cache cache;
 
   protected HttpCache(String name) {
     CacheManager manager = CacheManager.getInstance();
-    this._cache = new Cache(
+    this.cache = new Cache(
         new CacheConfiguration(name, 10000)
           .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
           .eternal(false)
@@ -46,18 +46,18 @@ public class HttpCache {
           .timeToIdleSeconds(1200)
           .diskExpiryThreadIntervalSeconds(0)
           .persistence(new PersistenceConfiguration().strategy(Strategy.LOCALTEMPSWAP)));
-    manager.addCache(this._cache);
+    manager.addCache(this.cache);
   }
 
   public @Nullable CachedContent get(String url) {
-    Element element = this._cache.get(url);
+    Element element = this.cache.get(url);
     if (element == null) return null;
     return (CachedContent)element.getObjectValue();
   }
 
   public void put(CachedContent content) {
     Element element = new Element(content.url(), content);
-    this._cache.put(element);
+    this.cache.put(element);
   }
 
 }

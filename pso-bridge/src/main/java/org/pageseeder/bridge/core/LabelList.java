@@ -37,7 +37,7 @@ public final class LabelList implements Serializable, Iterable<String> {
   /** As required for Serializable */
   private static final long serialVersionUID = 1L;
 
-  private static Pattern VALID_LABEL = Pattern.compile("[a-zA-Z0-9_\\-]+");
+  private static final Pattern VALID_LABEL = Pattern.compile("[a-zA-Z0-9_\\-]+");
 
   /**
    * An empty list of labels.
@@ -47,13 +47,13 @@ public final class LabelList implements Serializable, Iterable<String> {
   /**
    * Internal representation of labels - DO NOT EXPOSE.
    */
-  private final String[] _labels;
+  private final String[] labels;
 
   /**
    * Private constructor to construct an empty list of labels.
    */
   private LabelList() {
-    this._labels = new String[]{};
+    this.labels = new String[]{};
   }
 
   /**
@@ -62,7 +62,7 @@ public final class LabelList implements Serializable, Iterable<String> {
    * @param labels the array to use for this class.
    */
   private LabelList(String[] labels) {
-    this._labels = labels;
+    this.labels = labels;
   }
 
   /**
@@ -71,7 +71,7 @@ public final class LabelList implements Serializable, Iterable<String> {
    * @param labels the list of labels
    */
   public LabelList(List<String> labels) {
-    this._labels = labels.stream()
+    this.labels = labels.stream()
         .filter(Objects::nonNull)
         .map(String::trim)
         .filter(label -> VALID_LABEL.matcher(label).matches()
@@ -79,7 +79,7 @@ public final class LabelList implements Serializable, Iterable<String> {
   }
 
   public boolean isEmpty() {
-    return this._labels.length == 0;
+    return this.labels.length == 0;
   }
 
   /**
@@ -88,19 +88,19 @@ public final class LabelList implements Serializable, Iterable<String> {
    * @return the number of labels.
    */
   public int size() {
-    return this._labels.length;
+    return this.labels.length;
   }
 
   /**
    * @return a copy of the list of labels
    */
   public List<String> toList() {
-    return Arrays.asList(this._labels);
+    return Arrays.asList(this.labels);
   }
 
   @Override
   public Iterator<String> iterator() {
-    return Arrays.stream(this._labels).iterator();
+    return Arrays.stream(this.labels).iterator();
   }
 
   @Override
@@ -109,17 +109,17 @@ public final class LabelList implements Serializable, Iterable<String> {
     if (o == null || getClass() != o.getClass()) return false;
     LabelList other = (LabelList) o;
     // Probably incorrect - comparing Object[] arrays with Arrays.equals
-    return Arrays.equals(this._labels, other._labels);
+    return Arrays.equals(this.labels, other.labels);
   }
 
   @Override
   public int hashCode() {
-    return Arrays.hashCode(this._labels);
+    return Arrays.hashCode(this.labels);
   }
 
   @Override
   public String toString() {
-    return String.join(",", this._labels);
+    return String.join(",", this.labels);
   }
 
   /**

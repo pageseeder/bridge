@@ -28,18 +28,18 @@ import org.jspecify.annotations.Nullable;
 public abstract class ID implements Serializable {
 
   /** As per requirement for {@link Serializable} */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   /** Actual ID. */
-  private final String _id;
+  private final String id;
 
   ID(String id) {
-    this._id = Objects.requireNonNull(id, "ID must not be null");
+    this.id = Objects.requireNonNull(id, "ID must not be null");
   }
 
   @Override
   public final int hashCode() {
-    return this._id.hashCode();
+    return this.id.hashCode();
   }
 
   @Override
@@ -48,12 +48,12 @@ public abstract class ID implements Serializable {
     if (o == null) return false;
     if (getClass() != o.getClass()) return false;
     ID other = (ID)o;
-    return this._id.equals(other._id);
+    return this.id.equals(other.id);
   }
 
   @Override
   public final String toString() {
-    return this._id;
+    return this.id;
   }
 
 }

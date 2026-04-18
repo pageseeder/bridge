@@ -45,32 +45,32 @@ public final class Field implements Serializable, XMLWritable {
   /**
    * The position of the field from 1 to 15
    */
-  private final int _position;
+  private final int position;
 
   /**
    * The name for this field
    */
-  private final String _name;
+  private final String name;
 
   /**
    * The value
    */
-  private final String _value;
+  private final String value;
 
   /**
    * Whether this field can be edited
    */
-  private final boolean _editable;
+  private final boolean editable;
 
   /**
    * The title for this field
    */
-  private final String _title;
+  private final String title;
 
   /**
    * The type of field
    */
-  private final String _type;
+  private final String type;
 
   public Field(int position, String name, String value) {
     this(position, name, value, false, name, DEFAULT_TYPE);
@@ -78,47 +78,47 @@ public final class Field implements Serializable, XMLWritable {
 
   public Field(int position, String name, String value, boolean editable, String title, String type) {
     if (position < 1 || position > MAX_SIZE) throw new IndexOutOfBoundsException("Field index must be between 1 and "+MAX_SIZE);
-    this._position = position;
-    this._name = name;
-    this._value = value;
-    this._editable = editable;
-    this._title = title;
-    this._type = type;
+    this.position = position;
+    this.name = name;
+    this.value = value;
+    this.editable = editable;
+    this.title = title;
+    this.type = type;
   }
 
   public int getPosition() {
-    return this._position;
+    return this.position;
   }
 
   public String getName() {
-    return this._name;
+    return this.name;
   }
 
   public String getValue() {
-    return this._value;
+    return this.value;
   }
 
   public boolean isEditable() {
-    return this._editable;
+    return this.editable;
   }
 
   public String getTitle() {
-    return this._title;
+    return this.title;
   }
 
   public String getType() {
-    return this._type;
+    return this.type;
   }
 
   @Override
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement("field");
-    xml.attribute("position", this._position);
-    xml.attribute("name", this._name);
-    xml.attribute("editable", Boolean.toString(this._editable));
-    xml.attribute("title", this._title);
-    xml.attribute("type", this._type);
-    xml.writeText(this._value);
+    xml.attribute("position", this.position);
+    xml.attribute("name", this.name);
+    xml.attribute("editable", Boolean.toString(this.editable));
+    xml.attribute("title", this.title);
+    xml.attribute("type", this.type);
+    xml.writeText(this.value);
     xml.closeElement();
   }
 }

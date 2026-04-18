@@ -246,7 +246,7 @@ public final class CachedResponse implements HttpResponse {
   @Override
   public <T> @Nullable T consumeItem(XMLStreamHandler<T> handler) throws ContentException {
     List<T> list = consumeList(handler);
-    return list.size() > 0? list.get(0) : null;
+    return list.isEmpty() ? null : list.get(0);
   }
 
   @Override

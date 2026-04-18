@@ -37,11 +37,11 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
   /**
    * The max number of facet values to load (max 1000).
    */
-  private final int _facetSize;
+  private final int facetSize;
 
   private FacetList(List<Facet> facets, int facetSize) {
     super(facets);
-    this._facetSize = facetSize;
+    this.facetSize = facetSize;
   }
 
   /**
@@ -81,9 +81,9 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
    */
   public FacetList facet(String field, boolean flexible) {
     List<Facet> facets = this._list;
-    if (facets.size() > 0) facets = minus(facets, f -> f.field().equals(field));
+    if (!facets.isEmpty()) facets = minus(facets, f -> f.field().equals(field));
     facets = plus(facets, new Facet(field, flexible));
-    return new FacetList(facets, this._facetSize);
+    return new FacetList(facets, this.facetSize);
   }
 
 
@@ -96,7 +96,7 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
    */
   public FacetList facet(Facet facet) {
     List<Facet> facets = plus(this._list, facet);
-    return new FacetList(facets, this._facetSize);
+    return new FacetList(facets, this.facetSize);
   }
 
   /**
@@ -105,7 +105,7 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
    * @return A new <code>FacetList</code> instance unless the current instance already has the same facet size.
    */
   public FacetList facetSize(int facetSize) {
-    if (facetSize == this._facetSize) return this;
+    if (facetSize == this.facetSize) return this;
     return new FacetList(this._list, facetSize);
   }
 
@@ -113,7 +113,7 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
    * @return The max number of facet values to load (max 1000)
    */
   public int facetSize() {
-    return this._facetSize;
+    return this.facetSize;
   }
 
   /**
@@ -138,7 +138,7 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
       if (!flexible.isEmpty())
         parameters.put("flexiblefacets", flexible);
     }
-    if (this._facetSize > 0) parameters.put("facetsize", String.valueOf(this._facetSize));
+    if (this.facetSize > 0) parameters.put("facetsize", String.valueOf(this.facetSize));
     return parameters;
   }
 

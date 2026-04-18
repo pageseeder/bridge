@@ -37,7 +37,7 @@ import org.pageseeder.bridge.PSCredentials;
 /**
  * A convenience class to make requests to the generic search servlet.
  *
- * @version 0.11.4
+ * @version 0.12.0
  * @since 0.11.4
  *
  * @deprecated Not support in PageSeeder v6
@@ -55,47 +55,47 @@ public final class GenericSearch implements Serializable {
   /**
    * The question for full-text searches.
    */
-  private final @Nullable String _question;
+  private final @Nullable String question;
 
   /**
    * Facets.
    */
-  private final Map<String, String> _facets;
+  private final Map<String, String> facets;
 
   /**
    * The list of groups to search.
    */
-  private final List<String> _groups;
+  private final List<String> groups;
 
   /**
    * The types of search result requested.
    */
-  private final List<Type> _types;
+  private final List<Type> types;
 
   /**
    * Requested page
    */
-  private final int _page;
+  private final int page;
 
   /**
    * Results per page
    */
-  private final int _pageSize;
+  private final int pageSize;
 
   /**
    * Lower interval in date range search.
    */
-  private final LocalDateTime _from;
+  private final LocalDateTime from;
 
   /**
    * Higher interval in date range.
    */
-  private final LocalDateTime _to;
+  private final LocalDateTime to;
 
   /**
    * Field for sorting.
    */
-  private SortBy _sortBy;
+  private SortBy sortBy;
 
   public GenericSearch() {
     this(null, emptyList(), 1, 1000, emptyList(), emptyMap(), LocalDateTime.MIN, LocalDateTime.MAX, SortBy.RELEVANCE);
@@ -113,15 +113,15 @@ public final class GenericSearch implements Serializable {
 
   // DO not make this constructor public as it takes the raw parameters without ensuring that lists and maps are unmodifiable
   private GenericSearch(@Nullable String question, List<Type> types, int page, int pageSize, List<String> groups, Map<String, String> facets, LocalDateTime from, LocalDateTime to, SortBy sortBy) {
-    this._question = question;
-    this._types = types;
-    this._page = page;
-    this._groups = groups;
-    this._pageSize = pageSize;
-    this._facets = facets;
-    this._from = from;
-    this._to = to;
-    this._sortBy = sortBy;
+    this.question = question;
+    this.types = types;
+    this.page = page;
+    this.groups = groups;
+    this.pageSize = pageSize;
+    this.facets = facets;
+    this.from = from;
+    this.to = to;
+    this.sortBy = sortBy;
   }
 
   /**
@@ -132,14 +132,14 @@ public final class GenericSearch implements Serializable {
    * @return A new <code>GenericSearch</code> instance.
    */
   public GenericSearch question(String question) {
-    return new GenericSearch(question, this._types, this._page, this._pageSize, this._groups, this._facets, this._from, this._to, this._sortBy);
+    return new GenericSearch(question, this.types, this.page, this.pageSize, this.groups, this.facets, this.from, this.to, this.sortBy);
   }
 
   /**
    * @return the question if any; <code>null</code> otherwise.
    */
   public @Nullable String question() {
-    return this._question;
+    return this.question;
   }
 
   /**
@@ -152,8 +152,8 @@ public final class GenericSearch implements Serializable {
    * @return A new <code>GenericSearch</code> instance unless the current instance already has the same type.
    */
   public GenericSearch type(Type type) {
-    if (this._types.size() == 1 && this._types.contains(type)) return this;
-    return new GenericSearch(this._question, singleton(type), this._page, this._pageSize, this._groups, this._facets, this._from, this._to, this._sortBy);
+    if (this.types.size() == 1 && this.types.contains(type)) return this;
+    return new GenericSearch(this.question, singleton(type), this.page, this.pageSize, this.groups, this.facets, this.from, this.to, this.sortBy);
   }
 
   /**
@@ -164,8 +164,8 @@ public final class GenericSearch implements Serializable {
    * @return A new <code>GenericSearch</code> instance unless the current instance already has the same types.
    */
   public GenericSearch types(Collection<Type> types) {
-    if (this._types.containsAll(types)) return this;
-    return new GenericSearch(this._question, copyOf(types), this._page, this._pageSize, this._groups, this._facets, this._from, this._to, this._sortBy);
+    if (this.types.containsAll(types)) return this;
+    return new GenericSearch(this.question, copyOf(types), this.page, this.pageSize, this.groups, this.facets, this.from, this.to, this.sortBy);
   }
 
   /**
@@ -184,7 +184,7 @@ public final class GenericSearch implements Serializable {
    * @return the list of types that the search should return.
    */
   public List<Type> types() {
-    return this._types;
+    return this.types;
   }
 
   /**
@@ -197,8 +197,8 @@ public final class GenericSearch implements Serializable {
    * @return A new <code>GenericSearch</code> instance unless the current instance already has the same group.
    */
   public GenericSearch group(String group) {
-    if (this._groups.size() == 1 && this._groups.contains(group)) return this;
-    return new GenericSearch(this._question, this._types, this._page, this._pageSize, singleton(group), this._facets, this._from, this._to, this._sortBy);
+    if (this.groups.size() == 1 && this.groups.contains(group)) return this;
+    return new GenericSearch(this.question, this.types, this.page, this.pageSize, singleton(group), this.facets, this.from, this.to, this.sortBy);
   }
 
   /**
@@ -206,7 +206,7 @@ public final class GenericSearch implements Serializable {
    */
   public GenericSearch groups(Collection<String> groups) {
     List<String> list = copyOf(groups);
-    return new GenericSearch(this._question, this._types, this._page, this._pageSize, list, this._facets, this._from, this._to, this._sortBy);
+    return new GenericSearch(this.question, this.types, this.page, this.pageSize, list, this.facets, this.from, this.to, this.sortBy);
   }
 
   /**
@@ -215,14 +215,14 @@ public final class GenericSearch implements Serializable {
   @SafeVarargs
   public final GenericSearch groups(@NonNull String... groups) {
     List<String> list = copyOf(Arrays.asList(groups));
-    return new GenericSearch(this._question, this._types, this._page, this._pageSize, list, this._facets, this._from, this._to, this._sortBy);
+    return new GenericSearch(this.question, this.types, this.page, this.pageSize, list, this.facets, this.from, this.to, this.sortBy);
   }
 
   /**
    * @return the list of groups to search in.
    */
   public List<String> groups() {
-    return this._groups;
+    return this.groups;
   }
 
   /**
@@ -234,15 +234,15 @@ public final class GenericSearch implements Serializable {
    */
   public GenericSearch page(int page) {
     if (page <= 0) throw new IndexOutOfBoundsException("page must be greater than 0");
-    if (page == this._page) return this;
-    return new GenericSearch(this._question, this._types, page, this._pageSize, this._groups, this._facets, this._from, this._to, this._sortBy);
+    if (page == this.page) return this;
+    return new GenericSearch(this.question, this.types, page, this.pageSize, this.groups, this.facets, this.from, this.to, this.sortBy);
   }
 
   /**
    * @return the page
    */
   public int page() {
-    return this._page;
+    return this.page;
   }
 
   /**
@@ -252,15 +252,15 @@ public final class GenericSearch implements Serializable {
    */
   public GenericSearch pageSize(int pageSize) {
     if (pageSize <= 0) throw new IndexOutOfBoundsException("pageSize must be greater than 0");
-    if (pageSize == this._pageSize) return this;
-    return new GenericSearch(this._question, this._types, this._page, pageSize, this._groups, this._facets, this._from, this._to, this._sortBy);
+    if (pageSize == this.pageSize) return this;
+    return new GenericSearch(this.question, this.types, this.page, pageSize, this.groups, this.facets, this.from, this.to, this.sortBy);
   }
 
   /**
    * @return the pageSize
    */
   public int pageSize() {
-    return this._pageSize;
+    return this.pageSize;
   }
 
   /**
@@ -276,14 +276,14 @@ public final class GenericSearch implements Serializable {
    */
   public GenericSearch facet(String field, String value) {
     Map<String, String> facets;
-    if (this._facets.size() == 0) {
+    if (this.facets.size() == 0) {
       facets = Collections.singletonMap(field, value);
     } else {
-      Map<String, String> map = new LinkedHashMap<>(this._facets);
+      Map<String, String> map = new LinkedHashMap<>(this.facets);
       map.put(field, value);
       facets = Collections.unmodifiableMap(map);
     }
-    return new GenericSearch(this._question, this._types, this._page, this._pageSize, this._groups, facets, this._from, this._to, this._sortBy);
+    return new GenericSearch(this.question, this.types, this.page, this.pageSize, this.groups, facets, this.from, this.to, this.sortBy);
   }
 
   /**
@@ -294,7 +294,7 @@ public final class GenericSearch implements Serializable {
    * @return The value the facet must match (for that facet); <code>null</code> if that facet isn't set for the search
    */
   public @Nullable String facet(String field) {
-    return this._facets.get(field);
+    return this.facets.get(field);
   }
 
   /**
@@ -446,8 +446,8 @@ public final class GenericSearch implements Serializable {
    *@return A new <code>GenericSearch</code> instance with the updated date range.
    */
   public GenericSearch from(LocalDateTime from) {
-    if (from.equals(this._from)) return this;
-    return new GenericSearch(this._question, this._types, this._page, this._pageSize, this._groups, this._facets, from, this._to, this._sortBy);
+    if (from.equals(this.from)) return this;
+    return new GenericSearch(this.question, this.types, this.page, this.pageSize, this.groups, this.facets, from, this.to, this.sortBy);
   }
 
   /**
@@ -458,8 +458,8 @@ public final class GenericSearch implements Serializable {
    * @return A new <code>GenericSearch</code> instance with the updated date range.
    */
   public GenericSearch to(LocalDateTime to) {
-    if (to.equals(this._to)) return this;
-    return new GenericSearch(this._question, this._types, this._page, this._pageSize, this._groups, this._facets, this._from, to, this._sortBy);
+    if (to.equals(this.to)) return this;
+    return new GenericSearch(this.question, this.types, this.page, this.pageSize, this.groups, this.facets, this.from, to, this.sortBy);
   }
 
   /**
@@ -471,8 +471,8 @@ public final class GenericSearch implements Serializable {
    * @return A new <code>GenericSearch</code> instance with the updated date range.
    */
   public GenericSearch between(LocalDateTime from, LocalDateTime to) {
-    if (from.equals(this._from) && to.equals(this._to)) return this;
-    return new GenericSearch(this._question, this._types, this._page, this._pageSize, this._groups, this._facets, from, to, this._sortBy);
+    if (from.equals(this.from) && to.equals(this.to)) return this;
+    return new GenericSearch(this.question, this.types, this.page, this.pageSize, this.groups, this.facets, from, to, this.sortBy);
   }
 
   // Sorting
@@ -493,14 +493,14 @@ public final class GenericSearch implements Serializable {
    * @return A new <code>GenericSearch</code> instance with the updated sorting.
    */
   public GenericSearch sortBy(SortBy sortBy) {
-    return new GenericSearch(this._question, this._types, this._page, this._pageSize, this._groups, this._facets, this._from, this._to, sortBy);
+    return new GenericSearch(this.question, this.types, this.page, this.pageSize, this.groups, this.facets, this.from, this.to, sortBy);
   }
 
   /**
    * @return How the results should be sorted.
    */
   public SortBy sortBy() {
-    return this._sortBy;
+    return this.sortBy;
   }
 
   /**
@@ -510,23 +510,23 @@ public final class GenericSearch implements Serializable {
    */
   public Map<String, String> toParameters() {
     Map<String, String> parameters = new LinkedHashMap<>();
-    String q = this._question;
+    String q = this.question;
     if (q != null) {
       parameters.put("question", q);
     }
-    parameters.put("groups", join(this._groups, ','));
-    if (this._types.size() > 0) {
-      parameters.put("types",  join(this._types, ','));
+    parameters.put("groups", join(this.groups, ','));
+    if (this.types.size() > 0) {
+      parameters.put("types",  join(this.types, ','));
     }
-    if (this._from != LocalDateTime.MIN) {
-      parameters.put("from", format(this._from));
+    if (this.from != LocalDateTime.MIN) {
+      parameters.put("from", format(this.from));
     }
-    if (this._to != LocalDateTime.MAX) {
-      parameters.put("to", format(this._to));
+    if (this.to != LocalDateTime.MAX) {
+      parameters.put("to", format(this.to));
     }
-    if (!this._facets.isEmpty()) {
+    if (!this.facets.isEmpty()) {
       StringBuilder select = new StringBuilder();
-      for (Entry<String, String> f : this._facets.entrySet()) {
+      for (Entry<String, String> f : this.facets.entrySet()) {
         if (select.length() > 0) {
           select.append(',');
         }
@@ -536,12 +536,12 @@ public final class GenericSearch implements Serializable {
       parameters.put("select", select.toString());
     }
     // Paging
-    if (this._page > 1) {
-      parameters.put("page", Integer.toString(this._page));
+    if (this.page > 1) {
+      parameters.put("page", Integer.toString(this.page));
     }
-    parameters.put("page-size", Integer.toString(this._pageSize));
-    if (!this._sortBy.equals(SortBy.RELEVANCE)) {
-      parameters.put("sortby", this._sortBy._field);
+    parameters.put("page-size", Integer.toString(this.pageSize));
+    if (!this.sortBy.equals(SortBy.RELEVANCE)) {
+      parameters.put("sortby", this.sortBy.field);
     }
     return parameters;
   }
@@ -549,11 +549,11 @@ public final class GenericSearch implements Serializable {
   @Override
   public String toString() {
     StringBuilder s = new StringBuilder();
-    if (this._types.size() > 0) {
-      s.append("types=").append(join(this._types, '.')).append(';');
+    if (this.types.size() > 0) {
+      s.append("types=").append(join(this.types, '.')).append(';');
     }
-    if (!this._facets.isEmpty()) {
-      for (Entry<String, String> f : this._facets.entrySet()) {
+    if (!this.facets.isEmpty()) {
+      for (Entry<String, String> f : this.facets.entrySet()) {
         s.append(f.getKey()).append('=').append(f.getValue()).append(';');
       }
     }
@@ -637,19 +637,19 @@ public final class GenericSearch implements Serializable {
     /**
      * The field to sort on.
      */
-    private final String _field;
+    private final String field;
 
     public SortBy(String field) {
-      this._field = Objects.requireNonNull(field);
+      this.field = Objects.requireNonNull(field);
     }
 
     public String field() {
-      return this._field;
+      return this.field;
     }
 
     @Override
     public int hashCode() {
-      return  this._field.hashCode();
+      return  this.field.hashCode();
     }
 
     @Override
@@ -658,12 +658,12 @@ public final class GenericSearch implements Serializable {
       if (o == null) return false;
       if (getClass() != o.getClass()) return false;
       SortBy other = (SortBy)o;
-      return this._field.equals(other._field);
+      return this.field.equals(other.field);
     }
 
     @Override
     public String toString() {
-      return this._field;
+      return this.field;
     }
   }
 

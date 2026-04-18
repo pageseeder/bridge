@@ -2,7 +2,6 @@ package org.pageseeder.bridge.net;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -49,21 +48,16 @@ public final class HTTP {
     String[] pair = query.split("&");
     if (pair.length == 0) return Collections.emptyMap();
     Map<String, String> parameters = new LinkedHashMap<>(pair.length);
-    try {
-      for (String p : pair) {
-        int e = p.indexOf('=');
-        if (e < 0) {
-          String name = URLDecoder.decode(p.substring(0, e), "utf-8");
-          parameters.put(name, "");
-        } else {
-          String name = URLDecoder.decode(p.substring(0, e), "utf-8");
-          String value = URLDecoder.decode(p.substring(e+1), "utf-8");
-          parameters.put(name, value);
-        }
+    for (String p : pair) {
+      int e = p.indexOf('=');
+      if (e < 0) {
+        String name = URLDecoder.decode(p.substring(0, e), StandardCharsets.UTF_8);
+        parameters.put(name, "");
+      } else {
+        String name = URLDecoder.decode(p.substring(0, e), StandardCharsets.UTF_8);
+        String value = URLDecoder.decode(p.substring(e+1), StandardCharsets.UTF_8);
+        parameters.put(name, value);
       }
-    } catch (UnsupportedEncodingException ex) {
-      // Should never happen as UTF-8 is always supported
-      ex.printStackTrace();
     }
     return parameters;
   }

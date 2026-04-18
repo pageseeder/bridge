@@ -58,7 +58,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
   /**
    * The underlying cache.
    */
-  private final Ehcache _cache;
+  private final Ehcache cache;
 
   /**
    * Create a new cache wrapper.
@@ -66,7 +66,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @param cache The Ehcache to wrap.
    */
   private EHEntityCache(Ehcache cache) {
-    this._cache = cache;
+    this.cache = cache;
   }
 
   /**
@@ -82,12 +82,12 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
     if (key == null)
       return null;
     @Nullable E o = null;
-    Element element = this._cache.get(key);
+    Element element = this.cache.get(key);
     if (element != null && !element.isExpired()) {
       try {
         o = (E)element.getObjectValue();
       } catch (ClassCastException ex) {
-        LOGGER.warn("Element of type {} found in cache {}", element.getObjectValue().getClass().getName(), this._cache.getName());
+        LOGGER.warn("Element of type {} found in cache {}", element.getObjectValue().getClass().getName(), this.cache.getName());
       }
     }
     return o;
@@ -115,13 +115,13 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
   public synchronized @Nullable E get(Long id) {
     if (id == null)
       return null;
-    @Nullable E o = null;
-    Query query =  this._cache.createQuery();
-    Attribute<Long> byId = this._cache.getSearchAttribute("id");
+    E o = null;
+    Query query =  this.cache.createQuery();
+    Attribute<Long> byId = this.cache.getSearchAttribute("id");
     query.includeValues().addCriteria(byId.eq(id));
     Results results = query.execute();
     List<Result> all = results.all();
-    if (all.size() > 0) {
+    if (!all.isEmpty()) {
       Result r = all.get(0);
       o = (E)r.getValue();
     }
@@ -141,12 +141,12 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
     if (value == null)
       return null;
     @Nullable E o = null;
-    Query query =  this._cache.createQuery();
-    Attribute<String> byId = this._cache.getSearchAttribute(attribute);
+    Query query =  this.cache.createQuery();
+    Attribute<String> byId = this.cache.getSearchAttribute(attribute);
     query.includeValues().addCriteria(byId.eq(value));
     Results results = query.execute();
     List<Result> all = results.all();
-    if (all.size() > 0) {
+    if (!all.isEmpty()) {
       Result r = all.get(0);
       o = (E)r.getValue();
     }
@@ -165,8 +165,8 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
   public @Nullable List<E> list(String attribute, String value) {
     if (value == null)
       return null;
-    Query query =  this._cache.createQuery();
-    Attribute<String> byId = this._cache.getSearchAttribute(attribute);
+    Query query =  this.cache.createQuery();
+    Attribute<String> byId = this.cache.getSearchAttribute(attribute);
     query.addCriteria(byId.eq(value));
     Results results = query.execute();
     List<Result> all = results.all();
@@ -188,7 +188,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
   public synchronized @Nullable Long getVersion(String key) {
     if (key == null)
       return null;
-    Element element = this._cache.get(key);
+    Element element = this.cache.get(key);
     if (element != null) return element.getVersion();
     else return null;
   }
@@ -206,7 +206,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
     if (key == null)
       throw new IllegalArgumentException("key");
     Element element = new Element(key, value, System.currentTimeMillis());
-    this._cache.put(element);
+    this.cache.put(element);
   }
 
   /**
@@ -218,7 +218,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
   public synchronized void remove(String key) {
     if (key == null)
       return;
-    this._cache.remove(key);
+    this.cache.remove(key);
   }
 
   /**
@@ -226,7 +226,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    */
   @Override
   public synchronized void removeAll() {
-    this._cache.removeAll();
+    this.cache.removeAll();
   }
 
   // Lifecycle

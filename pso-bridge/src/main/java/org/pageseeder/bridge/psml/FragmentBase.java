@@ -16,6 +16,7 @@
 package org.pageseeder.bridge.psml;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.xmlwriter.XML.NamespaceAware;
@@ -48,8 +49,8 @@ public abstract class FragmentBase implements PSMLFragment {
    *
    * @param id The fragment ID.
    */
-  public FragmentBase(String id) {
-    this.id = id;
+  protected FragmentBase(String id) {
+    this.id = Objects.requireNonNull(id, "Fragment ID cannot be null");
     this.type = null;
   }
 
@@ -59,8 +60,8 @@ public abstract class FragmentBase implements PSMLFragment {
    * @param id   The fragment ID.
    * @param type The fragment type.
    */
-  public FragmentBase(String id, String type) {
-    this.id = id;
+  protected FragmentBase(String id, String type) {
+    this.id = Objects.requireNonNull(id, "Fragment ID cannot be null");
     this.type = type;
   }
 

@@ -35,58 +35,58 @@ import java.time.OffsetDateTime;
 public final class Membership implements Serializable, XMLWritable {
 
   /** As per recommendation */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   /**
    * The PageSeeder id of the member.
    */
-  private final long _id;
+  private final long id;
 
   /**
    * The member instance
    */
-  private final Member _member;
+  private final Member member;
 
   /**
    * The PageSeeder group the member belongs to
    */
-  private final BasicGroup _group;
+  private final BasicGroup group;
 
   /**
    * Indicates whether the email address is visible to others in the group
    */
-  private final boolean _listed;
+  private final boolean listed;
 
   /**
    * Notification setting of the member for the group.
    */
-  private final Notification _notification;
+  private final Notification notification;
 
   /**
    * Role of the member in the group.
    */
-  private final Role _role;
+  private final Role role;
 
   /**
    * When the member joined or was invited to the group
    */
   @Requires(minVersion = 57000)
-  private final OffsetDateTime _created;
+  private final OffsetDateTime created;
 
   /**
    * The status of the membership
    */
-  private final MembershipStatus _status;
+  private final MembershipStatus status;
 
   /**
    * If the member was removed from the group
    */
-  private final boolean _deleted;
+  private final boolean deleted;
 
   /**
    * Membership detail fields if any
    */
-  private Details _details;
+  private Details details;
 
   /**
    * Generated key
@@ -94,30 +94,30 @@ public final class Membership implements Serializable, XMLWritable {
   private transient @Nullable String key = null;
 
   public Membership(long id, Member member, BasicGroup group, boolean listed, Notification notification, Role role, OffsetDateTime created, MembershipStatus status, boolean deleted, Details details) {
-    this._id = id;
-    this._member = member;
-    this._group = group;
-    this._listed = listed;
-    this._notification = notification;
-    this._role = role;
-    this._created = created;
-    this._status = status;
-    this._deleted = deleted;
-    this._details = details;
+    this.id = id;
+    this.member = member;
+    this.group = group;
+    this.listed = listed;
+    this.notification = notification;
+    this.role = role;
+    this.created = created;
+    this.status = status;
+    this.deleted = deleted;
+    this.details = details;
   }
 
   /**
    * @return the PageSeeder id of the member.
    */
   public long getId() {
-    return this._id;
+    return this.id;
   }
 
   public @Nullable String getKey() {
     String k = this.key;
     if (k == null) {
-      GroupName g = this._group.getName();
-      MemberID m = this._member.getUsername();
+      GroupName g = this.group.getName();
+      MemberID m = this.member.getUsername();
       k = g+"/"+m;
       this.key = k;
     }
@@ -128,35 +128,35 @@ public final class Membership implements Serializable, XMLWritable {
    * @return the group
    */
   public BasicGroup getGroup() {
-    return this._group;
+    return this.group;
   }
 
   /**
    * @return the member
    */
   public Member getMember() {
-    return this._member;
+    return this.member;
   }
 
   /**
    * @return the listed
    */
   public boolean isListed() {
-    return this._listed;
+    return this.listed;
   }
 
   /**
    * @return the notification
    */
   public Notification getNotification() {
-    return this._notification;
+    return this.notification;
   }
 
   /**
    * @return the role
    */
   public Role getRole() {
-    return this._role;
+    return this.role;
   }
 
   /**
@@ -164,57 +164,57 @@ public final class Membership implements Serializable, XMLWritable {
    */
   @Requires(minVersion = 57000)
   public OffsetDateTime getCreated() {
-    return this._created;
+    return this.created;
   }
 
 
   public MembershipStatus getStatus() {
-    return this._status;
+    return this.status;
   }
 
   public boolean isDeleted() {
-    return this._deleted;
+    return this.deleted;
   }
 
   /**
    * @return Membership detail fields if any
    */
   public Details getDetails() {
-    return this._details;
+    return this.details;
   }
 
   @Override
   public String toString() {
-    return "Membership("+this._id+":"+getMember()+","+getGroup()+")";
+    return "Membership("+this.id +":"+getMember()+","+getGroup()+")";
   }
 
   @Override
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement("membership");
-    if (this._id > 0)
+    if (this.id > 0)
      {
-      xml.attribute("id", Long.toString(this._id)); // id	xs:long	no	The ID of the membership in PageSeeder
+      xml.attribute("id", Long.toString(this.id)); // id	xs:long	no	The ID of the membership in PageSeeder
     }
-    xml.attribute("email-listed", Boolean.toString(this._listed)); // email-listed	xs:boolean	yes	Whether the member discloses its email address
-    xml.attribute("status", this._status.toString()); // status	enum	yes	The status of the membership
-    xml.attribute("notification", this._notification.toString()); // notification 	enum	yes	Notification preference for the member
+    xml.attribute("email-listed", Boolean.toString(this.listed)); // email-listed	xs:boolean	yes	Whether the member discloses its email address
+    xml.attribute("status", this.status.toString()); // status	enum	yes	The status of the membership
+    xml.attribute("notification", this.notification.toString()); // notification 	enum	yes	Notification preference for the member
 
     // TODO datetime formatting
-    if (this._created != OffsetDateTime.MIN) {
-      xml.attribute("created", this._created.toString());
+    if (this.created != OffsetDateTime.MIN) {
+      xml.attribute("created", this.created.toString());
     }
-    if (this._role != Role.unknown) {
-      xml.attribute("role", this._role.toString());
+    if (this.role != Role.unknown) {
+      xml.attribute("role", this.role.toString());
     }
-    if (this._deleted) {
+    if (this.deleted) {
       xml.attribute("deleted", "true");
     }
 //    xml.attribute("override", ); // override	list	no	Which attributes from subgroups are overridden (i.e not inherited).
 //    xml.attribute("subgroups", );// subgroups	xs:string	no	Comma-separated list of subgroups
-    this._member.toXML(xml);
-    this._group.toXML(xml);
-    if (!this._details.isEmpty()) {
-      this._details.toXML(xml);
+    this.member.toXML(xml);
+    this.group.toXML(xml);
+    if (!this.details.isEmpty()) {
+      this.details.toXML(xml);
     }
     xml.closeElement();
   }

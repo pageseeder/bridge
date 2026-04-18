@@ -99,7 +99,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
 
   @Override
   public final void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-    String element = localName.length() == 0? qName : localName;
+    String element = localName.isEmpty() ? qName : localName;
     this.ancestorOrSelf.add(element);
     try {
       startElement(element, attributes);
@@ -111,7 +111,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
 
   @Override
   public final void endElement(String uri, String localName, String qName) {
-    String element = localName.length() == 0? qName : localName;
+    String element = localName.isEmpty()? qName : localName;
     endElement(element);
     if (!this.ancestorOrSelf.isEmpty()) {
       this.ancestorOrSelf.remove(this.ancestorOrSelf.size()-1);

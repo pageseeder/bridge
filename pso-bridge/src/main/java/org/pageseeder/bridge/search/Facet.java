@@ -25,8 +25,8 @@ import java.util.Objects;
  */
 public final class Facet {
 
-  private final String _definition;
-  private final boolean _flexible;
+  private final String definition;
+  private final boolean flexible;
 
   /**
    * The facet
@@ -35,22 +35,22 @@ public final class Facet {
    * @param flexible   <code>true</code> if the facet should be a flexible facet.
    */
   public Facet(String definition, boolean flexible) {
-    this._definition = Objects.requireNonNull(definition);
-    this._flexible = flexible;
+    this.definition = Objects.requireNonNull(definition);
+    this.flexible = flexible;
   }
 
   /**
    * @return A new facet with the same definition.
    */
   public Facet flexible(boolean flexible) {
-    return new Facet(this._definition, flexible);
+    return new Facet(this.definition, flexible);
   }
 
   /**
    * @return The definition of the facet
    */
   public String definition() {
-    return this._definition;
+    return this.definition;
   }
 
   /**
@@ -61,15 +61,15 @@ public final class Facet {
    * @return The name of the field for the facet
    */
   public String field() {
-    int colon = this._definition.indexOf(':');
-    return colon < 0? this._definition : this._definition.substring(0, colon);
+    int colon = this.definition.indexOf(':');
+    return colon < 0? this.definition : this.definition.substring(0, colon);
   }
 
   /**
    * @return <code>true</code> if the facet should be a flexible facet.
    */
   public boolean isFlexible() {
-    return this._flexible;
+    return this.flexible;
   }
 
   // Experimental facets

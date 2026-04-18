@@ -24,7 +24,7 @@ import java.time.OffsetDateTime;
 /**
  * Represents a PageSeeder folder.
  *
- * A folder is a URI which acts as a container for other folders and documents.
+ * <p>A folder is a URI which acts as a container for other folders and documents.
  *
  * @author Christophe Lauret
  *
@@ -39,23 +39,6 @@ public final class Folder extends URI implements Serializable, XMLWritable {
   public Folder(long id, String scheme, String host, int port, String path, @Nullable String title, @Nullable String docid, @Nullable String description, String mediatype, @Nullable OffsetDateTime created, @Nullable OffsetDateTime modified, LabelList labels) {
     super(id, scheme, host, port, path, title, docid, description, mediatype, created, modified, labels);
   }
-
-//
-//  /**
-//   * Construct a new folder from the specified URL.
-//   *
-//   * <p>The URL may omit the scheme or authority part, it which case it will default
-//   * on the default values from the configuration.
-//   *
-//   * <p>Implementation note: this constructor will decompose the URL into its components.
-//   *
-//   * @param url The URL of the folder.
-//   *
-//   * @throws IllegalArgumentException If the specified URL is invalid
-//   */
-//  public Folder(String url) {
-//    super(url);
-//  }
 
   @Override
   public boolean isFolder() {

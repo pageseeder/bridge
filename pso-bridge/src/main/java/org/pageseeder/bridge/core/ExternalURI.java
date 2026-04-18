@@ -21,6 +21,7 @@ import org.pageseeder.xmlwriter.XMLWritable;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 
 /**
@@ -55,16 +56,12 @@ public final class ExternalURI extends URI implements Serializable, XMLWritable 
    * 
    * @return this URI's display title
    */
+  @Override
   public String getDisplayTitle() {
     String title = getTitle();
-    if (title != null && !title.trim().isEmpty())
-      return title;   
-    try {
-      return URLDecoder.decode(getURL(), "utf-8");
-    } catch (UnsupportedEncodingException ex) {
-      // Should not happen
-    }
-    return "";
+    if (title != null && !title.isBlank())
+      return title;
+    return URLDecoder.decode(getURL(), StandardCharsets.UTF_8);
   }
 
   @Override

@@ -30,23 +30,23 @@ public final class CommentProperties {
   /**
    * Ordered map of properties
    */
-  private Map<String, String> _properties;
+  private Map<String, String> properties;
 
   public CommentProperties() {
-    this._properties = new LinkedHashMap<>();
+    this.properties = new LinkedHashMap<>();
   }
 
   private CommentProperties(Map<String, String> properties) {
-    this._properties = properties;
+    this.properties = properties;
   }
 
   public CommentProperties put(String name, String value) {
-    this._properties.put(name, value);
+    this.properties.put(name, value);
     return this;
   }
 
   public CommentProperties remove(String name) {
-    this._properties.remove(name);
+    this.properties.remove(name);
     return this;
   }
 
@@ -73,7 +73,7 @@ public final class CommentProperties {
   @Override
   public String toString() {
     StringBuilder s = new StringBuilder();
-    for (Entry<String, String> e : this._properties.entrySet()) {
+    for (Entry<String, String> e : this.properties.entrySet()) {
       s.append(e.getKey()).append('=').append(e.getValue()).append('|');
     }
     return s.toString();
