@@ -16,7 +16,6 @@
 
 package org.pageseeder.bridge.search;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,7 +31,7 @@ public final class Question {
   /**
    * An empty question
    */
-  public static final Question EMPTY = new Question("", Collections.emptyList(), -1);
+  public static final Question EMPTY = new Question("", List.of(), -1);
 
   /**
    * The question for full-text searches.

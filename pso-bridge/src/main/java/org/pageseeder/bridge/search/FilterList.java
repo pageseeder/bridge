@@ -34,7 +34,7 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
   /**
    * An empty filter list.
    */
-  public static final FilterList EMPTY = new FilterList(Collections.emptyList());
+  public static final FilterList EMPTY = new FilterList(List.of());
 
   /**
    * Create a new filter list.

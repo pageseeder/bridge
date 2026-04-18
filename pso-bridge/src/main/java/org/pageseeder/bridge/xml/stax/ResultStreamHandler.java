@@ -18,7 +18,6 @@ package org.pageseeder.bridge.xml.stax;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,7 +39,7 @@ public abstract class ResultStreamHandler<T> extends ElementXMLStreamHandler<T> 
 
   public ResultStreamHandler() {
     super("result");
-    this.fieldNames = Collections.emptyList();
+    this.fieldNames = List.of();
   }
 
   public ResultStreamHandler(List<String> fieldNames) {

@@ -30,7 +30,7 @@ import java.util.List;
 public final class Comment implements Serializable, XMLWritable {
 
   /** As per recommendation */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   /** The XLink ID of the comment. */
   private final long id;
@@ -376,7 +376,7 @@ public final class Comment implements Serializable, XMLWritable {
      */
     public Builder content(String content, String type) {
       // TODO
-      this.contents = Collections.singletonList(new Content(content, type));
+      this.contents = List.of(new Content(content, type));
       return this;
     }
 
@@ -484,8 +484,8 @@ public final class Comment implements Serializable, XMLWritable {
      * @return this builder for method chaining
      */
     public Builder contents(List<Content> contents) {
-      if (contents.isEmpty()) this.contents = Collections.emptyList();
-      else if (contents.size() == 1) this.contents = Collections.singletonList(contents.get(0));
+      if (contents.isEmpty()) this.contents = List.of();
+      else if (contents.size() == 1) this.contents = List.of(contents.get(0));
       else {
         this.contents = new ArrayList<>(contents);
       }

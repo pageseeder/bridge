@@ -16,7 +16,6 @@
 package org.pageseeder.bridge.search;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
   /**
    * An empty list of facets.
    */
-  public static final FacetList EMPTY = new FacetList(Collections.emptyList(), -1);
+  public static final FacetList EMPTY = new FacetList(List.of(), -1);
 
   /**
    * The max number of facet values to load (max 1000).

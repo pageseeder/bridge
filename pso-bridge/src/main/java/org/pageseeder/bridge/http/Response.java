@@ -226,7 +226,7 @@ public final class Response implements HttpResponse, AutoCloseable {
   Response(@Nullable String message) {
     this._connection = null;
     this._statusCode = -1;
-    this._headers = Collections.emptyList();
+    this._headers = List.of();
     this._session = null;
     this._mediaType = null;
     this._charset = null;
@@ -809,7 +809,7 @@ public final class Response implements HttpResponse, AutoCloseable {
   @Override
   @SuppressWarnings("null")
   public void consumeXML(XMLWriter xml, Templates templates) throws ContentException {
-    consumeXML(xml, templates, Collections.emptyMap());
+    consumeXML(xml, templates, Map.of());
   }
 
   /**

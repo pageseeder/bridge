@@ -17,7 +17,6 @@
 package org.pageseeder.bridge.search;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,7 +31,7 @@ public class FieldList extends ImmutableList<String> implements Iterable<String>
   /**
    * Constant for an empty list of field names.
    */
-  public static final FieldList EMPTY = new FieldList(Collections.emptyList());
+  public static final FieldList EMPTY = new FieldList(List.of());
 
   private FieldList(List<String> fields) {
     super(fields);

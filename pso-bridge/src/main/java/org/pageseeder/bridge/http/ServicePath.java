@@ -18,7 +18,6 @@ package org.pageseeder.bridge.http;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -177,7 +176,7 @@ public final class ServicePath {
   private static List<Token> toTokens(String template, int count) {
     // No variable return single literal token
     if (count == 0)
-      return Collections.singletonList(new Literal(template));
+      return List.of(new Literal(template));
     // Parse
     List<Token> tokens = new ArrayList<>();
     Matcher m = VARIABLE.matcher(template);

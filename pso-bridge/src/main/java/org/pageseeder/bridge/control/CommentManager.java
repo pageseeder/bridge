@@ -15,7 +15,6 @@
  */
 package org.pageseeder.bridge.control;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.jspecify.annotations.Nullable;
@@ -87,7 +86,7 @@ public final class CommentManager extends Sessionful {
    * @throws APIException If an error occurs while creating the comment.
    */
   public boolean createComment(PSComment comment, PSMember creator) throws APIException {
-    List<PSGroup> empty = Collections.emptyList();
+    List<PSGroup> empty = List.of();
     return createComment(comment, creator, null, empty);
   }
 
@@ -104,7 +103,7 @@ public final class CommentManager extends Sessionful {
    */
   public boolean createComment(PSComment comment, PSNotify notify, PSGroup group) throws APIException {
     PSMember member = checkAuthorMember(comment);
-    return createComment(comment, member, notify, Collections.singletonList(group));
+    return createComment(comment, member, notify, List.of(group));
   }
 
   /**
@@ -120,7 +119,7 @@ public final class CommentManager extends Sessionful {
    * @throws APIException If an error occurs while creating the comment.
    */
   public boolean createComment(PSComment comment, PSMember creator, PSNotify notify, PSGroup group) throws APIException {
-    return createComment(comment, creator, notify, Collections.singletonList(group));
+    return createComment(comment, creator, notify, List.of(group));
   }
 
   /**
@@ -173,7 +172,7 @@ public final class CommentManager extends Sessionful {
    */
   public boolean save(PSComment comment, PSNotify notify, PSGroup group) throws APIException {
     PSMember member = checkAuthorMember(comment);
-    return save(comment, member, notify, Collections.singletonList(group));
+    return save(comment, member, notify, List.of(group));
   }
 
   /**
@@ -189,7 +188,7 @@ public final class CommentManager extends Sessionful {
    * @throws APIException If an error occurs while saving the comment.
    */
   public boolean save(PSComment comment, PSMember editor, PSNotify notify, PSGroup group) throws APIException {
-    return save(comment, editor, notify, Collections.singletonList(group));
+    return save(comment, editor, notify, List.of(group));
   }
 
   /**

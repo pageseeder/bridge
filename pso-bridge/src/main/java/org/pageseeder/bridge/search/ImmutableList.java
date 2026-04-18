@@ -88,8 +88,8 @@ abstract class ImmutableList<E> implements Iterable<E> {
    * @return a new ummodifiable list by adding the specified element.
    */
   protected static <E> List<E> plus(List<E> list, E element) {
-    if (list.size() == 0) {
-      return Collections.singletonList(element);
+    if (list.isEmpty()) {
+      return List.of(element);
     } else {
       List<E> updated = new ArrayList<>(list);
       updated.add(element);

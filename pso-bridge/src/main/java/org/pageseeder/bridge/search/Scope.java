@@ -15,7 +15,6 @@
  */
 package org.pageseeder.bridge.search;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,7 +34,7 @@ import java.util.List;
  */
 public class Scope {
 
-  public static final Scope EMPTY = new Scope(false, "", Collections.emptyList(), "");
+  public static final Scope EMPTY = new Scope(false, "", List.of(), "");
 
   private final boolean _project;
 
@@ -53,11 +52,11 @@ public class Scope {
   }
 
   public Scope group(String group) {
-    return new Scope(false, group, Collections.emptyList(), this._member);
+    return new Scope(false, group, List.of(), this._member);
   }
 
   public Scope project(String project) {
-    return new Scope(true, project, Collections.emptyList(), this._member);
+    return new Scope(true, project, List.of(), this._member);
   }
 
   public Scope project(String project, List<String> groups) {

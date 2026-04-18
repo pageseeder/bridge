@@ -6,7 +6,6 @@ import java.net.HttpURLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,7 +45,7 @@ public final class HTTP {
    */
   public static Map<String, String> decodeParameters(String query) {
     String[] pair = query.split("&");
-    if (pair.length == 0) return Collections.emptyMap();
+    if (pair.length == 0) return Map.of();
     Map<String, String> parameters = new LinkedHashMap<>(pair.length);
     for (String p : pair) {
       int e = p.indexOf('=');

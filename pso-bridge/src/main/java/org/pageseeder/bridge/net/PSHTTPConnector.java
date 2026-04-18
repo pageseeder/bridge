@@ -17,7 +17,6 @@ package org.pageseeder.bridge.net;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
 import java.util.Map;
 
 import javax.xml.transform.Templates;
@@ -337,7 +336,7 @@ public final class PSHTTPConnector {
    * @return The PageSeeder HTTP response metadata
    */
   public PSHTTPResponseInfo get(XMLWriter xml, Templates templates) throws APIException {
-    return transform(Method.GET, xml, templates, Collections.emptyMap());
+    return transform(Method.GET, xml, templates, Map.of());
   }
 
   /**
@@ -416,7 +415,7 @@ public final class PSHTTPConnector {
    * @return The PageSeeder HTTP response metadata
    */
   public PSHTTPResponseInfo patch(XMLWriter xml, Templates templates) throws APIException {
-    return transform(Method.PATCH, xml, templates, Collections.emptyMap());
+    return transform(Method.PATCH, xml, templates, Map.of());
   }
 
   /**
@@ -495,7 +494,7 @@ public final class PSHTTPConnector {
    * @return The PageSeeder HTTP response metadata
    */
   public PSHTTPResponseInfo post(XMLWriter xml, Templates templates) throws APIException {
-    return transform(Method.POST, xml, templates, Collections.emptyMap());
+    return transform(Method.POST, xml, templates, Map.of());
   }
 
   /**

@@ -18,7 +18,6 @@ package org.pageseeder.bridge.search;
 import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public class RangeFilterList extends ImmutableList<RangeFilter> implements Itera
   /**
    * An empty list of range filters.
    */
-  public static final RangeFilterList EMPTY = new RangeFilterList(Collections.emptyList());
+  public static final RangeFilterList EMPTY = new RangeFilterList(List.of());
 
   private RangeFilterList(List<RangeFilter> ranges) {
     super(ranges);

@@ -20,7 +20,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -80,9 +79,8 @@ public final class PSHTTPResource {
    * @param name The name of the resource to access (depends on the type of resource)
    */
   public PSHTTPResource(PSHTTPResourceType type, String name) {
-    this (type, name, null, Collections.emptyMap(), type == PSHTTPResourceType.SERVICE,
+    this (type, name, null, Map.of(), type == PSHTTPResourceType.SERVICE,
         PSConfig.getDefault());
-
   }
 
   /**
@@ -498,7 +496,7 @@ public final class PSHTTPResource {
 
       Map<String, String> parameters;
       if (this._parameters.isEmpty()) {
-        parameters = Collections.emptyMap();
+        parameters = Map.of();
       } else {
         parameters = new HashMap<>(this._parameters);
       }

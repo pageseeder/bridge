@@ -276,8 +276,8 @@ public final class GenericSearch implements Serializable {
    */
   public GenericSearch facet(String field, String value) {
     Map<String, String> facets;
-    if (this.facets.size() == 0) {
-      facets = Collections.singletonMap(field, value);
+    if (this.facets.isEmpty()) {
+      facets = Map.of(field, value);
     } else {
       Map<String, String> map = new LinkedHashMap<>(this.facets);
       map.put(field, value);
@@ -588,15 +588,15 @@ public final class GenericSearch implements Serializable {
   }
 
   private static <K,V> Map<K,V> emptyMap() {
-    return Collections.emptyMap();
+    return Map.of();
   }
 
   private static <T> List<T> emptyList() {
-    return Collections.emptyList();
+    return List.of();
   }
 
   private static <T> List<T> singleton(T o) {
-    return Collections.singletonList(o);
+    return List.of(o);
   }
 
   private static <T> List<T> copyOf(Collection<T> list) {

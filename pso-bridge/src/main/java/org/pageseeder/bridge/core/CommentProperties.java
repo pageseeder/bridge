@@ -20,7 +20,6 @@ import org.pageseeder.xmlwriter.XMLWriter;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,7 +45,7 @@ public final class CommentProperties implements Serializable, XMLWritable {
   private Map<String, String> properties;
 
   private CommentProperties() {
-    this.properties = Collections.emptyMap();
+    this.properties = Map.of();
   }
 
   private CommentProperties(Map<String, String> properties) {

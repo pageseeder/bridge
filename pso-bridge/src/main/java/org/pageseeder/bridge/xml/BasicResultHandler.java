@@ -16,7 +16,6 @@
 package org.pageseeder.bridge.xml;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.jspecify.annotations.NonNull;
@@ -90,7 +89,7 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
    * Creates a basic handler for result capturing every field.
    */
   public BasicResultHandler() {
-    this.fields = Collections.emptyList();
+    this.fields = List.of();
   }
 
   /**

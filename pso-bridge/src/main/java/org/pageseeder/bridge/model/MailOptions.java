@@ -82,20 +82,20 @@ public final class MailOptions {
     daily_digest,
     external;
 
-    private final String _template;
+    private final String template;
 
     /**
      *
      */
     Template() {
-      this._template = name().toLowerCase().replace('_', '-');
+      this.template = name().toLowerCase().replace('_', '-');
     }
 
     /**
      * @return the _template
      */
     public String template() {
-      return this._template;
+      return this.template;
     }
 
   }
@@ -197,7 +197,7 @@ public final class MailOptions {
    */
   public List<String> getRecipients() {
     List<String> r = this.recipients;
-    return r != null ? Collections.unmodifiableList(r) : Collections.emptyList();
+    return r != null ? Collections.unmodifiableList(r) : List.of();
   }
 
   /**
@@ -237,7 +237,7 @@ public final class MailOptions {
    */
   public List<String> getAttachments() {
     List<String> a = this.attachments;
-    return a != null? Collections.unmodifiableList(a) : Collections.emptyList();
+    return a != null? Collections.unmodifiableList(a) : List.of();
   }
 
   /**
