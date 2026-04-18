@@ -18,7 +18,6 @@ package org.pageseeder.bridge.core;
 import org.pageseeder.bridge.PSConfig;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -69,7 +68,7 @@ public abstract class Addressable implements Serializable {
    *  3. Port
    *  4. Path
    */
-  private static final Pattern URL_DECOMPOSER = Pattern.compile("^(?:(https?):)?(?://([\\da-z.-]+)(?::(\\d{1,4}))?)?(/[^?]*)?$");
+  private static final Pattern URL_DECOMPOSER = Pattern.compile("^(?:(https?):)?(?://([\\da-z.-]+)(?::(\\d{1,5}))?)?(/[^?]*)?$");
 
   /**
    * The scheme.
@@ -105,14 +104,11 @@ public abstract class Addressable implements Serializable {
     Matcher m = URL_DECOMPOSER.matcher(url);
     PSConfig p = PSConfig.getDefault();
     if (m.matches()) {
-      String scheme = m.group(1);
-      String host = m.group(2);
-      String port = m.group(3);
-      String path = m.group(4);
-      this.scheme = scheme != null? scheme : p.getScheme();
-      this.host = host != null? host : p.getHost();
-      this.port = port != null? Integer.parseInt(port) : p.getPort();
-      this.path = path != null? path : "";
+      String portString = m.group(3);
+      this.scheme = Objects.toString(m.group(1), p.getScheme());
+      this.host = Objects.toString(m.group(2), p.getHost());
+      this.port = portString != null ? parsePort(portString) : validatePort(p.getPort());
+      this.path = Objects.toString(m.group(4), "");
     } else throw new IllegalArgumentException("Invalid url");
   }
 
@@ -124,11 +120,11 @@ public abstract class Addressable implements Serializable {
    * @param port   The port (or negative to use the default port).
    * @param path   The path to the resource.
    */
-  public Addressable(String scheme, String host, int port, String path) {
+  protected Addressable(String scheme, String host, int port, String path) {
     // We use the methods to ensure that the values are correctly checked
     this.scheme = Objects.requireNonNull(scheme, "Scheme is required");
     this.host = Objects.requireNonNull(host, "Host is required");
-    this.port = port;
+    this.port = validatePort(port);
     this.path = Objects.requireNonNull(path, "Path is required");
   }
 
@@ -157,14 +153,7 @@ public abstract class Addressable implements Serializable {
   }
 
   public final String getHostURL() {
-    StringBuilder url = new StringBuilder();
-    url.append(this.scheme).append(':');
-    url.append("//");
-    url.append(this.host);
-    if (this.port > 0) {
-      url.append(':').append(this.port);
-    }
-    return url.toString();
+    return buildURL(false);
   }
 
   public final String getURL() {
@@ -175,21 +164,32 @@ public abstract class Addressable implements Serializable {
    * @return Recomputes the URL from the attributes in this class.
    */
   public final String toURL() {
+    return buildURL(true);
+  }
+
+  private String buildURL(boolean includePath) {
     StringBuilder url = new StringBuilder();
-    if (this.scheme != null) {
-      url.append(this.scheme).append(':');
-    }
+    url.append(this.scheme).append(':');
     url.append("//");
-    if (this.host != null) {
-      url.append(this.host);
-    }
+    url.append(this.host);
     if (this.port > 0) {
       url.append(':').append(this.port);
     }
-    if (this.path != null) {
+    if (includePath) {
       url.append(this.path);
     }
     return url.toString();
+  }
+
+  private static int parsePort(String port) {
+    return validatePort(Integer.parseInt(port));
+  }
+
+  private static int validatePort(int port) {
+    if (port > MAX_PORT_NUMBER) {
+      throw new IllegalArgumentException("Invalid port: " + port);
+    }
+    return port;
   }
 
   static class Builder<B extends Builder<B>> {
@@ -214,21 +214,25 @@ public abstract class Addressable implements Serializable {
       return this.path;
     }
 
+    @SuppressWarnings("unchecked")
     public B scheme(String scheme) {
       this.scheme = scheme;
       return (B)this;
     }
 
+    @SuppressWarnings("unchecked")
     public B host(String host) {
       this.host = host;
       return (B)this;
     }
 
+    @SuppressWarnings("unchecked")
     public B port(int port) {
       this.port = port;
       return (B)this;
     }
 
+    @SuppressWarnings("unchecked")
     public B path(String path) {
       this.path = path;
       return (B)this;
