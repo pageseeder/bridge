@@ -140,7 +140,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
   public @Nullable E get(String attribute, String value) {
     if (value == null)
       return null;
-    @Nullable E o = null;
+    E o = null;
     Query query =  this.cache.createQuery();
     Attribute<String> byId = this.cache.getSearchAttribute(attribute);
     query.includeValues().addCriteria(byId.eq(value));

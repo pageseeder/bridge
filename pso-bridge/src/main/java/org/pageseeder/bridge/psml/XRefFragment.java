@@ -92,7 +92,7 @@ public class XRefFragment extends FragmentBase implements PSMLFragment {
       psml.attribute("type", t);
     }
     for (PSXRef x : this.xrefs) {
-      XRefToXML(x, psml);
+      xrefToXML(x, psml);
     }
     psml.closeElement();
   }
@@ -104,7 +104,7 @@ public class XRefFragment extends FragmentBase implements PSMLFragment {
    *
    * @exception IOException  if problem writing XML
    */
-  private static void XRefToXML(PSXRef x, XMLWriter psml) throws IOException {
+  private static void xrefToXML(PSXRef x, XMLWriter psml) throws IOException {
     psml.openElement("blockxref");
     // Target attributes
     Long targetURI = x.getTargetURIId();

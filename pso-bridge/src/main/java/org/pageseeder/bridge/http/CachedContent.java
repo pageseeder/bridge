@@ -69,7 +69,7 @@ public final class CachedContent implements Serializable {
     this.etag = etag;
     this.mediaType = Objects.requireNonNull(Header.toMediaType(contentType));
     // FIXME: should we use the default charset?
-    Charset charset = Objects.requireNonNull(Header.toCharset(contentType));
+    Charset charset = Header.toCharset(contentType);
     this.charset = charset != null? charset.name() : null;
   }
 

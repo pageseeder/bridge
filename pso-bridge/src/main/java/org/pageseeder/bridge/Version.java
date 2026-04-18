@@ -35,6 +35,8 @@ import org.xml.sax.Attributes;
  */
 public final class Version {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(Version.class);
+
   /**
    * The major version (e.g. '5')
    */
@@ -147,8 +149,6 @@ public final class Version {
    */
   private static class VersionHandler extends BasicHandler<Version> {
 
-    private final Logger _logger = LoggerFactory.getLogger(Version.class);
-
     @Override
     public void startElement(String element, Attributes atts) {
       if (isElement("version")) {
@@ -156,14 +156,14 @@ public final class Version {
         String b = atts.getValue("build");
         String v = atts.getValue("string");
         if (m == null || b == null || v == null) {
-          this._logger.error("Version is not formatted correctly major={}, build={}, version={}", m, b, v);
+          LOGGER.error("Version is not formatted correctly major={}, build={}, version={}", m, b, v);
         } else {
           try {
             int major = Integer.parseInt(m);
             int build = Integer.parseInt(b);
             add(new Version(major, build, v));
           } catch (NumberFormatException ex) {
-            this._logger.error("Version is not formatted correctly", ex);
+            LOGGER.error("Version is not formatted correctly", ex);
           }
         }
       }

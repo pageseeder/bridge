@@ -317,6 +317,7 @@ public final class TokenRequest {
   }
 
   @Override
+  @SuppressWarnings("java:S2068")
   public String toString() {
     return "POST "+this.url +"?"+HTTP.encodeParameters(this.parameters).replaceAll("password=([^&]+)", "password=******");
   }

@@ -202,19 +202,21 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
     @Nullable String docid = null;
     String description = "";
     @Nullable String title = null;
-    String mediatype = "";
-    OffsetDateTime created = OffsetDateTime.MIN;
-    OffsetDateTime modified = OffsetDateTime.MIN;
+    @Nullable String mediatype = "";
+    @Nullable OffsetDateTime created = OffsetDateTime.MIN;
+    @Nullable OffsetDateTime modified = OffsetDateTime.MIN;
     LabelList labels = LabelList.NO_LABELS;
 
     /**
      * @param id the id to set
      */
+    @SuppressWarnings("unchecked")
     public final B id(Long id) {
       this.id = id;
       return (B)this;
     }
 
+    @SuppressWarnings("unchecked")
     public final B url(String scheme, String host, int port, String path) {
       scheme(scheme).host(host).port(port).path(path);
       return (B)this;
@@ -223,6 +225,7 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
     /**
      * @param docid the docid to set
      */
+    @SuppressWarnings("unchecked")
     public final B docid(@Nullable String docid) {
       this.docid = docid;
       return (B)this;
@@ -231,6 +234,7 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
     /**
      * @param description the description to set
      */
+    @SuppressWarnings("unchecked")
     public final B description(@Nullable String description) {
       this.description = description;
       return (B)this;
@@ -239,6 +243,7 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
     /**
      * @param title the title to set
      */
+    @SuppressWarnings("unchecked")
     public final B title(@Nullable String title) {
       this.title = title;
       return (B)this;
@@ -247,6 +252,7 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
     /**
      * @param labels the labels to set
      */
+    @SuppressWarnings("unchecked")
     public final B labels(List<String> labels) {
       this.labels = new LabelList(labels);
       return (B)this;
@@ -255,6 +261,7 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
     /**
      * @param labels The labels as a comma-separated list.
      */
+    @SuppressWarnings("unchecked")
     public final B labels(String labels) {
       this.labels = LabelList.parse(labels);
       return (B)this;
@@ -263,6 +270,7 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
     /**
      * @param mediatype the mediatype to set
      */
+    @SuppressWarnings("unchecked")
     public final B mediaType(@Nullable String mediatype) {
       this.mediatype = mediatype;
       return (B)this;
@@ -271,6 +279,7 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
     /**
      * @param date the ISO8601 date
      */
+    @SuppressWarnings("unchecked")
     public final B created(@Nullable String date) {
       this.created = date != null? OffsetDateTime.parse(date) : null;
       return (B)this;
@@ -279,12 +288,12 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
     /**
      * @param date the ISO8601 date
      */
+    @SuppressWarnings("unchecked")
     public final B modified(@Nullable String date) {
       this.modified = date != null? OffsetDateTime.parse(date) : null;
       return (B)this;
     }
 
-   // public abstract URI build();
   }
 
 }

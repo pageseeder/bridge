@@ -48,6 +48,7 @@ import org.pageseeder.bridge.model.PSURI;
  * @version 0.12.0
  * @since 0.2.0
  */
+@SuppressWarnings("javs:S1192")
 public final class Services {
 
   // Note: methods are declared in the order they are declared in the "services.xml" file on PageSeeder
@@ -390,8 +391,6 @@ public final class Services {
   // Email Services
   // ----------------------------------------------------------------------------------------------
 
-  // /members/{member:member}/groups/{group:group}/mail/preview
-
   /**
    * Returns the URL to send an email.
    *
@@ -610,16 +609,6 @@ public final class Services {
     return "/groups/" + prefixGroup(group);
   }
 
-  // /groups/{group:group}/size
-
-  // /members/{member:member}/groups/{group:group}/publish/start
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/publish/start
-
-  // /groups/{group:group}/publish/check
-
-  // /groups/{group:group}/publish/cancel
-
   /**
    * Returns the URL to list the members of a group.
    *
@@ -701,36 +690,6 @@ public final class Services {
     return "/groups/" + prefixGroup(group) + "/members/" + prefixMember(member) + "/manage";
   }
 
-  // /groups/{group:group}/autocomplete/{field}
-
-  // /groups/{group:group}/autocomplete
-
-  // /groups/{group:group}/autosuggest
-
-  // /groups/{group:group}/omnibox
-
-  // /groups/{group:group}/autosuggest/fields
-
-  // /groups/{group:group}/facet
-
-  // /groups/{group:group}/publishconfig
-
-  // /groups/{group:group}/error/report
-
-  // /members/{member:member}/groups/{group:group}/applyshare
-
-  // /members/{member:member}/groups/{group:group}/resolvexrefs
-
-  // /members/{member:member}/groups/{group:group}/converttopsml
-
-  // /groups/{group:group}/images/find
-
-  // /members/{member:member}/groups/{group:group}/index/start
-
-  // /groups/{group:group}/index/status
-
-  // /groups/{group:group}/index/clear
-
   /**
    * Returns the URL to archive a group.
    *
@@ -755,22 +714,8 @@ public final class Services {
     return "/members/" + prefixMember(member) + "/groups/" + prefixGroup(group) + "/rename";
   }
 
-  // /members/{member:member}/groups/{group:group}/unarchive
-
   // URI Services
   // ----------------------------------------------------------------------------------------------
-
-  // /groups/{group:group}/uris/forurl/uris
-
-  // /groups/{group:group}/uris/{uri:uri}/uris
-
-  // /groups/{group:group}/externaluris/hosts
-
-  // /groups/{group:group}/hosts/{host}/externaluris
-
-  // /groups/{group:group}/externaluris/forurl/externaluris
-
-  // /groups/{group:group}/externaluris/{uri:uri}/externaluris
 
   /**
    * Returns the URL to list URIs for a given URL.
@@ -830,36 +775,6 @@ public final class Services {
     return "/groups/" + prefixGroup(group) + "/uris/" + uriid + "/xrefs";
   }
 
-  // /members/{member:member}/groups/{group:group}/externaluris/{uri:uri}
-
-  // /members/{member:member}/groups/{group:group}/externaluris/{uri:uri}/archive
-
-  // /members/{member:member}/groups/{group:group}/externaluris/{uri:uri}/unarchive
-
-  // /groups/{group:group}/uris/{uri:uri}/versions
-
-  // /groups/{group:group}/uris/{uri:uri}/xrefs
-
-  // /groups/{group:group}/uris/{uri:uri}/xreftree
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/versions
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/versions/{versionid}/archive
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/xrefs
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/xrefs/{xrefid}/archive
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/resolvexrefs
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/index/start
-
-  // /groups/{group:group}/uris/{uri:uri}/history
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/properties
-
-  // /members/{member:member}/groups/{group:group}/documents
-
   /**
    * Returns the URL to create a document for a given URL.
    *
@@ -885,30 +800,6 @@ public final class Services {
     return "/members/" + prefixMember(member) + "/groups/" + prefixGroup(group) + "/uris/" + uri;
   }
 
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/documents
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/duplicate
-
-  // /members/{member:member}/groups/{group:group}/folders
-
-  // /members/{member:member}/groups/{group:group}/folders/forurl
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/folders
-
-  // /groups/{group:group}/uris/{uri:uri}/schemas
-
-  // /groups/{group:group}/uris/{uri:uri}/index
-
-  // /groups/{group:group}/uris/{uri:uri}/publishconfig
-
-  // /groups/{group:group}/uris/publishconfig
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/editinlinelabel
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/editpsmlproperty
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/fragments
-
   /**
    * Returns the URL to get/put a fragment from a document.
    *
@@ -923,42 +814,6 @@ public final class Services {
     return "/members/" + prefixMember(member) + "/groups/" + prefixGroup(group) + "/uris/" + uri + "/fragments/" + fragment;
   }
 
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/fragments/{fragment}/revert
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/edits/{editid}/share
-
-  // /groups/{group:group}/uris/{uri:uri}/config
-
-  // /groups/{group:group}/uris/{uri:uri}/drafts
-
-  // /groups/{group:group}/uris/{uri:uri}/fragments/{fragment}/drafts
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/move
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/archive
-
-  // /members/{member:member}/groups/{group:group}/uris/{uri:uri}/foldervalidate
-
-  // /members/{member:member}/uris/{uri:uri}/export
-
-  // /members/{member:member}/export
-
-  // Host Services
-  // ----------------------------------------------------------------------------------------------
-
-  // /members/{member:member}/hosts/{host}/update
-
-  // Task Services
-  // ----------------------------------------------------------------------------------------------
-
-  // /members/{member:member}/tasks/find
-
-  // /tasks/find
-
-  // /members/{member:member}/tasks/{task}
-
-  // /tasks/{task}
-
   // Comment and Discussions Services
   // ----------------------------------------------------------------------------------------------
 
@@ -972,12 +827,6 @@ public final class Services {
   public static String toDiscussionsForGroup(String group) {
     return "/groups/" + prefixGroup(group) + "/discussions";
   }
-
-  // /groups/{group:group}/discussions/{discussion}
-
-  // /members/{member:member}/discussions/forurl
-
-  // /members/{member:member}/discussions/{discussion}
 
   /**
    * Returns the URL to reply to a comment.
@@ -1029,20 +878,6 @@ public final class Services {
     return "/members/" + prefixMember(member) + "/comments/find";
   }
 
-  // /uris/{uri:uri}/discussions
-
-  // /uris/{uri:uri}/fragments/{fragment}/discussions
-
-  // /members/{member:member}/groups/{group:group}/comments
-
-  // /groups/{group:group}/comments
-
-  // /members/{member:member}/groups/{group:group}/comments/{xlinkid}/reply
-
-  // /groups/{group:group}/comments/{xlinkid}/reply
-
-  // /members/{member:member}/comments/{xlinkid}/reply
-
   /**
    * Returns the URL to reply to a comment.
    *
@@ -1054,20 +889,6 @@ public final class Services {
   protected static String toReplyComment(String member, String xlink) {
     return "/members/" + prefixMember(member) + "/comments/" + xlink + "/reply";
   }
-
-  // /members/{member:member}/comments/forurl
-
-  // /members/{member:member}/uris/{uri:uri}/comments
-
-  // /members/{member:member}/uris/{uri:uri}/fragments/{fragment}/comments
-
-  // /comments/{xlinkid}/reply
-
-  // /comments/forurl
-
-  // /uris/{uri:uri}/comments
-
-  // /uris/{uri:uri}/fragments/{fragment}/comments
 
   /**
    * Returns the URL to a comment.
@@ -1164,25 +985,6 @@ public final class Services {
   // Loading Zone related Services
   // ----------------------------------------------------------------------------------------------
 
-  // /members/{member:member}/groups/{group:group}/loadingzone/delete
-
-  // /members/{member:member}/groups/{group:group}/loadingzone/unzip
-
-  // /members/{member:member}/groups/{group:group}/loadingzone/clear
-
-  // /members/{member:member}/groups/{group:group}/loadingzone/uris
-
-  // Thread related Services
-  // ----------------------------------------------------------------------------------------------
-
-  // /threads
-
-  // /groups/{group:group}/threads
-
-  // /groups/{group:group}/threads/{threadid}/cancel
-
-  // /threads/{threadid}/cancel
-
   /**
    * Returns the URL to check the progress of a thread.
    *
@@ -1193,10 +995,6 @@ public final class Services {
   public static String toThreadProgress(String threadid) {
     return "/threads/" + threadid + "/progress";
   }
-
-  // /threads/{threadid}/progress
-
-  // /groups/{group:group}/threads/{threadid}/logs
 
   // Developer Related Services
   // ----------------------------------------------------------------------------------------------
@@ -1233,15 +1031,5 @@ public final class Services {
   public static String toGetResource(String project) {
     return "/groups/" + project + "/resources";
   }
-
-  // /groups/{group:group}/resources/move
-
-  // /groups/{group:group}/resources/export
-
-  // /groups/{group:group}/resources/import
-
-  // /groups/{group:group}/resources/history
-
-  // /groups/{group:group}/documenttypes/converttopsml
 
 }

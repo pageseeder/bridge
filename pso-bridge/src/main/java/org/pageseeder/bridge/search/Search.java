@@ -16,6 +16,7 @@
 package org.pageseeder.bridge.search;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -33,9 +34,6 @@ public final class Search {
    * Utility class.
    */
   private Search(){}
-
-  // Private helpers
-  // --------------------------------------------------------------------------
 
   /**
    * Join the values in the collection using the specified separator.
@@ -67,7 +65,7 @@ public final class Search {
    */
   public static String format(LocalDateTime datetime) {
     // We format using second resolutions in UTC
-    return datetime.atZone(ZoneOffset.systemDefault())
+    return datetime.atZone(ZoneId.systemDefault())
         .withZoneSameInstant(ZoneOffset.UTC)
         .truncatedTo(ChronoUnit.SECONDS)
         .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)+"Z";

@@ -153,7 +153,7 @@ public final class DocumentPath {
    */
   public DocumentPath child(String child) {
     String[] path;
-    if (child.indexOf('/') < 0 && child.length()> 0 && !".".equals(child) && !"..".equals(child)) {
+    if (child.indexOf('/') < 0 && !child.isEmpty() && !".".equals(child) && !"..".equals(child)) {
       path = childOf(this, child);
     } else {
       path = descendantOf(this, child);

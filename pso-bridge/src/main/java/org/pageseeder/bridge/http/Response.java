@@ -97,17 +97,17 @@ public final class Response implements HttpResponse, AutoCloseable {
      *
      * <p>Calling any of the consume methods will change the state to 'consumed'
      */
-    available,
+    AVAILABLE,
 
     /**
      * The connection failed, and not content can be read from it.
      */
-    failed,
+    FAILED,
 
     /**
      * The response has already been consumed and the content is no longer available.
      */
-    consumed
+    CONSUMED
   }
 
   /**
@@ -146,7 +146,7 @@ public final class Response implements HttpResponse, AutoCloseable {
   /**
    * The state of response.
    */
-  private State state = State.available;
+  private State state = State.AVAILABLE;
 
   /**
    * Session from request or updated by 'Set-Cookie' header.
@@ -231,7 +231,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     this.mediaType = null;
     this.charset = null;
     this.message = message;
-    this.state = State.failed;
+    this.state = State.FAILED;
   }
 
   // Getters
@@ -472,7 +472,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public boolean isAvailable() {
-    return this.state == State.available;
+    return this.state == State.AVAILABLE;
   }
 
   // Consumers
@@ -497,7 +497,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     try {
       return toInputStream(con);
     } finally {
-      this.state = State.consumed;
+      this.state = State.CONSUMED;
     }
   }
 
@@ -541,7 +541,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     try {
       return new InputStreamReader(toInputStream(con), charset);
     } finally {
-      this.state = State.consumed;
+      this.state = State.CONSUMED;
     }
   }
 
@@ -566,7 +566,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     } catch (IOException ex) {
       throw new ContentException("Unable to consume bytes", ex);
     } finally {
-      this.state = State.consumed;
+      this.state = State.CONSUMED;
     }
   }
 
@@ -608,7 +608,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     } catch (IOException ex) {
       throw new ContentException("Unable to consume response content", ex);
     } finally {
-      this.state = State.consumed;
+      this.state = State.CONSUMED;
     }
   }
 
@@ -634,7 +634,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     } catch (IOException ex) {
       throw new ContentException("Unable to consume bytes", ex);
     } finally {
-      this.state = State.consumed;
+      this.state = State.CONSUMED;
     }
   }
 
@@ -678,7 +678,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     } catch (IOException ex) {
       throw new ContentException("Unable to consume XML", ex);
     } finally {
-      this.state = State.consumed;
+      this.state = State.CONSUMED;
     }
   }
 
@@ -743,7 +743,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     } catch (IOException ex) {
       throw new ContentException("Unable to consume XML", ex);
     } finally {
-      this.state = State.consumed;
+      this.state = State.CONSUMED;
     }
   }
 
@@ -788,7 +788,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     } catch (IOException ex) {
       throw new ContentException("Unable to copy XML", ex);
     } finally {
-      this.state = State.consumed;
+      this.state = State.CONSUMED;
     }
   }
 
@@ -836,7 +836,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     } catch (IOException ex) {
       throw new ContentException("Unable to transform XML", ex);
     } finally {
-      this.state = State.consumed;
+      this.state = State.CONSUMED;
     }
   }
 
@@ -873,7 +873,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public @Nullable ServiceError getServiceError() {
-    if (this.state == State.consumed)
+    if (this.state == State.CONSUMED)
       return this.error;
     else
       return consumeItem(new ServiceErrorHandler());
@@ -881,7 +881,7 @@ public final class Response implements HttpResponse, AutoCloseable {
 
   @Override
   public void close() {
-    if (this.state == State.available) {
+    if (this.state == State.AVAILABLE) {
       consume();
     }
   }
@@ -1003,14 +1003,14 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   private HttpURLConnection requireAvailable() {
     switch (this.state) {
-      case available:
+      case AVAILABLE:
         HttpURLConnection connection = this.connection;
         if (connection == null)
           throw new IllegalArgumentException("This response cannot be consumed because there is not connection!");
         return connection;
-      case failed:
+      case FAILED:
         throw new IllegalArgumentException("This response cannot be consumed because the connection failed.");
-      case consumed:
+      case CONSUMED:
         throw new IllegalArgumentException("This response has already been consumed!");
       default:
         throw new IllegalArgumentException("This response is not available");

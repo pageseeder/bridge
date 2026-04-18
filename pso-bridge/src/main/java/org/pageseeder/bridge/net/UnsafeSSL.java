@@ -24,6 +24,8 @@ import javax.net.ssl.X509TrustManager;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 
+import java.security.cert.X509Certificate;
+
 /**
  * A utility class to trust any certificate so that the HTTPS connections can
  * be established to self-signed certificates.
@@ -61,6 +63,8 @@ public final class UnsafeSSL {
    */
   private static volatile boolean enabled = false;
 
+  private UnsafeSSL() {}
+
   /**
    * Enable unsafe SSL, only if the system property "bridge.ssl.enableUnsafe" is set to "true"
    *
@@ -85,11 +89,13 @@ public final class UnsafeSSL {
       final TrustManager[] trustAllCerts = new TrustManager[] {
         new X509TrustManager() {
           @Override
-          public void checkClientTrusted(java.security.cert.X509Certificate @Nullable[] chain, @Nullable String authType) {
+          public void checkClientTrusted(X509Certificate @Nullable[] chain, @Nullable String authType) {
+            // Do nothing
           }
 
           @Override
-          public void checkServerTrusted(java.security.cert.X509Certificate @Nullable[] chain, @Nullable String authType) {
+          public void checkServerTrusted(X509Certificate @Nullable[] chain, @Nullable String authType) {
+            // Do nothing
           }
 
           @Override

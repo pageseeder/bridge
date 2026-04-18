@@ -105,7 +105,7 @@ public final class XMLCopy extends DefaultHandler implements ContentHandler, Lex
   }
 
   @Override
-  public void startPrefixMapping(String prefix, String uri) {
+  public void startPrefixMapping(@Nullable String prefix, String uri) {
     boolean hasPrefix = prefix != null && !prefix.isEmpty();
     this.mapping.put((hasPrefix? prefix : ""), uri);
   }
@@ -123,8 +123,6 @@ public final class XMLCopy extends DefaultHandler implements ContentHandler, Lex
 
   /**
    * Copy the comment to the output.
-   *
-   * {@inheritDoc}
    */
   @Override
   public void comment(char[] ch, int start, int length) throws SAXException {
@@ -137,56 +135,50 @@ public final class XMLCopy extends DefaultHandler implements ContentHandler, Lex
 
   /**
    * Does nothing.
-   *
-   * {@inheritDoc}
    */
   @Override
   public void startCDATA() {
+    // Ignore: nothing to do
   }
 
   /**
    * Does nothing.
-   *
-   * {@inheritDoc}
    */
   @Override
   public void endCDATA() {
+    // Ignore: nothing to do
   }
 
   /**
    * Does nothing.
-   *
-   * {@inheritDoc}
    */
   @Override
   public void startDTD(String name, @Nullable String publicId, @Nullable String systemId) {
+    // Ignore: nothing to do
   }
 
   /**
    * Does nothing.
-   *
-   * {@inheritDoc}
    */
   @Override
   public void endDTD() {
+    // Ignore: nothing to do
   }
 
   /**
    * Does nothing.
-   *
-   * {@inheritDoc}
    */
   @Override
   public void startEntity(String name) {
+    // Ignore: nothing to do
   }
 
   /**
    * Does nothing.
-   *
-   * {@inheritDoc}
    */
   @Override
   public void endEntity(String name) {
+    // Ignore: nothing to do
   }
 
 }

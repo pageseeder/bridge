@@ -37,7 +37,7 @@ public final class Document extends URI {
   public static final String DEFAULT_DOCUMENT_TYPE = "default";
 
   /** The document type (PSML only) */
-  private String type = "default";
+  private String type;
 
   public Document(long id, String scheme, String host, int port, String path, @Nullable String title, @Nullable String docid, String description, String mediatype, @Nullable OffsetDateTime created, @Nullable OffsetDateTime modified, LabelList labels, String documentType) {
     super(id, scheme, host, port, path, title, docid, description, mediatype, created, modified, labels);

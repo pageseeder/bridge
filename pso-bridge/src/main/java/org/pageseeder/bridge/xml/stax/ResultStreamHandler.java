@@ -37,12 +37,12 @@ public abstract class ResultStreamHandler<T> extends ElementXMLStreamHandler<T> 
    */
   private List<String> fieldNames;
 
-  public ResultStreamHandler() {
+  protected ResultStreamHandler() {
     super("result");
     this.fieldNames = List.of();
   }
 
-  public ResultStreamHandler(List<String> fieldNames) {
+  protected ResultStreamHandler(List<String> fieldNames) {
     super("result");
     this.fieldNames = fieldNames;
   }
@@ -62,7 +62,7 @@ public abstract class ResultStreamHandler<T> extends ElementXMLStreamHandler<T> 
               fields.add(new Field(name, value));
            }
         }
-    } while (!(xml.isEndElement() && "result" == xml.getLocalName()));
+    } while (!(xml.isEndElement() && "result".equals(xml.getLocalName())));
     return result(fields);
   }
 

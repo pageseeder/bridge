@@ -1608,28 +1608,27 @@ public enum Service {
   @Deprecated
   convert_documenttypes_to_psml("/groups/{group}/documenttypes/converttopsml");
 
-
   /**
    * The service path template.
    */
-  private final ServicePath _path;
+  private final ServicePath path;
 
   Service(String template) {
-    this._path = new ServicePath(template);
+    this.path = new ServicePath(template);
   }
 
   /**
    * @return the underlying template
    */
   public String template() {
-    return this._path.template();
+    return this.path.template();
   }
 
   /**
    * @return the number of expected variables for this service.
    */
   public int countVariables() {
-    return this._path.count();
+    return this.path.count();
   }
 
   /**
@@ -1644,7 +1643,7 @@ public enum Service {
    */
   @SafeVarargs
   public final String toPath(@NonNull Object... variables) {
-    return this._path.toPath(variables);
+    return this.path.toPath(variables);
   }
 
 }
