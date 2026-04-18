@@ -25,7 +25,7 @@ import org.pageseeder.bridge.util.ISO8601;
  *
  * @author Christophe Lauret
  *
- * @version 0.10.2
+ * @version 0.12.0
  * @since 0.3.0
  */
 public final class PasswordResetOptions {
@@ -43,7 +43,7 @@ public final class PasswordResetOptions {
   /**
    * The significant date.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   private @Nullable Date significantDate;
 
   /**
@@ -79,7 +79,7 @@ public final class PasswordResetOptions {
    *
    * @deprecated The significant date is no longer supported in PageSeeder.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public @Nullable Date getSignificantDate() {
     return this.significantDate;
   }
@@ -89,7 +89,7 @@ public final class PasswordResetOptions {
    *
    * @deprecated The significant date is no longer supported in PageSeeder.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public @Nullable String getSignificantDateAsString() {
     Date d = this.significantDate;
     return d != null? ISO8601.CALENDAR_DATE.format(d.getTime()) : null;
@@ -100,7 +100,7 @@ public final class PasswordResetOptions {
    *
    * @deprecated The significant date is no longer supported in PageSeeder
    */
-  @Deprecated
+  @Deprecated(forRemoval = true)
   public void setSignificantDate(Date date) {
     this.significantDate = date;
   }

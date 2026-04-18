@@ -23,20 +23,20 @@ import java.io.Serializable;
 public final class ServiceError implements Serializable {
 
   /** As per requirement for serializable */
-  private static final long serialVersionUID = 20161202L;
+  private static final long serialVersionUID = 20260418L;
 
   /** Used for padding */
-  private final static String ZEROES = "0000";
+  private static final String ZEROES = "0000";
 
   /**
    * The error ID.
    */
-  private final int _id;
+  private final int id;
 
   /**
    * The message.
    */
-  private final String _message;
+  private final String message;
 
   /**
    * Report a new service error.
@@ -45,8 +45,8 @@ public final class ServiceError implements Serializable {
    * @param message The error message
    */
   public ServiceError(int id, String message) {
-    this._id = id;
-    this._message = message;
+    this.id = id;
+    this.message = message;
   }
 
   /**
@@ -58,8 +58,8 @@ public final class ServiceError implements Serializable {
    * @throws NumberFormatException If the code is invalid.
    */
   public ServiceError(String code, String message) {
-    this._id = Integer.parseInt(code, 16);
-    this._message = message;
+    this.id = Integer.parseInt(code, 16);
+    this.message = message;
   }
 
   /**
@@ -68,7 +68,7 @@ public final class ServiceError implements Serializable {
    * @return The error ID as an integer.
    */
   public int id() {
-    return this._id;
+    return this.id;
   }
 
   /**
@@ -77,7 +77,7 @@ public final class ServiceError implements Serializable {
    * @return the error ID as an hexadecimal code with padding.
    */
   public String code() {
-    return code(this._id);
+    return code(this.id);
   }
 
   /**
@@ -86,12 +86,12 @@ public final class ServiceError implements Serializable {
    * @return the message explaining or describing the error.
    */
   public String message() {
-    return this._message;
+    return this.message;
   }
 
   @Override
   public String toString() {
-    return "[0x"+code()+"] "+this._message;
+    return "[0x"+code()+"] "+this.message;
   }
 
   /**

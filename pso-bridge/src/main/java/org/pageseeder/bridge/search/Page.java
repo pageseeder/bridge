@@ -15,13 +15,17 @@
  */
 package org.pageseeder.bridge.search;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 
 /**
  * Specifies which page in the search results.
  */
-public class Page {
+public class Page implements Serializable {
+
+  /** As per recommendation */
+  private static final long serialVersionUID = 20260418L;
 
   /**
    * The default page number is 1.
@@ -41,19 +45,19 @@ public class Page {
   /**
    * Requested page (a natural integer)
    */
-  private final int _number;
+  private final int number;
 
   /**
    * Results per page
    */
-  private final int _size;
+  private final int size;
 
   /**
    * Create a new page using the default page number and attribute.
    */
   public Page() {
-    this._number = DEFAULT_PAGE_NUMBER;
-    this._size = DEFAULT_PAGE_SIZE;
+    this.number = DEFAULT_PAGE_NUMBER;
+    this.size = DEFAULT_PAGE_SIZE;
   }
 
   /**
@@ -65,30 +69,30 @@ public class Page {
    * @throws IllegalArgumentException if the number or size is not greater than zero.
    */
   public Page(int number, int size) {
-    this._number = checkNatural(number);
-    this._size = checkNatural(size);
+    this.number = checkNatural(number);
+    this.size = checkNatural(size);
   }
 
   /**
    * @return The requested page (a natural integer)
    */
   public int number() {
-    return this._number;
+    return this.number;
   }
 
   /**
    * @return The number of results per page.
    */
   public int size() {
-    return this._size;
+    return this.size;
   }
 
   public Page number(int page) {
-    return new Page(page, this._size);
+    return new Page(page, this.size);
   }
 
   public Page size(int size) {
-    return new Page(this._number, size);
+    return new Page(this.number, size);
   }
 
   @Override
@@ -96,17 +100,17 @@ public class Page {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Page page = (Page) o;
-    return this._number == page._number && this._size == page._size;
+    return this.number == page.number && this.size == page.size;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this._number, this._size);
+    return Objects.hash(this.number, this.size);
   }
 
   @Override
   public String toString() {
-    return this._number +"("+this._size+")";
+    return this.number +"("+this.size +")";
   }
 
   /**
@@ -114,11 +118,11 @@ public class Page {
    */
   public Map<String, String> toParameters(Map<String, String> parameters) {
     // Paging
-    if (this._number > 0 && this._number != Page.DEFAULT_PAGE_NUMBER) {
-      parameters.put("page", Integer.toString(this._number));
+    if (this.number > 0 && this.number != Page.DEFAULT_PAGE_NUMBER) {
+      parameters.put("page", Integer.toString(this.number));
     }
-    if (this._size > 0 && this._size != Page.DEFAULT_PAGE_SIZE) {
-      parameters.put("pagesize", Integer.toString(this._size));
+    if (this.size > 0 && this.size != Page.DEFAULT_PAGE_SIZE) {
+      parameters.put("pagesize", Integer.toString(this.size));
     }
     return parameters;
   }

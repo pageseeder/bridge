@@ -160,7 +160,7 @@ public class RangeFilterList extends ImmutableList<RangeFilter> implements Itera
         if (filters.length() > 0) {
           filters.append(',');
         }
-        String value = f.range().toString().replaceAll(",", "\\,");
+        String value = f.range().toString().replace(",", "\\,");
         filters.append(f.field()).append(':').append(value);
       }
       parameters.put("ranges", filters.toString());

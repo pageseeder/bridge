@@ -15,42 +15,45 @@
  */
 package org.pageseeder.bridge.search;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 
-public final class Predicate {
+public final class Predicate implements Serializable {
 
+  /** As per recommendation */
+  private static final long serialVersionUID = 20260418L;
 
   public static final Predicate EMPTY = new Predicate("", "");
 
   /**
    * The question for full-text searches.
    */
-  private final String _predicate;
+  private final String predicate;
 
   /**
    * The default field for the predicate
    */
-  private final String _defaultField;
+  private final String defaultField;
 
   public Predicate(String predicate, String defaultField) {
-    this._predicate = Objects.requireNonNull(predicate);
-    this._defaultField =  Objects.requireNonNull(defaultField);
+    this.predicate = Objects.requireNonNull(predicate);
+    this.defaultField =  Objects.requireNonNull(defaultField);
   }
 
   public String predicate() {
-    return this._predicate;
+    return this.predicate;
   }
 
   public String defaultField() {
-    return this._defaultField;
+    return this.defaultField;
   }
 
   public Map<String, String> toParameters(Map<String, String> parameters) {
-    if (!this._predicate.isEmpty()) {
-      parameters.put("predicate", this._predicate);
-      if (!this._defaultField.isEmpty()) {
-        parameters.put("defaultfield", this._defaultField);
+    if (!this.predicate.isEmpty()) {
+      parameters.put("predicate", this.predicate);
+      if (!this.defaultField.isEmpty()) {
+        parameters.put("defaultfield", this.defaultField);
       }
     }
     return parameters;

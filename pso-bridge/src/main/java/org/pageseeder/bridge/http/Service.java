@@ -24,6 +24,7 @@ import org.jspecify.annotations.NonNull;
  * @version 0.9.2
  * @since 0.9.1
  */
+@SuppressWarnings("java:S115")
 public enum Service {
 
   /**

@@ -55,7 +55,7 @@ public enum PSNotification {
   /**
    * The value to send as a parameter to services.
    */
-  private final String _parameter;
+  private final String parameter;
 
   /**
    * Private constructor.
@@ -63,14 +63,14 @@ public enum PSNotification {
    * @param p the name of the parameter for PageSeeder services
    */
   PSNotification(String p) {
-    this._parameter = p;
+    this.parameter = p;
   }
 
   /**
    * @return the parameter to use when communicating with PageSeder
    */
   public String parameter() {
-    return this._parameter;
+    return this.parameter;
   }
 
 }

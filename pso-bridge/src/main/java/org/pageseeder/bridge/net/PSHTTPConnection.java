@@ -32,6 +32,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -123,27 +124,27 @@ public final class PSHTTPConnection {
   /**
    * Used to generate boundary parts.
    */
-  private static Random random = new Random();
+  private static final Random RANDOM = new SecureRandom();
 
   /**
    * The wrapped HTTP Connection.
    */
-  private final HttpURLConnection _connection;
+  private final HttpURLConnection connection;
 
   /**
    * The PageSeeder resource corresponding to the target of the URL.
    */
-  private final PSHTTPResource _resource;
+  private final PSHTTPResource resource;
 
   /**
    * The method for the connection.
    */
-  private final Method _method;
+  private final Method method;
 
   /**
    * The part boundary.
    */
-  private final String _boundary;
+  private final String boundary;
 
   /**
    * The output stream used to write the data to push through the connection (e.g. Multipart).
@@ -167,10 +168,10 @@ public final class PSHTTPConnection {
    * @param boundary   The boundary to use for multipart only (may be <code>null</code>)
    */
   private PSHTTPConnection(HttpURLConnection connection, PSHTTPResource resource, Method method, @Nullable PSSession session, String boundary) {
-    this._connection = connection;
-    this._resource = resource;
-    this._method = method;
-    this._boundary = boundary;
+    this.connection = connection;
+    this.resource = resource;
+    this.method = method;
+    this.boundary = boundary;
     this.session = session;
   }
 
@@ -180,7 +181,7 @@ public final class PSHTTPConnection {
   private void endMultipart() throws IOException {
     DataOutputStream o = this.out;
     if (o != null) {
-      write(this._boundary, o);
+      write(this.boundary, o);
       write("--", o);
       writeCRLF(o);
       o.flush();
@@ -208,10 +209,10 @@ public final class PSHTTPConnection {
   public void addXMLPart(String part, @Nullable Map<String, String> headers) throws IOException {
     DataOutputStream o = initDataOutputStream();
     try {
-      if (this._method != Method.MULTIPART) throw new IOException("Cannot add XML part unless connection type is set to Multipart");
+      if (this.method != Method.MULTIPART) throw new IOException("Cannot add XML part unless connection type is set to Multipart");
 
       // Start with boundary
-      write(this._boundary, o);
+      write(this.boundary, o);
       writeCRLF(o);
 
       // Headers if specified
@@ -262,10 +263,10 @@ public final class PSHTTPConnection {
   public void addPart(InputStream in, String filename) throws IOException {
     DataOutputStream o = initDataOutputStream();
     try {
-      if (this._method != Method.MULTIPART) throw new IOException("Cannot add file part unless connection type is set to Multipart");
+      if (this.method != Method.MULTIPART) throw new IOException("Cannot add file part unless connection type is set to Multipart");
 
       // Start with boundary
-      write(this._boundary, o);
+      write(this.boundary, o);
       writeCRLF(o);
 
       // Write headers
@@ -306,10 +307,10 @@ public final class PSHTTPConnection {
   public void addParameterPart(String name, String value) throws IOException {
     DataOutputStream o = initDataOutputStream();
     try {
-      if (this._method != Method.MULTIPART) throw new IOException("Cannot add parameter connection type is set to Multipart");
+      if (this.method != Method.MULTIPART) throw new IOException("Cannot add parameter connection type is set to Multipart");
 
       // Start with boundary
-      write(this._boundary, o);
+      write(this.boundary, o);
       writeCRLF(o);
 
       // Write Parameter
@@ -349,7 +350,7 @@ public final class PSHTTPConnection {
    * @throws IOException If thrown by the underlying HTTP connection.
    */
   public int getResponseCode() throws IOException {
-    return this._connection.getResponseCode();
+    return this.connection.getResponseCode();
   }
 
   /**
@@ -360,7 +361,7 @@ public final class PSHTTPConnection {
    * @throws IOException If thrown by the underlying HTTP connection.
    */
   public @Nullable String getResponseMessage() throws IOException {
-    return this._connection.getResponseMessage();
+    return this.connection.getResponseMessage();
   }
 
   /**
@@ -370,7 +371,7 @@ public final class PSHTTPConnection {
    * @return the content type of the underlying HTTP connection.
    */
   public @Nullable String getContentType() {
-    return this._connection.getContentType();
+    return this.connection.getContentType();
   }
 
   /**
@@ -382,7 +383,7 @@ public final class PSHTTPConnection {
    * @return the underlying HTTP connection.
    */
   public HttpURLConnection connection() {
-    return this._connection;
+    return this.connection;
   }
 
   /**
@@ -391,7 +392,7 @@ public final class PSHTTPConnection {
    * @return the PageSeeder resource corresponding to the URL.
    */
   public PSHTTPResource resource() {
-    return this._resource;
+    return this.resource;
   }
 
   /**
@@ -400,7 +401,7 @@ public final class PSHTTPConnection {
    * @return the type of connection.
    */
   public Method method() {
-    return this._method;
+    return this.method;
   }
 
   /**
@@ -424,23 +425,23 @@ public final class PSHTTPConnection {
    * @throws IOException If an error occurs when trying to write the XML.
    */
   public void process(PSHTTPResponseInfo response, OutputStream out) throws IOException {
-    if (this._method == Method.MULTIPART) {
+    if (this.method == Method.MULTIPART) {
       endMultipart();
     }
     try {
       // Retrieve the content of the response
-      int status = this._connection.getResponseCode();
+      int status = this.connection.getResponseCode();
       response.setCodeAndStatus(status);
 
-      if (isOK(status) || (this._resource.includeErrorContent() && isError(status))) {
-        String mediaType = getMediaType(this._connection);
+      if (isOK(status) || (this.resource.includeErrorContent() && isError(status))) {
+        String mediaType = getMediaType(this.connection);
         response.setMediaType(mediaType);
-        copy(this._connection, out);
-        updateSession(this._connection);
+        copy(this.connection, out);
+        updateSession(this.connection);
 
       } else {
-        LOGGER.info("PageSeeder returned {}: {}", status, this._connection.getResponseMessage());
-        parseError(this._connection, response);
+        LOGGER.info("PageSeeder returned {}: {}", status, this.connection.getResponseMessage());
+        parseError(this.connection, response);
       }
 
       // Could not connect to the server
@@ -463,31 +464,31 @@ public final class PSHTTPConnection {
    * @throws IOException If an error occurs when trying to write the XML.
    */
   public void process(PSHTTPResponseInfo response, @Nullable DefaultHandler handler) throws IOException {
-    if (this._method == Method.MULTIPART) {
+    if (this.method == Method.MULTIPART) {
       endMultipart();
     }
     try {
       // Retrieve the content of the response
-      int status = this._connection.getResponseCode();
+      int status = this.connection.getResponseCode();
       response.setCodeAndStatus(status);
 
-      if (isOK(status) || (this._resource.includeErrorContent() && isError(status))) {
-        String mediaType = getMediaType(this._connection);
+      if (isOK(status) || (this.resource.includeErrorContent() && isError(status))) {
+        String mediaType = getMediaType(this.connection);
         response.setMediaType(mediaType);
 
         // Return content is XML try to parse it
         if (isXML(mediaType)) {
-          handleXML(this._connection, response, handler, false);
+          handleXML(this.connection, response, handler, false);
         } else {
           response.setStatus(Status.PROCESS_ERROR, "Unable to parse non-XML media type");
         }
 
         // Ensure the session is updated for that user
-        updateSession(this._connection);
+        updateSession(this.connection);
 
       } else {
-        parseError(this._connection, response);
-        LOGGER.info("PageSeeder returned {} {}: {} {}", status, this._connection.getResponseMessage(), response.getErrorID(), response.getMessage());
+        parseError(this.connection, response);
+        LOGGER.info("PageSeeder returned {} {}: {} {}", status, this.connection.getResponseMessage(), response.getErrorID(), response.getMessage());
       }
 
       // Could not connect to the server
@@ -510,34 +511,34 @@ public final class PSHTTPConnection {
    * @throws IOException If an error occurs when trying to write the XML.
    */
   public void process(PSHTTPResponseInfo response, XMLWriter xml) throws IOException {
-    if (this._method == Method.MULTIPART) {
+    if (this.method == Method.MULTIPART) {
       endMultipart();
     }
     try {
       // Retrieve the content of the response
-      int status = this._connection.getResponseCode();
+      int status = this.connection.getResponseCode();
       response.setCodeAndStatus(status);
 
-      if (isOK(status) || (this._resource.includeErrorContent() && isError(status))) {
+      if (isOK(status) || (this.resource.includeErrorContent() && isError(status))) {
 
-        String mediaType = getMediaType(this._connection);
+        String mediaType = getMediaType(this.connection);
         response.setMediaType(mediaType);
 
         // Return content is XML try to parse it
         if (isXML(mediaType)) {
           // Parse with the XML Copy Handler
           XMLCopy handler = new XMLCopy(xml);
-          handleXML(this._connection, response, handler, true);
+          handleXML(this.connection, response, handler, true);
         } else {
           response.setStatus(Status.PROCESS_ERROR, "Unable to copy non-XML media type");
         }
 
         // Ensure the session is updated for that user
-        updateSession(this._connection);
+        updateSession(this.connection);
 
       } else {
-        LOGGER.info("PageSeeder returned {}: {}", status, this._connection.getResponseMessage());
-        parseError(this._connection, response);
+        LOGGER.info("PageSeeder returned {}: {}", status, this.connection.getResponseMessage());
+        parseError(this.connection, response);
       }
 
       // Could not connect to the server
@@ -583,32 +584,32 @@ public final class PSHTTPConnection {
    */
   public PSHTTPResponseInfo process(PSHTTPResponseInfo response, XMLWriter xml, Templates templates, @Nullable Map<String, String> parameters)
       throws IOException {
-    if (this._method == Method.MULTIPART) {
+    if (this.method == Method.MULTIPART) {
       endMultipart();
     }
     try {
       // Retrieve the content of the response
-      int status = this._connection.getResponseCode();
+      int status = this.connection.getResponseCode();
       response.setCodeAndStatus(status);
 
-      if (isOK(status) || (this._resource.includeErrorContent() && isError(status))) {
+      if (isOK(status) || (this.resource.includeErrorContent() && isError(status))) {
 
-        String mediaType = getMediaType(this._connection);
+        String mediaType = getMediaType(this.connection);
         response.setMediaType(mediaType);
 
         // Return content is XML try to parse it
         if (isXML(mediaType)) {
-          transformXML(this._connection, response, xml, templates, parameters);
+          transformXML(this.connection, response, xml, templates, parameters);
         } else {
           response.setStatus(Status.PROCESS_ERROR, "Unable to copy non-XML media type");
         }
 
         // Ensure the session is updated for that user
-        updateSession(this._connection);
+        updateSession(this.connection);
 
       } else {
-        LOGGER.info("PageSeeder returned {}: {}", status, this._connection.getResponseMessage());
-        parseError(this._connection, response);
+        LOGGER.info("PageSeeder returned {}: {}", status, this.connection.getResponseMessage());
+        parseError(this.connection, response);
       }
 
       // Could not connect to the server
@@ -722,7 +723,7 @@ public final class PSHTTPConnection {
 
     // POST using "multipart/form-data"
     } else if (type == Method.MULTIPART) {
-      String boundary = "--------------------" + Long.toString(Math.abs(random.nextLong()), 36);
+      String boundary = "--------------------" + Long.toString(Math.abs(RANDOM.nextLong()), 36);
       connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
       connection.setDoInput(true);
       instance = new PSHTTPConnection(connection, resource, type, session, "--" + boundary);
@@ -1064,7 +1065,7 @@ public final class PSHTTPConnection {
   private DataOutputStream initDataOutputStream() throws IOException {
     DataOutputStream o = this.out;
     if (o == null) {
-      o = new DataOutputStream(this._connection.getOutputStream());
+      o = new DataOutputStream(this.connection.getOutputStream());
       this.out = o;
     }
     return o;

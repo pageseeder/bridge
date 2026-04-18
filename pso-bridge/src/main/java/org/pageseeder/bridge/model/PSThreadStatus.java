@@ -99,7 +99,7 @@ public final class PSThreadStatus implements Serializable, XMLWritable {
   /**
    * The thread ID.
    */
-  private final String _threadID;
+  private final String threadID;
 
   /**
    * The thread name.
@@ -130,7 +130,7 @@ public final class PSThreadStatus implements Serializable, XMLWritable {
    * @param threadid the ID of the process thread
    */
   public PSThreadStatus(String threadid) {
-    this._threadID = threadid;
+    this.threadID = threadid;
   }
 
   /**
@@ -179,7 +179,7 @@ public final class PSThreadStatus implements Serializable, XMLWritable {
    * @return the ID of the process thread
    */
   public String getThreadID() {
-    return this._threadID;
+    return this.threadID;
   }
 
   /**

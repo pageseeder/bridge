@@ -16,6 +16,7 @@
 
 package org.pageseeder.bridge.search;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,7 +27,10 @@ import java.util.Objects;
  * @version 0.12.0
  * @since 0.12.0
  */
-public final class Question {
+public final class Question implements Serializable {
+
+  /** As per recommendation */
+  private static final long serialVersionUID = 20260418L;
 
   /**
    * An empty question
@@ -36,17 +40,17 @@ public final class Question {
   /**
    * The question for full-text searches.
    */
-  private final String _question;
+  private final String question;
 
   /**
    * The list of fields to search the question in.
    */
-  private final List<String> _fields;
+  private final List<String> fields;
 
   /**
    * The max number of suggestions to load (only for question query).
    */
-  private final int _suggestSize;
+  private final int suggestSize;
 
   /**
    * Create a new question
@@ -56,16 +60,16 @@ public final class Question {
    * @param suggestSize  The max number of suggestions to load (only for question query).
    */
   public Question(String question, List<String> fields, int  suggestSize) {
-    this._question = Objects.requireNonNull(question);
-    this._fields = Objects.requireNonNull(fields);
-    this._suggestSize = suggestSize;
+    this.question = Objects.requireNonNull(question);
+    this.fields = Objects.requireNonNull(fields);
+    this.suggestSize = suggestSize;
   }
 
   /**
    * @return The question for full-text searches.
    */
   public String question() {
-    return this._question;
+    return this.question;
   }
 
   /**
@@ -76,14 +80,14 @@ public final class Question {
    * @return The list of field names the question applies to.
    */
   public List<String> fields() {
-    return this._fields;
+    return this.fields;
   }
 
   /**
    * @return The number of suggested results based on the question.
    */
   public int suggestSize() {
-    return this._suggestSize;
+    return this.suggestSize;
   }
 
   /**
@@ -99,13 +103,13 @@ public final class Question {
    * @return The same parameter map
    */
   public Map<String, String> toParameters(Map<String, String> parameters) {
-    if (!this._question.isEmpty()) {
-      parameters.put("question", this._question);
-      if (!this._fields.isEmpty()) {
-        parameters.put("questionfields", Search.join(this._fields, ','));
+    if (!this.question.isEmpty()) {
+      parameters.put("question", this.question);
+      if (!this.fields.isEmpty()) {
+        parameters.put("questionfields", Search.join(this.fields, ','));
       }
-      if (this._suggestSize >= 0) {
-        parameters.put("suggestsize", Integer.toString(this._suggestSize));
+      if (this.suggestSize >= 0) {
+        parameters.put("suggestsize", Integer.toString(this.suggestSize));
       }
     }
     return parameters;

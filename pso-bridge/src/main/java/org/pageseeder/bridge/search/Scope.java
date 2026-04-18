@@ -36,55 +36,55 @@ public class Scope {
 
   public static final Scope EMPTY = new Scope(false, "", List.of(), "");
 
-  private final boolean _project;
+  private final boolean project;
 
-  private final String _name;
+  private final String name;
 
-  private final List<String> _groups;
+  private final List<String> groups;
 
-  private final String _member;
+  private final String member;
 
   private Scope(boolean project, String name, List<String> groups, String member) {
-    this._project = project;
-    this._name = name;
-    this._groups = groups;
-    this._member = member;
+    this.project = project;
+    this.name = name;
+    this.groups = groups;
+    this.member = member;
   }
 
   public Scope group(String group) {
-    return new Scope(false, group, List.of(), this._member);
+    return new Scope(false, group, List.of(), this.member);
   }
 
   public Scope project(String project) {
-    return new Scope(true, project, List.of(), this._member);
+    return new Scope(true, project, List.of(), this.member);
   }
 
   public Scope project(String project, List<String> groups) {
-    return new Scope(true, project, groups, this._member);
+    return new Scope(true, project, groups, this.member);
   }
 
   public Scope member(String member) {
-    return new Scope(this._project, this._name, this._groups, member);
+    return new Scope(this.project, this.name, this.groups, member);
   }
 
   public boolean isProject() {
-    return this._project;
+    return this.project;
   }
 
   public String name() {
-    return this._name;
+    return this.name;
   }
 
   public List<String> groups() {
-    return this._groups;
+    return this.groups;
   }
 
   public String member() {
-    return this._member;
+    return this.member;
   }
 
   public boolean hasMember() {
-    return this._member.length() > 0;
+    return !this.member.isEmpty();
   }
 
   /**

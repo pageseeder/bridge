@@ -25,6 +25,7 @@ package org.pageseeder.bridge.net;
  * deprecated for the most part.
  *
  * @author Christophe Lauret
+ * 
  * @version 0.3.0
  * @since 0.2.4
  */
@@ -39,7 +40,7 @@ public final class Servlets {
    *
    * @deprecated Use URI services instead.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true, since = "0.10.0")
   public static final String DOCUMENT_BROWSER = "com.pageseeder.review.DocumentBrowser";
 
   /**
@@ -47,7 +48,7 @@ public final class Servlets {
    *
    * @deprecated Use Search services instead.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true, since = "0.10.0")
   public static final String GENERIC_SEARCH = "com.pageseeder.search.GenericSearch";
 
   /**
@@ -55,7 +56,7 @@ public final class Servlets {
    *
    * @deprecated Use OAuth services instead.
    */
-  @Deprecated
+  @Deprecated(forRemoval = true, since = "0.10.0")
   public static final String LOGIN_SERVLET = "com.pageseeder.Login";
 
   /**

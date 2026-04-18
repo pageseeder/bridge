@@ -44,34 +44,34 @@ public final class PSHTTPResource {
   /**
    * The type of resource accessed.
    */
-  private final PSHTTPResourceType _type;
+  private final PSHTTPResourceType type;
 
   /**
    * The name of the resource to access.
    */
-  private final String _name;
+  private final String name;
 
   /**
    * The body of the resource (used for PUT requests).
    */
-  private final @Nullable String _body;
+  private final @Nullable String body;
 
   /**
    * The parameters to send.
    */
-  private final Map<String, String> _parameters;
+  private final Map<String, String> parameters;
 
   /**
    * The name of the resource to access.
    */
-  private final boolean _includeErrorContent;
+  private final boolean includeErrorContent;
 
   /**
    * The pageseeder configuration that will be used to login and logout. By default, it will use the default
    * configuration. However, it will be initialized as null. Only when request it will be set to default in case the
    * caller does not specify one.
    */
-  private final PSConfig _config;
+  private final PSConfig config;
   /**
    * Creates a new connection to the specified resource.
    *
@@ -95,12 +95,12 @@ public final class PSHTTPResource {
    */
   private PSHTTPResource(PSHTTPResourceType type, String name, @Nullable String body, Map<String, String> parameters,
                          boolean include, PSConfig config) {
-    this._type = type;
-    this._name = name;
-    this._body = body;
-    this._parameters = parameters;
-    this._includeErrorContent = include;
-    this._config = config;
+    this.type = type;
+    this.name = name;
+    this.body = body;
+    this.parameters = parameters;
+    this.includeErrorContent = include;
+    this.config = config;
   }
 
   // Getters
@@ -110,7 +110,7 @@ public final class PSHTTPResource {
    * @return The type of resource requested.
    */
   public PSHTTPResourceType type() {
-    return this._type;
+    return this.type;
   }
 
   /**
@@ -128,7 +128,7 @@ public final class PSHTTPResource {
    * @return the name of the resource to access.
    */
   public String name() {
-    return this._name;
+    return this.name;
   }
 
   /**
@@ -137,7 +137,7 @@ public final class PSHTTPResource {
    * @return the body of the resource.
    */
   public @Nullable String body() {
-    return this._body;
+    return this.body;
   }
 
   /**
@@ -147,7 +147,7 @@ public final class PSHTTPResource {
    * @param value The value of the parameter
    */
   public void addParameter(String name, String value) {
-    this._parameters.put(name, value);
+    this.parameters.put(name, value);
   }
 
   /**
@@ -157,7 +157,7 @@ public final class PSHTTPResource {
    *         <code>false</code> to only include the response when the response code is between 200 and 299.
    */
   protected boolean includeErrorContent() {
-    return this._includeErrorContent;
+    return this.includeErrorContent;
   }
 
   /**
@@ -165,7 +165,7 @@ public final class PSHTTPResource {
    * @return <code>PSConfig</code>
    */
   public PSConfig config() {
-    return this._config;
+    return this.config;
   }
   /**
    * Returns the URL to access this resource.
@@ -215,7 +215,7 @@ public final class PSHTTPResource {
    */
   protected String getPOSTFormURLEncodedContent() {
     StringBuilder q = new StringBuilder();
-    for (Entry<String, String> p : this._parameters.entrySet()) {
+    for (Entry<String, String> p : this.parameters.entrySet()) {
       if (q.length() > 0) {
         q.append("&");
       }
@@ -229,7 +229,7 @@ public final class PSHTTPResource {
    * @return the parameters used in this connector
    */
   protected Map<String, String> parameters() {
-    return this._parameters;
+    return this.parameters;
   }
 
   // Private helpers
@@ -251,17 +251,17 @@ public final class PSHTTPResource {
     StringBuilder url = this.config().getAPIURLBuilder();
 
     // Decompose the resource (in case it contains a query or fragment part)
-    String path  = getURLPath(this._name);
-    String query = getURLQuery(this._name);
-    String frag  = getURLFragment(this._name);
+    String path  = getURLPath(this.name);
+    String query = getURLQuery(this.name);
+    String frag  = getURLFragment(this.name);
 
     // Servlets
-    if (this._type == PSHTTPResourceType.SERVLET) {
+    if (this.type == PSHTTPResourceType.SERVLET) {
       url.append(this.config().getSitePrefix()).append("/servlet/");
       url.append(path);
 
     // Services
-    } else if (this._type == PSHTTPResourceType.SERVICE) {
+    } else if (this.type == PSHTTPResourceType.SERVICE) {
       url.append(this.config().getSitePrefix()).append("/service");
       url.append(path);
 
@@ -282,14 +282,14 @@ public final class PSHTTPResource {
     }
 
     // XFormat (for servlets / resources only)
-    if (this._type != PSHTTPResourceType.SERVICE) {
+    if (this.type != PSHTTPResourceType.SERVICE) {
       url.append(query != null? '&' : '?').append("xformat=xml");
     }
 
     // When not using the "application/x-www-form-urlencoded"
-    boolean firstParameter = query == null && this._type == PSHTTPResourceType.SERVICE;
+    boolean firstParameter = query == null && this.type == PSHTTPResourceType.SERVICE;
     if (includeParameters) {
-      for (Entry<String, String> p : this._parameters.entrySet()) {
+      for (Entry<String, String> p : this.parameters.entrySet()) {
         url.append(firstParameter? '?' : '&').append(encodeWithUTF8(p.getKey()));
         url.append("=").append(encodeWithUTF8(p.getValue()));
         firstParameter = false;

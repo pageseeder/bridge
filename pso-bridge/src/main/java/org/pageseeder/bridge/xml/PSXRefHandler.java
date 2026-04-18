@@ -36,7 +36,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public final class PSXRefHandler extends DefaultHandler {
 
-  private final Logger LOGGER = LoggerFactory.getLogger(PSXRefHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(PSXRefHandler.class);
 
   /**
    * The context URI

@@ -57,17 +57,17 @@ public enum PSMembershipStatus implements Serializable {
   private static final long serialVersionUID = 1L;
 
   /** the attribute value of the status. */
-  private final String _attribute;
+  private final String attribute;
 
   PSMembershipStatus(String attribute) {
-    this._attribute = attribute;
+    this.attribute = attribute;
   }
 
   /**
    * @return the attribute value of the status.
    */
   public String attribute() {
-    return this._attribute;
+    return this.attribute;
   }
 
   /**
@@ -75,7 +75,7 @@ public enum PSMembershipStatus implements Serializable {
    */
   @Override
   public String toString() {
-    return this._attribute;
+    return this.attribute;
   }
 
   /**
@@ -86,7 +86,7 @@ public enum PSMembershipStatus implements Serializable {
    */
   public static @Nullable PSMembershipStatus fromAttribute(@Nullable String s) {
     for (PSMembershipStatus st : values()) {
-      if (st._attribute.equalsIgnoreCase(s)) return st;
+      if (st.attribute.equalsIgnoreCase(s)) return st;
     }
     return null;
   }

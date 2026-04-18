@@ -25,31 +25,31 @@ import java.util.Objects;
  */
 public class RangeFilter {
 
-  private final String _field;
+  private final String field;
 
-  private final Range _range;
+  private final Range range;
 
   protected RangeFilter(String field, Range range) {
-    this._field = Objects.requireNonNull(field);
-    this._range = Objects.requireNonNull(range);
+    this.field = Objects.requireNonNull(field);
+    this.range = Objects.requireNonNull(range);
   }
 
   /**
    * @return The name of the field this range applies to
    */
   public final String field() {
-    return this._field;
+    return this.field;
   }
 
   /**
    * @return The range for that filter.
    */
   public final Range range() {
-    return this._range;
+    return this.range;
   }
 
   @Override
   public String toString() {
-    return this._field+":"+this._range;
+    return this.field +":"+this.range;
   }
 }

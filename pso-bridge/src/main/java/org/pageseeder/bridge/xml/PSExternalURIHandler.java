@@ -37,7 +37,7 @@ public final class PSExternalURIHandler extends DefaultHandler {
   /**
    * The list of external URIs returned by the servlet.
    */
-  private final List<PSExternalURI> _externalURIs = new ArrayList<>();
+  private final List<PSExternalURI> externalURIs = new ArrayList<>();
 
   /**
    * The current external URI being processed.
@@ -92,7 +92,7 @@ public final class PSExternalURIHandler extends DefaultHandler {
     PSExternalURI extURI = this.externalURI;
     if ("uri".equals(localName)) {
       if (extURI != null) {
-        this._externalURIs.add(extURI);
+        this.externalURIs.add(extURI);
         this.externalURI = null;
       }
       this.inURI = false;
@@ -120,15 +120,15 @@ public final class PSExternalURIHandler extends DefaultHandler {
    * @return the list of external URIs
    */
   public List<PSExternalURI> listExternalURIs() {
-    return this._externalURIs;
+    return this.externalURIs;
   }
 
   /**
    * @return a single external URI
    */
   public @Nullable PSExternalURI getExternalURI() {
-    int size = this._externalURIs.size();
-    return size > 0 ? this._externalURIs.get(size-1) : null;
+    int size = this.externalURIs.size();
+    return size > 0 ? this.externalURIs.get(size-1) : null;
   }
 
 }

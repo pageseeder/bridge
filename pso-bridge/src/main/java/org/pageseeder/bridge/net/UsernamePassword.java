@@ -17,6 +17,7 @@ package org.pageseeder.bridge.net;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Objects;
 
 import org.pageseeder.bridge.PSCredentials;
 
@@ -47,12 +48,10 @@ public final class UsernamePassword implements PSCredentials {
    * @param password The password
    *
    * @throws NullPointerException if either argument is <code>null</code>
-   * @throws IllegalArgumentException if either argument is considered invalid.
    */
   public UsernamePassword(String username, String password) {
-    if (username == null || password == null) throw new NullPointerException();
-    this.username = username;
-    this.password = password;
+    this.username = Objects.requireNonNull(username);
+    this.password = Objects.requireNonNull(password);
   }
 
   /**

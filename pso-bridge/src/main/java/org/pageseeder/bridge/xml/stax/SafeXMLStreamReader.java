@@ -43,20 +43,20 @@ import javax.xml.stream.XMLStreamReader;
  */
 public final class SafeXMLStreamReader implements XMLStreamReader {
 
-  private final static String CHANGE_STATE_MESSAGE = "You must not call this method while checking the state of the stream";
+  private static final String CHANGE_STATE_MESSAGE = "You must not call this method while checking the state of the stream";
 
   /**
    * The wrapped <code>XMLStreamReader</code>.
    */
-  private final XMLStreamReader _xml;
+  private final XMLStreamReader xml;
 
   public SafeXMLStreamReader(XMLStreamReader xml) {
-    this._xml = xml;
+    this.xml = xml;
   }
 
   @Override
   public Object getProperty(String name) throws IllegalArgumentException {
-    return this._xml.getProperty(name);
+    return this.xml.getProperty(name);
   }
 
   /**
@@ -69,7 +69,7 @@ public final class SafeXMLStreamReader implements XMLStreamReader {
 
   @Override
   public void require(int type, String namespaceURI, String localName) throws XMLStreamException {
-    this._xml.require(type, namespaceURI, localName);
+    this.xml.require(type, namespaceURI, localName);
   }
 
   /**
@@ -90,7 +90,7 @@ public final class SafeXMLStreamReader implements XMLStreamReader {
 
   @Override
   public boolean hasNext() throws XMLStreamException {
-    return this._xml.hasNext();
+    return this.xml.hasNext();
   }
 
   /**
@@ -103,192 +103,192 @@ public final class SafeXMLStreamReader implements XMLStreamReader {
 
   @Override
   public String getNamespaceURI(String prefix) {
-    return this._xml.getNamespaceURI();
+    return this.xml.getNamespaceURI();
   }
 
   @Override
   public boolean isStartElement() {
-    return this._xml.isStartElement();
+    return this.xml.isStartElement();
   }
 
   @Override
   public boolean isEndElement() {
-    return this._xml.isEndElement();
+    return this.xml.isEndElement();
   }
 
   @Override
   public boolean isCharacters() {
-    return this._xml.isCharacters();
+    return this.xml.isCharacters();
   }
 
   @Override
   public boolean isWhiteSpace() {
-    return this._xml.isWhiteSpace();
+    return this.xml.isWhiteSpace();
   }
 
   @Override
   public String getAttributeValue(String namespaceURI, String localName) {
-    return this._xml.getAttributeValue(namespaceURI, localName);
+    return this.xml.getAttributeValue(namespaceURI, localName);
   }
 
   @Override
   public int getAttributeCount() {
-    return this._xml.getAttributeCount();
+    return this.xml.getAttributeCount();
   }
 
   @Override
   public QName getAttributeName(int index) {
-    return this._xml.getAttributeName(index);
+    return this.xml.getAttributeName(index);
   }
 
   @Override
   public String getAttributeNamespace(int index) {
-    return this._xml.getAttributeNamespace(index);
+    return this.xml.getAttributeNamespace(index);
   }
 
   @Override
   public String getAttributeLocalName(int index) {
-    return this._xml.getAttributeLocalName(index);
+    return this.xml.getAttributeLocalName(index);
   }
 
   @Override
   public String getAttributePrefix(int index) {
-    return this._xml.getAttributePrefix(index);
+    return this.xml.getAttributePrefix(index);
   }
 
   @Override
   public String getAttributeType(int index) {
-    return this._xml.getAttributeType(index);
+    return this.xml.getAttributeType(index);
   }
 
   @Override
   public String getAttributeValue(int index) {
-    return this._xml.getAttributeValue(index);
+    return this.xml.getAttributeValue(index);
   }
 
   @Override
   public boolean isAttributeSpecified(int index) {
-    return this._xml.isAttributeSpecified(index);
+    return this.xml.isAttributeSpecified(index);
   }
 
   @Override
   public int getNamespaceCount() {
-    return this._xml.getNamespaceCount();
+    return this.xml.getNamespaceCount();
   }
 
   @Override
   public String getNamespacePrefix(int index) {
-    return this._xml.getNamespacePrefix(index);
+    return this.xml.getNamespacePrefix(index);
   }
 
   @Override
   public String getNamespaceURI(int index) {
-    return this._xml.getNamespaceURI(index);
+    return this.xml.getNamespaceURI(index);
   }
 
   @Override
   public NamespaceContext getNamespaceContext() {
-    return this._xml.getNamespaceContext();
+    return this.xml.getNamespaceContext();
   }
 
   @Override
   public int getEventType() {
-    return this._xml.getEventType();
+    return this.xml.getEventType();
   }
 
   @Override
   public String getText() {
-    return this._xml.getText();
+    return this.xml.getText();
   }
 
   @Override
   public char[] getTextCharacters() {
-    return this._xml.getTextCharacters();
+    return this.xml.getTextCharacters();
   }
 
   @Override
   public int getTextCharacters(int sourceStart, char[] target, int targetStart, int length) throws XMLStreamException {
-    return this._xml.getTextCharacters(sourceStart, target, targetStart, length);
+    return this.xml.getTextCharacters(sourceStart, target, targetStart, length);
   }
 
   @Override
   public int getTextStart() {
-    return this._xml.getTextStart();
+    return this.xml.getTextStart();
   }
 
   @Override
   public int getTextLength() {
-    return this._xml.getTextLength();
+    return this.xml.getTextLength();
   }
 
   @Override
   public String getEncoding() {
-    return this._xml.getEncoding();
+    return this.xml.getEncoding();
   }
 
   @Override
   public boolean hasText() {
-    return this._xml.hasText();
+    return this.xml.hasText();
   }
 
   @Override
   public Location getLocation() {
-    return this._xml.getLocation();
+    return this.xml.getLocation();
   }
 
   @Override
   public QName getName() {
-    return this._xml.getName();
+    return this.xml.getName();
   }
 
   @Override
   public String getLocalName() {
-    return this._xml.getLocalName();
+    return this.xml.getLocalName();
   }
 
   @Override
   public boolean hasName() {
-    return this._xml.hasName();
+    return this.xml.hasName();
   }
 
   @Override
   public String getNamespaceURI() {
-    return this._xml.getNamespaceURI();
+    return this.xml.getNamespaceURI();
   }
 
   @Override
   public String getPrefix() {
-    return this._xml.getPrefix();
+    return this.xml.getPrefix();
   }
 
   @Override
   public String getVersion() {
-    return this._xml.getVersion();
+    return this.xml.getVersion();
   }
 
   @Override
   public boolean isStandalone() {
-    return this._xml.isStandalone();
+    return this.xml.isStandalone();
   }
 
   @Override
   public boolean standaloneSet() {
-    return this._xml.standaloneSet();
+    return this.xml.standaloneSet();
   }
 
   @Override
   public String getCharacterEncodingScheme() {
-    return this._xml.getCharacterEncodingScheme();
+    return this.xml.getCharacterEncodingScheme();
   }
 
   @Override
   public String getPITarget() {
-    return this._xml.getPITarget();
+    return this.xml.getPITarget();
   }
 
   @Override
   public String getPIData() {
-    return this._xml.getPIData();
+    return this.xml.getPIData();
   }
 
 }

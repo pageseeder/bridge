@@ -28,12 +28,12 @@ public class PSToken implements PSCredentials, Serializable {
   /**
    * The actual token.
    */
-  private final String _token;
+  private final String token;
 
   /**
    * When this token expires.
    */
-  private final long _expires;
+  private final long expires;
 
   /**
    * Creates a new PageSeeder access token.
@@ -60,22 +60,22 @@ public class PSToken implements PSCredentials, Serializable {
     Objects.requireNonNull(token, "Access token is null");
     if (!VALID_PAGESEEDER_TOKEN.matcher(token).matches())
       throw new IllegalArgumentException("Access token is invalid");
-    this._token = token;
-    this._expires = expires;
+    this.token = token;
+    this.expires = expires;
   }
 
   /**
    * @return the actual access token.
    */
   public String token() {
-    return this._token;
+    return this.token;
   }
 
   /**
    * @return when the token expires in milliseconds since Epoch.
    */
   public long expiresMillis() {
-    return this._expires;
+    return this.expires;
   }
 
   /**
@@ -83,7 +83,7 @@ public class PSToken implements PSCredentials, Serializable {
    *         <code>false</code> otherwise or if it is not known.
    */
   public boolean hasExpired() {
-    return System.currentTimeMillis() - this._expires > 0;
+    return System.currentTimeMillis() - this.expires > 0;
   }
 
 }

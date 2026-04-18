@@ -55,10 +55,10 @@ public final class PSThreadHandler extends DefaultHandler {
   /**
    * To keep track of elements
    */
-  private final Stack<String> _elements = new Stack<>();
+  private final Stack<String> elements = new Stack<>();
 
   @Override
-  public void startElement(String uri, String localName, String qName, Attributes atts) {
+  public void startElement(String uri, @Nullable String localName, String qName, Attributes atts) {
     String element = localName != null && !localName.isEmpty() ? localName : qName;
     XMLStringWriter xml = this.xmlContent;
     if (xml != null) {
@@ -85,7 +85,7 @@ public final class PSThreadHandler extends DefaultHandler {
         this.oldFormat = true;
       }
     }
-    String dad = this._elements.isEmpty() ? null : this._elements.peek();
+    String dad = this.elements.isEmpty() ? null : this.elements.peek();
     if ("thread".equals(dad) && ("id".equals(element) ||
                            "username".equals(element) ||
                                "name".equals(element) ||
@@ -97,7 +97,7 @@ public final class PSThreadHandler extends DefaultHandler {
         ((this.oldFormat && "threadstatus".equals(dad)) || (!this.oldFormat && "thread".equals(dad)))) {
       this.xmlContent = new XMLStringWriter(NamespaceAware.No);
     }
-    this._elements.push(element);
+    this.elements.push(element);
   }
 
   @Override
@@ -132,7 +132,7 @@ public final class PSThreadHandler extends DefaultHandler {
       }
     }
 
-    this._elements.pop();
+    this.elements.pop();
     XMLStringWriter xml = this.xmlContent;
     if (xml != null) {
       xml.closeElement();

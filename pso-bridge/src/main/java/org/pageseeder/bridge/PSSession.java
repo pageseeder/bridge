@@ -39,7 +39,7 @@ public final class PSSession implements PSCredentials, Serializable {
   /**
    * The session ID in PageSeeder.
    */
-  private final String _jsessionid;
+  private final String jsessionid;
 
   /**
    * Indicates when the user was last successfully connected to PageSeeder.
@@ -54,7 +54,7 @@ public final class PSSession implements PSCredentials, Serializable {
    * @param session The session ID.
    */
   public PSSession(String session) {
-    this._jsessionid = session;
+    this.jsessionid = session;
     this.timestamp = System.currentTimeMillis();
   }
 
@@ -65,7 +65,7 @@ public final class PSSession implements PSCredentials, Serializable {
    * @param timestamp When the session was initially created.
    */
   public PSSession(String session, long timestamp) {
-    this._jsessionid = session;
+    this.jsessionid = session;
     this.timestamp = timestamp;
   }
 
@@ -73,7 +73,7 @@ public final class PSSession implements PSCredentials, Serializable {
    * @return the jsessionid
    */
   public String getJSessionId() {
-    return this._jsessionid;
+    return this.jsessionid;
   }
 
   /**
@@ -103,7 +103,7 @@ public final class PSSession implements PSCredentials, Serializable {
 
   @Override
   public String toString() {
-    return this._jsessionid;
+    return this.jsessionid;
   }
 
   /**

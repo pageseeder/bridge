@@ -17,6 +17,7 @@
 package org.pageseeder.bridge.core;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A valid username: unique system-wide, system generated and immutable in practice.
@@ -44,7 +45,8 @@ public final class Username extends MemberID implements Serializable {
   }
 
   private static String checkMaxLength(String value) {
-    if (value != null && value.length() > 100) throw new IllegalArgumentException("Username must not exceed 100 characters");
+    Objects.requireNonNull(value, "Username must not be null");
+    if (value.length() > 100) throw new IllegalArgumentException("Username must not exceed 100 characters");
     return value;
   }
 }

@@ -188,14 +188,14 @@ public final class ServicePath {
         tokens.add(new Literal(literal));
       }
       // add the variable
-      String var = m.group();
-      if ("{member}".equals(var)) {
+      String variable = m.group();
+      if ("{member}".equals(variable)) {
         tokens.add(new MemberVariable());
-      } else if ("{group}".equals(var) || "{project}".equals(var)) {
+      } else if ("{group}".equals(variable) || "{project}".equals(variable)) {
         tokens.add(new GroupVariable());
-      } else if ("{uri}".equals(var)) {
+      } else if ("{uri}".equals(variable)) {
         tokens.add(new URIVariable());
-      } else if ("{client}".equals(var)) {
+      } else if ("{client}".equals(variable)) {
         tokens.add(new ClientVariable());
       } else {
         tokens.add(new Variable());

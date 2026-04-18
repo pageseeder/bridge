@@ -54,14 +54,14 @@ public final class PSXRef implements PSEntity {
     /** document+manual. */
     DOCUMENT_MANUAL("document+manual");
 
-    private final String _value;
+    private final String value;
 
     Display(String value) {
-      this._value = value;
+      this.value = value;
     }
 
     public final String value(){
-      return this._value;
+      return this.value;
     }
 
     /**
@@ -73,7 +73,7 @@ public final class PSXRef implements PSEntity {
      */
     public static Display fromString(@Nullable String value) {
       for (Display display : values()) {
-        if (display._value.equalsIgnoreCase(value)) return display;
+        if (display.value.equalsIgnoreCase(value)) return display;
       }
       // Fallback on document
       return DOCUMENT;
@@ -86,7 +86,7 @@ public final class PSXRef implements PSEntity {
      */
     @Override
     public String toString() {
-      return this._value;
+      return this.value;
     }
   }
 

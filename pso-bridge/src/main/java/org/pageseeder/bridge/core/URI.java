@@ -196,7 +196,7 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
     xml.closeElement();
   }
 
-  public static abstract class Builder<B extends Builder<B>> extends Addressable.Builder {
+  public abstract static class Builder<B extends Builder<B>> extends Addressable.Builder {
 
     long id = -1;
     @Nullable String docid = null;

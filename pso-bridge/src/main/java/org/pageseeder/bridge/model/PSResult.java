@@ -98,7 +98,7 @@ public class PSResult implements Serializable {
    */
   public @Nullable String getValue(String name){
     for (Field f : this.fields) {
-      if (f._name.equals(name)) return f._value;
+      if (f.name.equals(name)) return f.value;
     }
     return null;
   }
@@ -115,7 +115,7 @@ public class PSResult implements Serializable {
   public @Nullable String getValueOfProperty(String name){
     String fieldname = "psproperty-"+name;
     for (Field f : this.fields) {
-      if (f._name.equals(fieldname)) return f._value;
+      if (f.name.equals(fieldname)) return f.value;
     }
     return null;
   }
@@ -132,8 +132,8 @@ public class PSResult implements Serializable {
   public List<String> getValues(String name){
     List<String> values = new ArrayList<>();
     for (Field f : this.fields) {
-      if (f._name.equals(name)) {
-        values.add(f._value);
+      if (f.name.equals(name)) {
+        values.add(f.value);
       }
     }
     return values;
@@ -157,12 +157,12 @@ public class PSResult implements Serializable {
     /**
      * The name of the index field.
      */
-    private final String _name;
+    private final String name;
 
     /**
      * The value of the index field.
      */
-    private final String _value;
+    private final String value;
 
     /**
      * Sole constructor.
@@ -171,8 +171,8 @@ public class PSResult implements Serializable {
      * @param value the value of the index field.
      */
     public Field(String name, String value) {
-      this._name = name;
-      this._value= value;
+      this.name = name;
+      this.value = value;
     }
 
     /**
@@ -181,7 +181,7 @@ public class PSResult implements Serializable {
      * @return the name of the index field.
      */
     public String name() {
-      return this._name;
+      return this.name;
     }
 
     /**
@@ -190,12 +190,12 @@ public class PSResult implements Serializable {
      * @return the value of the index field.
      */
     public String value() {
-      return this._value;
+      return this.value;
     }
 
     @Override
     public String toString() {
-      return "f:"+this._name+"="+this._value;
+      return "f:"+this.name +"="+this.value;
     }
 
   }

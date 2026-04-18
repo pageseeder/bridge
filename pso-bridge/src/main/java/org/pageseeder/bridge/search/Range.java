@@ -26,30 +26,30 @@ import java.util.Objects;
  */
 public class Range {
 
-  private final String _min;
-  private final String _max;
-  private boolean _minInclusive;
-  private boolean _maxInclusive;
+  private final String min;
+  private final String max;
+  private boolean minInclusive;
+  private boolean maxInclusive;
 
   public Range(String min, boolean minInclusive, String max, boolean maxInclusive) {
-    this._min = Objects.requireNonNull(min);
-    this._minInclusive = minInclusive;
-    this._max = Objects.requireNonNull(max);
-    this._maxInclusive = maxInclusive;
+    this.min = Objects.requireNonNull(min);
+    this.minInclusive = minInclusive;
+    this.max = Objects.requireNonNull(max);
+    this.maxInclusive = maxInclusive;
   }
 
   /**
    * @return The maximum value in the range
    */
   public String max() {
-    return this._max;
+    return this.max;
   }
 
   /**
    * @return The minimum value in the range
    */
   public String min() {
-    return this._min;
+    return this.min;
   }
 
   /**
@@ -58,7 +58,7 @@ public class Range {
    * @return <code>true</code> If the maximum value is included in the range
    */
   public boolean isMaxInclusive() {
-    return this._maxInclusive;
+    return this.maxInclusive;
   }
 
   /**
@@ -67,7 +67,7 @@ public class Range {
    * @return <code>true</code> If the minimum value is included in the range
    */
   public boolean isMinInclusive() {
-    return this._minInclusive;
+    return this.minInclusive;
   }
 
   /**
@@ -76,7 +76,7 @@ public class Range {
    * @return A new <code>Range</code> instance with the updated minimum.
    */
   public Range min(String min, boolean inclusive) {
-    return new Range(min, inclusive, this._max,  this._maxInclusive);
+    return new Range(min, inclusive, this.max,  this.maxInclusive);
   }
 
   /**
@@ -85,7 +85,7 @@ public class Range {
    * @return A new <code>Range</code> instance with the updated maximum.
    */
   public Range max(String max, boolean inclusive) {
-    return new Range(this._min, this._minInclusive, max, inclusive);
+    return new Range(this.min, this.minInclusive, max, inclusive);
   }
 
   // Date range search
@@ -129,11 +129,11 @@ public class Range {
   public String toString() {
     // TODO Check if min/max values require escaping
     StringBuilder out = new StringBuilder();
-    out.append(this._minInclusive? "[" : "{");
-    out.append(this._min);
+    out.append(this.minInclusive ? "[" : "{");
+    out.append(this.min);
     out.append(";");
-    out.append(this._max);
-    out.append(this._maxInclusive? "]" : "}");
+    out.append(this.max);
+    out.append(this.maxInclusive ? "]" : "}");
     return out.toString();
   }
 

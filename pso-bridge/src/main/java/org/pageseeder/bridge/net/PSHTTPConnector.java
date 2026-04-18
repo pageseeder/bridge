@@ -76,7 +76,7 @@ public final class PSHTTPConnector {
   /**
    * The type of resource accessed.
    */
-  private final PSHTTPResource.Builder _resource;
+  private final PSHTTPResource.Builder resource;
 
   /**
    * Credentials that can be used to connect to the connector.
@@ -95,7 +95,7 @@ public final class PSHTTPConnector {
    * @param resource The
    */
   public PSHTTPConnector(PSHTTPResourceType type, String resource) {
-    this._resource = new PSHTTPResource.Builder(type, resource);
+    this.resource = new PSHTTPResource.Builder(type, resource);
   }
 
   /**
@@ -157,7 +157,7 @@ public final class PSHTTPConnector {
    * @param config
    */
   public void setConfig(PSConfig config) {
-    this._resource.config(config);
+    this.resource.config(config);
   }
 
   /**
@@ -167,7 +167,7 @@ public final class PSHTTPConnector {
    * @param value The value of the parameter
    */
   public void addParameter(String name, String value) {
-    this._resource.addParameter(name, value);
+    this.resource.addParameter(name, value);
   }
 
   /**
@@ -178,7 +178,7 @@ public final class PSHTTPConnector {
    */
   public void addOptionalParameter(String name, @Nullable String value) {
     if (value != null) {
-      this._resource.addParameter(name, value);
+      this.resource.addParameter(name, value);
     }
   }
 
@@ -190,7 +190,7 @@ public final class PSHTTPConnector {
    */
   public void addOptionalParameter(String name, @Nullable Long value) {
     if (value != null) {
-      this._resource.addParameter(name, value.toString());
+      this.resource.addParameter(name, value.toString());
     }
   }
 
@@ -202,7 +202,7 @@ public final class PSHTTPConnector {
    */
   public void addOptionalParameter(String name, @Nullable PSNotification value) {
     if (value != null) {
-      this._resource.addParameter(name, value.parameter());
+      this.resource.addParameter(name, value.parameter());
     }
   }
 
@@ -214,7 +214,7 @@ public final class PSHTTPConnector {
    */
   public void addOptionalParameter(String name, @Nullable PSRole value) {
     if (value != null) {
-      this._resource.addParameter(name, value.parameter());
+      this.resource.addParameter(name, value.parameter());
     }
   }
 
@@ -224,7 +224,7 @@ public final class PSHTTPConnector {
    * @param body  The body of the request
    */
   public void setBody(String body) {
-    this._resource.body(body);
+    this.resource.body(body);
   }
 
   /**
@@ -233,7 +233,7 @@ public final class PSHTTPConnector {
    * @param name  The name of the request
    */
   public void setName(String name) {
-    this._resource.name(name);
+    this.resource.name(name);
   }
 
   /**
@@ -245,7 +245,7 @@ public final class PSHTTPConnector {
    *                between 200 and 299.
    */
   public void includeErrorContent(boolean include) {
-    this._resource.includeErrorContent(include);
+    this.resource.includeErrorContent(include);
   }
 
   // Connection
@@ -261,7 +261,7 @@ public final class PSHTTPConnector {
    *                     underlying resource is malformed.
    */
   public PSHTTPConnection connect(Method type) throws IOException {
-    PSHTTPResource r = this._resource.build();
+    PSHTTPResource r = this.resource.build();
     return PSHTTPConnection.connect(r, type, this.credentials);
   }
 
@@ -597,7 +597,7 @@ public final class PSHTTPConnector {
    * @return The PageSeeder HTTP response metadata
    */
   private PSHTTPResponseInfo handle(Method method, OutputStream out) throws APIException {
-    PSHTTPResource resource = this._resource.build();
+    PSHTTPResource resource = this.resource.build();
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     try {
       PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.credentials);
@@ -623,7 +623,7 @@ public final class PSHTTPConnector {
    * @return The PageSeeder HTTP response metadata
    */
   private PSHTTPResponseInfo handle(Method method, @Nullable DefaultHandler handler) throws APIException {
-    PSHTTPResource resource = this._resource.build();
+    PSHTTPResource resource = this.resource.build();
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     try {
       PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.credentials);
@@ -652,7 +652,7 @@ public final class PSHTTPConnector {
    * @return The PageSeeder HTTP response metadata
    */
   private PSHTTPResponseInfo copy(Method method, XMLWriter xml) throws APIException {
-    PSHTTPResource resource = this._resource.build();
+    PSHTTPResource resource = this.resource.build();
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     try {
       PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.credentials);
@@ -684,7 +684,7 @@ public final class PSHTTPConnector {
    */
   private PSHTTPResponseInfo transform(Method method, XMLWriter xml, Templates templates, Map<String, String> parameters)
       throws APIException {
-    PSHTTPResource resource = this._resource.build();
+    PSHTTPResource resource = this.resource.build();
     PSHTTPResponseInfo response = new PSHTTPResponseInfo();
     try {
       PSHTTPConnection connection = PSHTTPConnection.connect(resource, method, this.credentials);

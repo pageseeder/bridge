@@ -15,6 +15,8 @@
  */
 package org.pageseeder.bridge.util;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.regex.Pattern;
 
 /**
@@ -80,7 +82,7 @@ public final class Rules {
    * @return <code>true</code> if the email is considered valid from its syntax;
    *         <code>false</code> otherwise.
    */
-  public static boolean isEmail(String email) {
+  public static boolean isEmail(@Nullable String email) {
     return email != null && !email.isEmpty() && email.indexOf('@') >= 0 && EMAIL.matcher(email).matches();
   }
 
@@ -89,7 +91,7 @@ public final class Rules {
    *
    * @return <code>true</code> if it's an XML media type
    */
-  public static boolean isXMLMediaType(String mediatype) {
+  public static boolean isXMLMediaType(@Nullable String mediatype) {
     return "text/xml".equals(mediatype) ||
         "application/xml".equals(mediatype) ||
         "text/xml-external-parsed-entity".equals(mediatype) ||

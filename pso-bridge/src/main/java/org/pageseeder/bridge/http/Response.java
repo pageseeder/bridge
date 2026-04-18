@@ -134,14 +134,14 @@ public final class Response implements HttpResponse, AutoCloseable {
   /**
    * Holds the underlying connection.
    */
-  private final @Nullable HttpURLConnection _connection;
+  private final @Nullable HttpURLConnection connection;
 
   /**
    * The HTTP status code.
    *
-   * NB. "status code" is the preferred term in HTTP/1.1 RFC 7230.
+   * <p>NB. "status code" is the preferred term in HTTP/1.1 RFC 7230.
    */
-  private final int _statusCode;
+  private final int statusCode;
 
   /**
    * The state of response.
@@ -151,27 +151,27 @@ public final class Response implements HttpResponse, AutoCloseable {
   /**
    * Session from request or updated by 'Set-Cookie' header.
    */
-  private final @Nullable PSSession _session;
+  private final @Nullable PSSession session;
 
   /**
    * The media type returned by PageSeeder.
    */
-  private final @Nullable String _mediaType;
+  private final @Nullable String mediaType;
 
   /**
    * The list of HTTP response headers.
    */
-  private final List<Header> _headers;
+  private final List<Header> headers;
 
   /**
    * The character set detected in the response.
    */
-  private final @Nullable Charset _charset;
+  private final @Nullable Charset charset;
 
   /**
    * The message returned by PageSeeder.
    */
-  private final @Nullable String _message;
+  private final @Nullable String message;
 
   /**
    * A service error instance if an error occurred while invoking a service.
@@ -205,14 +205,14 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @param session    The session used to make the request.
    */
   Response(HttpURLConnection connection, int statusCode, @Nullable PSSession session) {
-    this._connection = connection;
-    this._statusCode = statusCode;
-    this._session = updateSession(connection, session);
-    this._headers = extractHeaders(connection);
-    this._mediaType = getMediaType(connection);
-    this._charset = detectCharset(connection);
+    this.connection = connection;
+    this.statusCode = statusCode;
+    this.session = updateSession(connection, session);
+    this.headers = extractHeaders(connection);
+    this.mediaType = getMediaType(connection);
+    this.charset = detectCharset(connection);
     try {
-      this._message = connection.getResponseMessage();
+      this.message = connection.getResponseMessage();
     } catch (IOException ex) {
       throw new IllegalStateException("Connection failed");
     }
@@ -224,13 +224,13 @@ public final class Response implements HttpResponse, AutoCloseable {
    * @param message the explanation for the error.
    */
   Response(@Nullable String message) {
-    this._connection = null;
-    this._statusCode = -1;
-    this._headers = List.of();
-    this._session = null;
-    this._mediaType = null;
-    this._charset = null;
-    this._message = message;
+    this.connection = null;
+    this.statusCode = -1;
+    this.headers = List.of();
+    this.session = null;
+    this.mediaType = null;
+    this.charset = null;
+    this.message = message;
     this.state = State.failed;
   }
 
@@ -244,7 +244,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public int code() {
-    return this._statusCode;
+    return this.statusCode;
   }
 
   /**
@@ -254,7 +254,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public @Nullable String message() {
-    return this._message;
+    return this.message;
   }
 
   /**
@@ -266,7 +266,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public @Nullable String header(String name) {
-    for (Header h : this._headers) {
+    for (Header h : this.headers) {
       if (h.name().equalsIgnoreCase(name)) return h.value();
     }
     return null;
@@ -279,7 +279,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public List<Header> headers() {
-    return Collections.unmodifiableList(this._headers);
+    return Collections.unmodifiableList(this.headers);
   }
 
   /**
@@ -327,7 +327,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public long length() {
-    HttpURLConnection con = this._connection;
+    HttpURLConnection con = this.connection;
     if (con == null) return -1;
     return con.getContentLengthLong();
   }
@@ -341,7 +341,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public long date() {
-    HttpURLConnection con = this._connection;
+    HttpURLConnection con = this.connection;
     if (con == null) return 0;
     return con.getDate();
   }
@@ -355,7 +355,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public long modified() {
-    HttpURLConnection con = this._connection;
+    HttpURLConnection con = this.connection;
     if (con == null) return 0;
     return con.getLastModified();
   }
@@ -369,7 +369,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public long expires() {
-    HttpURLConnection con = this._connection;
+    HttpURLConnection con = this.connection;
     if (con == null) return 0;
     return con.getExpiration();
   }
@@ -383,7 +383,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public @Nullable String getContentType() {
-    HttpURLConnection con = this._connection;
+    HttpURLConnection con = this.connection;
     if (con == null) return null;
     return con.getContentType();
   }
@@ -402,7 +402,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public @Nullable String mediaType() {
-    return this._mediaType;
+    return this.mediaType;
   }
 
   /**
@@ -416,7 +416,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public @Nullable Charset charset() {
-    return this._charset;
+    return this.charset;
   }
 
   /**
@@ -426,7 +426,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public @Nullable PSSession session() {
-    return this._session;
+    return this.session;
   }
 
   // State
@@ -443,7 +443,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public boolean isXML() {
-    return isXML(this._mediaType);
+    return isXML(this.mediaType);
   }
 
   /**
@@ -457,7 +457,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public boolean isSuccessful() {
-    return isSuccessful(this._statusCode);
+    return isSuccessful(this.statusCode);
   }
 
   /**
@@ -516,7 +516,7 @@ public final class Response implements HttpResponse, AutoCloseable {
    */
   @Override
   public Reader getReader() throws IOException {
-    Charset charset = this._charset;
+    Charset charset = this.charset;
     if (charset == null)
       throw new IllegalStateException("Unable to determine the charset for this resource.");
     return getReader(charset);
@@ -764,7 +764,7 @@ public final class Response implements HttpResponse, AutoCloseable {
   @Override
   public <T> @Nullable T consumeItem(XMLStreamHandler<T> handler) throws ContentException {
     List<T> list = consumeList(handler);
-    return list.size() > 0? list.get(0) : null;
+    return list.isEmpty() ? null : list.get(0);
   }
 
   /**
@@ -1004,7 +1004,7 @@ public final class Response implements HttpResponse, AutoCloseable {
   private HttpURLConnection requireAvailable() {
     switch (this.state) {
       case available:
-        HttpURLConnection connection = this._connection;
+        HttpURLConnection connection = this.connection;
         if (connection == null)
           throw new IllegalArgumentException("This response cannot be consumed because there is not connection!");
         return connection;
@@ -1052,7 +1052,7 @@ public final class Response implements HttpResponse, AutoCloseable {
       source.setSystemId(connection.getURL().toString());
 
       // Ensure the character encoding is correct
-      Charset charset = response._charset;
+      Charset charset = response.charset;
       if (charset != null) {
         source.setEncoding(charset.name());
       }
@@ -1092,7 +1092,7 @@ public final class Response implements HttpResponse, AutoCloseable {
     factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false);
 
     // Ensure the character encoding is correct
-    Charset charset = response._charset;
+    Charset charset = response.charset;
     if (charset == null) {
       charset = StandardCharsets.UTF_8;
     }

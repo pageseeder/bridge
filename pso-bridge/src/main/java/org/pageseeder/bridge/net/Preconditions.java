@@ -17,7 +17,6 @@ package org.pageseeder.bridge.net;
 
 import java.util.Objects;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.InvalidEntityException;
@@ -99,7 +98,7 @@ public final class Preconditions {
    * @throws FailedPrecondition If the pre-condition failed.
    */
   static void isNotEmpty(@Nullable String s, String name) throws FailedPrecondition {
-    if (s == null || s.length() == 0) throw new FailedPrecondition(name + " must not be empty");
+    if (s == null || s.isEmpty()) throw new FailedPrecondition(name + " must not be empty");
   }
 
   /**
@@ -113,7 +112,7 @@ public final class Preconditions {
    * @throws FailedPrecondition If the pre-condition failed.
    */
   static String checkNotEmpty(@Nullable String s, String name) throws FailedPrecondition {
-    if (s == null || s.length() == 0) throw new FailedPrecondition(name + " must not be empty");
+    if (s == null || s.isEmpty()) throw new FailedPrecondition(name + " must not be empty");
     return s;
   }
 
@@ -139,7 +138,7 @@ public final class Preconditions {
    *
    * @throws FailedPrecondition If the pre-condition failed.
    */
-  static <T> @NonNull T checkNotNull(@Nullable T o, String name) throws FailedPrecondition {
+  static <T> T checkNotNull(@Nullable T o, String name) throws FailedPrecondition {
     if (o == null) throw new FailedPrecondition(name + " must not be null");
     return o;
   }

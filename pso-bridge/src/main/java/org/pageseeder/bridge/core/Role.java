@@ -52,13 +52,13 @@ public enum Role {
   /**
    * Parameter that can be sent to the service.
    */
-  private final String _parameter;
+  private final String parameter;
 
   /**
    * When the role name is the same as the parameter
    */
   Role() {
-    this._parameter = this.name();
+    this.parameter = this.name();
   }
 
   /**
@@ -67,14 +67,14 @@ public enum Role {
    * @param parameter The name of the parameter for the PageSeeder services.
    */
   Role(String parameter) {
-    this._parameter = parameter;
+    this.parameter = parameter;
   }
 
   /**
    * @return the parameter to use when communicating with PageSeder
    */
   public String parameter() {
-    return this._parameter;
+    return this.parameter;
   }
 
   // TODO Check actual values to be passed
