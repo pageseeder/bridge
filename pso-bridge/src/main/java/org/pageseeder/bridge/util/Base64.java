@@ -22,6 +22,9 @@ import java.nio.charset.Charset;
  */
 public final class Base64 {
 
+  private Base64() {
+  }
+
   public static String encode(byte[] bytes) {
     return java.util.Base64.getEncoder().encodeToString(bytes);
   }

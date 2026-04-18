@@ -19,7 +19,6 @@ import org.jspecify.annotations.Nullable;
 import org.pageseeder.xmlwriter.XMLWritable;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;

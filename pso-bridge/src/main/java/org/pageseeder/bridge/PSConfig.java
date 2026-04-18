@@ -58,22 +58,22 @@ public final class PSConfig {
   /**
    * The base URL for the publicly available Website.
    */
-  private final URL _website;
+  private final URL website;
 
   /**
    * The base URL for the API.
    */
-  private final URL _api;
+  private final URL api;
 
   /**
    * The base URL for documents.
    */
-  private final URL _document;
+  private final URL document;
 
   /**
    * Prefix of the PageSeeder Web application (usually "/ps")
    */
-  private final String _sitePrefix;
+  private final String sitePrefix;
 
   /**
    * The PageSeeder version for this configuration.
@@ -102,10 +102,10 @@ public final class PSConfig {
    * @param prefix   The prefix of the PageSeeder application.
    */
   private PSConfig(URL website, URL api, URL document, String prefix) {
-    this._website = website;
-    this._api = api;
-    this._document = document;
-    this._sitePrefix = prefix;
+    this.website = website;
+    this.api = api;
+    this.document = document;
+    this.sitePrefix = prefix;
   }
 
   // Getters
@@ -121,7 +121,7 @@ public final class PSConfig {
    * @return the default base URL for the Website.
    */
   public URL getWebsiteBaseURL() {
-    return this._website;
+    return this.website;
   }
 
   /**
@@ -132,7 +132,7 @@ public final class PSConfig {
    * @return the base URL to use for the API.
    */
   public URL getAPIBaseURL() {
-    return this._api;
+    return this.api;
   }
 
   /**
@@ -145,7 +145,7 @@ public final class PSConfig {
    * @return The default host URL for PageSeeder documents
    */
   public URL getDocumentBaseURL() {
-    return this._document;
+    return this.document;
   }
 
   /**
@@ -154,7 +154,7 @@ public final class PSConfig {
    * @return the site prefix used by PageSeeder.
    */
   public String getScheme() {
-    return this._website.getProtocol();
+    return this.website.getProtocol();
   }
 
   /**
@@ -163,7 +163,7 @@ public final class PSConfig {
    * @return the site prefix used by PageSeeder.
    */
   public String getHost() {
-    return this._website.getHost();
+    return this.website.getHost();
   }
 
   /**
@@ -172,7 +172,7 @@ public final class PSConfig {
    * @return the site prefix used by PageSeeder.
    */
   public int getPort() {
-    return getActualPort(this._website);
+    return getActualPort(this.website);
   }
 
   /**
@@ -181,7 +181,7 @@ public final class PSConfig {
    * @return the site prefix used by PageSeeder.
    */
   public String getAPIScheme() {
-    return this._api.getProtocol();
+    return this.api.getProtocol();
   }
 
   /**
@@ -190,7 +190,7 @@ public final class PSConfig {
    * @return the site prefix used by PageSeeder.
    */
   public String getAPIHost() {
-    return this._api.getHost();
+    return this.api.getHost();
   }
 
   /**
@@ -199,7 +199,7 @@ public final class PSConfig {
    * @return the site prefix used by PageSeeder.
    */
   public int getAPIPort() {
-    return getActualPort(this._api);
+    return getActualPort(this.api);
   }
 
   /**
@@ -208,7 +208,7 @@ public final class PSConfig {
    * @return the site prefix used by PageSeeder.
    */
   public String getDocumentScheme() {
-    return this._document.getProtocol();
+    return this.document.getProtocol();
   }
 
   /**
@@ -217,7 +217,7 @@ public final class PSConfig {
    * @return the site prefix used by PageSeeder.
    */
   public String getDocumentHost() {
-    return this._document.getHost();
+    return this.document.getHost();
   }
 
   /**
@@ -226,7 +226,7 @@ public final class PSConfig {
    * @return the site prefix used by PageSeeder.
    */
   public int getDocumentPort() {
-    return getActualPort(this._document);
+    return getActualPort(this.document);
   }
 
   /**
@@ -237,7 +237,7 @@ public final class PSConfig {
    * @return the site prefix used by PageSeeder.
    */
   public String getSitePrefix() {
-    return this._sitePrefix;
+    return this.sitePrefix;
   }
 
   /**
@@ -322,7 +322,7 @@ public final class PSConfig {
    * @return the host URL as a string builder.
    */
   public StringBuilder getWebsiteURLBuilder() {
-    return toURLBuilder(this._website);
+    return toURLBuilder(this.website);
   }
 
   /**
@@ -337,7 +337,7 @@ public final class PSConfig {
    * @return the API URL as a string builder.
    */
   public StringBuilder getAPIURLBuilder() {
-    return toURLBuilder(this._api);
+    return toURLBuilder(this.api);
   }
 
   /**
@@ -352,7 +352,7 @@ public final class PSConfig {
    * @return the document URL as a string builder.
    */
   public StringBuilder getDocumentURLBuilder() {
-    return toURLBuilder(this._document);
+    return toURLBuilder(this.document);
   }
 
   /**
@@ -371,7 +371,7 @@ public final class PSConfig {
    * @return the constructed URL
    */
   public String buildWebsiteURL(String path) {
-    return toURLBuilder(this._website).append(this._sitePrefix).append(path).toString();
+    return toURLBuilder(this.website).append(this.sitePrefix).append(path).toString();
   }
 
   /**
@@ -390,7 +390,7 @@ public final class PSConfig {
    * @return the constructed URL
    */
   public String buildAPIURL(String path) {
-    return toURLBuilder(this._api).append(this._sitePrefix).append(path).toString();
+    return toURLBuilder(this.api).append(this.sitePrefix).append(path).toString();
   }
 
   /**
@@ -409,7 +409,7 @@ public final class PSConfig {
    * @return the constructed URL
    */
   public String buildDocumentURL(String path) {
-    return toURLBuilder(this._document).append(this._sitePrefix).append(path).toString();
+    return toURLBuilder(this.document).append(this.sitePrefix).append(path).toString();
   }
 
   /**
@@ -427,7 +427,7 @@ public final class PSConfig {
    */
   @Deprecated
   public StringBuilder buildAPIURL() {
-    return toURLBuilder(this._api);
+    return toURLBuilder(this.api);
   }
 
   /**
@@ -437,7 +437,7 @@ public final class PSConfig {
    */
   @Deprecated
   public StringBuilder buildHostURL() {
-    return toURLBuilder(this._website);
+    return toURLBuilder(this.website);
   }
 
   /**

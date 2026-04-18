@@ -97,6 +97,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
   // SAX implementations
   // ---------------------------------------------------------------------------
 
+  @SuppressWarnings("java:S1075")
   @Override
   public final void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
     String element = localName.isEmpty() ? qName : localName;

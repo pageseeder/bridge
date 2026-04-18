@@ -30,10 +30,10 @@ public final class HttpClient {
 
   private static boolean gzipEnabled = true;
 
-  private final HttpCache _cache;
+  private final HttpCache cache;
 
   private HttpClient() {
-    this._cache = new HttpCache("HttpCache");
+    this.cache = new HttpCache("HttpCache");
   }
 
   public static HttpClient singleton() {
@@ -77,7 +77,7 @@ public final class HttpClient {
    * @param path  The PageSeeder servlet to use
    */
   public HttpRequest newRequest(String path) {
-    return enableGzip(new CacheableRequest(this._cache, path));
+    return enableGzip(new CacheableRequest(this.cache, path));
   }
 
   /**
@@ -87,7 +87,7 @@ public final class HttpClient {
    * @param path   The PageSeeder servlet to use
    */
   public HttpRequest newRequest(Method method, String path) {
-    HttpRequest request = (method == Method.GET)? new CacheableRequest(this._cache, path) : new Request(method, path);
+    HttpRequest request = (method == Method.GET)? new CacheableRequest(this.cache, path) : new Request(method, path);
     return enableGzip(request);
   }
 
@@ -97,7 +97,7 @@ public final class HttpClient {
    * @param servlet  The PageSeeder servlet to use
    */
   public HttpRequest newRequest(Method method, Servlet servlet) {
-    if (method == Method.GET) return new CacheableRequest(this._cache, servlet.toPath()).parameter("xformat", "xml");
+    if (method == Method.GET) return new CacheableRequest(this.cache, servlet.toPath()).parameter("xformat", "xml");
     return new Request(method, servlet);
   }
 
@@ -113,7 +113,7 @@ public final class HttpClient {
    * @return The corresponding request
    */
   public HttpRequest newService(String template, @NonNull Object... variables) {
-    return enableGzip(new CacheableRequest(this._cache, ServicePath.newPath(template, variables)));
+    return enableGzip(new CacheableRequest(this.cache, ServicePath.newPath(template, variables)));
   }
 
   /**
@@ -127,7 +127,7 @@ public final class HttpClient {
    */
   public HttpRequest newDocument(long uri) {
     if (uri <= 0) throw new IllegalArgumentException("URI ID must be strictly positive.");
-    return enableGzip(new CacheableRequest(this._cache, "/uri/"+uri));
+    return enableGzip(new CacheableRequest(this.cache, "/uri/"+uri));
   }
 
   /**
@@ -138,7 +138,7 @@ public final class HttpClient {
    * @return The corresponding request
    */
   public HttpRequest newDocument(String path) {
-    return enableGzip(new CacheableRequest(this._cache, path));
+    return enableGzip(new CacheableRequest(this.cache, path));
   }
 
 }

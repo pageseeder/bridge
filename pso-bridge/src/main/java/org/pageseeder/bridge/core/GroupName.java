@@ -87,7 +87,7 @@ public final class GroupName extends ID implements Serializable {
    *         <code>false</code> otherwise.
    */
   public static boolean isValidGroupName(@Nullable String name) {
-    if (name == null || name.length() == 0) return false;
+    if (name == null || name.isEmpty()) return false;
     String topProjectName = name;
     int dash = name.indexOf('-');
     if (dash != -1) {

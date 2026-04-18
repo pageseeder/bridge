@@ -131,9 +131,9 @@ public final class LabelList implements Serializable, Iterable<String> {
    *
    * @return the corresponding instance.
    */
-  public static LabelList parse(String labels) {
+  public static LabelList parse(@Nullable String labels) {
     // Let's short-circuit the filtering if the list is empty
-    if (labels == null || labels.length() == 0) return NO_LABELS;
+    if (labels == null || labels.isEmpty()) return NO_LABELS;
     // Filter empty or invalid label values
     String[] filtered = Arrays.stream(labels.split(","))
         .map(String::trim)

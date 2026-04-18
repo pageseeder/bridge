@@ -73,7 +73,7 @@ public final class MultipartRequest extends BasicRequest {
   /**
    * The part boundary.
    */
-  private final String _boundary;
+  private final String boundary;
 
   /**
    * The underlying HTTP connection.
@@ -92,8 +92,8 @@ public final class MultipartRequest extends BasicRequest {
    */
   public MultipartRequest(String path) {
     super(Method.POST, path);
-    this._boundary = newBoundary();
-    this._headers.add(new Header("Content-Type", "multipart/form-data; boundary=\"" + this._boundary+ "\""));
+    this.boundary = newBoundary();
+    this._headers.add(new Header("Content-Type", "multipart/form-data; boundary=\"" + this.boundary + "\""));
   }
 
   /**
@@ -103,8 +103,8 @@ public final class MultipartRequest extends BasicRequest {
    */
   public MultipartRequest(Servlet servlet) {
     super(Method.POST, servlet);
-    this._boundary = newBoundary();
-    this._headers.add(new Header("Content-Type", "multipart/form-data; boundary=\"" + this._boundary+ "\""));
+    this.boundary = newBoundary();
+    this._headers.add(new Header("Content-Type", "multipart/form-data; boundary=\"" + this.boundary + "\""));
   }
 
   // Setters (return Request)
@@ -195,7 +195,7 @@ public final class MultipartRequest extends BasicRequest {
     try {
       // Start with boundary
       write("--", o);
-      write(this._boundary, o);
+      write(this.boundary, o);
       writeCRLF(o);
 
       // Headers if specified
@@ -296,7 +296,7 @@ public final class MultipartRequest extends BasicRequest {
 
       // Start with boundary
       write("--", o);
-      write(this._boundary, o);
+      write(this.boundary, o);
       writeCRLF(o);
 
       // Write headers
@@ -344,7 +344,7 @@ public final class MultipartRequest extends BasicRequest {
 
       // Start with boundary
       write("--", o);
-      write(this._boundary, o);
+      write(this.boundary, o);
       writeCRLF(o);
 
       // Write Parameter
@@ -488,7 +488,7 @@ public final class MultipartRequest extends BasicRequest {
     OutputStream o = this.out;
     if (o != null) {
       write("--", o);
-      write(this._boundary, o);
+      write(this.boundary, o);
       write("--", o);
       writeCRLF(o);
       o.flush();

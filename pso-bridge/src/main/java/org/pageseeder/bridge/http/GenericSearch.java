@@ -530,7 +530,7 @@ public final class GenericSearch implements Serializable {
         if (select.length() > 0) {
           select.append(',');
         }
-        String value = f.getValue().replaceAll(",", "\\,");
+        String value = f.getValue().replace(",", "\\,");
         select.append(f.getKey()).append(':').append(value);
       }
       parameters.put("select", select.toString());
@@ -549,7 +549,7 @@ public final class GenericSearch implements Serializable {
   @Override
   public String toString() {
     StringBuilder s = new StringBuilder();
-    if (this.types.size() > 0) {
+    if (!this.types.isEmpty()) {
       s.append("types=").append(join(this.types, '.')).append(';');
     }
     if (!this.facets.isEmpty()) {

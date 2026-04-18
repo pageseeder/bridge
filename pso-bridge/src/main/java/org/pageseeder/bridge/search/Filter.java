@@ -53,23 +53,23 @@ public class Filter {
      */
     MUST_NOT("-");
 
-    private final String _symbol;
+    private final String symbol;
 
     Occur(String symbol) {
-      this._symbol = symbol;
+      this.symbol = symbol;
     }
 
     @Override
     public String toString() {
-      return this._symbol;
+      return this.symbol;
     }
   }
 
-  private final String _field;
+  private final String field;
 
-  private final String _value;
+  private final String value;
 
-  private final Occur _occur;
+  private final Occur occur;
 
   /**
    * Create a new filter.
@@ -81,9 +81,9 @@ public class Filter {
    * @throws NullPointerException If any of the values is <code>null</code>.
    */
   public Filter(String field, String value, Occur occur) {
-    this._field = Objects.requireNonNull(field, "The field name must be specified");
-    this._value = Objects.requireNonNull(value, "The value to filter must be specified");
-    this._occur = Objects.requireNonNull(occur);
+    this.field = Objects.requireNonNull(field, "The field name must be specified");
+    this.value = Objects.requireNonNull(value, "The value to filter must be specified");
+    this.occur = Objects.requireNonNull(occur);
   }
 
   /**
@@ -102,26 +102,26 @@ public class Filter {
    * @return The name of the field
    */
   public final String field() {
-    return this._field;
+    return this.field;
   }
 
   /**
    * @return The value of the field to match
    */
   public final String value() {
-    return this._value;
+    return this.value;
   }
 
   /**
    * @return The requirement on that filter
    */
   public Occur occur() {
-    return _occur;
+    return occur;
   }
 
   @Override
   public String toString() {
-    return this._occur+this._field+":"+this._value;
+    return this.occur +this.field +":"+this.value;
   }
 }
 
