@@ -15,9 +15,11 @@
  */
 package org.pageseeder.bridge.xml.stax;
 
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.core.*;
 import org.pageseeder.bridge.xml.MissingElementException;
 
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.time.OffsetDateTime;
@@ -35,9 +37,9 @@ import java.time.OffsetDateTime;
  */
 public class XMLStreamMembership extends ElementXMLStreamHandler<Membership> implements XMLStreamHandler<Membership> {
 
-  private Member commonMember;
+  private @Nullable Member commonMember;
 
-  private BasicGroup commonGroup;
+  private @Nullable BasicGroup commonGroup;
 
   public XMLStreamMembership() {
     this(null, null);
@@ -51,7 +53,7 @@ public class XMLStreamMembership extends ElementXMLStreamHandler<Membership> imp
     this(null, group);
   }
 
-  private XMLStreamMembership(Member member, BasicGroup group) {
+  private XMLStreamMembership(@Nullable Member member, @Nullable BasicGroup group) {
     super("membership");
     this.commonMember = member;
     this.commonGroup = group;
@@ -163,7 +165,7 @@ public class XMLStreamMembership extends ElementXMLStreamHandler<Membership> imp
    * @throws XMLStreamException If thrown by XML stream or if the precondition failed
    */
   private void extractCommonMemberOrGroup(XMLStreamReader xml) throws XMLStreamException {
-    xml.require(XMLStreamReader.START_ELEMENT, null, "memberships");
+    xml.require(XMLStreamConstants.START_ELEMENT, null, "memberships");
     do {
       xml.next();
       if (xml.isStartElement()) {

@@ -29,7 +29,7 @@ import java.util.Map.Entry;
  *
  * @author Christophe Lauret
  *
- * @version 0.11.12
+ * @version 0.12.0
  * @since 0.11.4
  */
 public final class CacheableRequest implements HttpRequest {
@@ -42,17 +42,17 @@ public final class CacheableRequest implements HttpRequest {
   /**
    * HttpCache to check
    */
-  private final HttpCache _cache;
+  private final HttpCache cache;
 
   /**
    * Path to server
    */
-  private final String _path;
+  private final String path;
 
   /**
    * List of get parameters
    */
-  private final List<Parameter> _parameters = new ArrayList<>();
+  private final List<Parameter> parameters = new ArrayList<>();
 
   private PSConfig config = PSConfig.getDefault();
 
@@ -69,13 +69,13 @@ public final class CacheableRequest implements HttpRequest {
    * @param path   The path without the site prefix (e.g. <code>/ps</code>)
    */
   public CacheableRequest(HttpCache cache, String path) {
-    this._cache = cache;
-    this._path = path;
+    this.cache = cache;
+    this.path = path;
   }
 
   @Override
   public CacheableRequest parameter(String name, String value) {
-    this._parameters.add(new Parameter(name, value));
+    this.parameters.add(new Parameter(name, value));
     return this;
   }
 
@@ -108,10 +108,10 @@ public final class CacheableRequest implements HttpRequest {
 
   @Override
   public HttpResponse response() {
-    String url = this.config != null ? Request.toURLString(this.config, this._path) : Request.toURLString(this._path);
-    if (this._parameters.size() > 0) {
+    String url = this.config != null ? Request.toURLString(this.config, this.path) : Request.toURLString(this.path);
+    if (this.parameters.size() > 0) {
       StringBuilder q = new StringBuilder();
-      for (Parameter p : this._parameters) {
+      for (Parameter p : this.parameters) {
         if (q.length() > 0) {
           q.append("&");
         }
@@ -121,7 +121,7 @@ public final class CacheableRequest implements HttpRequest {
     }
 
     // Retrieve content from Cache
-    CachedContent content = this._cache.get(url);
+    CachedContent content = this.cache.get(url);
     if (content == null) return fetch(url);
     else return refresh(content);
   }
@@ -139,7 +139,7 @@ public final class CacheableRequest implements HttpRequest {
       if (etag != null && contentType != null && length < CACHE_THRESHOLD) {
         byte[] bytes = response.consumeBytes();
         CachedContent updated = new CachedContent(url, bytes, contentType, etag);
-        this._cache.put(updated);
+        this.cache.put(updated);
         return new CachedResponse(updated);
       }
     }
@@ -161,7 +161,7 @@ public final class CacheableRequest implements HttpRequest {
       if (etag != null && contentType != null && length < CACHE_THRESHOLD) {
         byte[] bytes = response.consumeBytes();
         CachedContent updated = new CachedContent(content.url(), bytes, contentType, etag);
-        this._cache.put(updated);
+        this.cache.put(updated);
         return new CachedResponse(updated);
       }
     }
@@ -215,12 +215,12 @@ public final class CacheableRequest implements HttpRequest {
    * @return the actual request corresponding to the current cached request.
    */
   private Request toRequest() {
-    Request request = new Request(Method.GET, this._path);
+    Request request = new Request(Method.GET, this.path);
     PSCredentials credentials = this.credentials;
     if (credentials != null) {
       request.using(credentials);
     }
-    for (Parameter p : this._parameters) {
+    for (Parameter p : this.parameters) {
       request.parameter(p.name(), p.value());
     }
     if (this.gzip)

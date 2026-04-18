@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 /**
  * Utility class to manipulate comment properties.
  *
- * @version 0.11.2
+ * @version 0.12.0
  * @since 0.11.2
  */
 public final class CommentProperties {
@@ -54,7 +54,7 @@ public final class CommentProperties {
     String[] prp = properties.split("\\|");
     Map<String, String> map = new LinkedHashMap<>(prp.length);
     for (String p : prp) {
-      if (p.length() > 0) {
+      if (!p.isEmpty()) {
         int eq = p.indexOf('=');
         if (eq >= 0) {
           String name = p.substring(0, eq);

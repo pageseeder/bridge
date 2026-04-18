@@ -29,7 +29,7 @@ import org.pageseeder.xmlwriter.XMLWriter;
  *
  * @author Philip Rutherford
  *
- * @version 0.10.2
+ * @version 0.12.0
  * @since 0.8.1
  */
 public class XRefFragment extends FragmentBase implements PSMLFragment {
@@ -156,7 +156,7 @@ public class XRefFragment extends FragmentBase implements PSMLFragment {
     if (level != null) {
       psml.attribute("level", level);
     }
-    if (x.getLabels() != null && x.getLabels().size() > 0) {
+    if (x.getLabels() != null && !x.getLabels().isEmpty()) {
       psml.attribute("labels", x.getLabelsAsString());
     }
     psml.closeElement();

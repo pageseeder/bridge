@@ -33,13 +33,13 @@ public final class Context implements Serializable, XMLWritable {
   private static final long serialVersionUID = 1L;
 
   /** The group the comment is attached to. */
-  private final @Nullable Group _group;
+  private final @Nullable Group group;
 
   /** The URI the comment is attached to. */
-  private final @Nullable URI _uri;
+  private final @Nullable URI uri;
 
   /** The fragment (for a URI only) */
-  private final String _fragment;
+  private final String fragment;
 
   /**
    * Create a group context.
@@ -47,9 +47,9 @@ public final class Context implements Serializable, XMLWritable {
    * @param group The group to use as the context.
    */
   public Context(Group group) {
-    this._group = group;
-    this._uri = null;
-    this._fragment = "";
+    this.group = group;
+    this.uri = null;
+    this.fragment = "";
   }
 
   /**
@@ -58,9 +58,9 @@ public final class Context implements Serializable, XMLWritable {
    * @param uri The uri to use as the context.
    */
   public Context(URI uri) {
-    this._group = null;
-    this._uri = uri;
-    this._fragment = "default";
+    this.group = null;
+    this.uri = uri;
+    this.fragment = "default";
   }
 
   /**
@@ -70,39 +70,39 @@ public final class Context implements Serializable, XMLWritable {
    * @param fragment The fragment of the URI to use as context
    */
   public Context(URI uri, @Nullable String fragment) {
-    this._group = null;
-    this._uri = uri;
-    this._fragment = fragment != null? fragment : "default";
+    this.group = null;
+    this.uri = uri;
+    this.fragment = fragment != null? fragment : "default";
   }
 
   /**
    * @return the group
    */
   public @Nullable Group getGroup() {
-    return this._group;
+    return this.group;
   }
 
   /**
    * @return the _uri
    */
   public @Nullable URI getUri() {
-    return this._uri;
+    return this.uri;
   }
 
   /**
    * @return the fragment
    */
   public @Nullable String getFragment() {
-    return this._fragment;
+    return this.fragment;
   }
 
   @Override
   public void toXML(XMLWriter xml) throws IOException {
-    Group group = this._group;
-    URI uri = this._uri;
+    Group group = this.group;
+    URI uri = this.uri;
     xml.openElement("context");
-    if (this._fragment.length() > 0 && !"default".equals(this._fragment)) {
-      xml.attribute("fragment", this._fragment);
+    if (!this.fragment.isEmpty() && !"default".equals(this.fragment)) {
+      xml.attribute("fragment", this.fragment);
     }
     if (uri != null) {
       uri.toXML(xml);

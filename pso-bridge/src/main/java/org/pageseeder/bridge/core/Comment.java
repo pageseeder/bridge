@@ -33,101 +33,101 @@ public final class Comment implements Serializable, XMLWritable {
   private static final long serialVersionUID = 1L;
 
   /** The XLink ID of the comment. */
-  private final long _id;
+  private final long id;
 
   /** The Discussion ID of the comment. */
-  private final long _discussionId;
+  private final long discussionId;
 
   /** The title of the comment (required) */
-  private final String _title;
+  private final String title;
 
   /** The type of the comment to further qualify the comment. */
-  private final @Nullable String _type;
+  private final @Nullable String type;
 
   /** The list of labels on the comment. */
-  private final LabelList _labels;
+  private final LabelList labels;
 
   /** The author of the comment. */
-  private final Author _author;
+  private final Author author;
 
   /** The list of labels on the comment. */
-  private final List<Content> _contents;
+  private final List<Content> contents;
 
   /** Who and when it was modified */
-  private final @Nullable ModifiedBy _modified;
+  private final @Nullable ModifiedBy modified;
 
   /** A pipe-separated list of properties as value pairs (e.g. x=1|y=2|) */
-  private final CommentProperties _properties;
+  private final CommentProperties properties;
 
   /** The member ID of the member the task should be assigned to. */
-  private @Nullable AssignedTo _assignedTo;
+  private @Nullable AssignedTo assignedTo;
 
   /** The type of the comment to further qualify the comment. */
-  private final @Nullable String _contentRole;
+  private final @Nullable String contentRole;
   // TODO Consider using an enum for this
 
-  private final @Nullable OffsetDateTime _created;
+  private final @Nullable OffsetDateTime created;
 
   /** The status for task e.g. 'Open', 'Resolved', 'Closed' */
-  private final @Nullable String _status;
+  private final @Nullable String status;
 
   /** The priority for task e.g. 'High', 'Medium', 'Low' */
-  private final @Nullable String _priority;
+  private final @Nullable String priority;
 
   /** The task due date format is ISO-8601 e.g. 2010-10-25, 2010-10-25T12:26 (defaults to T18:00) */
-  private final @Nullable OffsetDateTime _due;
+  private final @Nullable OffsetDateTime due;
 
-  private final boolean _draft;
+  private final boolean isDraft;
 
-  private final boolean _moderated;
+  private final boolean isModerated;
 
   /** The context of this comment */
-  private final Context _context;
+  private final Context context;
 
   /** The list of attachments for this comment */
-  private final List<Attachment> _attachments;
+  private final List<Attachment> attachments;
 
-  private Comment(long id, long discussionId, String title, @Nullable String type, LabelList labels, Author author, List<Content> contents, @Nullable ModifiedBy modified, CommentProperties properties, @Nullable AssignedTo assignedTo, @Nullable String contentRole, @Nullable OffsetDateTime created, @Nullable String status, @Nullable String priority, @Nullable OffsetDateTime due, boolean draft, boolean moderated, Context context, List<Attachment> attachments) {
-    this._id = id;
-    this._discussionId = discussionId;
-    this._title = title;
-    this._type = type;
-    this._labels = labels;
-    this._author = author;
-    this._contents = contents;
-    this._modified = modified;
-    this._properties = properties;
-    this._assignedTo = assignedTo;
-    this._contentRole = contentRole;
-    this._created = created;
-    this._status = status;
-    this._priority = priority;
-    this._due = due;
-    this._draft = draft;
-    this._moderated = moderated;
-    this._context = context;
-    this._attachments = attachments;
+  private Comment(long id, long discussionId, String title, @Nullable String type, LabelList labels, Author author, List<Content> contents, @Nullable ModifiedBy modified, CommentProperties properties, @Nullable AssignedTo assignedTo, @Nullable String contentRole, @Nullable OffsetDateTime created, @Nullable String status, @Nullable String priority, @Nullable OffsetDateTime due, boolean isDraft, boolean isModerated, Context context, List<Attachment> attachments) {
+    this.id = id;
+    this.discussionId = discussionId;
+    this.title = title;
+    this.type = type;
+    this.labels = labels;
+    this.author = author;
+    this.contents = contents;
+    this.modified = modified;
+    this.properties = properties;
+    this.assignedTo = assignedTo;
+    this.contentRole = contentRole;
+    this.created = created;
+    this.status = status;
+    this.priority = priority;
+    this.due = due;
+    this.isDraft = isDraft;
+    this.isModerated = isModerated;
+    this.context = context;
+    this.attachments = attachments;
   }
 
   /**
    * @return the id
    */
   public long getId() {
-    return this._id;
+    return this.id;
   }
 
   /**
    * @return the title
    */
   public String getTitle() {
-    return this._title;
+    return this.title;
   }
 
   /**
    * @return the content
    */
   public Content getContent() {
-    return this._contents.iterator().next();
+    return this.contents.iterator().next();
   }
 
   /**
@@ -148,108 +148,108 @@ public final class Comment implements Serializable, XMLWritable {
    * @return the type
    */
   public @Nullable String getType() {
-    return this._type;
+    return this.type;
   }
 
   /**
    * @return the list of attachments
    */
   public boolean hasAttachments() {
-    return !this._attachments.isEmpty();
+    return !this.attachments.isEmpty();
   }
 
   /**
    * @return the list of attachments (unmodifiable)
    */
   public List<Attachment> getAttachments() {
-    return Collections.unmodifiableList(this._attachments);
+    return Collections.unmodifiableList(this.attachments);
   }
 
   /**
    * @return the labels
    */
   public boolean hasLabels() {
-    return !this._labels.isEmpty();
+    return !this.labels.isEmpty();
   }
 
   /**
    * @return the labels
    */
   public LabelList getLabels() {
-    return this._labels;
+    return this.labels;
   }
 
   /**
    * @return the properties
    */
   public CommentProperties getProperties() {
-    return this._properties;
+    return this.properties;
   }
 
   /**
    * @return the author
    */
   public Author getAuthor() {
-    return this._author;
+    return this.author;
   }
 
   /**
    * @return the context
    */
   public @Nullable Context getContext() {
-    return this._context;
+    return this.context;
   }
 
   /**
    * @return the status
    */
   public @Nullable String getStatus() {
-    return this._status;
+    return this.status;
   }
 
   /**
    * @return the priority
    */
   public @Nullable String getPriority() {
-    return this._priority;
+    return this.priority;
   }
 
   /**
    * @return the assignedto
    */
   public @Nullable AssignedTo getAssignedTo() {
-    return this._assignedTo;
+    return this.assignedTo;
   }
 
   /**
    * @return the due
    */
   public @Nullable OffsetDateTime getDue() {
-    return this._due;
+    return this.due;
   }
 
   public long getDiscussionId() {
-    return this._discussionId;
+    return this.discussionId;
   }
 
   public ModifiedBy getModified() {
-    return _modified;
+    return modified;
   }
 
   public String getContentRole() {
-    return _contentRole;
+    return contentRole;
   }
 
   public OffsetDateTime getCreated() {
-    return _created;
+    return created;
   }
 
   public boolean isDraft() {
-    return _draft;
+    return isDraft;
   }
 
   public boolean isModerated() {
-    return _moderated;
+    return isModerated;
   }
 
   @Override
@@ -261,44 +261,44 @@ public final class Comment implements Serializable, XMLWritable {
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement("comment");
     //    id	xs:long	yes	The ID of the comment in PageSeeder
-    if (this._id > 0)
-      xml.attribute("id", Long.toString(this._id));
-    if (this._discussionId > 0)
-      xml.attribute("discussionid", Long.toString(this._discussionId));
-    if (this._contentRole != null)
-      xml.attribute("contentrole", this._contentRole);
-    if (this._created != null)
-      xml.attribute("created", this._created.toString()); // TODO date format
-    if (this._draft)
+    if (this.id > 0)
+      xml.attribute("id", Long.toString(this.id));
+    if (this.discussionId > 0)
+      xml.attribute("discussionid", Long.toString(this.discussionId));
+    if (this.contentRole != null)
+      xml.attribute("contentrole", this.contentRole);
+    if (this.created != null)
+      xml.attribute("created", this.created.toString()); // TODO date format
+    if (this.isDraft)
       xml.attribute("draft", "true");
-    if (this._moderated)
+    if (this.isModerated)
       xml.attribute("moderated", "true");
-    if (!this._properties.isEmpty())
-      xml.attribute("properties", this._properties.toString());
-    if (this._due != null)
-      xml.attribute("due", this._due.toString());
-    if (this._status != null)
-      xml.attribute("status", this._status);
-    if (this._priority != null)
-      xml.attribute("priority", this._priority);
-    if (this._type != null)
-      xml.attribute("type", this._type);
+    if (!this.properties.isEmpty())
+      xml.attribute("properties", this.properties.toString());
+    if (this.due != null)
+      xml.attribute("due", this.due.toString());
+    if (this.status != null)
+      xml.attribute("status", this.status);
+    if (this.priority != null)
+      xml.attribute("priority", this.priority);
+    if (this.type != null)
+      xml.attribute("type", this.type);
     // TODO
-    xml.element("title", this._title);
-    if (!this._labels.isEmpty())
-      xml.element("labels", this._labels.toString());
-    this._author.toXML(xml);
-    if (this._modified != null)
-      this._modified.toXML(xml);
-    if (this._assignedTo != null)
-      this._assignedTo.toXML(xml);
-    if (!this._properties.isEmpty())
-      this._properties.toXML(xml);
-    for (Content c : this._contents) {
+    xml.element("title", this.title);
+    if (!this.labels.isEmpty())
+      xml.element("labels", this.labels.toString());
+    this.author.toXML(xml);
+    if (this.modified != null)
+      this.modified.toXML(xml);
+    if (this.assignedTo != null)
+      this.assignedTo.toXML(xml);
+    if (!this.properties.isEmpty())
+      this.properties.toXML(xml);
+    for (Content c : this.contents) {
       c.toXML(xml);
     }
-    this._context.toXML(xml);
-    for (Attachment a : _attachments) {
+    this.context.toXML(xml);
+    for (Attachment a : attachments) {
       a.toXML(xml);
     }
 // TODO  <group />

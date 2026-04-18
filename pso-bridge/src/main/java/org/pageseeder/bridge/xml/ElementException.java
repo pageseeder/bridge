@@ -17,6 +17,8 @@ package org.pageseeder.bridge.xml;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.Objects;
+
 /**
  * Superclass for exceptions caused by error during the processing of element.
  *
@@ -33,13 +35,13 @@ public abstract class ElementException extends RuntimeException {
   /**
    * The name of the element.
    */
-  private final String _name;
+  private final String name;
 
   /**
    * @param name The name of the element.
    */
   protected ElementException(String name) {
-    this._name = name;
+    this.name = Objects.requireNonNull(name, "Element name cannot be null");
   }
 
   /**
@@ -51,7 +53,7 @@ public abstract class ElementException extends RuntimeException {
    */
   protected ElementException(String name, String message) {
     super(message);
-    this._name = name;
+    this.name = name;
   }
 
   /**
@@ -64,14 +66,14 @@ public abstract class ElementException extends RuntimeException {
    */
   protected ElementException(String name, String message, @Nullable Throwable cause) {
     super(message, cause);
-    this._name = name;
+    this.name = name;
   }
 
   /**
    * @return the name of the element
    */
   public String getElementName() {
-    return this._name;
+    return this.name;
   }
 
 }

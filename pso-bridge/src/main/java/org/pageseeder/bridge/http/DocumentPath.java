@@ -39,7 +39,7 @@ import org.pageseeder.bridge.PSConfig;
  *
  * @author Christophe Lauret
  *
- * @version 0.10.2
+ * @version 0.12.0
  * @since 0.9.4
  */
 public final class DocumentPath {
@@ -47,7 +47,7 @@ public final class DocumentPath {
   /**
    * The steps to a document.
    */
-  private final String[] _steps;
+  private final String[] steps;
 
   /**
    * Creates a new document path.
@@ -55,8 +55,7 @@ public final class DocumentPath {
    * @param path The path to the document
    */
   public DocumentPath(String path) {
-    String[] steps = path.split("/");
-    this._steps = normalize(steps);
+    this.steps = normalize(path.split("/"));
   }
 
   /**
@@ -65,7 +64,7 @@ public final class DocumentPath {
    * @param steps The URI template used for this service.
    */
   private DocumentPath(String... steps) {
-    this._steps = Objects.requireNonNull(steps, "Steps must not be null");
+    this.steps = Objects.requireNonNull(steps, "Steps must not be null");
   }
 
   /**
@@ -97,9 +96,9 @@ public final class DocumentPath {
    * @return the path to the document excluding the site prefix ("/ps").
    */
   public String path() {
-    if (this._steps.length == 0) return "/";
+    if (this.steps.length == 0) return "/";
     StringBuilder path = new StringBuilder();
-    for (String step : this._steps) {
+    for (String step : this.steps) {
       path.append('/').append(step);
     }
     return path.toString();
@@ -111,7 +110,7 @@ public final class DocumentPath {
    * @return a copy of the steps.
    */
   public String[] steps() {
-    return Arrays.copyOf(this._steps, this._steps.length);
+    return Arrays.copyOf(this.steps, this.steps.length);
   }
 
   /**
@@ -120,7 +119,7 @@ public final class DocumentPath {
    * @return the number of steps in this path.
    */
   public int size() {
-    return this._steps.length;
+    return this.steps.length;
   }
 
   /**
@@ -129,8 +128,8 @@ public final class DocumentPath {
    * @return the last step or <code>null</code> if empty.
    */
   public @Nullable String filename() {
-    if (this._steps.length == 0) return null;
-    String[] steps = this._steps;
+    if (this.steps.length == 0) return null;
+    String[] steps = this.steps;
     return steps[steps.length-1];
   }
 
@@ -140,8 +139,8 @@ public final class DocumentPath {
    * @return the path corresponding to the parent or <code>null</code>
    */
   public @Nullable DocumentPath parent() {
-    if (this._steps.length == 0) return null;
-    String[] current = this._steps;
+    if (this.steps.length == 0) return null;
+    String[] current = this.steps;
     String[] parent = Arrays.copyOf(current, current.length-1);
     return new DocumentPath(parent);
   }
@@ -187,7 +186,7 @@ public final class DocumentPath {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + Arrays.hashCode(this._steps);
+    result = prime * result + Arrays.hashCode(this.steps);
     return result;
   }
 
@@ -197,7 +196,7 @@ public final class DocumentPath {
     if (obj == null) return false;
     if (getClass() != obj.getClass()) return false;
     DocumentPath other = (DocumentPath)obj;
-    return Arrays.equals(this._steps, other._steps);
+    return Arrays.equals(this.steps, other.steps);
   }
 
   @Override
@@ -218,9 +217,9 @@ public final class DocumentPath {
   private static String[] normalize(String[] array) {
     // We only copy non-empty steps
     int actual = 0;
-    String @NonNull[] steps = new String @NonNull[array.length];
+    String[] steps = new String[array.length];
     for (String element : array) {
-      if (element.length() > 0) {
+      if (!element.isEmpty()) {
         if ("..".equals(element)) {
           if (actual == 0) throw new IllegalArgumentException("No more parents!");
           actual = actual-1;
@@ -240,7 +239,7 @@ public final class DocumentPath {
    * @return a single child of this path.
    */
   private String[] childOf(DocumentPath original, String child) {
-    String[] current = this._steps;
+    String[] current = this.steps;
     String[] path = Arrays.copyOf(current, current.length+1);
     path[path.length-1] = child;
     return path;
@@ -251,7 +250,7 @@ public final class DocumentPath {
    */
   private String[] descendantOf(DocumentPath original, String subpath) {
     String[] children = normalize(subpath.split("/"));
-    return merge(this._steps, children);
+    return merge(this.steps, children);
   }
 
   /**

@@ -18,7 +18,6 @@ package org.pageseeder.bridge.oauth;
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
-import org.pageseeder.bridge.core.Username;
 import org.pageseeder.bridge.http.*;
 import org.pageseeder.bridge.net.UsernamePassword;
 import org.pageseeder.bridge.xml.BasicHandler;
@@ -60,7 +59,7 @@ public final class ClientRegistration {
   );
 
   /** The name of the client (required and unique) */
-  private final String _clientName;
+  private final String clientName;
 
   /** The grant type. */
   private @Nullable String grantType;
@@ -97,7 +96,7 @@ public final class ClientRegistration {
    * @param clientName the name of the client to register.
    */
   public ClientRegistration(String clientName) {
-    this._clientName = Objects.requireNonNull(clientName, "Client name must not be null");
+    this.clientName = Objects.requireNonNull(clientName, "Client name must not be null");
     if ("".equals(clientName)) throw new IllegalArgumentException("Client name must not be empty");
   }
 
@@ -105,7 +104,7 @@ public final class ClientRegistration {
    * @return The name of the client to register.
    */
   public String getClientName() {
-    return this._clientName;
+    return this.clientName;
   }
 
   /**
@@ -290,7 +289,7 @@ public final class ClientRegistration {
   public @Nullable ClientCredentials register(String username, PSCredentials credentials, PSConfig config) {
     String service = ServicePath.newPath("/oauth/members/{member}/clients", username);
     Request request = new Request(Method.POST, service).using(credentials).config(config);
-    request.parameter("name", this._clientName);
+    request.parameter("name", this.clientName);
     String d = this.description;
     if (d != null) {
       request.parameter("description", d);

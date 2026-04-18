@@ -32,15 +32,15 @@ import java.io.Serializable;
  */
 public class Content implements Serializable, XMLWritable {
 
-  public final static String DEFAULT_MEDIATYPE = "text/plain";
+  public static final String DEFAULT_MEDIATYPE = "text/plain";
 
-  public final static Content EMPTY = new Content("");
+  public static final Content EMPTY = new Content("");
 
   /** The content of the comment (required) */
-  private final String _content;
+  private final String content;
 
   /** The content type of the comment, defaults to 'text/plain' */
-  private final String _type;
+  private final String type;
 
   /**
    * Create a new plain text comment
@@ -58,23 +58,23 @@ public class Content implements Serializable, XMLWritable {
    * @param type    the media type of the content
    */
   public Content(String content, String type) {
-    this._content = content;
-    this._type = type;
+    this.content = content;
+    this.type = type;
   }
 
   public String getContent() {
-    return this._content;
+    return this.content;
   }
 
   public String getType() {
-    return this._type;
+    return this.type;
   }
 
   @Override
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement("content");
-    xml.attribute("type", this._type);
-    xml.writeText(this._content);
+    xml.attribute("type", this.type);
+    xml.writeText(this.content);
     xml.closeElement();
   }
 }

@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,8 @@ import org.pageseeder.bridge.PSSession;
  * <p>Note: This class was initially forked from Bastille 0.8.29
  *
  * @author Christophe Lauret
- * @version 0.2.27
+ *
+ * @version 0.12.0
  * @since 0.2.0
  */
 public final class PSHTTPResource {
@@ -215,17 +217,12 @@ public final class PSHTTPResource {
    */
   protected String getPOSTFormURLEncodedContent() {
     StringBuilder q = new StringBuilder();
-    try {
-      for (Entry<String, String> p : this._parameters.entrySet()) {
-        if (q.length() > 0) {
-          q.append("&");
-        }
-        q.append(URLEncoder.encode(p.getKey(), "utf-8"));
-        q.append("=").append(URLEncoder.encode(p.getValue(), "utf-8"));
+    for (Entry<String, String> p : this._parameters.entrySet()) {
+      if (q.length() > 0) {
+        q.append("&");
       }
-    } catch (UnsupportedEncodingException ex) {
-      // Should never happen as UTF-8 is supported
-      ex.printStackTrace();
+      q.append(URLEncoder.encode(p.getKey(), StandardCharsets.UTF_8));
+      q.append("=").append(URLEncoder.encode(p.getValue(), StandardCharsets.UTF_8));
     }
     return q.toString();
   }

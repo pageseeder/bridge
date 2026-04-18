@@ -22,7 +22,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Christophe Lauret
  *
- * @version 0.10.2
+ * @version 0.12.0
  * @since 0.10.2
  */
 public abstract class AttributeException extends RuntimeException {
@@ -33,13 +33,13 @@ public abstract class AttributeException extends RuntimeException {
   /**
    * The name of the attribute.
    */
-  private final String _name;
+  private final String name;
 
   /**
    * @param name The name of the attribute.
    */
   protected AttributeException(String name) {
-    this._name = name;
+    this.name = name;
   }
 
   /**
@@ -51,7 +51,7 @@ public abstract class AttributeException extends RuntimeException {
    */
   protected AttributeException(String name, String message) {
     super(message);
-    this._name = name;
+    this.name = name;
   }
 
   /**
@@ -64,14 +64,14 @@ public abstract class AttributeException extends RuntimeException {
    */
   protected AttributeException(String name, String message, @Nullable Throwable cause) {
     super(message, cause);
-    this._name = name;
+    this.name = name;
   }
 
   /**
    * @return the name of the attribute
    */
   public String getAttributeName() {
-    return this._name;
+    return this.name;
   }
 
 }

@@ -42,7 +42,7 @@ import org.pageseeder.bridge.net.HTTP;
  * String url = request.toURLString();
  * </code></pre>
  *
- * @version 0.10.2
+ * @version 0.12.0
  * @since 0.9.0
  */
 public final class AuthorizationRequest {
@@ -55,12 +55,12 @@ public final class AuthorizationRequest {
   /**
    * The url based on the PageSeeder config.
    */
-  private final String _url;
+  private final String url;
 
   /**
    * The parameters to send.
    */
-  private final Map<String, String> _parameters;
+  private final Map<String, String> parameters;
 
   /**
    * Creates a new instance.
@@ -69,8 +69,8 @@ public final class AuthorizationRequest {
    * @param parameters The parameters to add.
    */
   private AuthorizationRequest(String url, Map<String, String> parameters) {
-    this._url = url;
-    this._parameters = parameters;
+    this.url = url;
+    this.parameters = parameters;
   }
 
   /**
@@ -99,21 +99,21 @@ public final class AuthorizationRequest {
    * @return the state parameter
    */
   public @Nullable String state() {
-    return this._parameters.get("state");
+    return this.parameters.get("state");
   }
 
   /**
    * @return The client ID used in this request.
    */
   public @Nullable String clientId() {
-    return this._parameters.get("client_id");
+    return this.parameters.get("client_id");
   }
 
   /**
    * @return the scope used for this request.
    */
   public @Nullable String scope() {
-    return this._parameters.get("scope");
+    return this.parameters.get("scope");
   }
 
   /**
@@ -123,7 +123,7 @@ public final class AuthorizationRequest {
    */
   public @Nullable String parameter(String name) {
     Objects.requireNonNull(name, "The parameter name cannot be null");
-    return this._parameters.get(name);
+    return this.parameters.get(name);
   }
 
   // SETTERS (return AuthorizationRequest)
@@ -176,16 +176,16 @@ public final class AuthorizationRequest {
   public AuthorizationRequest parameter(String name, String value) {
     Objects.requireNonNull(name, "The parameter name cannot be null");
     Objects.requireNonNull(value, "The parameter value cannot be null");
-    Map<String, String> p = new LinkedHashMap<>(this._parameters);
+    Map<String, String> p = new LinkedHashMap<>(this.parameters);
     p.put(name, value);
-    return new AuthorizationRequest(this._url, p);
+    return new AuthorizationRequest(this.url, p);
   }
 
   /**
    * @return the URL for this authorization request.
    */
   public String toURLString() {
-    return this._url+"?"+HTTP.encodeParameters(this._parameters);
+    return this.url +"?"+HTTP.encodeParameters(this.parameters);
   }
 
   /**

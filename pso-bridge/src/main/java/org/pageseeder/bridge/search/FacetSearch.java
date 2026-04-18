@@ -76,7 +76,7 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
    */
   public FacetSearch question(String question) {
     Question q = new Question(question, this._question.fields(), this._question.suggestSize());
-    return new FacetSearch(this._scope, q, this._facets, this._filters, this._ranges);
+    return new FacetSearch(this.scope, q, this._facets, this._filters, this._ranges);
   }
 
   /**
@@ -96,7 +96,7 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
    */
   public FacetSearch facets(FacetList facets) {
     if (facets == null) facets = FacetList.EMPTY;
-    return new FacetSearch(this._scope, this._question, facets, this._filters, this._ranges);
+    return new FacetSearch(this.scope, this._question, facets, this._filters, this._ranges);
   }
 
   /**
@@ -107,7 +107,7 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
    * @return A new <code>FacetSearch</code> instance with the specified filter.
    */
   public FacetSearch filters(FilterList filters) {
-    return new FacetSearch(this._scope, this._question, this._facets, filters, this._ranges);
+    return new FacetSearch(this.scope, this._question, this._facets, filters, this._ranges);
   }
 
   public FilterList filters() {
@@ -127,27 +127,27 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
    */
   public FacetSearch range(String field, Range range) {
     RangeFilterList ranges = this._ranges.filter(field, range);
-    return new FacetSearch(this._scope, this._question, this._facets, this._filters, ranges);
+    return new FacetSearch(this.scope, this._question, this._facets, this._filters, ranges);
   }
 
   @Override
   public FacetSearch group(String group) {
-    return new FacetSearch(this._scope.group(group), this._question, this._facets, this._filters, this._ranges);
+    return new FacetSearch(this.scope.group(group), this._question, this._facets, this._filters, this._ranges);
   }
 
   @Override
   public FacetSearch project(String project) {
-    return new FacetSearch(this._scope.project(project), this._question, this._facets, this._filters, this._ranges);
+    return new FacetSearch(this.scope.project(project), this._question, this._facets, this._filters, this._ranges);
   }
 
   @Override
   public FacetSearch project(String project, List<String> groups) {
-    return new FacetSearch(this._scope.project(project, groups), this._question, this._facets, this._filters, this._ranges);
+    return new FacetSearch(this.scope.project(project, groups), this._question, this._facets, this._filters, this._ranges);
   }
 
   @Override
   public FacetSearch member(String member) {
-    return new FacetSearch(this._scope.member(member), this._question, this._facets, this._filters, this._ranges);
+    return new FacetSearch(this.scope.member(member), this._question, this._facets, this._filters, this._ranges);
   }
 
   /**
@@ -162,8 +162,8 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
     parameters = this._facets.toParameters(parameters);
     parameters = this._filters.toParameters(parameters);
     parameters = this._ranges.toParameters(parameters);
-    if (this._scope.isProject() && this._scope.groups().size() > 0)
-      parameters.put("groups", Search.join(this._scope.groups(), ','));
+    if (this.scope.isProject() && this.scope.groups().size() > 0)
+      parameters.put("groups", Search.join(this.scope.groups(), ','));
     return parameters;
   }
 
@@ -174,11 +174,11 @@ public final class FacetSearch extends BasicSearch<FacetSearch> implements Seria
 
   @Override
   public String service() {
-    this._scope.checkReady();
-    if (this._scope.isProject())
-      return ServicePath.newPath("/members/{member}/projects/{project}/facets", this._scope.member(), this._scope.name());
+    this.scope.checkReady();
+    if (this.scope.isProject())
+      return ServicePath.newPath("/members/{member}/projects/{project}/facets", this.scope.member(), this.scope.name());
     else
-      return ServicePath.newPath("/groups/{group}/search/facets", this._scope.name());
+      return ServicePath.newPath("/groups/{group}/search/facets", this.scope.name());
   }
 
 }

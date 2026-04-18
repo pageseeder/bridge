@@ -41,17 +41,17 @@ public final class Author implements Serializable, XMLWritable {
   /**
    * The name of the author (required) yes string
    */
-  private final @Nullable String _name;
+  private final @Nullable String name;
 
   /**
    * When the author is a member
    */
-  private final @Nullable Member _member;
+  private final @Nullable Member member;
 
   /**
    * The email of the author
    */
-  private final @Nullable Email _email;
+  private final @Nullable Email email;
 
   /**
    * Set the author name and email for when the author is not a PageSeeder member.
@@ -60,9 +60,9 @@ public final class Author implements Serializable, XMLWritable {
    * @param email The email of the author
    */
   public Author(String name, @Nullable Email email) {
-    this._name = Objects.requireNonNull(name,"The name is required");
-    this._member = null;
-    this._email = email;
+    this.name = Objects.requireNonNull(name,"The name is required");
+    this.member = null;
+    this.email = email;
   }
 
   /**
@@ -73,16 +73,16 @@ public final class Author implements Serializable, XMLWritable {
    * @param member the member.
    */
   public Author(Member member) {
-    this._member = Objects.requireNonNull(member, "the member is required");
-    this._name = null;
-    this._email = member.getEmail();
+    this.member = Objects.requireNonNull(member, "the member is required");
+    this.name = null;
+    this.email = member.getEmail();
   }
 
   /**
    * @return the member or <code>null</code> if the author is not specified or an external user.
    */
   public @Nullable Member getMember() {
-    return this._member;
+    return this.member;
   }
 
   /**
@@ -91,7 +91,7 @@ public final class Author implements Serializable, XMLWritable {
    * @return the email of the external user
    */
   public @Nullable String getName() {
-    return this._name;
+    return this.name;
   }
 
   /**
@@ -100,7 +100,7 @@ public final class Author implements Serializable, XMLWritable {
    * @return the email of the external user
    */
   public @Nullable Email getEmail() {
-    return this._email;
+    return this.email;
   }
 
   @Override

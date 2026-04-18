@@ -49,18 +49,18 @@ public final class Details implements Iterable<Field>, Serializable, XMLWritable
   /**
    * Internal array to store the field values.
    */
-  private final Field[] _fields = new Field[Field.MAX_SIZE];
+  private final Field[] fields = new Field[Field.MAX_SIZE];
 
   /**
    * The details are empty.
    */
-  private final boolean _empty;
+  private final boolean empty;
 
   /**
    * Used to create empty details.
    */
   private Details() {
-    this._empty = true;
+    this.empty = true;
   }
 
   /**
@@ -73,9 +73,9 @@ public final class Details implements Iterable<Field>, Serializable, XMLWritable
    */
   public Details(Field... fields) {
     for (Field field : fields) {
-      this._fields[field.getPosition() - 1] = field;
+      this.fields[field.getPosition() - 1] = field;
     }
-    this._empty = fields.length == 0;
+    this.empty = fields.length == 0;
   }
 
   /**
@@ -88,9 +88,9 @@ public final class Details implements Iterable<Field>, Serializable, XMLWritable
    */
   public Details(List<Field> fields) {
     for (Field field : fields) {
-      this._fields[field.getPosition() - 1] = field;
+      this.fields[field.getPosition() - 1] = field;
     }
-    this._empty = fields.size() == 0;
+    this.empty = fields.isEmpty();
   }
 
   /**
@@ -103,12 +103,12 @@ public final class Details implements Iterable<Field>, Serializable, XMLWritable
   public @Nullable Field getField(int position) {
     if (position < 1 || position > Field.MAX_SIZE)
       throw new IndexOutOfBoundsException("Field index must be between 1 and " + Field.MAX_SIZE);
-    return this._fields[position - 1];
+    return this.fields[position - 1];
   }
 
   @Override
   public Iterator<Field> iterator() {
-    return Arrays.stream(this._fields).filter(Objects::nonNull).iterator();
+    return Arrays.stream(this.fields).filter(Objects::nonNull).iterator();
   }
 
   /**
@@ -117,7 +117,7 @@ public final class Details implements Iterable<Field>, Serializable, XMLWritable
    * @return true if this object contains any field; false otherwise
    */
   public boolean isEmpty() {
-    return this._empty;
+    return this.empty;
   }
 
   @Override

@@ -15,8 +15,8 @@
  */
 package org.pageseeder.bridge.net;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.Requires;
@@ -44,7 +44,8 @@ import org.pageseeder.bridge.model.PSURI;
  * <p>There is generally no reason to access this class directly, higher-level class should be accessed instead.
  *
  * @author Christophe Lauret
- * @version 0.2.23
+ *
+ * @version 0.12.0
  * @since 0.2.0
  */
 public final class Services {
@@ -67,12 +68,7 @@ public final class Services {
     try {
       Long.parseLong(member);
     } catch (NumberFormatException ex1) {
-      try {
-        member = "~" + URLEncoder.encode(member, "UTF-8").replace("+", "%20");
-      } catch (UnsupportedEncodingException ex) {
-        // shouldn't happen
-        ex.printStackTrace();
-      }
+      member = "~" + URLEncoder.encode(member, StandardCharsets.UTF_8).replace("+", "%20");
     }
     return member;
   }

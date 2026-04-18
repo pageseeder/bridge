@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Christophe Lauret
  *
- * @version 0.11.5
+ * @version 0.12.0
  * @since 0.11.4
  */
 public final class CachedResponse implements HttpResponse {
@@ -50,16 +50,16 @@ public final class CachedResponse implements HttpResponse {
   /**
    * The cached content.
    */
-  private final CachedContent _content;
+  private final CachedContent content;
 
   public CachedResponse(CachedContent content) {
-    this._content = Objects.requireNonNull(content);
+    this.content = Objects.requireNonNull(content);
   }
 
   @Override
   public @Nullable Charset charset() {
-    String cs = this._content.charset();
-    return cs != null? Charset.forName(this._content.charset()) : null;
+    String cs = this.content.charset();
+    return cs != null? Charset.forName(this.content.charset()) : null;
   }
 
   @Override
@@ -75,7 +75,7 @@ public final class CachedResponse implements HttpResponse {
 
   @Override
   public String etag() {
-    return this._content.etag();
+    return this.content.etag();
   }
 
   @Override
@@ -86,24 +86,24 @@ public final class CachedResponse implements HttpResponse {
 
   @Override
   public String getContentType() {
-    String mediaType = this._content.mediaType();
-    String cs = this._content.charset();
+    String mediaType = this.content.mediaType();
+    String cs = this.content.charset();
     return mediaType+(cs!=null? "charset="+cs :"");
   }
 
   @Override
   public InputStream getInputStream() {
-    return this._content.getInputStream();
+    return this.content.getInputStream();
   }
 
   @Override
   public Reader getReader() {
-    return new InputStreamReader(this._content.getInputStream(), StandardCharsets.UTF_8);
+    return new InputStreamReader(this.content.getInputStream(), StandardCharsets.UTF_8);
   }
 
   @Override
   public Reader getReader(Charset charset) {
-    return new InputStreamReader(this._content.getInputStream(), charset);
+    return new InputStreamReader(this.content.getInputStream(), charset);
   }
 
   @Override
@@ -127,17 +127,17 @@ public final class CachedResponse implements HttpResponse {
 
   @Override
   public boolean isAvailable() {
-    return this._content.length() > 0;
+    return this.content.length() > 0;
   }
 
   @Override
   public boolean isSuccessful() {
-    return this._content.length() > 0;
+    return this.content.length() > 0;
   }
 
   @Override
   public boolean isXML() {
-    String mediaType = this._content.mediaType();
+    String mediaType = this.content.mediaType();
     return "text/xml".equals(mediaType)
         || "application/xml".equals(mediaType)
         || mediaType.endsWith("+xml");
@@ -145,12 +145,12 @@ public final class CachedResponse implements HttpResponse {
 
   @Override
   public long length() {
-    return this._content.length();
+    return this.content.length();
   }
 
   @Override
   public @Nullable String mediaType() {
-    return this._content.mediaType();
+    return this.content.mediaType();
   }
 
   @Override
@@ -177,13 +177,13 @@ public final class CachedResponse implements HttpResponse {
 
   @Override
   public byte[] consumeBytes() {
-    return Arrays.copyOf(this._content.bytes(), this._content.length());
+    return Arrays.copyOf(this.content.bytes(), this.content.length());
   }
 
   @Override
   public void consumeBytes(OutputStream out) throws ContentException {
     try {
-      out.write(this._content.bytes());
+      out.write(this.content.bytes());
     } catch (IOException ex) {
       throw new ContentException(ex);
     }
@@ -191,8 +191,8 @@ public final class CachedResponse implements HttpResponse {
 
   @Override
   public void consumeChars(Writer out)  throws ContentException {
-    try (Reader r = new InputStreamReader(this._content.getInputStream(), StandardCharsets.UTF_8)) {
-      copy(r, out, this._content.length());
+    try (Reader r = new InputStreamReader(this.content.getInputStream(), StandardCharsets.UTF_8)) {
+      copy(r, out, this.content.length());
     } catch (IOException ex) {
       throw new ContentException(ex);
     }
@@ -200,8 +200,8 @@ public final class CachedResponse implements HttpResponse {
 
   @Override
   public void consumeXML(XMLWriter xml) throws ContentException {
-    try (Reader r = new InputStreamReader(this._content.getInputStream(), StandardCharsets.UTF_8)) {
-      copy(r, xml, this._content.length());
+    try (Reader r = new InputStreamReader(this.content.getInputStream(), StandardCharsets.UTF_8)) {
+      copy(r, xml, this.content.length());
     } catch (IOException ex) {
       throw new ContentException(ex);
     }
@@ -209,14 +209,14 @@ public final class CachedResponse implements HttpResponse {
 
   @Override
   public @NonNull String consumeString() throws ContentException {
-    byte[] bytes = this._content.bytes();
+    byte[] bytes = this.content.bytes();
     return new String(bytes, StandardCharsets.UTF_8);
   }
 
   @Override
   public void consumeXML(DefaultHandler handler) throws ContentException {
     try {
-      handleXML(this._content, handler);
+      handleXML(this.content, handler);
     } catch (IOException ex) {
       throw new ContentException("Unable to consume XML", ex);
     }
@@ -237,7 +237,7 @@ public final class CachedResponse implements HttpResponse {
   @Override
   public <T> @NonNull List<T> consumeList(XMLStreamHandler<T> handler) throws ContentException {
     try {
-      return parseXMLStream(this._content, handler);
+      return parseXMLStream(this.content, handler);
     } catch (IOException ex) {
       throw new ContentException("Unable to consume XML", ex);
     }

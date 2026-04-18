@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.Map.Entry;
 /**
  * Utility class for HTTP
  *
- * @version 0.10.2
+ * @version 0.12.0
  * @since 0.9.0
  */
 public final class HTTP {
@@ -29,17 +30,12 @@ public final class HTTP {
    */
   public static String encodeParameters(Map<String, String> parameters) {
     StringBuilder q = new StringBuilder();
-    try {
-      for (Entry<String, String> p : parameters.entrySet()) {
-        if (q.length() > 0) {
-          q.append("&");
-        }
-        q.append(URLEncoder.encode(p.getKey(), "utf-8"));
-        q.append("=").append(URLEncoder.encode(p.getValue(), "utf-8"));
+    for (Entry<String, String> p : parameters.entrySet()) {
+      if (q.length() > 0) {
+        q.append("&");
       }
-    } catch (UnsupportedEncodingException ex) {
-      // Should never happen as UTF-8 is supported
-      ex.printStackTrace();
+      q.append(URLEncoder.encode(p.getKey(), StandardCharsets.UTF_8));
+      q.append("=").append(URLEncoder.encode(p.getValue(), StandardCharsets.UTF_8));
     }
     return q.toString();
   }

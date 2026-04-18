@@ -36,7 +36,7 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
   /**
    * The list of fields to extract, if empty, all fields are extracted.
    */
-  private final List<String> _fields;
+  private final List<String> fields;
 
   /**
    * State variable to indicate the group the current result belong to
@@ -90,7 +90,7 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
    * Creates a basic handler for result capturing every field.
    */
   public BasicResultHandler() {
-    this._fields = Collections.emptyList();
+    this.fields = Collections.emptyList();
   }
 
   /**
@@ -108,7 +108,7 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
    * @throws NullPointerException if fields is <code>null</code>.
    */
   public BasicResultHandler(@NonNull String... fields) {
-    this._fields = Arrays.asList(fields);
+    this.fields = Arrays.asList(fields);
   }
 
   @Override
@@ -130,7 +130,7 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
     } else if (isParent("document") || isParent("result")) {
       if ("field".equals(element)) {
         String name = getString(attributes, "name");
-        List<String> fields = this._fields;
+        List<String> fields = this.fields;
         if (fields.contains(name) || fields.isEmpty()) {
           this.fieldname = name;
           this.fieldvalue = getString(attributes, "datetime",

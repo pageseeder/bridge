@@ -16,6 +16,7 @@
 package org.pageseeder.bridge.oauth;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.pageseeder.bridge.util.Base64;
@@ -37,19 +38,19 @@ public final class ClientCredentials {
   /**
    * The client identifier.
    */
-  private final String _client;
+  private final String client;
 
   /**
    * The client secret.
    */
-  private final String _secret;
+  private final String secret;
 
   /**
    * The basic authorization header value.
    *
-   * We keep a copy as it will have to be computed every time this client is use.
+   * <p>We keep a copy as it will have to be computed every time this client is use.
    */
-  private final String _basic;
+  private final String basic;
 
   /**
    * Creates a new set of PageSeeder OAuth client credentials.
@@ -61,35 +62,36 @@ public final class ClientCredentials {
    * @throws IllegalArgumentException if either argument is considered invalid.
    */
   public ClientCredentials(String client, String secret) {
-    if (client == null || secret == null) throw new NullPointerException();
+    Objects.requireNonNull(client, "Client ID is null");
+    Objects.requireNonNull(secret, "Client secret is null");
     if (!VALID_CLIENT_ID.matcher(client).matches())
       throw new IllegalArgumentException("Client ID is invalid");
-    if (secret.length() == 0)
+    if (secret.isEmpty())
       throw new IllegalArgumentException("Client secret is empty");
-    this._client = client;
-    this._secret = secret;
-    this._basic = "Basic "+Base64.encode(this._client+":"+this._secret, StandardCharsets.UTF_8);
+    this.client = client;
+    this.secret = secret;
+    this.basic = "Basic "+Base64.encode(this.client +":"+this.secret, StandardCharsets.UTF_8);
   }
 
   /**
    * @return The client (cannot be <code>null</code>).
    */
   public String client() {
-    return this._client;
+    return this.client;
   }
 
   /**
    * @return The secret (cannot be <code>null</code>).
    */
   public String secret() {
-    return this._secret;
+    return this.secret;
   }
 
   /**
    * @return The basic authorization string
    */
   public String toBasicAuthorization() {
-    return this._basic;
+    return this.basic;
   }
 
 }

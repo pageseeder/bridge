@@ -101,7 +101,7 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
    * @return A new <code>QuestionSearch</code> instance.
    */
   public QuestionSearch question(Question question) {
-    return new QuestionSearch(this._scope, question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
+    return new QuestionSearch(this.scope, question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
   }
 
   /**
@@ -119,7 +119,7 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
    * @return A new <code>QuestionSearch</code> instance unless the current instance already has the same page.
    */
   public QuestionSearch page(Page page) {
-    return new QuestionSearch(this._scope, this._question, this._facets, this._filters, this._ranges, page, this._sortFields);
+    return new QuestionSearch(this.scope, this._question, this._facets, this._filters, this._ranges, page, this._sortFields);
   }
 
   /**
@@ -157,7 +157,7 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
    * @return A new <code>QuestionSearch</code> instance with the specified filters.
    */
   public QuestionSearch filters(FilterList filters) {
-    return new QuestionSearch(this._scope, this._question, this._facets, filters, this._ranges, this._page, this._sortFields);
+    return new QuestionSearch(this.scope, this._question, this._facets, filters, this._ranges, this._page, this._sortFields);
   }
 
   /**
@@ -212,7 +212,7 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
    * @return A new <code>QuestionSearch</code> instance with the specified facets.
    */
   public QuestionSearch facets(FacetList facets) {
-    return new QuestionSearch(this._scope, this._question, facets, this._filters, this._ranges, this._page, this._sortFields);
+    return new QuestionSearch(this.scope, this._question, facets, this._filters, this._ranges, this._page, this._sortFields);
   }
 
 
@@ -248,7 +248,7 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
    */
   public QuestionSearch range(String field, Range range) {
     RangeFilterList ranges = this._ranges.filter(field, range);
-    return new QuestionSearch(this._scope, this._question, this._facets, this._filters, ranges, this._page, this._sortFields);
+    return new QuestionSearch(this.scope, this._question, this._facets, this._filters, ranges, this._page, this._sortFields);
   }
 
   // Date range search
@@ -301,7 +301,7 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
    */
   public QuestionSearch sortFields(String... fields) {
     FieldList sortFields = FieldList.newList(fields);
-    return new QuestionSearch(this._scope, this._question, this._facets, this._filters, this._ranges, this._page, sortFields);
+    return new QuestionSearch(this.scope, this._question, this._facets, this._filters, this._ranges, this._page, sortFields);
   }
 
   /**
@@ -310,27 +310,27 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
    * @return A new <code>QuestionSearch</code> instance with the updated sorting.
    */
   public QuestionSearch sortFields(FieldList sortFields) {
-    return new QuestionSearch(this._scope, this._question, this._facets, this._filters, this._ranges, this._page, sortFields);
+    return new QuestionSearch(this.scope, this._question, this._facets, this._filters, this._ranges, this._page, sortFields);
   }
 
   @Override
   public QuestionSearch group(String group) {
-    return new QuestionSearch(this._scope.group(group), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
+    return new QuestionSearch(this.scope.group(group), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
   }
 
   @Override
   public QuestionSearch project(String project) {
-    return new QuestionSearch(this._scope.project(project), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
+    return new QuestionSearch(this.scope.project(project), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
   }
 
   @Override
   public QuestionSearch project(String project, List<String> groups) {
-    return new QuestionSearch(this._scope.project(project, groups), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
+    return new QuestionSearch(this.scope.project(project, groups), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
   }
 
   @Override
   public QuestionSearch member(String member) {
-    return new QuestionSearch(this._scope.member(member), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
+    return new QuestionSearch(this.scope.member(member), this._question, this._facets, this._filters, this._ranges, this._page, this._sortFields);
   }
 
   /**
@@ -346,8 +346,8 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
     parameters = this._filters.toParameters(parameters);
     parameters = this._ranges.toParameters(parameters);
     parameters = this._page.toParameters(parameters);
-    if (this._scope.isProject() && this._scope.groups().size() > 0)
-      parameters.put("groups", Search.join(this._scope.groups(), ','));
+    if (this.scope.isProject() && this.scope.groups().size() > 0)
+      parameters.put("groups", Search.join(this.scope.groups(), ','));
     if (!this._sortFields.isEmpty()) {
       parameters.put("sortfields",this._sortFields.toString());
     }
@@ -361,10 +361,10 @@ public final class QuestionSearch extends BasicSearch<QuestionSearch> implements
 
   @Override
   public String service() {
-    this._scope.checkReady();
-    if (this._scope.isProject())
-      return ServicePath.newPath("/members/{member}/projects/{project}/search", this._scope.member(), this._scope.name());
+    this.scope.checkReady();
+    if (this.scope.isProject())
+      return ServicePath.newPath("/members/{member}/projects/{project}/search", this.scope.member(), this.scope.name());
     else
-      return ServicePath.newPath("/groups/{group}/search", this._scope.name());
+      return ServicePath.newPath("/groups/{group}/search", this.scope.name());
   }
 }

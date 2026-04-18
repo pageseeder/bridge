@@ -35,7 +35,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Christophe Lauret
  *
- * @version 0.9.2
+ * @version 0.12.0
  * @since 0.9.2
  */
 public final class DuplexHandler extends DefaultHandler {
@@ -43,124 +43,124 @@ public final class DuplexHandler extends DefaultHandler {
   /**
    * First handler.
    */
-  private final DefaultHandler _first;
+  private final DefaultHandler first;
 
   /**
    * Second handler.
    */
-  private final DefaultHandler _second;
+  private final DefaultHandler second;
 
   public DuplexHandler(DefaultHandler first, DefaultHandler second) {
-    this._first = Objects.requireNonNull(first);
-    this._second = Objects.requireNonNull(second);
+    this.first = Objects.requireNonNull(first);
+    this.second = Objects.requireNonNull(second);
   }
 
   @Override
   public void characters(char[] ch, int start, int length) throws SAXException {
-    SAXException failedA = characters(this._first, ch, start, length);
-    SAXException failedB = characters(this._second, ch, start, length);
+    SAXException failedA = characters(this.first, ch, start, length);
+    SAXException failedB = characters(this.second, ch, start, length);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }
 
   @Override
   public void endDocument() throws SAXException {
-    SAXException failedA = endDocument(this._first);
-    SAXException failedB = endDocument(this._second);
+    SAXException failedA = endDocument(this.first);
+    SAXException failedB = endDocument(this.second);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }
 
   @Override
   public void endElement(String uri, String localName, String qName) throws SAXException {
-    SAXException failedA = endElement(this._first, uri, localName, qName);
-    SAXException failedB = endElement(this._second, uri, localName, qName);
+    SAXException failedA = endElement(this.first, uri, localName, qName);
+    SAXException failedB = endElement(this.second, uri, localName, qName);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }
 
   @Override
   public void endPrefixMapping(String prefix) throws SAXException {
-    SAXException failedA = endPrefixMapping(this._first, prefix);
-    SAXException failedB = endPrefixMapping(this._second, prefix);
+    SAXException failedA = endPrefixMapping(this.first, prefix);
+    SAXException failedB = endPrefixMapping(this.second, prefix);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }
 
   @Override
   public void error(SAXParseException error) throws SAXException {
-    SAXException failedA = error(this._first, error);
-    SAXException failedB = error(this._second, error);
+    SAXException failedA = error(this.first, error);
+    SAXException failedB = error(this.second, error);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }
 
   @Override
   public void fatalError(SAXParseException error) throws SAXException {
-    SAXException failedA = fatalError(this._first, error);
-    SAXException failedB = fatalError(this._second, error);
+    SAXException failedA = fatalError(this.first, error);
+    SAXException failedB = fatalError(this.second, error);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }
 
   @Override
   public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-    SAXException failedA = ignorableWhitespace(this._first, ch, start, length);
-    SAXException failedB = ignorableWhitespace(this._second, ch, start, length);
+    SAXException failedA = ignorableWhitespace(this.first, ch, start, length);
+    SAXException failedB = ignorableWhitespace(this.second, ch, start, length);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }
 
   @Override
   public void notationDecl(String name, String publicId, String systemId) throws SAXException {
-    SAXException failedA = notationDecl(this._first, name, publicId, systemId);
-    SAXException failedB = notationDecl(this._second, name, publicId, systemId);
+    SAXException failedA = notationDecl(this.first, name, publicId, systemId);
+    SAXException failedB = notationDecl(this.second, name, publicId, systemId);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }
 
   @Override
   public void processingInstruction(String target, String data) throws SAXException {
-    SAXException failedA = processingInstruction(this._first, target, data);
-    SAXException failedB = processingInstruction(this._second, target, data);
+    SAXException failedA = processingInstruction(this.first, target, data);
+    SAXException failedB = processingInstruction(this.second, target, data);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }
 
   @Override
   public void setDocumentLocator(Locator locator) {
-    this._first.setDocumentLocator(locator);
-    this._second.setDocumentLocator(locator);
+    this.first.setDocumentLocator(locator);
+    this.second.setDocumentLocator(locator);
   }
 
   @Override
   public void skippedEntity(String name) throws SAXException {
-    SAXException failedA = skippedEntity(this._first, name);
-    SAXException failedB = skippedEntity(this._second, name);
+    SAXException failedA = skippedEntity(this.first, name);
+    SAXException failedB = skippedEntity(this.second, name);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }
 
   @Override
   public void startDocument() throws SAXException {
-    SAXException failedA = startDocument(this._first);
-    SAXException failedB = startDocument(this._second);
+    SAXException failedA = startDocument(this.first);
+    SAXException failedB = startDocument(this.second);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }
 
   @Override
   public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-    SAXException failedA = startElement(this._first, uri, localName, qName, attributes);
-    SAXException failedB = startElement(this._second, uri, localName, qName, attributes);
+    SAXException failedA = startElement(this.first, uri, localName, qName, attributes);
+    SAXException failedB = startElement(this.second, uri, localName, qName, attributes);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }
 
   @Override
   public void startPrefixMapping(String prefix, String uri) throws SAXException {
-    SAXException failedA = startPrefixMapping(this._first, prefix, uri);
-    SAXException failedB = startPrefixMapping(this._second, prefix, uri);
+    SAXException failedA = startPrefixMapping(this.first, prefix, uri);
+    SAXException failedB = startPrefixMapping(this.second, prefix, uri);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }
@@ -168,16 +168,16 @@ public final class DuplexHandler extends DefaultHandler {
   @Override
   public void unparsedEntityDecl(String name, String publicId, String systemId, String notationName)
       throws SAXException {
-    SAXException failedA = unparsedEntityDecl(this._first, name, publicId, systemId, notationName);
-    SAXException failedB = unparsedEntityDecl(this._second, name, publicId, systemId, notationName);
+    SAXException failedA = unparsedEntityDecl(this.first, name, publicId, systemId, notationName);
+    SAXException failedB = unparsedEntityDecl(this.second, name, publicId, systemId, notationName);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }
 
   @Override
   public void warning(SAXParseException exception) throws SAXException {
-    SAXException failedA = warning(this._first, exception);
-    SAXException failedB = warning(this._second, exception);
+    SAXException failedA = warning(this.first, exception);
+    SAXException failedB = warning(this.second, exception);
     if (failedA != null) throw failedA;
     if (failedB != null) throw failedB;
   }

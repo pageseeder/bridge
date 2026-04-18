@@ -27,6 +27,8 @@ import java.util.Objects;
 
 /**
  * An attachment to the comment.
+ *
+ * @version 0.12.0
  */
 public final class Attachment implements Serializable, XMLWritable {
 
@@ -36,19 +38,19 @@ public final class Attachment implements Serializable, XMLWritable {
   /**
    * The URI of the attachment.
    */
-  private final URI _uri;
+  private final URI uri;
 
   /**
    * The fragment the comment is attached to.
    */
-  private final @Nullable String _fragment;
+  private final @Nullable String fragment;
 
   /**
    * @param uri The URI to attach
    */
   public Attachment(URI uri) {
-    this._uri = Objects.requireNonNull(uri, "URI is required");
-    this._fragment = null;
+    this.uri = Objects.requireNonNull(uri, "URI is required");
+    this.fragment = null;
   }
 
   /**
@@ -56,29 +58,29 @@ public final class Attachment implements Serializable, XMLWritable {
    * @param fragment The fragment ID to attach it to.
    */
   public Attachment(URI uri, @Nullable String fragment) {
-    this._uri = uri;
-    this._fragment = fragment;
+    this.uri = uri;
+    this.fragment = fragment;
   }
 
   /**
    * @return the attached URI
    */
   public URI getURI() {
-    return this._uri;
+    return this.uri;
   }
 
   /**
    * @return the fragment of the URI where the comment is attached
    */
   public @Nullable String getFragment() {
-    return this._fragment;
+    return this.fragment;
   }
 
   @Override
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement("attachment");
-    if (this._fragment != null) xml.attribute("fragment", this._fragment);
-    this._uri.toXML(xml);
+    if (this.fragment != null) xml.attribute("fragment", this.fragment);
+    this.uri.toXML(xml);
     xml.closeElement();
   }
 }

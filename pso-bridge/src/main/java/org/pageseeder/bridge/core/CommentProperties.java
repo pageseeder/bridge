@@ -43,28 +43,28 @@ public final class CommentProperties implements Serializable, XMLWritable {
   /**
    * Ordered map of properties
    */
-  private Map<String, String> _properties;
+  private Map<String, String> properties;
 
   private CommentProperties() {
-    this._properties = Collections.emptyMap();
+    this.properties = Collections.emptyMap();
   }
 
   private CommentProperties(Map<String, String> properties) {
-    this._properties = properties;
+    this.properties = properties;
   }
 
   public boolean isEmpty() {
-    return this._properties.isEmpty();
+    return this.properties.isEmpty();
   }
 
   public CommentProperties plus(String name, String value) {
-    Map<String, String> updated = new LinkedHashMap<>(this._properties);
+    Map<String, String> updated = new LinkedHashMap<>(this.properties);
     updated.put(name, value);
     return new CommentProperties(updated);
   }
 
   public CommentProperties remove(String name) {
-    Map<String, String> updated = new LinkedHashMap<>(this._properties);
+    Map<String, String> updated = new LinkedHashMap<>(this.properties);
     updated.remove(name);
     return new CommentProperties(updated);
   }
@@ -90,7 +90,7 @@ public final class CommentProperties implements Serializable, XMLWritable {
   @Override
   public String toString() {
     StringBuilder s = new StringBuilder();
-    for (Entry<String, String> e : this._properties.entrySet()) {
+    for (Entry<String, String> e : this.properties.entrySet()) {
       s.append(e.getKey()).append('=').append(e.getValue()).append('|');
     }
     return s.toString();
@@ -99,7 +99,7 @@ public final class CommentProperties implements Serializable, XMLWritable {
   @Override
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement("properties");
-    for (Entry<String, String> e : this._properties.entrySet()) {
+    for (Entry<String, String> e : this.properties.entrySet()) {
       xml.openElement("property");
       xml.attribute("name", e.getKey());
       xml.attribute("name", e.getValue());

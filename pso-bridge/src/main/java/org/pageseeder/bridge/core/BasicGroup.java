@@ -36,45 +36,45 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
   private static final long serialVersionUID = 1L;
 
   /** PageSeeder database ID. */
-  private final long _id;
+  private final long id;
 
   /** The full name of the group */
-  private final GroupName _name;
+  private final GroupName name;
 
   /** The title of the group */
-  private final String _title;
+  private final String title;
 
   /** The description of the group */
-  private final String _description;
+  private final String description;
 
   /** The owner of the group */
-  private final String _owner;
+  private final String owner;
 
   /** Who has access to the group */
-  private final GroupAccess _access;
+  private final GroupAccess access;
 
   /** If it is a common group */
-  private final boolean _common;
+  private final boolean common;
 
   /** URL to a related Website */
-  private final String _relatedURL;
+  private final String relatedURL;
 
   /**
    * Create a new group
    */
   public BasicGroup(long id, GroupName name, String title, String description, String owner, GroupAccess access, boolean common, String relatedURL) {
-    this._id = id;
-    this._name = Objects.requireNonNull(name, "Group name is required");
-    this._title = Objects.requireNonNull(title, "Group title is required");
-    this._description = Objects.requireNonNull(description, "Description is required");
-    this._owner = Objects.requireNonNull(owner, "Owner is required");
-    this._access = Objects.requireNonNull(access, "Access is required");
-    this._common = common;
-    this._relatedURL = Objects.requireNonNull(relatedURL, "Related URL is required");
+    this.id = id;
+    this.name = Objects.requireNonNull(name, "Group name is required");
+    this.title = Objects.requireNonNull(title, "Group title is required");
+    this.description = Objects.requireNonNull(description, "Description is required");
+    this.owner = Objects.requireNonNull(owner, "Owner is required");
+    this.access = Objects.requireNonNull(access, "Access is required");
+    this.common = common;
+    this.relatedURL = Objects.requireNonNull(relatedURL, "Related URL is required");
   }
 
   public long getId() {
-    return this._id;
+    return this.id;
   }
 
   /**
@@ -83,7 +83,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
    * @return the name of the group.
    */
   public GroupName getName() {
-    return this._name;
+    return this.name;
   }
 
   /**
@@ -92,7 +92,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
    * @return the title of the group.
    */
   public String getTitle() {
-    return this._title;
+    return this.title;
   }
 
   /**
@@ -101,7 +101,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
    * @return the access of the group.
    */
   public GroupAccess getAccess() {
-    return this._access;
+    return this.access;
   }
 
   /**
@@ -115,7 +115,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
    * @return the title of the group.
    */
   public boolean isCommon() {
-    return this._common;
+    return this.common;
   }
 
   /**
@@ -124,7 +124,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
    * @return the related URL of the group.
    */
   public String getRelatedURL() {
-    return this._relatedURL;
+    return this.relatedURL;
   }
 
   /**
@@ -133,7 +133,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
    * @return the description
    */
   public final String getDescription() {
-    return this._description;
+    return this.description;
   }
 
   /**
@@ -142,7 +142,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
    * @return the owner of the group.
    */
   public String getOwner() {
-    return this._owner;
+    return this.owner;
   }
 
   /**
@@ -153,7 +153,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
    * @return the name of the parent or <code>null</code> if the name is <code>null</code> or does not include a dash.
    */
   public GroupName getParentName() {
-    return this._name.parent();
+    return this.name.parent();
   }
 
   /**
@@ -164,7 +164,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
    * @return the short name
    */
   public String getShortName() {
-    String n = this._name.toString();
+    String n = this.name.toString();
     int dash = n.lastIndexOf('-');
     return dash > 0 ? n.substring(dash + 1) : n;
   }
@@ -172,19 +172,19 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
   @Override
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement(isProject()? "project" : "group");
-    if (this._id > 0) {
-      xml.attribute("id", Long.toString(this._id));
+    if (this.id > 0) {
+      xml.attribute("id", Long.toString(this.id));
     }
-    xml.attribute("name", this._name.toString());
-    if (this._title.length() > 0) {
-      xml.attribute("title", this._title);
+    xml.attribute("name", this.name.toString());
+    if (!this.title.isEmpty()) {
+      xml.attribute("title", this.title);
     }
-    xml.attribute("description", this._description);
-    xml.attribute("access", this._access.name().toLowerCase());
-    xml.attribute("common", Boolean.toString(this._common));
-    xml.attribute("owner", this._owner);
-    if (this._relatedURL.length() > 0) {
-      xml.attribute("relatedurl", this._relatedURL);
+    xml.attribute("description", this.description);
+    xml.attribute("access", this.access.name().toLowerCase());
+    xml.attribute("common", Boolean.toString(this.common));
+    xml.attribute("owner", this.owner);
+    if (!this.relatedURL.isEmpty()) {
+      xml.attribute("relatedurl", this.relatedURL);
     }
     xml.closeElement();
   }
@@ -204,6 +204,8 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
      * Sets the PageSeeder ID of this group.
      *
      * @param id the id to set
+     *
+     * @return this builder for chaining
      */
     public Builder id(Long id) {
       this.id = id;
@@ -214,6 +216,8 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
      * Sets the full name of this group.
      *
      * @param name the name to set
+     *
+     * @return this builder for chaining
      */
     public Builder name(String name) {
       this.name = new GroupName(name);
@@ -224,6 +228,8 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
      * Sets the title of this group.
      *
      * @param title the title to set
+     *
+     * @return this builder for chaining
      */
     public Builder title(String title) {
       this.title = title;
@@ -234,6 +240,8 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
      * Sets the descriptions of this group.
      *
      * @param description the description to set
+     *
+     * @return this builder for chaining
      */
     public final Builder description(String description) {
       this.description = description;
@@ -244,6 +252,8 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
      * Sets the owner of the group.
      *
      * @param owner the owner to set
+     *
+     * @return this builder for chaining
      */
     public Builder owner(String owner) {
       this.owner = owner;
@@ -254,6 +264,8 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
      * Sets the access of the group.
      *
      * @param access the owner to set
+     *
+     * @return this builder for chaining
      */
     public Builder access(String access) {
       this.access = GroupAccess.forName(access);
@@ -264,12 +276,21 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
      * Sets the common of the group.
      *
      * @param common the owner to set
+     *
+     * @return this builder for chaining
      */
     public Builder common(boolean common) {
       this.common = common;
       return this;
     }
 
+    /**
+     * Sets the related URL of the group.
+     *
+     * @param relatedURL the related URL to set
+     *
+     * @return this builder for chaining
+     */
     public Builder relatedURL(String relatedURL) {
       this.relatedURL = relatedURL;
       return this;

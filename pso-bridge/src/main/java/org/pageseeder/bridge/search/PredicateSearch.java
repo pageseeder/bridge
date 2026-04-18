@@ -75,7 +75,7 @@ public final class PredicateSearch extends BasicSearch<PredicateSearch> implemen
    */
   public PredicateSearch predicate(String predicate) {
     Predicate q = new Predicate(predicate, this._predicate.defaultField());
-    return new PredicateSearch(this._scope, q, this._facets, this._page, this._sortFields);
+    return new PredicateSearch(this.scope, q, this._facets, this._page, this._sortFields);
   }
 
   /**
@@ -87,22 +87,22 @@ public final class PredicateSearch extends BasicSearch<PredicateSearch> implemen
 
   @Override
   public PredicateSearch group(String group) {
-    return new PredicateSearch(this._scope.group(group), this._predicate, this._facets, this._page, this._sortFields);
+    return new PredicateSearch(this.scope.group(group), this._predicate, this._facets, this._page, this._sortFields);
   }
 
   @Override
   public PredicateSearch project(String project) {
-    return new PredicateSearch(this._scope.project(project), this._predicate, this._facets, this._page, this._sortFields);
+    return new PredicateSearch(this.scope.project(project), this._predicate, this._facets, this._page, this._sortFields);
   }
 
   @Override
   public PredicateSearch project(String project, List<String> groups) {
-    return new PredicateSearch(this._scope.project(project, groups), this._predicate, this._facets, this._page, this._sortFields);
+    return new PredicateSearch(this.scope.project(project, groups), this._predicate, this._facets, this._page, this._sortFields);
   }
 
   @Override
   public PredicateSearch member(String member) {
-    return new PredicateSearch(this._scope.member(member), this._predicate, this._facets, this._page, this._sortFields);
+    return new PredicateSearch(this.scope.member(member), this._predicate, this._facets, this._page, this._sortFields);
   }
 
   /**
@@ -114,7 +114,7 @@ public final class PredicateSearch extends BasicSearch<PredicateSearch> implemen
    */
   public PredicateSearch page(int page) {
     Page p = this._page.number(page);
-    return new PredicateSearch(this._scope, this._predicate, this._facets, p, this._sortFields);
+    return new PredicateSearch(this.scope, this._predicate, this._facets, p, this._sortFields);
   }
 
   /**
@@ -124,7 +124,7 @@ public final class PredicateSearch extends BasicSearch<PredicateSearch> implemen
    */
   public PredicateSearch pageSize(int pageSize) {
     Page p = this._page.size(pageSize);
-    return new PredicateSearch(this._scope, this._predicate, this._facets, p, this._sortFields);
+    return new PredicateSearch(this.scope, this._predicate, this._facets, p, this._sortFields);
   }
 
   /**
@@ -141,7 +141,7 @@ public final class PredicateSearch extends BasicSearch<PredicateSearch> implemen
    */
   public PredicateSearch sortFields(String... fields) {
     FieldList sortFields = FieldList.newList(fields);
-    return new PredicateSearch(this._scope, this._predicate, this._facets, this._page, sortFields);
+    return new PredicateSearch(this.scope, this._predicate, this._facets, this._page, sortFields);
   }
 
   /**
@@ -150,7 +150,7 @@ public final class PredicateSearch extends BasicSearch<PredicateSearch> implemen
    * @return A new <code>QuestionSearch</code> instance with the updated sorting.
    */
   public PredicateSearch sortFields(FieldList sortFields) {
-    return new PredicateSearch(this._scope, this._predicate, this._facets, this._page, sortFields);
+    return new PredicateSearch(this.scope, this._predicate, this._facets, this._page, sortFields);
   }
 
   /**
@@ -163,8 +163,8 @@ public final class PredicateSearch extends BasicSearch<PredicateSearch> implemen
     parameters = this._predicate.toParameters(parameters);
     parameters = this._facets.toParameters(parameters);
     parameters = this._page.toParameters(parameters);
-    if (this._scope.isProject() && this._scope.groups().size() > 0)
-      parameters.put("groups", Search.join(this._scope.groups(), ','));
+    if (this.scope.isProject() && this.scope.groups().size() > 0)
+      parameters.put("groups", Search.join(this.scope.groups(), ','));
     if (!_sortFields.isEmpty()) {
       parameters.put("sortfields",this._sortFields.toString());
     }
@@ -177,10 +177,10 @@ public final class PredicateSearch extends BasicSearch<PredicateSearch> implemen
   }
 
   public String service() {
-    this._scope.checkReady();
-    if (this._scope.isProject())
-      return ServicePath.newPath("/members/{member}/projects/{project}/predicate", this._scope.member(), this._scope.name());
+    this.scope.checkReady();
+    if (this.scope.isProject())
+      return ServicePath.newPath("/members/{member}/projects/{project}/predicate", this.scope.member(), this.scope.name());
     else
-      return ServicePath.newPath("/groups/{group}/search/predicate", this._scope.name());
+      return ServicePath.newPath("/groups/{group}/search/predicate", this.scope.name());
   }
 }

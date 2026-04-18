@@ -20,6 +20,7 @@ import org.pageseeder.bridge.PSConfig;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -62,7 +63,7 @@ public abstract class Addressable implements Serializable {
   /**
    * A Pattern to decompose a URL into components.
    *
-   * The groups are:
+   * <p>The groups are:
    *  1. Scheme
    *  2. Host
    *  3. Port
@@ -73,22 +74,22 @@ public abstract class Addressable implements Serializable {
   /**
    * The scheme.
    */
-  private final String _scheme;
+  private final String scheme;
 
   /**
    * The host.
    */
-  private final String _host;
+  private final String host;
 
   /**
-   * The host.
+   * The port.
    */
-  private final int _port;
+  private final int port;
 
   /**
    * The path.
    */
-  private final String _path;
+  private final String path;
 
   /**
    * Instantiate a new addressable object from the specified url.
@@ -108,10 +109,10 @@ public abstract class Addressable implements Serializable {
       String host = m.group(2);
       String port = m.group(3);
       String path = m.group(4);
-      this._scheme = scheme != null? scheme : p.getScheme();
-      this._host = host != null? host : p.getHost();
-      this._port = port != null? Integer.parseInt(port) : p.getPort();
-      this._path = path != null? path : "";
+      this.scheme = scheme != null? scheme : p.getScheme();
+      this.host = host != null? host : p.getHost();
+      this.port = port != null? Integer.parseInt(port) : p.getPort();
+      this.path = path != null? path : "";
     } else throw new IllegalArgumentException("Invalid url");
   }
 
@@ -125,48 +126,43 @@ public abstract class Addressable implements Serializable {
    */
   public Addressable(String scheme, String host, int port, String path) {
     // We use the methods to ensure that the values are correctly checked
-    this._scheme = Objects.requireNonNull(scheme, "Scheme is required");
-    this._host = Objects.requireNonNull(host, "Host is required");
-    this._port = port;
-    this._path = Objects.requireNonNull(path, "Path is required");
+    this.scheme = Objects.requireNonNull(scheme, "Scheme is required");
+    this.host = Objects.requireNonNull(host, "Host is required");
+    this.port = port;
+    this.path = Objects.requireNonNull(path, "Path is required");
   }
 
   public final String getScheme() {
-    return this._scheme;
+    return this.scheme;
   }
 
   public final String getHost() {
-    return this._host;
+    return this.host;
   }
 
   public final int getPort() {
-    return this._port;
+    return this.port;
   }
 
   public final String getPath() {
-    return this._path;
+    return this.path;
   }
 
   public final String getDecodedPath() {
-    return Arrays.stream(this._path.split("/")).map(Addressable::decode).collect(Collectors.joining("/"));
+    return Arrays.stream(this.path.split("/")).map(Addressable::decode).collect(Collectors.joining("/"));
   }
 
   private static String decode(String step) {
-    try {
-      return URLDecoder.decode(step, "utf-8");
-    } catch (UnsupportedEncodingException ex) {
-      // Will not occur as "utf-8" must be supported according to Java spec
-      throw new RuntimeException(ex);
-    }
+    return URLDecoder.decode(step, StandardCharsets.UTF_8);
   }
 
   public final String getHostURL() {
     StringBuilder url = new StringBuilder();
-    url.append(this._scheme).append(':');
+    url.append(this.scheme).append(':');
     url.append("//");
-    url.append(this._host);
-    if (this._port > 0) {
-      url.append(':').append(this._port);
+    url.append(this.host);
+    if (this.port > 0) {
+      url.append(':').append(this.port);
     }
     return url.toString();
   }
@@ -180,18 +176,18 @@ public abstract class Addressable implements Serializable {
    */
   public final String toURL() {
     StringBuilder url = new StringBuilder();
-    if (this._scheme != null) {
-      url.append(this._scheme).append(':');
+    if (this.scheme != null) {
+      url.append(this.scheme).append(':');
     }
     url.append("//");
-    if (this._host != null) {
-      url.append(this._host);
+    if (this.host != null) {
+      url.append(this.host);
     }
-    if (this._port > 0) {
-      url.append(':').append(this._port);
+    if (this.port > 0) {
+      url.append(':').append(this.port);
     }
-    if (this._path != null) {
-      url.append(this._path);
+    if (this.path != null) {
+      url.append(this.path);
     }
     return url.toString();
   }
@@ -237,20 +233,6 @@ public abstract class Addressable implements Serializable {
       this.path = path;
       return (B)this;
     }
-
-//    /**
-//     * @param filename the filename to set
-//     */
-//    public Builder filename(String filename) {
-//      String path = this.path();
-//      if (path.length() == 0) {
-//        this.path = "/"+filename;
-//      } else {
-//        this.path = getFolder(path)+'/'+filename;
-//      }
-//      return this;
-//    }
-
   }
 
 }

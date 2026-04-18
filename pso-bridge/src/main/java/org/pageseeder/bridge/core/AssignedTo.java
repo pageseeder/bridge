@@ -35,39 +35,39 @@ public final class AssignedTo implements Serializable, XMLWritable {
   /** As per recommendation */
   private static final long serialVersionUID = 1L;
 
-  private final OffsetDateTime _date;
+  private final OffsetDateTime date;
 
-  private final Member _member;
+  private final Member member;
 
   /**
    * @param member The member the task is assigned to.
    * @param date   The date the task was assigned to.
    */
   public AssignedTo(Member member, OffsetDateTime date) {
-    this._member = Objects.requireNonNull(member, "Member is required");
-    this._date = Objects.requireNonNull(date, "Date is required");
+    this.member = Objects.requireNonNull(member, "Member is required");
+    this.date = Objects.requireNonNull(date, "Date is required");
   }
 
   /**
    * @return The member the task is assigned to.
    */
   public Member getMember() {
-    return this._member;
+    return this.member;
   }
 
   /**
    * @return The date the task was assigned to.
    */
   public OffsetDateTime getDate() {
-    return this._date;
+    return this.date;
   }
 
   @Override
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement("assignedto");
-    xml.attribute("date", this._date.toString()); // TODO date formatting
-    this._member.toXMLAttributes(xml);
-    xml.element("fullname", this._member.getFirstname()+" "+this._member.getSurname());
+    xml.attribute("date", this.date.toString()); // TODO date formatting
+    this.member.toXMLAttributes(xml);
+    xml.element("fullname", this.member.getFirstname()+" "+this.member.getSurname());
     xml.closeElement();
   }
 

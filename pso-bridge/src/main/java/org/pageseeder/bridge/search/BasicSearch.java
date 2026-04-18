@@ -31,10 +31,10 @@ abstract class BasicSearch<T extends BasicSearch> {
   /**
    * The scope of the search.
    */
-  protected final Scope _scope;
+  protected final Scope scope;
 
   protected BasicSearch(Scope scope){
-    this._scope = scope;
+    this.scope = scope;
   }
 
   /**

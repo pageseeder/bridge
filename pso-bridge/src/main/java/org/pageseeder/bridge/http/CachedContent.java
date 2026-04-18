@@ -30,7 +30,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @author Christophe Lauret
  *
- * @version 0.11.4
+ * @version 0.12.0
  * @since 0.11.4
  */
 public final class CachedContent implements Serializable {
@@ -41,63 +41,64 @@ public final class CachedContent implements Serializable {
   /**
    * The full URL of the content that was cached.
    */
-  private final String _url;
+  private final String url;
 
   /**
    * The content in bytes;
    */
-  private final byte[] _bytes;
+  private final byte[] bytes;
 
   /**
    * The etag returned by the server
    */
-  private final String _etag;
+  private final String etag;
 
   /**
    * The mediatype of the response.
    */
-  private final String  _mediaType;
+  private final String mediaType;
 
   /**
    * The character set of the content if text.
    */
-  private final @Nullable String _charset;
+  private final @Nullable String charset;
 
   protected CachedContent(String url, byte[] bytes, String contentType, String etag) {
-    this._url = url;
-    this._bytes = bytes;
-    this._etag = etag;
-    this._mediaType = Objects.requireNonNull(Header.toMediaType(contentType));
+    this.url = url;
+    this.bytes = bytes;
+    this.etag = etag;
+    this.mediaType = Objects.requireNonNull(Header.toMediaType(contentType));
+    // FIXME: should we use the default charset?
     Charset charset = Objects.requireNonNull(Header.toCharset(contentType));
-    this._charset = charset != null? charset.name() : null;
+    this.charset = charset != null? charset.name() : null;
   }
 
   public String url() {
-    return this._url;
+    return this.url;
   }
 
   public @Nullable String charset() {
-    return this._charset;
+    return this.charset;
   }
 
   public String mediaType() {
-    return this._mediaType;
+    return this.mediaType;
   }
 
   public InputStream getInputStream() {
-    return new ByteArrayInputStream(this._bytes);
+    return new ByteArrayInputStream(this.bytes);
   }
 
   public int length() {
-    return this._bytes.length;
+    return this.bytes.length;
   }
 
   public String etag() {
-    return this._etag;
+    return this.etag;
   }
 
   protected byte[] bytes() {
-    return this._bytes;
+    return this.bytes;
   }
 
 }
