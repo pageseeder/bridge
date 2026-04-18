@@ -136,8 +136,7 @@ public abstract class BasicXMLStreamHandler<T> implements XMLStreamHandler<T> {
    *
    * @throws MissingAttributeException If the attribute was missing.
    */
-  @Nullable
-  public static String optionalAttribute(XMLStreamReader xml, String name) {
+  public static @Nullable String optionalAttribute(XMLStreamReader xml, String name) {
     for (int i=0; i< xml.getAttributeCount(); i++) {
       if (name.equals(xml.getAttributeLocalName(i))) return xml.getAttributeValue(i);
     }

@@ -39,12 +39,12 @@ public final class ThreadManager extends Sessionful {
   /**
    * Default thread delay in seconds
    */
-  public final static int DEFAULT_THREAD_DELAY_SECONDS = 2;
+  public static final int DEFAULT_THREAD_DELAY_SECONDS = 2;
 
   /**
    * Default thread timeout in seconds
    */
-  public final static int DEFAULT_THREAD_TIMEOUT_SECONDS = 10;
+  public static final int DEFAULT_THREAD_TIMEOUT_SECONDS = 10;
 
   /**
    * @param credentials the session to use for PS connections
@@ -98,8 +98,8 @@ public final class ThreadManager extends Sessionful {
    * @throws APIException if there was an error polling the thread or the timeout was triggered
    */
   public @Nullable PSThreadStatus completeThread(PSThreadStatus currentStatus, int delay, int timeout) throws APIException {
-    long delayInMS   = (delay < 1 ? DEFAULT_THREAD_DELAY_SECONDS     : delay)   * 1000;
-    long timeoutInMS = (timeout < 1 ? DEFAULT_THREAD_TIMEOUT_SECONDS : timeout) * 1000;
+    long delayInMS   = (delay < 1 ? DEFAULT_THREAD_DELAY_SECONDS     : delay)   * 1000L;
+    long timeoutInMS = (timeout < 1 ? DEFAULT_THREAD_TIMEOUT_SECONDS : timeout) * 1000L;
     // synchronous so keep checking for thread progress
     long started = System.currentTimeMillis();
     PSThreadStatus status = currentStatus;

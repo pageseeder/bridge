@@ -33,12 +33,12 @@ public final class UsernamePassword implements PSCredentials {
   /**
    * The user ID.
    */
-  private final String _username;
+  private final String username;
 
   /**
    * The password.
    */
-  private final String _password;
+  private final String password;
 
   /**
    * Creates a new username and password set of credentials.
@@ -51,29 +51,29 @@ public final class UsernamePassword implements PSCredentials {
    */
   public UsernamePassword(String username, String password) {
     if (username == null || password == null) throw new NullPointerException();
-    this._username = username;
-    this._password = password;
+    this.username = username;
+    this.password = password;
   }
 
   /**
    * @return The username (cannot be <code>null</code>).
    */
   public String username() {
-    return this._username;
+    return this.username;
   }
 
   /**
    * @return The password (cannot be <code>null</code>).
    */
   public String password() {
-    return this._password;
+    return this.password;
   }
 
   /**
    * @return The basic authorization string
    */
   public String toBasicAuthorization() {
-    byte[] bc = (this._username+":"+this._password).getBytes(StandardCharsets.UTF_8);
+    byte[] bc = (this.username +":"+this.password).getBytes(StandardCharsets.UTF_8);
     return "Basic "+ Base64.getEncoder().encodeToString(bc);
   }
 

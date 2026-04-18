@@ -19,10 +19,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSToken;
 import org.pageseeder.bridge.model.PSMember;
@@ -62,7 +62,7 @@ public final class TokenResponse {
   /**
    * The HTTP response code.
    */
-  private final int _responseCode;
+  private final int responseCode;
 
   /**
    * The access token if the response was successful.
@@ -77,12 +77,12 @@ public final class TokenResponse {
   /**
    * The actual response as a string.
    */
-  private @Nullable final String _response;
+  private final @Nullable String response;
 
   /**
    * The parsed JSON values.
    */
-  private final Map<@NonNull String, @NonNull String> _json;
+  private final Map<String, String> json;
 
   /**
    * Creates a new token response.
@@ -91,10 +91,10 @@ public final class TokenResponse {
    * @param response The actual response.
    * @param json     A map of JSON elements.
    */
-  TokenResponse(int code, @Nullable String response, Map<@NonNull String, @NonNull String> json) {
-    this._responseCode = code;
-    this._response = response;
-    this._json = json;
+  TokenResponse(int code, @Nullable String response, Map<String, String> json) {
+    this.responseCode = code;
+    this.response = response;
+    this.json = json;
   }
 
   /**
@@ -121,7 +121,7 @@ public final class TokenResponse {
    * @return <code>true</code> if the response code is a valid HTTP response code.
    */
   public boolean isAvailable() {
-    return this._responseCode > 0;
+    return this.responseCode > 0;
   }
 
   /**
@@ -132,21 +132,21 @@ public final class TokenResponse {
    * @see <a href="http://tools.ietf.org/html/rfc6749#section-5.1"> OAuth 2.0 - 5.1. Successful Response</a>
    */
   public boolean isSuccessful() {
-    return this._responseCode == 200;
+    return this.responseCode == 200;
   }
 
   /**
    * @return the HTTP response code.
    */
   public int getResponseCode() {
-    return this._responseCode;
+    return this.responseCode;
   }
 
   /**
    * @return the raw JSON response.
    */
   public @Nullable String getJSONResponse() {
-    return this._response;
+    return this.response;
   }
 
   /**
@@ -158,7 +158,7 @@ public final class TokenResponse {
    * @return The refresh token
    */
   public @Nullable String getRefreshToken() {
-    return this._json.get("refresh_token");
+    return this.json.get("refresh_token");
   }
 
   /**
@@ -170,7 +170,7 @@ public final class TokenResponse {
    * @return The scope
    */
   public @Nullable String getScope() {
-    return this._json.get("scope");
+    return this.json.get("scope");
   }
 
   /**
@@ -191,7 +191,7 @@ public final class TokenResponse {
    * @see <a href="http://tools.ietf.org/html/rfc6749#section-5.2">OAuth 2.0 - 5.2 Error Response</a>
    */
   public @Nullable String getError() {
-    return this._json.get("error");
+    return this.json.get("error");
   }
 
   /**
@@ -202,7 +202,7 @@ public final class TokenResponse {
    * @return The error description
    */
   public @Nullable String getErrorDescription() {
-    return this._json.get("error_description");
+    return this.json.get("error_description");
   }
 
   /**
@@ -213,7 +213,7 @@ public final class TokenResponse {
    * @return The error URI
    */
   public @Nullable String getErrorURI() {
-    return this._json.get("error_uri");
+    return this.json.get("error_uri");
   }
 
   /**
@@ -222,7 +222,7 @@ public final class TokenResponse {
    * @return A OAuth parameter from the JSON response.
    */
   public @Nullable String getParameter(String name) {
-    return this._json.get(name);
+    return this.json.get(name);
   }
 
   /**
@@ -322,6 +322,6 @@ public final class TokenResponse {
     while ((length = in.read(buffer)) != -1) {
       result.write(buffer, 0, length);
     }
-    return result.toString("UTF-8");
+    return result.toString(StandardCharsets.UTF_8);
   }
 }

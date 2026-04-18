@@ -49,14 +49,14 @@ public enum Servlet {
   UPLOAD("com.pageseeder.upload.servlets.UploadServlet");
 
 
-  private final String _path;
+  private final String path;
 
   Servlet(String name) {
-    this._path = "/servlet/"+name;
+    this.path = "/servlet/"+name;
   }
 
   public String toPath() {
-    return this._path;
+    return this.path;
   }
 
 }

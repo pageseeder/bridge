@@ -37,7 +37,7 @@ public abstract class SimpleHandler<T> extends BasicHandler<T> {
    */
   private @Nullable T item = null;
 
-  public SimpleHandler() {
+  protected SimpleHandler() {
   }
 
   /**

@@ -45,12 +45,12 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
   /**
    * The underlying cache.
    */
-  private final Cache<Long, CachedEntity<E>> _cacheById;
+  private final Cache<Long, CachedEntity<E>> cacheById;
 
   /**
    * To lookup cache by identifier.
    */
-  private final @Nullable Cache<String, Long> _cacheByKey;
+  private final @Nullable Cache<String, Long> cacheByKey;
 
   /**
    * Create a new cache wrapper.
@@ -58,8 +58,8 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @param cache The Ehcache to wrap.
    */
   private EntityCache(Cache<Long, CachedEntity<E>> cache) {
-    this._cacheById = cache;
-    this._cacheByKey = null;
+    this.cacheById = cache;
+    this.cacheByKey = null;
   }
 
   /**
@@ -68,8 +68,8 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @param cache The Ehcache to wrap.
    */
   private EntityCache(Cache<Long, CachedEntity<E>> cache, Cache<String, Long> byPublicId) {
-    this._cacheById = cache;
-    this._cacheByKey = byPublicId;
+    this.cacheById = cache;
+    this.cacheByKey = byPublicId;
   }
 
   /**
@@ -144,8 +144,8 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
     if (id == null)
       throw new IllegalArgumentException("id");
     CachedEntity<E> e = new CachedEntity<>(entity);
-    this._cacheById.put(id, e);
-    Cache<String, Long> keyCache = this._cacheByKey;
+    this.cacheById.put(id, e);
+    Cache<String, Long> keyCache = this.cacheByKey;
     if (keyCache != null) {
       keyCache.put(key, id);
     }
@@ -163,9 +163,9 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
     if (e != null) {
       Long id = e.entity().getId();
       if (id != null) {
-        this._cacheById.remove(id);
+        this.cacheById.remove(id);
       }
-      Cache<String, Long> keyCache = this._cacheByKey;
+      Cache<String, Long> keyCache = this.cacheByKey;
       if (keyCache != null) {
         keyCache.remove(key);
       }
@@ -177,8 +177,8 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
    */
   @Override
   public synchronized void removeAll() {
-    this._cacheById.removeAll();
-    Cache<String, Long> keyCache = this._cacheByKey;
+    this.cacheById.removeAll();
+    Cache<String, Long> keyCache = this.cacheByKey;
     if (keyCache != null) {
       keyCache.removeAll();
     }
@@ -237,16 +237,16 @@ final class EntityCache<E extends PSEntity> implements PSEntityCache<E> {
    */
   private @Nullable CachedEntity<E> getCachedEntity(String key) {
     Long id = null;
-    Cache<String, Long> keyCache = this._cacheByKey;
+    Cache<String, Long> keyCache = this.cacheByKey;
     if (keyCache != null) {
       id = keyCache.get(key);
     }
     if (id == null) return null;
-    return this._cacheById.get(id);
+    return this.cacheById.get(id);
   }
 
   private @Nullable CachedEntity<E> getCachedEntity(Long id) {
-    return this._cacheById.get(id);
+    return this.cacheById.get(id);
   }
 
   /**

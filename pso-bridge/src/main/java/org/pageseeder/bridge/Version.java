@@ -38,17 +38,17 @@ public final class Version {
   /**
    * The major version (e.g. '5')
    */
-  private final int _major;
+  private final int major;
 
   /**
    * The build number for that version (e.g. '5900')
    */
-  private final int _build;
+  private final int build;
 
   /**
    * The full string version of the build (e.g. '5.5900')
    */
-  private final String _version;
+  private final String version;
 
   /**
    * Create a new version.
@@ -57,9 +57,9 @@ public final class Version {
    * @param build   The build number for that version (e.g. '5900')
    */
   public Version(int major, int build) {
-    this._major = major;
-    this._build = build;
-    this._version = major+"."+String.format("%04d", build);
+    this.major = major;
+    this.build = build;
+    this.version = major+"."+String.format("%04d", build);
   }
 
   /**
@@ -70,35 +70,35 @@ public final class Version {
    * @param version The full string version of the build (e.g. '5.5900')
    */
   public Version(int major, int build, String version) {
-    this._major = major;
-    this._build = build;
-    this._version = version;
+    this.major = major;
+    this.build = build;
+    this.version = version;
   }
 
   /**
    * @return The major version (e.g. '5')
    */
   public int major() {
-    return this._major;
+    return this.major;
   }
 
   /**
    * @return The build number for that version (e.g. '5900')
    */
   public int build() {
-    return this._build;
+    return this.build;
   }
 
   /**
    * @return The full string version of the build (e.g. '5.5900')
    */
   public String version() {
-    return this._version;
+    return this.version;
   }
 
   @Override
   public String toString() {
-    return this._version;
+    return this.version;
   }
 
   /**

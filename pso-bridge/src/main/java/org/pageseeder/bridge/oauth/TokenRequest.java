@@ -82,17 +82,17 @@ public final class TokenRequest {
   /**
    * The url based on the PageSeeder config.
    */
-  private final String _url;
+  private final String url;
 
   /**
    * The parameters to send.
    */
-  private final Map<String, String> _parameters;
+  private final Map<String, String> parameters;
 
   /**
    * The client credentials to make the request.
    */
-  private final ClientCredentials _client;
+  private final ClientCredentials client;
 
   /**
    * Creates a new instance.
@@ -102,9 +102,9 @@ public final class TokenRequest {
    * @param client     The client credentials
    */
   private TokenRequest(String url, Map<String, String> parameters, ClientCredentials client) {
-    this._url = url;
-    this._parameters = parameters;
-    this._client = client;
+    this.url = url;
+    this.parameters = parameters;
+    this.client = client;
   }
 
   // Factory methods
@@ -200,21 +200,21 @@ public final class TokenRequest {
    * @return the grant type
    */
   public @Nullable String grantType() {
-    return this._parameters.get("grant_type");
+    return this.parameters.get("grant_type");
   }
 
   /**
    * @return the scope used for this request.
    */
   public @Nullable String scope() {
-    return this._parameters.get("scope");
+    return this.parameters.get("scope");
   }
 
   /**
    * @return The redirect URI used in this request.
    */
   public @Nullable String redirectURI() {
-    return this._parameters.get("client_id");
+    return this.parameters.get("client_id");
   }
 
   /**
@@ -224,7 +224,7 @@ public final class TokenRequest {
    */
   public @Nullable String parameter(String name) {
     Objects.requireNonNull(name, "The parameter name cannot be null");
-    return this._parameters.get(name);
+    return this.parameters.get(name);
   }
 
   // Setters (return TokenRequest)
@@ -265,9 +265,9 @@ public final class TokenRequest {
   public TokenRequest parameter(String name, String value) {
     Objects.requireNonNull(name, "The parameter name cannot be null");
     Objects.requireNonNull(value, "The parameter value cannot be null");
-    Map<String, String> p = new LinkedHashMap<>(this._parameters);
+    Map<String, String> p = new LinkedHashMap<>(this.parameters);
     p.put(name, value);
-    return new TokenRequest(this._url, p, this._client);
+    return new TokenRequest(this.url, p, this.client);
   }
 
   /**
@@ -278,14 +278,14 @@ public final class TokenRequest {
   public TokenResponse post() {
     try {
       // Create connection to URL using client credentials
-      URL url = new URL(this._url);
+      URL url = new URL(this.url);
       HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-      String authorization = this._client.toBasicAuthorization();
+      String authorization = this.client.toBasicAuthorization();
       connection.addRequestProperty("Authorization", authorization);
       connection.setRequestMethod("POST");
 
       // Write the parameters
-      byte[] parameters = HTTP.encodeParameters(this._parameters).getBytes(StandardCharsets.UTF_8);
+      byte[] parameters = HTTP.encodeParameters(this.parameters).getBytes(StandardCharsets.UTF_8);
       connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
       connection.setRequestProperty("Content-Length", Integer.toString(parameters.length));
       connection.setDoInput(true);
@@ -294,7 +294,7 @@ public final class TokenRequest {
         post.write(parameters);
         post.flush();
       }
-      return TokenResponse.consume(connection, this._client);
+      return TokenResponse.consume(connection, this.client);
 
     } catch (ConnectException ex) {
       return TokenResponse.error("connection_error", ex.getMessage());
@@ -318,7 +318,7 @@ public final class TokenRequest {
 
   @Override
   public String toString() {
-    return "POST "+this._url+"?"+HTTP.encodeParameters(this._parameters).replaceAll("password=([^&]+)", "password=******");
+    return "POST "+this.url +"?"+HTTP.encodeParameters(this.parameters).replaceAll("password=([^&]+)", "password=******");
   }
 
 }

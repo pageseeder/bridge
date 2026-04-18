@@ -36,31 +36,31 @@ import java.util.List;
 public abstract class URI extends Addressable implements Serializable, XMLWritable {
 
   /** As per recommendation */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   /** The URI ID */
-  private final long _id;
+  private final long id;
 
   /** The document ID */
-  private final @Nullable String _docid;
+  private final @Nullable String docid;
 
   /** The description */
-  private final @Nullable String _description;
+  private final @Nullable String description;
 
   /** The user title */
-  private final @Nullable String _title;
+  private final @Nullable String title;
 
   /** The media type */
-  private final String _mediatype;
+  private final String mediatype;
 
   /** The created date */
-  private final @Nullable OffsetDateTime _created;
+  private final @Nullable OffsetDateTime created;
 
   /** The modified date */
-  private final @Nullable OffsetDateTime _modified;
+  private final @Nullable OffsetDateTime modified;
 
   /** List of labels on the document */
-  private final LabelList _labels;
+  private final LabelList labels;
 
   /**
    * Default constructor.
@@ -72,46 +72,46 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
    */
   URI(long id, String scheme, String host, int port, String path, @Nullable String title, @Nullable String docid, @Nullable String description, String mediatype, @Nullable OffsetDateTime created, @Nullable OffsetDateTime modified, LabelList labels) {
     super(scheme, host, port, path);
-    this._id = id;
-    this._docid = docid;
-    this._description = description;
-    this._title = title;
-    this._mediatype = mediatype;
-    this._created = created;
-    this._modified = modified;
-    this._labels = labels;
+    this.id = id;
+    this.docid = docid;
+    this.description = description;
+    this.title = title;
+    this.mediatype = mediatype;
+    this.created = created;
+    this.modified = modified;
+    this.labels = labels;
   }
 
   public final long getId() {
-    return this._id;
+    return this.id;
   }
 
   /**
    * @return the mediatype
    */
   public final String getMediaType() {
-    return this._mediatype;
+    return this.mediatype;
   }
 
   /**
    * @return the Document ID
    */
   public final @Nullable String getDocid() {
-    return this._docid;
+    return this.docid;
   }
 
   /**
    * @return the description
    */
   public final @Nullable String getDescription() {
-    return this._description;
+    return this.description;
   }
 
   /**
    * @return the title
    */
   public final @Nullable String getTitle() {
-    return this._title;
+    return this.title;
   }
 
   /**
@@ -121,7 +121,7 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
    * @return this URI's display title
    */
   public String getDisplayTitle() {
-    String t = this._title;
+    String t = this.title;
     if (t != null && !t.trim().isEmpty())
       return t;
     String path = getPath();
@@ -139,21 +139,21 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
    * @return the created date
    */
   public final @Nullable OffsetDateTime getCreatedDate() {
-    return this._created;
+    return this.created;
   }
 
   /**
    * @return the modified date
    */
   public final @Nullable OffsetDateTime getModifiedDate () {
-    return this._modified;
+    return this.modified;
   }
 
   /**
    * @return the labels
    */
   public final LabelList getLabels() {
-    return this._labels;
+    return this.labels;
   }
 
   public abstract boolean isExternal();
@@ -163,8 +163,8 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
   @Override
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement("uri");
-    if (this._id > 0)
-      xml.attribute("id", Long.toString(this._id));
+    if (this.id > 0)
+      xml.attribute("id", Long.toString(this.id));
     xml.attribute("scheme", this.getScheme());
     xml.attribute("host", this.getHost());
     xml.attribute("port", this.getPort());
@@ -172,14 +172,14 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
     xml.attribute("decodedpath", this.getDecodedPath());
 
     // Optional attributes
-    if (this._title != null)
-      xml.attribute("title", this._title);
-    if (this._created != OffsetDateTime.MIN)
-      xml.attribute("created", this._created.toString()); // TODO date format
-    if (this._modified != OffsetDateTime.MIN)
-      xml.attribute("created", this._modified.toString()); // TODO date format
-    if (this._mediatype != null)
-      xml.attribute("mediatype", this._mediatype);
+    if (this.title != null)
+      xml.attribute("title", this.title);
+    if (this.created != OffsetDateTime.MIN)
+      xml.attribute("created", this.created.toString()); // TODO date format
+    if (this.modified != OffsetDateTime.MIN)
+      xml.attribute("created", this.modified.toString()); // TODO date format
+    if (this.mediatype != null)
+      xml.attribute("mediatype", this.mediatype);
 
     // Attributes for documents, urls and folders
     if (this.isExternal()) {
@@ -188,8 +188,8 @@ public abstract class URI extends Addressable implements Serializable, XMLWritab
         xml.attribute("folder", "true");
       // TODO archived boolean	no	If "true" this URI is archived (for URLs only)
     } else {
-      if (this._docid != null)
-        xml.attribute("docid", this._docid);
+      if (this.docid != null)
+        xml.attribute("docid", this.docid);
       // documenttype document-type	no	Document type (not for URLs)
       // size	xs:long	no	The file size in bytes (URLs or non-PSML documents only)
     }

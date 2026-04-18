@@ -24,7 +24,6 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jspecify.annotations.NonNull;
 import org.pageseeder.bridge.PSEntity;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
@@ -54,12 +53,12 @@ public final class ServicePath {
   /**
    * The URI template used for this service.
    */
-  private String _template;
+  private String template;
 
   /**
    * The number of variables in the template.
    */
-  private int _count;
+  private int count;
 
   // Constructors and factory methods
   // --------------------------------------------------------------------------
@@ -70,8 +69,8 @@ public final class ServicePath {
    * @param template The URI template used for this service.
    */
   ServicePath(String template) {
-    this._template = Objects.requireNonNull(template, "Template must not be null");
-    this._count = countVariables(template);
+    this.template = Objects.requireNonNull(template, "Template must not be null");
+    this.count = countVariables(template);
   }
 
   /**
@@ -105,7 +104,7 @@ public final class ServicePath {
    *
    * @throws IllegalArgumentException If the template path is invalid.
    */
-  public static String newPath(String template, @NonNull Object... variables) {
+  public static String newPath(String template, Object... variables) {
     if (!VALID_TEMPLATE.matcher(template).matches())
       throw new IllegalArgumentException("not a valid template: "+template);
     return new ServicePath(template).toPath(variables);
@@ -120,7 +119,7 @@ public final class ServicePath {
    * @return the URI template for this service.
    */
   public String template() {
-    return this._template;
+    return this.template;
   }
 
   /**
@@ -129,7 +128,7 @@ public final class ServicePath {
    * @return the number of URI variables in the URI template.
    */
   public int count() {
-    return this._count;
+    return this.count;
   }
 
   /**
@@ -145,14 +144,14 @@ public final class ServicePath {
    * @throws IllegalArgumentException If the expected number of variables does not match the argument
    */
   @SafeVarargs
-  public final String toPath(@NonNull Object... variables) {
+  public final String toPath(Object... variables) {
     Objects.requireNonNull(variables, "Variables must not be null");
-    if (this._count != variables.length)
-      throw new IllegalArgumentException("Expected "+this._count+" variables but got "+variables.length);
+    if (this.count != variables.length)
+      throw new IllegalArgumentException("Expected "+this.count +" variables but got "+variables.length);
     StringBuilder url = new StringBuilder("/service");
     int i = 0;
     // URI | member | group
-    List<Token> tokens = toTokens(this._template, this._count);
+    List<Token> tokens = toTokens(this.template, this.count);
     for (Token t : tokens) {
       if (t instanceof Literal) {
         url.append(t.toString());
@@ -254,17 +253,17 @@ public final class ServicePath {
    * Literal string token to copy verbatim to the output URL.
    */
   private static class Literal implements Token {
-    private final String _token;
-    public Literal(String t) {
-      this._token = t;
+    private final String token;
+    public Literal(String token) {
+      this.token = token;
     }
     @Override
     public String toString(Object o) {
-      return this._token;
+      return this.token;
     }
     @Override
     public String toString() {
-      return this._token;
+      return this.token;
     }
   }
 
