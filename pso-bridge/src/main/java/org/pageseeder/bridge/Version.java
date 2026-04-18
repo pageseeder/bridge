@@ -115,6 +115,8 @@ public final class Version {
    *   parse(null) returns null
    * </pre>
    *
+   * @param version The version to parse
+   *
    * @return The corresponding version
    *
    * @throws IllegalArgumentException If the string
@@ -128,6 +130,10 @@ public final class Version {
 
   /**
    * Return the PageSeeder version for the specified URL.
+   *
+   * @param config The configuration to use
+   *
+   * @return The PageSeeder version for the specified URL.
    */
   @Nullable
   public static Version getVersion(PSConfig config) {

@@ -69,6 +69,8 @@ public final class ProtectedRequest implements Serializable {
    * <p>The url is created from the request URI and query if there is one.
    *
    * @param request The HTTP request.
+   *
+   * @return A new protected request.
    */
   public static ProtectedRequest create(HttpServletRequest request) {
     String url  = request.getRequestURI();

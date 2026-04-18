@@ -25,11 +25,15 @@ public @interface Requires {
 
   /**
    * The minimum PageSeeder version required.
+   *
+   * @return the minimum PageSeeder version required.
    */
   int minVersion() default 55000;
 
   /**
    * The maximum PageSeeder version supported.
+   *
+   * @return the maximum PageSeeder version supported.
    */
   int maxVersion() default Integer.MAX_VALUE;
 

@@ -243,8 +243,10 @@ public final class PSConfig {
   /**
    * Return the PageSeeder version for the default config.
    *
-   * Implementation note: the version is lazily loaded and stored
+   * <p>Implementation note: the version is lazily loaded and stored
    * on this object once it has been retrieved.
+   *
+   * @return the PageSeeder version for the default config.
    */
   public synchronized @Nullable Version getVersion() {
     if (this.version == null) {

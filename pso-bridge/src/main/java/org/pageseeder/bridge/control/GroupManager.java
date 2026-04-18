@@ -203,6 +203,8 @@ public final class GroupManager extends Sessionful {
    * @throws FailedPrecondition   Should a precondition fail
    * @throws APIException         If an error occurs while communicating with PageSeeder.
    * @throws NullPointerException If the group, editor or newname is <code>null</code>.
+   *
+   * @return The thread status.
    */
   public @Nullable PSThreadStatus renameGroup(PSGroup group, PSMember editor, String newname) throws FailedPrecondition, APIException {
     Objects.requireNonNull(group, "Group must be specified");
@@ -239,6 +241,8 @@ public final class GroupManager extends Sessionful {
    * @throws FailedPrecondition   Should a precondition fail
    * @throws APIException         If an error occurs while communicating with PageSeeder.
    * @throws NullPointerException If the group or editor is <code>null</code>.
+   *
+   * @return The thread status.
    */
   public @Nullable PSThreadStatus archiveGroup(PSGroup group, PSMember editor) throws FailedPrecondition, APIException {
     Objects.requireNonNull(group, "Group must be specified");

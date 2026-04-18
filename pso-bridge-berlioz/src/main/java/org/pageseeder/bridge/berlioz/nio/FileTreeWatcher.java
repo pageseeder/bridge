@@ -121,6 +121,8 @@ public final class FileTreeWatcher {
    * might not be in place yet. For large file trees, it might take several seconds
    * until all directories are being monitored. For normal cases (1-100 folders), this
    * should not take longer than a few milliseconds.
+   *
+   * @throws IOException If an error occurs while creating the watch service.
    */
   public void start() throws IOException {
     this.watchService = FileSystems.getDefault().newWatchService();

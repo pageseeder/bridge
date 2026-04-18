@@ -53,6 +53,8 @@ public final class Configuration {
    * Returns the default authenticator based on the configuration.
    *
    * @return the default authenticator based on the configuration.
+   *
+   * @throws AuthException If the authenticator is not supported.
    */
   public static Authenticator<? extends User> getAuthenticator() throws AuthException {
     // Load from config

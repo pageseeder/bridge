@@ -160,6 +160,8 @@ public final class PasswordFilter implements Filter {
    *
    * @param req The servlet request
    * @param res The servlet response
+   *
+   * @throws IOException If thrown by the {@link HttpServletResponse#sendRedirect(String)} method.
    */
   public void login(HttpServletRequest req, HttpServletResponse res) throws IOException {
 

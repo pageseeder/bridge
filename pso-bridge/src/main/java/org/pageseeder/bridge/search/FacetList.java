@@ -119,10 +119,10 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
   /**
    * Update the specified parameters include the facets in this object.
    *
-   * <p>More specifically, this class add the following parameters:</p>
+   * <p>More specifically, this class adds the following parameters:</p>
    * <ul>
-   *   <li><tt>facets</tt></li>
-   *   <li><tt>flexiblefacets</tt></li>
+   *   <li><code>facets</code></li>
+   *   <li><code>flexiblefacets</code></li>
    * </ul>
    *
    * @param parameters The parameters to send to the search service

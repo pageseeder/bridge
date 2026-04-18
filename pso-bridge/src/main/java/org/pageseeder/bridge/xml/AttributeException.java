@@ -60,7 +60,7 @@ public abstract class AttributeException extends RuntimeException {
      *
      * @param name    the name of the attribute.
      * @param message the detail message.
-     * @param cause   the cause (<tt>null</tt> value is permitted)
+     * @param cause   the cause (<code>null</code> value is permitted)
    */
   protected AttributeException(String name, String message, @Nullable Throwable cause) {
     super(message, cause);

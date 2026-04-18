@@ -45,6 +45,8 @@ public interface User extends XMLWritable, Principal, Serializable {
    * Indicates where the user has a specified role.
    *
    * @param role the roles to check.s
+   *
+   * @return <code>true</code> if the user has the specified role; <code>false</code> otherwise.
    */
   boolean hasRole(String role);
 

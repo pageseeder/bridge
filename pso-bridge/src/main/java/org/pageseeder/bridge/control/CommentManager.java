@@ -114,6 +114,10 @@ public final class CommentManager extends Sessionful {
    * @param creator The comment's creator (may be different from author)
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param group   The group the comment should be posted against
+   *
+   * @return <code>true</code> if the comment was created successfully, <code>false</code> otherwise
+   *
+   * @throws APIException If an error occurs while creating the comment.
    */
   public boolean createComment(PSComment comment, PSMember creator, PSNotify notify, PSGroup group) throws APIException {
     return createComment(comment, creator, notify, Collections.singletonList(group));
@@ -125,6 +129,10 @@ public final class CommentManager extends Sessionful {
    * @param comment The comment to create
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param groups  The group the comment should be posted against
+   *
+   * @return <code>true</code> if the comment was created successfully, <code>false</code> otherwise
+   *
+   * @throws APIException If an error occurs while creating the comment.
    */
   public boolean createComment(PSComment comment, PSNotify notify, List<PSGroup> groups) throws APIException {
     PSMember member = checkAuthorMember(comment);
@@ -138,6 +146,10 @@ public final class CommentManager extends Sessionful {
    * @param creator The comment's creator (may be different from author)
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param groups  The group the comment should be posted against
+   *
+   * @return <code>true</code> if the comment was created successfully, <code>false</code> otherwise
+   *
+   * @throws APIException If an error occurs while creating the comment.
    */
   public boolean createComment(PSComment comment, PSMember creator, @Nullable PSNotify notify, List<PSGroup> groups) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, creator, notify, groups).using(this._credentials);
@@ -154,6 +166,10 @@ public final class CommentManager extends Sessionful {
    * @param comment The comment to save
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param group   The group the comment should be posted against
+   *
+   * @return <code>true</code> if the comment was created successfully, <code>false</code> otherwise
+   *
+   * @throws APIException If an error occurs while saving the comment.
    */
   public boolean save(PSComment comment, PSNotify notify, PSGroup group) throws APIException {
     PSMember member = checkAuthorMember(comment);
@@ -167,6 +183,10 @@ public final class CommentManager extends Sessionful {
    * @param editor  The comment's editor (may be different from author)
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param group   The group the comment should be posted against
+   *
+   * @return <code>true</code> if the comment was created successfully, <code>false</code> otherwise
+   *
+   * @throws APIException If an error occurs while saving the comment.
    */
   public boolean save(PSComment comment, PSMember editor, PSNotify notify, PSGroup group) throws APIException {
     return save(comment, editor, notify, Collections.singletonList(group));
@@ -178,6 +198,10 @@ public final class CommentManager extends Sessionful {
    * @param comment The comment to save
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param groups  The groups the comment should be posted against
+   *
+   * @return <code>true</code> if the comment was created successfully, <code>false</code> otherwise
+   *
+   * @throws APIException If an error occurs while saving the comment.
    */
   public boolean save(PSComment comment, PSNotify notify, List<PSGroup> groups) throws APIException {
     PSMember member = checkAuthorMember(comment);
@@ -191,6 +215,10 @@ public final class CommentManager extends Sessionful {
    * @param editor  The comment's editor (may be different from author)
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param groups  The groups the comment should be posted against
+   *
+   * @return <code>true</code> if the comment was created successfully, <code>false</code> otherwise
+   *
+   * @throws APIException If an error occurs while saving the comment.
    */
   public boolean save(PSComment comment, PSMember editor, PSNotify notify, List<PSGroup> groups) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.patchComment(comment, editor, notify, groups).using(this._credentials);
@@ -206,6 +234,10 @@ public final class CommentManager extends Sessionful {
    *
    * @param comment The comment to archive
    * @param member  The member archiving the comment
+   *
+   * @return <code>true</code> if the comment was archived successfully, <code>false</code> otherwise
+   *
+   * @throws APIException If an error occurs while archiving the comment.
    */
   public boolean archiveComment(PSComment comment, PSMember member) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.archiveComment(comment, member).using(this._credentials);
@@ -218,6 +250,10 @@ public final class CommentManager extends Sessionful {
    *
    * @param comment The comment to archive
    * @param member  The member archiving the comment
+   *
+   * @return <code>true</code> if the comment was archived successfully, <code>false</code> otherwise
+   *
+   * @throws APIException If an error occurs while unarchiving the comment.
    */
   public boolean unarchiveComment(PSComment comment, PSMember member) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.unarchiveComment(comment, member).using(this._credentials);
@@ -232,6 +268,10 @@ public final class CommentManager extends Sessionful {
    * @param notify  Whether the comments should be silent, normal or an announcement (may be <code>null</code>)
    * @param groups  The group the comment should be posted against
    * @param xlink   The comment to reply to
+   *
+   * @return <code>true</code> if the comment was archived successfully, <code>false</code> otherwise
+   *
+   * @throws APIException If an error occurs while replying the comment.
    */
   public boolean replyToComment(PSComment comment, PSNotify notify, List<PSGroup> groups, long xlink) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.replyToComment(comment, notify, groups, xlink).using(this._credentials);
@@ -249,6 +289,8 @@ public final class CommentManager extends Sessionful {
    * @param member The member who is trying to access the comment.
    *
    * @return the matching comment (<code>null</code> if not found)
+   *
+   * @throws APIException If an error occurs while retrieving the comment.
    */
   public @Nullable PSComment getComment(long id, PSMember member) throws APIException {
     PSComment comment = cache.get(id);
@@ -274,6 +316,8 @@ public final class CommentManager extends Sessionful {
    * @param paths  A list of paths of URIs the comments must be attached to (can be <code>null</code>)
    *
    * @return the list of comments found (never <code>null</code>)
+   *
+   * @throws APIException If an error occurs while finding the comment.
    */
   public List<PSComment> findComments(PSMember member, PSGroup group,
       @Nullable String title, @Nullable String type, @Nullable List<String> paths) throws APIException {
@@ -291,6 +335,8 @@ public final class CommentManager extends Sessionful {
    * @param paths     A list of paths of URIs the comments must be attached to (can be <code>null</code>)
    *
    * @return the list of comments found (never <code>null</code>)
+   *
+   * @throws APIException If an error occurs while finding the comment.
    */
   public List<PSComment> findComments(PSMember member, PSGroup group, @Nullable String title,
       @Nullable String type, @Nullable List<String> statuses, @Nullable List<String> paths) throws APIException {

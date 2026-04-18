@@ -46,6 +46,8 @@ public abstract class AuthProvider {
 
   /**
    * Creates an iterator that iterates over the authenticators supported by this provider.
+   *
+   * @return An iterator over the names of the authenticators supported by this provider.
    */
   public abstract Iterator<String> authenticators();
 

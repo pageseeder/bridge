@@ -55,7 +55,7 @@ public class Range {
   /**
    * Indicates whether the maximum value is included in the range.
    *
-   * @return <tt>true</tt> If the maximum value is included in the range
+   * @return <code>true</code> If the maximum value is included in the range
    */
   public boolean isMaxInclusive() {
     return this._maxInclusive;
@@ -64,7 +64,7 @@ public class Range {
   /**
    * Indicates whether the minimum value is included in the range.
    *
-   * @return <tt>true</tt> If the minimum value is included in the range
+   * @return <code>true</code> If the minimum value is included in the range
    */
   public boolean isMinInclusive() {
     return this._minInclusive;

@@ -93,6 +93,11 @@ public final class RememberMe {
 
   /**
    * Initialise the remeber functionality using the configuration at the specified path.
+   *
+   * @param auth The path to the configuration directory.
+   *
+   * @throws GeneralSecurityException If the security provider cannot be initialised.
+   * @throws IOException              If an error occurs while reading the configuration.
    */
   public void init(Path auth) throws GeneralSecurityException, IOException {
 //    Security.addProvider(new BouncyCastleProvider());

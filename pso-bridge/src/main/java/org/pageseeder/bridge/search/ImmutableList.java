@@ -62,7 +62,7 @@ abstract class ImmutableList<E> implements Iterable<E> {
    * @param index index of the element to return
    * @return the element at the specified position in this list
    * @throws IndexOutOfBoundsException if the index is out of range
-   *         (<tt>index &lt; 0 || index &gt;= size()</tt>)
+   *         (<code>index &lt; 0 || index &gt;= size()</code>)
    */
   public E get(int index) {
     return this._list.get(index);

@@ -99,6 +99,8 @@ public final class PSAuthenticator implements Authenticator<PSUser> {
 
   /**
    * Set the filters to group
+   *
+   * @param filter The filter to apply to group membership.
    */
   public void setGroupFilter(String filter) {
     this.groupFilter = filter;
@@ -108,7 +110,8 @@ public final class PSAuthenticator implements Authenticator<PSUser> {
    * Set the pageseeder configuration that will be used to login and logout. By default, it will use the default
    * configuration. However, it will be initialized as null. Only when request it will be set to default in case the
    * caller does not specify one.
-   * @param config
+   *
+   * @param config The configuration to use.
    */
   public void setConfig(PSConfig config) {
     this.config = config;

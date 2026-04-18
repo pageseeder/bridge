@@ -325,11 +325,13 @@ public final class Comment implements Serializable, XMLWritable {
     private boolean moderated;
     private Context context;
     private LabelList labels = LabelList.NO_LABELS;
-    private List<Content> contents = null;
-    private List<Attachment> attachments = null;
+    private @Nullable List<Content> contents = null;
+    private @Nullable List<Attachment> attachments = null;
 
     /**
      * @param id the id to set
+     *
+     * @return this builder for chaining
      */
     public Builder id(long id) {
       this.id = id;
@@ -338,6 +340,8 @@ public final class Comment implements Serializable, XMLWritable {
 
     /**
      * @param id the id to set
+     *
+     * @return this builder for chaining
      */
     public Builder discussionId(long id) {
       this.discussionId = id;
@@ -346,6 +350,8 @@ public final class Comment implements Serializable, XMLWritable {
 
     /**
      * @param title the title to set
+     *
+     * @return this builder for chaining
      */
     public Builder title(String title) {
       this.title = title;
@@ -354,6 +360,8 @@ public final class Comment implements Serializable, XMLWritable {
 
     /**
      * @param contentRole the content role to set
+     *
+     * @return this builder for chaining
      */
     public Builder contentRole(String contentRole) {
       this.contentRole = contentRole;
@@ -362,6 +370,9 @@ public final class Comment implements Serializable, XMLWritable {
 
     /**
      * @param content the content to set
+     * @param type the type of the content
+     *
+     * @return this builder for chaining
      */
     public Builder content(String content, String type) {
       // TODO
@@ -371,6 +382,8 @@ public final class Comment implements Serializable, XMLWritable {
 
     /**
      * @param type the type to set
+     *
+     * @return this builder for chaining
      */
     public Builder type(@Nullable String type) {
       this.type = type;
@@ -379,6 +392,8 @@ public final class Comment implements Serializable, XMLWritable {
 
     /**
      * @param status the status to set
+     *
+     * @return this builder for chaining
      */
     public Builder status(@Nullable String status) {
       this.status = status;
@@ -387,6 +402,8 @@ public final class Comment implements Serializable, XMLWritable {
 
     /**
      * @param priority the priority to set
+     *
+     * @return this builder for chaining
      */
     public Builder priority(@Nullable String priority) {
       this.priority = priority;
@@ -394,15 +411,19 @@ public final class Comment implements Serializable, XMLWritable {
     }
 
     /**
-     * @param assignedto the assignedto to set
+     * @param assignedTo the assignee to set
+     *
+     * @return this builder for chaining
      */
-    public Builder assignedTo(Member assignedto, OffsetDateTime date) {
-      this.assignedto = new AssignedTo(assignedto, date);
+    public Builder assignedTo(Member assignedTo, OffsetDateTime date) {
+      this.assignedto = new AssignedTo(assignedTo, date);
       return this;
     }
 
     /**
-     * @param assignedTo the assignedto to set
+     * @param assignedTo the assignee to set
+     *
+     * @return this builder for chaining
      */
     public Builder assignedTo(AssignedTo assignedTo) {
       this.assignedto = assignedTo;
@@ -410,7 +431,9 @@ public final class Comment implements Serializable, XMLWritable {
     }
 
     /**
-     * @param modifiedBy the assignedto to set
+     * @param modifiedBy the modifiedBy to set
+     *
+     * @return this builder for chaining
      */
     public Builder modifiedBy(ModifiedBy modifiedBy) {
       this.modifiedBy = modifiedBy;
@@ -418,7 +441,9 @@ public final class Comment implements Serializable, XMLWritable {
     }
 
     /**
-     * @param created the created to set
+     * @param created the created date to set
+     *
+     * @return this builder for chaining
      */
     public Builder created(@Nullable OffsetDateTime created) {
       this.created = created;
@@ -427,6 +452,8 @@ public final class Comment implements Serializable, XMLWritable {
 
     /**
      * @param due the due to set
+     *
+     * @return this builder for chaining
      */
     public Builder due(@Nullable OffsetDateTime due) {
       this.due = due;
@@ -437,6 +464,8 @@ public final class Comment implements Serializable, XMLWritable {
      * Adds the specified document as an attachment.
      *
      * @param document The document to attach to the comment.
+     *
+     * @return this builder for chaining
      */
     public Builder attachment(Document document) {
       List<Attachment> a = this.attachments;
@@ -449,7 +478,10 @@ public final class Comment implements Serializable, XMLWritable {
     }
 
     /**
+     * Sets the contents for the builder.
      *
+     * @param contents the list of {@link Content} objects to set
+     * @return this builder for method chaining
      */
     public Builder contents(List<Content> contents) {
       if (contents.isEmpty()) this.contents = Collections.emptyList();

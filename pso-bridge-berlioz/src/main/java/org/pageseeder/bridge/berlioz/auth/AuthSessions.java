@@ -238,6 +238,8 @@ public final class AuthSessions {
    *   </bridge>
    * }</pre>
    *
+   * @param property The property of the PageSeeder user.
+   *
    * @return The PageSeeder setup member or <code>null</code> if it is not configured properly or could not login.
    * @throws APIException If an error occurs while trying to login the setup user.
    */
