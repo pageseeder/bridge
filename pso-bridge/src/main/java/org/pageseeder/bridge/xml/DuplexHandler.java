@@ -15,14 +15,14 @@
  */
 package org.pageseeder.bridge.xml;
 
-import java.util.Objects;
-
 import org.jspecify.annotations.Nullable;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.util.Objects;
 
 /**
  * A handler which delegates parsing events to two handlers to be used at once.

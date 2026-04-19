@@ -15,11 +15,11 @@
  */
 package org.pageseeder.bridge.http;
 
-import java.util.Arrays;
-import java.util.Objects;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSConfig;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Computes the path of a PageSeeder document.

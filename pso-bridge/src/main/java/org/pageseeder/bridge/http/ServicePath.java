@@ -15,6 +15,11 @@
  */
 package org.pageseeder.bridge.http;
 
+import org.pageseeder.bridge.PSEntity;
+import org.pageseeder.bridge.model.PSGroup;
+import org.pageseeder.bridge.model.PSMember;
+import org.pageseeder.bridge.model.PSURI;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -22,11 +27,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.pageseeder.bridge.PSEntity;
-import org.pageseeder.bridge.model.PSGroup;
-import org.pageseeder.bridge.model.PSMember;
-import org.pageseeder.bridge.model.PSURI;
 
 /**
  * Computes the path of a PageSeeder service from a URI template.

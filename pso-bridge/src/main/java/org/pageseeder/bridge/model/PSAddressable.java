@@ -15,12 +15,12 @@
  */
 package org.pageseeder.bridge.model;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSEntity;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Christophe Lauret

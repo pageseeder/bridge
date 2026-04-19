@@ -15,10 +15,10 @@
  */
 package org.pageseeder.bridge.nio;
 
+import org.jspecify.annotations.Nullable;
+
 import java.nio.file.Path;
 import java.nio.file.spi.FileTypeDetector;
-
-import org.jspecify.annotations.Nullable;
 
 /**
  * A file type detector provider for probing PSML files.

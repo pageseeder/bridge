@@ -15,21 +15,15 @@
  */
 package org.pageseeder.bridge.xml;
 
-import java.text.ParseException;
-import java.util.Date;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSEntityCache;
-import org.pageseeder.bridge.control.CommentManager;
-import org.pageseeder.bridge.control.DocumentManager;
-import org.pageseeder.bridge.control.ExternalURIManager;
-import org.pageseeder.bridge.control.GroupManager;
-import org.pageseeder.bridge.control.MemberManager;
-import org.pageseeder.bridge.control.MembershipManager;
-import org.pageseeder.bridge.control.XRefManager;
+import org.pageseeder.bridge.control.*;
 import org.pageseeder.bridge.model.*;
 import org.pageseeder.bridge.util.ISO8601;
 import org.xml.sax.Attributes;
+
+import java.text.ParseException;
+import java.util.Date;
 
 /**
  * A utility class used to generate objects from the XML returned by services.

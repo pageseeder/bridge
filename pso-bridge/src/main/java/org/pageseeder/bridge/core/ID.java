@@ -15,10 +15,10 @@
  */
 package org.pageseeder.bridge.core;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serializable;
 import java.util.Objects;
-
-import org.jspecify.annotations.Nullable;
 
 /**
  * Define an identifier.

@@ -15,14 +15,14 @@
  */
 package org.pageseeder.bridge.oauth;
 
+import org.jspecify.annotations.Nullable;
+import org.pageseeder.bridge.PSConfig;
+import org.pageseeder.bridge.net.HTTP;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-
-import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.PSConfig;
-import org.pageseeder.bridge.net.HTTP;
 
 /**
  * This class provides a simple mechanism to build the URL to the authorization endpoint

@@ -15,8 +15,6 @@
  */
 package org.pageseeder.bridge.control;
 
-import java.util.List;
-
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.model.PSGroup;
@@ -25,6 +23,8 @@ import org.pageseeder.bridge.model.PSResult;
 import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
 import org.pageseeder.bridge.xml.PSResultHandler;
+
+import java.util.List;
 
 /**
  * A search tool backed by the GenericSearch servlet to search entities in PageSeeder.

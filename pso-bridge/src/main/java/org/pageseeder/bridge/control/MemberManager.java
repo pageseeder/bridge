@@ -15,21 +15,17 @@
  */
 package org.pageseeder.bridge.control;
 
-import java.util.Objects;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.*;
 import org.pageseeder.bridge.model.MemberOptions;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PasswordResetOptions;
-import org.pageseeder.bridge.net.PSHTTPConnector;
-import org.pageseeder.bridge.net.PSHTTPConnectors;
-import org.pageseeder.bridge.net.PSHTTPResourceType;
-import org.pageseeder.bridge.net.PSHTTPResponseInfo;
+import org.pageseeder.bridge.net.*;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
-import org.pageseeder.bridge.net.Servlets;
 import org.pageseeder.bridge.xml.PSMemberHandler;
+
+import java.util.Objects;
 
 /**
  * A manager for groups and projects (based on PageSeeder Groups).

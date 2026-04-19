@@ -15,11 +15,11 @@
  */
 package org.pageseeder.bridge.psml;
 
-import java.io.IOException;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.xmlwriter.XMLWritable;
 import org.pageseeder.xmlwriter.XMLWriter;
+
+import java.io.IOException;
 
 /**
  * A single PSML property.

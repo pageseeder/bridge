@@ -16,11 +16,7 @@
 package org.pageseeder.bridge.xml;
 
 import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.model.PSDetails;
-import org.pageseeder.bridge.model.PSGroup;
-import org.pageseeder.bridge.model.PSMember;
-import org.pageseeder.bridge.model.PSMembership;
-import org.pageseeder.bridge.model.PSProject;
+import org.pageseeder.bridge.model.*;
 import org.xml.sax.Attributes;
 
 /**

@@ -15,9 +15,9 @@
  */
 package org.pageseeder.bridge.model;
 
-import java.io.Serializable;
-
 import org.jspecify.annotations.Nullable;
+
+import java.io.Serializable;
 
 /**
  * A status for a process thread.

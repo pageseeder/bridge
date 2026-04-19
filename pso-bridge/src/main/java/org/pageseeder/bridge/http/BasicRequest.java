@@ -15,21 +15,17 @@
  */
 package org.pageseeder.bridge.http;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.pageseeder.bridge.*;
+import org.pageseeder.bridge.net.UsernamePassword;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.PSConfig;
-import org.pageseeder.bridge.PSCredentials;
-import org.pageseeder.bridge.PSSession;
-import org.pageseeder.bridge.PSToken;
-import org.pageseeder.bridge.Version;
-import org.pageseeder.bridge.net.UsernamePassword;
 
 /**
  * Base class for HTTP requests to PageSeeder.

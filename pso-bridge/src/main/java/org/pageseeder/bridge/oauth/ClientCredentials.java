@@ -15,11 +15,11 @@
  */
 package org.pageseeder.bridge.oauth;
 
+import org.pageseeder.bridge.util.Base64;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.regex.Pattern;
-
-import org.pageseeder.bridge.util.Base64;
 
 /**
  * Class used to store the client credentials.

@@ -15,10 +15,10 @@
  */
 package org.pageseeder.bridge.model;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jspecify.annotations.Nullable;
 
 /**
  * Additional options when creating a group which aren't part of the group entity.

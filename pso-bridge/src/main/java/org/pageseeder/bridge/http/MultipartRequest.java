@@ -15,13 +15,13 @@
  */
 package org.pageseeder.bridge.http;
 
-import java.io.Closeable;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.jspecify.annotations.Nullable;
+import org.pageseeder.bridge.PSCredentials;
+import org.pageseeder.bridge.PSSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,12 +30,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ThreadLocalRandom;
-
-import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.PSCredentials;
-import org.pageseeder.bridge.PSSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Simple fluent class to define HTTP multipart requests to PageSeeder.

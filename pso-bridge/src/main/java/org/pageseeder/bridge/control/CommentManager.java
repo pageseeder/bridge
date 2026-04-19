@@ -15,8 +15,6 @@
  */
 package org.pageseeder.bridge.control;
 
-import java.util.List;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.FailedPrecondition;
@@ -32,6 +30,8 @@ import org.pageseeder.bridge.net.PSHTTPConnectors;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
 import org.pageseeder.bridge.xml.PSCommentHandler;
+
+import java.util.List;
 
 /**
  * A manager for comments and tasks.

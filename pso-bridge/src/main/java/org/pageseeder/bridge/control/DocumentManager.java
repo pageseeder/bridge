@@ -15,36 +15,27 @@
  */
 package org.pageseeder.bridge.control;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.APIException;
-import org.pageseeder.bridge.FailedPrecondition;
-import org.pageseeder.bridge.PSConfig;
-import org.pageseeder.bridge.PSCredentials;
-import org.pageseeder.bridge.PSEntityCache;
+import org.pageseeder.bridge.*;
 import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSFolder;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
-import org.pageseeder.bridge.net.PSHTTPConnection;
+import org.pageseeder.bridge.net.*;
 import org.pageseeder.bridge.net.PSHTTPConnection.Method;
-import org.pageseeder.bridge.net.PSHTTPConnector;
-import org.pageseeder.bridge.net.PSHTTPConnectors;
-import org.pageseeder.bridge.net.PSHTTPResourceType;
-import org.pageseeder.bridge.net.PSHTTPResponseInfo;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo.Status;
-import org.pageseeder.bridge.net.Servlets;
 import org.pageseeder.bridge.psml.PSMLFragment;
 import org.pageseeder.bridge.xml.PSDocumentHandler;
 import org.pageseeder.bridge.xml.PSFragmentHandler;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A manager for documents and folders (based on PageSeeder URIs).

@@ -15,11 +15,11 @@
  */
 package org.pageseeder.bridge.model;
 
-import java.util.Objects;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.PSEntity;
+
+import java.util.Objects;
 
 /**
  * A PageSeeder member.

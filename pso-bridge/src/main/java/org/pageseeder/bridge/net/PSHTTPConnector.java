@@ -15,12 +15,6 @@
  */
 package org.pageseeder.bridge.net;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Map;
-
-import javax.xml.transform.Templates;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSConfig;
@@ -33,6 +27,11 @@ import org.pageseeder.xmlwriter.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.transform.Templates;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Map;
 
 /**
  * Represents a request made to the PageSeeder Server.

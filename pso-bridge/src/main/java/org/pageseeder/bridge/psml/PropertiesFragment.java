@@ -15,13 +15,13 @@
  */
 package org.pageseeder.bridge.psml;
 
+import org.jspecify.annotations.Nullable;
+import org.pageseeder.xmlwriter.XMLWriter;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import org.jspecify.annotations.Nullable;
-import org.pageseeder.xmlwriter.XMLWriter;
 
 /**
  * A PSML properties fragment.

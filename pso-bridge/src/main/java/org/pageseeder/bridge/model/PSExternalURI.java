@@ -15,11 +15,11 @@
  */
 package org.pageseeder.bridge.model;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-
 import org.pageseeder.bridge.EntityValidity;
 import org.pageseeder.bridge.PSEntity;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 /**
  * Represents a PageSeeder URL.

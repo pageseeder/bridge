@@ -15,6 +15,11 @@
  */
 package org.pageseeder.bridge.net;
 
+import org.jspecify.annotations.Nullable;
+import org.pageseeder.bridge.PSConfig;
+import org.pageseeder.bridge.PSCredentials;
+import org.pageseeder.bridge.PSSession;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,11 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.PSConfig;
-import org.pageseeder.bridge.PSCredentials;
-import org.pageseeder.bridge.PSSession;
 
 /**
  * Defines a resource to retrieve from PageSeeder.

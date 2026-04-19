@@ -15,23 +15,18 @@
  */
 package org.pageseeder.bridge.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.model.PSComment;
+import org.pageseeder.bridge.model.*;
 import org.pageseeder.bridge.model.PSComment.Attachment;
-import org.pageseeder.bridge.model.PSDocument;
-import org.pageseeder.bridge.model.PSExternalURI;
-import org.pageseeder.bridge.model.PSGroup;
-import org.pageseeder.bridge.model.PSMember;
-import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.util.Rules;
 import org.pageseeder.xmlwriter.XML.NamespaceAware;
 import org.pageseeder.xmlwriter.XMLStringWriter;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles XML for services returning comments.

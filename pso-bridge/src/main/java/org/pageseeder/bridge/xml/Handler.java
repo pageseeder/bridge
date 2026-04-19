@@ -15,10 +15,10 @@
  */
 package org.pageseeder.bridge.xml;
 
-import java.util.List;
-
 import org.jspecify.annotations.Nullable;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.util.List;
 
 /**
  * A handler is a SAX handler which can be supplied to a response in order to

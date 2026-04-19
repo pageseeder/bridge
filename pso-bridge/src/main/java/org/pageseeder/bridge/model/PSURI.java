@@ -15,14 +15,14 @@
  */
 package org.pageseeder.bridge.model;
 
+import org.jspecify.annotations.Nullable;
+import org.pageseeder.bridge.EntityValidity;
+import org.pageseeder.bridge.util.ISO8601;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.*;
-
-import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.EntityValidity;
-import org.pageseeder.bridge.util.ISO8601;
 
 /**
  * The common base class for folders and documents.

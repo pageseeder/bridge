@@ -15,13 +15,13 @@
  */
 package org.pageseeder.bridge.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSEntity;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A base class for handlers used to create PageSeeder entities.

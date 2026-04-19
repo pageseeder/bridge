@@ -15,8 +15,6 @@
  */
 package org.pageseeder.bridge.control;
 
-import java.util.Objects;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSCredentials;
@@ -25,6 +23,8 @@ import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo;
 import org.pageseeder.bridge.xml.PSThreadHandler;
+
+import java.util.Objects;
 
 /**
  * A manager for process threads.

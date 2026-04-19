@@ -15,8 +15,6 @@
  */
 package org.pageseeder.bridge.control;
 
-import java.util.List;
-
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.PSEntityCache;
@@ -26,6 +24,8 @@ import org.pageseeder.bridge.model.PSXRef;
 import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
 import org.pageseeder.bridge.xml.PSXRefHandler;
+
+import java.util.List;
 
 /**
  * A manager for XRefs (based on PageSeeder XRefs).

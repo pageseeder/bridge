@@ -15,12 +15,12 @@
  */
 package org.pageseeder.bridge.net;
 
-import java.util.Objects;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.InvalidEntityException;
 import org.pageseeder.bridge.PSEntity;
+
+import java.util.Objects;
 
 /**
  * A utility class to check the preconditions.

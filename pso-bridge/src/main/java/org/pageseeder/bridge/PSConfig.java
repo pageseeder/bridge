@@ -15,15 +15,15 @@
  */
 package org.pageseeder.bridge;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.pageseeder.bridge.spi.ConfigProvider;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ServiceLoader;
-
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.spi.ConfigProvider;
 
 /**
  * Configuration of the PageSeeder server that the API should use to connect.

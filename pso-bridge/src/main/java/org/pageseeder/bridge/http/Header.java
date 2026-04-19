@@ -15,6 +15,8 @@
  */
 package org.pageseeder.bridge.http;
 
+import org.jspecify.annotations.Nullable;
+
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.StandardCharsets;
@@ -25,8 +27,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
-
-import org.jspecify.annotations.Nullable;
 
 /**
  * A HTTP header

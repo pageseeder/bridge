@@ -15,12 +15,12 @@
  */
 package org.pageseeder.bridge.xml;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.xml.sax.Attributes;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A base class to construct objects from search results.

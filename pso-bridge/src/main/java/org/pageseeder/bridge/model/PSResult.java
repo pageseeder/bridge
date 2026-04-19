@@ -15,11 +15,11 @@
  */
 package org.pageseeder.bridge.model;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jspecify.annotations.Nullable;
 
 /**
  * A single search result.

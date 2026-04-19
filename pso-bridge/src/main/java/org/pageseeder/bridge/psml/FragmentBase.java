@@ -15,12 +15,12 @@
  */
 package org.pageseeder.bridge.psml;
 
-import java.io.IOException;
-import java.util.Objects;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.xmlwriter.XML.NamespaceAware;
 import org.pageseeder.xmlwriter.XMLStringWriter;
+
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Base class for PSML fragments providing common logic for the id and type.

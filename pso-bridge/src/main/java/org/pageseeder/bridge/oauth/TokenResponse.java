@@ -15,6 +15,13 @@
  */
 package org.pageseeder.bridge.oauth;
 
+import org.jspecify.annotations.Nullable;
+import org.pageseeder.bridge.PSToken;
+import org.pageseeder.bridge.model.PSMember;
+import org.pageseeder.bridge.net.HTTP;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,13 +29,6 @@ import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.PSToken;
-import org.pageseeder.bridge.model.PSMember;
-import org.pageseeder.bridge.net.HTTP;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The response from a token request.

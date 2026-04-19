@@ -15,13 +15,13 @@
  */
 package org.pageseeder.bridge.http;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Objects;
-
-import org.jspecify.annotations.Nullable;
 
 /**
  * A simple object to hold the content of a cached response.

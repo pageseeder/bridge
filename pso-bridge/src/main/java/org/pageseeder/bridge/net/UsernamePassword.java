@@ -15,11 +15,11 @@
  */
 package org.pageseeder.bridge.net;
 
+import org.pageseeder.bridge.PSCredentials;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Objects;
-
-import org.pageseeder.bridge.PSCredentials;
 
 /**
  * A username and password pair to authenticate a user on PageSeeder.

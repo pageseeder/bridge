@@ -15,15 +15,15 @@
  */
 package org.pageseeder.bridge.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.http.ContentException;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Simplifies SAX parsing by providing basic state machine on top of default handler.

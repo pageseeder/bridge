@@ -15,15 +15,10 @@
  */
 package org.pageseeder.bridge.net;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
 import org.jspecify.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.*;
 import java.security.cert.X509Certificate;
 
 /**

@@ -15,15 +15,6 @@
  */
 package org.pageseeder.bridge.control;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.PSEntity;
-import org.pageseeder.bridge.PSEntityCache;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
@@ -35,6 +26,14 @@ import net.sf.ehcache.search.Attribute;
 import net.sf.ehcache.search.Query;
 import net.sf.ehcache.search.Result;
 import net.sf.ehcache.search.Results;
+import org.jspecify.annotations.Nullable;
+import org.pageseeder.bridge.PSEntity;
+import org.pageseeder.bridge.PSEntityCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A cache for a PageSeeder entity backed by EHCache.

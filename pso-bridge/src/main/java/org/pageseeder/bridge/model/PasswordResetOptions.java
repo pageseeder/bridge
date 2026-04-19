@@ -15,10 +15,10 @@
  */
 package org.pageseeder.bridge.model;
 
-import java.util.Date;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.util.ISO8601;
+
+import java.util.Date;
 
 /**
  * Options for resetting the password.

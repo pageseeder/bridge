@@ -15,9 +15,6 @@
  */
 package org.pageseeder.bridge.net;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.Requires;
 import org.pageseeder.bridge.model.PSComment.Author;
@@ -25,6 +22,9 @@ import org.pageseeder.bridge.model.PSComment.Context;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.model.PSURI;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * A low-level utility class to generate the URL for PageSeeder services.

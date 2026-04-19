@@ -15,14 +15,14 @@
  */
 package org.pageseeder.bridge.model;
 
+import org.jspecify.annotations.Nullable;
+import org.pageseeder.bridge.util.ISO8601;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.util.ISO8601;
 
 /**
  * A predicate for a search.

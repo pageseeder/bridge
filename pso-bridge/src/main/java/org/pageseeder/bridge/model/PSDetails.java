@@ -15,10 +15,10 @@
  */
 package org.pageseeder.bridge.model;
 
-import java.io.Serializable;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.EntityValidity;
+
+import java.io.Serializable;
 
 /**
  * The details of a membership.

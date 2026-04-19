@@ -15,14 +15,14 @@
  */
 package org.pageseeder.bridge.model;
 
+import org.jspecify.annotations.Nullable;
+import org.pageseeder.bridge.EntityValidity;
+import org.pageseeder.bridge.PSEntity;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
-
-import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.EntityValidity;
-import org.pageseeder.bridge.PSEntity;
 
 /**
  * A PageSeeder group.

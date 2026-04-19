@@ -15,25 +15,21 @@
  */
 package org.pageseeder.bridge.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.model.PSDocument;
 import org.pageseeder.bridge.model.PSURI;
 import org.pageseeder.bridge.model.PSXRef;
-import org.pageseeder.bridge.psml.Fragment;
-import org.pageseeder.bridge.psml.PSMLFragment;
-import org.pageseeder.bridge.psml.PropertiesFragment;
-import org.pageseeder.bridge.psml.Property;
-import org.pageseeder.bridge.psml.XRefFragment;
+import org.pageseeder.bridge.psml.*;
 import org.pageseeder.xmlwriter.XML.NamespaceAware;
 import org.pageseeder.xmlwriter.XMLStringWriter;
 import org.pageseeder.xmlwriter.XMLWriter;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Handler for PSML fragments.

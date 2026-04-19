@@ -15,13 +15,13 @@
  */
 package org.pageseeder.bridge.model;
 
+import org.jspecify.annotations.Nullable;
+import org.pageseeder.bridge.util.Rules;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.util.Rules;
 
 /**
  * Define options to send mail via PageSeeder.

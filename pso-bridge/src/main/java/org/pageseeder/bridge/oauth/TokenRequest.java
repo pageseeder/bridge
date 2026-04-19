@@ -15,6 +15,11 @@
  */
 package org.pageseeder.bridge.oauth;
 
+import org.jspecify.annotations.Nullable;
+import org.pageseeder.bridge.PSConfig;
+import org.pageseeder.bridge.net.HTTP;
+import org.pageseeder.bridge.net.UsernamePassword;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ConnectException;
@@ -25,11 +30,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.PSConfig;
-import org.pageseeder.bridge.net.HTTP;
-import org.pageseeder.bridge.net.UsernamePassword;
 
 /**
  * A request to the PageSeeder token endpoint.

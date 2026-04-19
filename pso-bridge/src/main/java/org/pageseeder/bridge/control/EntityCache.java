@@ -15,16 +15,16 @@
  */
 package org.pageseeder.bridge.control;
 
+import org.jspecify.annotations.Nullable;
+import org.pageseeder.bridge.PSEntity;
+import org.pageseeder.bridge.PSEntityCache;
+
 import javax.cache.Cache;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.EternalExpiryPolicy;
 import javax.cache.spi.CachingProvider;
-
-import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.PSEntity;
-import org.pageseeder.bridge.PSEntityCache;
 
 /**
  * A cache for a PageSeeder entity backed by EHCache.

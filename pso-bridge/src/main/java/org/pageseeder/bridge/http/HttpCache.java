@@ -15,8 +15,6 @@
  */
 package org.pageseeder.bridge.http;
 
-import org.jspecify.annotations.Nullable;
-
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -24,6 +22,7 @@ import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.PersistenceConfiguration;
 import net.sf.ehcache.config.PersistenceConfiguration.Strategy;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
+import org.jspecify.annotations.Nullable;
 
 /**
  *

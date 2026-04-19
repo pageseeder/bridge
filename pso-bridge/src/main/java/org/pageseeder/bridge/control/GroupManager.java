@@ -15,31 +15,18 @@
  */
 package org.pageseeder.bridge.control;
 
-import java.util.List;
-import java.util.Objects;
-
 import org.jspecify.annotations.Nullable;
-import org.pageseeder.bridge.APIException;
-import org.pageseeder.bridge.FailedPrecondition;
-import org.pageseeder.bridge.InvalidEntityException;
-import org.pageseeder.bridge.PSCredentials;
-import org.pageseeder.bridge.PSEntityCache;
-import org.pageseeder.bridge.Requires;
-import org.pageseeder.bridge.model.GroupOptions;
-import org.pageseeder.bridge.model.PSGroup;
-import org.pageseeder.bridge.model.PSGroupFolder;
-import org.pageseeder.bridge.model.PSMember;
-import org.pageseeder.bridge.model.PSNotification;
-import org.pageseeder.bridge.model.PSProject;
-import org.pageseeder.bridge.model.PSResource;
-import org.pageseeder.bridge.model.PSRole;
-import org.pageseeder.bridge.model.PSThreadStatus;
+import org.pageseeder.bridge.*;
+import org.pageseeder.bridge.model.*;
 import org.pageseeder.bridge.net.PSHTTPConnector;
 import org.pageseeder.bridge.net.PSHTTPConnectors;
 import org.pageseeder.bridge.net.PSHTTPResponseInfo;
 import org.pageseeder.bridge.xml.PSGroupFolderHandler;
 import org.pageseeder.bridge.xml.PSGroupHandler;
 import org.pageseeder.bridge.xml.PSThreadHandler;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * A manager for groups, projects and group folders.

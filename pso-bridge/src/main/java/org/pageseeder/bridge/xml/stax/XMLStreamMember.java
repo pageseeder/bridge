@@ -21,10 +21,9 @@ import org.pageseeder.bridge.core.MemberStatus;
 import org.pageseeder.bridge.core.Username;
 import org.pageseeder.bridge.xml.MissingAttributeException;
 
-import java.time.OffsetDateTime;
-
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import java.time.OffsetDateTime;
 
 /**
  * This class returns <code>Member</code> instances from the {@code <member>} elements.

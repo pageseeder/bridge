@@ -15,43 +15,24 @@
  */
 package org.pageseeder.bridge.net;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.FailedPrecondition;
 import org.pageseeder.bridge.InvalidEntityException;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.Requires;
-import org.pageseeder.bridge.model.GroupOptions;
-import org.pageseeder.bridge.model.MailOptions;
-import org.pageseeder.bridge.model.MemberOptions;
+import org.pageseeder.bridge.model.*;
 import org.pageseeder.bridge.model.MemberOptions.Invitation;
-import org.pageseeder.bridge.model.PSComment;
 import org.pageseeder.bridge.model.PSComment.Attachment;
 import org.pageseeder.bridge.model.PSComment.Author;
 import org.pageseeder.bridge.model.PSComment.Context;
-import org.pageseeder.bridge.model.PSDetails;
-import org.pageseeder.bridge.model.PSDocument;
-import org.pageseeder.bridge.model.PSExternalURI;
-import org.pageseeder.bridge.model.PSGroup;
-import org.pageseeder.bridge.model.PSMember;
-import org.pageseeder.bridge.model.PSMembership;
-import org.pageseeder.bridge.model.PSNotification;
-import org.pageseeder.bridge.model.PSNotify;
-import org.pageseeder.bridge.model.PSPredicate;
-import org.pageseeder.bridge.model.PSProject;
-import org.pageseeder.bridge.model.PSResource;
-import org.pageseeder.bridge.model.PSRole;
-import org.pageseeder.bridge.model.PSThreadStatus;
-import org.pageseeder.bridge.model.PSURI;
-import org.pageseeder.bridge.model.PSXRef;
-import org.pageseeder.bridge.model.PasswordResetOptions;
 import org.pageseeder.bridge.psml.PSMLFragment;
 import org.pageseeder.bridge.util.ISO8601;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 
 /**
  * A utility class to provide predefined connectors to PageSeeder via HTTP.

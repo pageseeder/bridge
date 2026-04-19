@@ -15,14 +15,14 @@
  */
 package org.pageseeder.bridge.psml;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.pageseeder.bridge.model.PSXRef;
 import org.pageseeder.bridge.model.PSXRef.Display;
 import org.pageseeder.bridge.model.PSXRef.Type;
 import org.pageseeder.xmlwriter.XMLWriter;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A PSML XRef fragment.
