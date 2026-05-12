@@ -6,4 +6,5 @@
  *
  * @author christophe Lauret
  */
+@org.jspecify.annotations.NullMarked
 package org.pageseeder.bridge.berlioz;
