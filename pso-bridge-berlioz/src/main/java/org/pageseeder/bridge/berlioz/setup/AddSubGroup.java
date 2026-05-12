@@ -35,7 +35,12 @@ import org.pageseeder.xmlwriter.XMLWriter;
 public final class AddSubGroup implements Action {
 
   /** Used for the status of an execution task */
-  private enum Status {added, failed, skipped}
+  private enum Status {
+    ADDED, FAILED, SKIPPED;
+   public String value() {
+      return name().toLowerCase();
+    }
+  }
 
   /** The group to add as a subgroup */
   @Nullable PSGroup group = null;
@@ -64,12 +69,12 @@ public final class AddSubGroup implements Action {
 
   @Override
   public void simulate(SetupEnvironment env, XMLWriter xml) throws IOException {
-    toXML(xml, this.group, this.to, Status.added);
+    toXML(xml, this.group, this.to, Status.ADDED);
   }
 
   @Override
   public void execute(SetupEnvironment env, XMLWriter xml) throws SetupException, IOException {
-    Status status = Status.skipped;
+    Status status = Status.SKIPPED;
     GroupManager manager = env.getGroupManager();
     try {
       // check whether the subgroup already exists
@@ -84,10 +89,10 @@ public final class AddSubGroup implements Action {
       // If not add the subgroup
       if (add) {
         manager.addSubGroup(this.to, this.group);
-        status = Status.added;
+        status = Status.ADDED;
       }
     } catch (APIException ex) {
-      status = Status.failed;
+      status = Status.FAILED;
       throw new SetupException("Unable to add subgroup", ex);
     } finally {
       toXML(xml, this.group, this.to, status);
@@ -104,7 +109,7 @@ public final class AddSubGroup implements Action {
     xml.openElement("add-subgroup");
     xml.attribute("name", this.group.getName());
     xml.attribute("to", this.to.getName());
-    xml.attribute("status", status.name());
+    xml.attribute("status", status.value());
     xml.closeElement();
   }
 }

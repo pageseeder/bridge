@@ -80,6 +80,7 @@ public final class ClientProjectCheck implements AppAction {
 
     // Get project
     PSCredentials credentials = response.getAccessToken();
+    assert credentials != null : "Access token should not be null when successful";
     PSGroup project = Request.newService(Method.GET, "/projects/{group}", name)
         .config(config)
         .using(credentials)

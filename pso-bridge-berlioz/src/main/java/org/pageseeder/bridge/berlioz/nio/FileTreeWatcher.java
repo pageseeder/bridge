@@ -62,22 +62,22 @@ public final class FileTreeWatcher {
   private static final Logger LOGGER = LoggerFactory.getLogger(FileTreeWatcher.class);
 
   /** The root of the file tree to watch. */
-  private final Path _root;
+  private final Path root;
 
   /** A list of path to ignore within the root. */
-  private final List<Path> _ignore;
+  private final List<Path> ignore;
 
   /** The listener to report events to. */
-  private final WatchListener _listener;
+  private final WatchListener listener;
 
   /** Maintains the status of this watcher. */
-  private AtomicBoolean running;
+  private final AtomicBoolean running;
 
   private @Nullable WatchService watchService;
   private @Nullable Thread watchThread;
 
   /** Maps Watch keys to the watched directory path. */
-  private final Map<WatchKey,Path> _keys;
+  private final Map<WatchKey,Path> keys;
 
   /**
    * Creates a new watcher.
@@ -87,10 +87,10 @@ public final class FileTreeWatcher {
    * @param listener The listener which receives the events
    */
   public FileTreeWatcher(Path root, List<Path> ignore, WatchListener listener) {
-    this._root = root;
-    this._ignore = ignore;
-    this._listener = listener;
-    this._keys = new HashMap<>();
+    this.root = root;
+    this.ignore = ignore;
+    this.listener = listener;
+    this.keys = new HashMap<>();
 
     this.running = new AtomicBoolean(false);
 
@@ -128,23 +128,25 @@ public final class FileTreeWatcher {
   public void start() throws IOException {
     this.watchService = FileSystems.getDefault().newWatchService();
     this.watchThread = new Thread(() -> {
-      WatchListener listener = FileTreeWatcher.this._listener;
+      WatchListener watchListener = FileTreeWatcher.this.listener;
       FileTreeWatcher.this.running.set(true);
-      registerAll(FileTreeWatcher.this._root);
+      registerAll(FileTreeWatcher.this.root);
       while (FileTreeWatcher.this.running.get()) {
         try {
           WatchKey key = FileTreeWatcher.this.watchService.take();
 
-          Path dir = FileTreeWatcher.this._keys.get(key);
+          Path dir = FileTreeWatcher.this.keys.get(key);
           if (dir == null) {
             LOGGER.warn("WatchKey not recognized!!");
             continue;
           }
 
           // Iterate through events
-          for (WatchEvent<?> event: key.pollEvents()) {
+          for (WatchEvent<?> event : key.pollEvents()) {
             WatchEvent.Kind<?> kind = event.kind();
-            if (kind == OVERFLOW) { continue; }
+            if (kind == OVERFLOW) {
+              continue;
+            }
 
             // Context for directory entry event is the file name of entry
             WatchEvent<Path> ev = cast(event);
@@ -157,17 +159,17 @@ public final class FileTreeWatcher {
             }
 
             // Report all other events to the listener
-            else if (listener != null) {
-              listener.received(child, ev.kind());
+            else if (watchListener != null) {
+              watchListener.received(child, ev.kind());
             }
           }
 
           // Remove deleted directories
           boolean valid = key.reset();
           if (!valid) {
-            FileTreeWatcher.this._keys.remove(key);
+            FileTreeWatcher.this.keys.remove(key);
             // all directories are inaccessible
-            if (FileTreeWatcher.this._keys.isEmpty()) {
+            if (FileTreeWatcher.this.keys.isEmpty()) {
               break;
             }
           }
@@ -211,7 +213,7 @@ public final class FileTreeWatcher {
       Files.walkFileTree(start, new FileVisitor<Path>() {
         @Override
         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-          if (FileTreeWatcher.this._ignore.contains(dir)) return FileVisitResult.SKIP_SUBTREE;
+          if (FileTreeWatcher.this.ignore.contains(dir)) return FileVisitResult.SKIP_SUBTREE;
           else {
             register(dir);
             return FileVisitResult.CONTINUE;
@@ -247,7 +249,7 @@ public final class FileTreeWatcher {
     try {
       WatchKey key = dir.register(this.watchService, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
       LOGGER.info("Registering {}", dir);
-      this._keys.put(key, dir);
+      this.keys.put(key, dir);
     } catch (IOException ex) {
       // TODO handle
       ex.printStackTrace();

@@ -80,6 +80,7 @@ public final class ClientGroupCheck implements AppAction {
 
     // Get group
     PSCredentials credentials = response.getAccessToken();
+    assert credentials != null : "Access token should not be null when successful";
     PSGroup group = Request.newService(Method.GET, "/groups/{group}", name)
         .config(config)
         .using(credentials)

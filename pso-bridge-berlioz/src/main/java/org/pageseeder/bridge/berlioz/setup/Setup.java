@@ -24,6 +24,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.model.GroupOptions;
 import org.pageseeder.bridge.model.PSGroup;
 import org.pageseeder.bridge.model.PSNotification;
@@ -58,7 +59,7 @@ public final class Setup {
   /**
    * The list of setup actions to execute / simulate.
    */
-  final List<Action> _actions = new ArrayList<>();
+  final List<Action> actions = new ArrayList<>();
 
   /**
    * Simulate the setup script and returns the actions as XML.
@@ -73,7 +74,7 @@ public final class Setup {
     xml.openElement("setup", true);
     xml.attribute("simulate", "true");
     try {
-      for (Action action : this._actions) {
+      for (Action action : this.actions) {
         action.simulate(this.env, xml);
       }
     } finally {
@@ -94,7 +95,7 @@ public final class Setup {
     xml.openElement("setup", true);
     try {
       // Iterate over the actions
-      for (Action action : this._actions) {
+      for (Action action : this.actions) {
         action.execute(this.env, xml);
       }
     } finally {
@@ -128,14 +129,14 @@ public final class Setup {
 
   static class Handler extends DefaultHandler {
 
-    private final Setup _setup;
+    private final Setup setup;
 
     public Handler(Setup setup) {
-      this._setup = setup;
+      this.setup = setup;
     }
 
     public Setup getSetup() {
-      return this._setup;
+      return this.setup;
     }
 
     @Override
@@ -144,44 +145,44 @@ public final class Setup {
         case "group-options":
           String id = attributes.getValue("id");
           GroupOptions options = handleGroupOption(attributes);
-          this._setup.env._groupOptions.put(id, options);
+          this.setup.env.groupOptions.put(id, options);
           break;
 
         case "project":
           PSProject project = handleProject(attributes);
-          this._setup.env.putProject(project);
+          this.setup.env.putProject(project);
           break;
 
         case "group":
           PSGroup group = handleGroup(attributes);
-          this._setup.env.putGroup(group);
+          this.setup.env.putGroup(group);
           break;
 
         case "create-project":
           CreateProject createProject = new CreateProject();
-          createProject.setProject(this._setup.env.getProject(attributes.getValue("name")));
-          createProject.setOptions(this._setup.env._groupOptions.get(attributes.getValue("group-options")));
-          this._setup._actions.add(createProject);
+          createProject.setProject(this.setup.env.getProject(attributes.getValue("name")));
+          createProject.setOptions(this.setup.env.groupOptions.get(attributes.getValue("group-options")));
+          this.setup.actions.add(createProject);
           break;
 
         case "create-group":
           CreateGroup createGroup = new CreateGroup();
-          createGroup.setGroup(this._setup.env.getGroup(attributes.getValue("name")));
-          createGroup.setOptions(this._setup.env._groupOptions.get(attributes.getValue("group-options")));
-          this._setup._actions.add(createGroup);
+          createGroup.setGroup(this.setup.env.getGroup(attributes.getValue("name")));
+          createGroup.setOptions(this.setup.env.groupOptions.get(attributes.getValue("group-options")));
+          this.setup.actions.add(createGroup);
           break;
 
         case "upload-resources":
           UploadResources uploadResources = new UploadResources();
-          uploadResources.setTo(this._setup.env.getProject(attributes.getValue("to")));
-          this._setup._actions.add(uploadResources);
+          uploadResources.setTo(this.setup.env.getProject(attributes.getValue("to")));
+          this.setup.actions.add(uploadResources);
           break;
 
         case "add-subgroup":
           AddSubGroup addSubGroup = new AddSubGroup();
-          addSubGroup.setGroup(this._setup.env.getGroup(attributes.getValue("name")));
-          addSubGroup.setTo(this._setup.env.getGroup(attributes.getValue("to")));
-          this._setup._actions.add(addSubGroup);
+          addSubGroup.setGroup(this.setup.env.getGroup(attributes.getValue("name")));
+          addSubGroup.setTo(this.setup.env.getGroup(attributes.getValue("to")));
+          this.setup.actions.add(addSubGroup);
           break;
       }
     }
@@ -264,7 +265,7 @@ public final class Setup {
       return project;
     }
 
-    private static Boolean getBoolean(Attributes attributes, int index) {
+    private static @Nullable Boolean getBoolean(Attributes attributes, int index) {
       String value = attributes.getValue(index);
       if (value == null) return null;
       return "true".equals(value);

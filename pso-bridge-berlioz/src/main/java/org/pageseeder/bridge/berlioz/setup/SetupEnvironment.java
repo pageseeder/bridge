@@ -44,7 +44,7 @@ public final class SetupEnvironment {
   /**
    * Group options defined in this environment.
    */
-  final Map<String, GroupOptions> _groupOptions = new HashMap<>();
+  final Map<String, GroupOptions> groupOptions = new HashMap<>();
 
   /**
    * Projects defined in this environment.

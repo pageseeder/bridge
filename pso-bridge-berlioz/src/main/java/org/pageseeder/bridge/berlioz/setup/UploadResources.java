@@ -39,7 +39,10 @@ import org.pageseeder.xmlwriter.XMLWriter;
  */
 public final class UploadResources implements Action {
 
-  private enum Status {failed, uploaded}
+  private enum Status {FAILED, UPLOADED;
+  String value() {
+    return name().toLowerCase();
+  }}
 
   /**
    * Projects the resources should be uploaded to.
@@ -126,13 +129,13 @@ public final class UploadResources implements Action {
       String mediatype = Files.probeContentType(file);
       Path f = this.from.relativize(file);
       String pspath = this.target +"/"+this.project.getName()+"/"+UploadResources.toString(f);
-      Status status = Status.uploaded;
+      Status status = Status.UPLOADED;
       try {
         String content = new String(Files.readAllBytes(file));
         PSResource resource = new PSResource(pspath, content);
         this.groupManager.putResource(this.project, resource, true);
       } catch (APIException ex) {
-        status = Status.failed;
+        status = Status.FAILED;
         // Nothing else we can do here
       } finally {
         this.xml.openElement("upload-resource");
@@ -172,7 +175,7 @@ public final class UploadResources implements Action {
       this.xml.attribute("path", this.target +"/"+this.project.getName()+"/"+UploadResources.toString(f));
       this.xml.attribute("mediatype", mediatype);
       this.xml.attribute("to", this.project.getName());
-      this.xml.attribute("status", Status.uploaded.name());
+      this.xml.attribute("status", Status.UPLOADED.value());
       this.xml.closeElement();
       return FileVisitResult.CONTINUE;
     }

@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Christophe Lauret
  *
- * @version 0.1.0
+ * @version 0.12.0
  * @since 0.1.0
  */
 public final class AuthSessions {
