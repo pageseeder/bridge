@@ -36,7 +36,10 @@ import org.pageseeder.xmlwriter.XMLWriter;
 public final class CreateGroup implements Action {
 
   /** Used for the status of an execution task */
-  private enum Status {created, failed, skipped}
+  private enum Status {
+    CREATED, FAILED, SKIPPED; public String value() {
+      return name().toLowerCase();
+    }}
 
   /** The group to create */
   @Nullable PSGroup group = null;
@@ -65,7 +68,7 @@ public final class CreateGroup implements Action {
 
   @Override
   public void simulate(SetupEnvironment env, XMLWriter xml) throws SetupException, IOException {
-    Status status = Status.skipped;
+    Status status = Status.SKIPPED;
     try {
       status = execute(env, true);
     } finally {
@@ -75,7 +78,7 @@ public final class CreateGroup implements Action {
 
   @Override
   public void execute(SetupEnvironment env, XMLWriter xml) throws SetupException, IOException {
-    Status status = Status.skipped;
+    Status status = Status.SKIPPED;
     try {
       status = execute(env, false);
     } finally {
@@ -89,12 +92,11 @@ public final class CreateGroup implements Action {
   }
 
 
-
   // private helpers
   // ----------------------------------------------------------------------------------------------
 
   public Status execute(SetupEnvironment env, boolean simulate) throws SetupException {
-    Status status = Status.skipped;
+    Status status = Status.SKIPPED;
     GroupManager manager = env.getGroupManager();
     PSMember m = env.getMember();
     try {
@@ -109,19 +111,19 @@ public final class CreateGroup implements Action {
             manager.createGroup(this.group, m);
           }
         }
-        status = Status.created;
+        status = Status.CREATED;
       }
     } catch (APIException ex) {
-      status = Status.failed;
+      status = Status.FAILED;
       throw new SetupException("Unable to create group '"+this.group.getName()+"'", ex);
     }
     return status;
   }
 
-  private void toXML(XMLWriter xml, PSGroup group, Status status) throws IOException {
+  private static void toXML(XMLWriter xml, PSGroup group, Status status) throws IOException {
     xml.openElement("create-group");
-    xml.attribute("name", this.group.getName());
-    xml.attribute("status", status.name());
+    xml.attribute("name", group.getName());
+    xml.attribute("status", status.value());
     xml.closeElement();
   }
 }
