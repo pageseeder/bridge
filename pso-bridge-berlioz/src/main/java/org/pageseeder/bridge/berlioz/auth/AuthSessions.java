@@ -21,6 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.jspecify.annotations.Nullable;
+
 import org.pageseeder.berlioz.GlobalSettings;
 import org.pageseeder.berlioz.content.ContentRequest;
 import org.pageseeder.bridge.APIException;
@@ -83,7 +85,7 @@ public final class AuthSessions {
    * @param req the content request.
    * @return the user if any or <code>null</code>.
    */
-  public static PSSession getPSSession(HttpServletRequest req) {
+  public static @Nullable PSSession getPSSession(HttpServletRequest req) {
     PSUser user = getInstanceOfUser(req);
     return user.getSession();
   }
@@ -94,7 +96,7 @@ public final class AuthSessions {
    * @param req the content request.
    * @return the user if any or <code>null</code>.
    */
-  public static PSSession getPSSession(ContentRequest req) {
+  public static @Nullable PSSession getPSSession(ContentRequest req) {
     PSUser user = getInstanceOfUser(req);
     return user.getSession();
   }
@@ -105,7 +107,7 @@ public final class AuthSessions {
    * @param req the content request.
    * @return the user if any or <code>null</code>.
    */
-  public static User getUser(HttpServletRequest req) {
+  public static @Nullable User getUser(HttpServletRequest req) {
     return getUser(req.getSession());
   }
 
@@ -115,7 +117,7 @@ public final class AuthSessions {
    * @param req the content request.
    * @return the user if any or <code>null</code>.
    */
-  public static User getUser(ContentRequest req) {
+  public static @Nullable User getUser(ContentRequest req) {
     return getUser(req.getSession());
   }
 
@@ -127,7 +129,7 @@ public final class AuthSessions {
    * @param req the content request.
    * @return the user if any or <code>null</code>.
    */
-  public static <T extends User> T getInstanceOfUser(ContentRequest req) {
+  public static <T extends User> @Nullable T getInstanceOfUser(ContentRequest req) {
     return (T)getUser(req.getSession());
   }
 
@@ -139,7 +141,7 @@ public final class AuthSessions {
    * @param req the content request.
    * @return the user if any or <code>null</code>.
    */
-  public static <T extends User> T getInstanceOfUser(HttpServletRequest req) {
+  public static <T extends User> @Nullable T getInstanceOfUser(HttpServletRequest req) {
     return (T)getUser(req.getSession());
   }
 
@@ -149,7 +151,7 @@ public final class AuthSessions {
    * @param session the session
    * @return the user if any or <code>null</code>.
    */
-  public static User getUser(HttpSession session) {
+  public static @Nullable User getUser(@Nullable HttpSession session) {
     if (session == null) return null;
     Object o = session.getAttribute(AuthSessions.USER_ATTRIBUTE);
     if (o instanceof User) return (User)o;
@@ -171,7 +173,7 @@ public final class AuthSessions {
    * @return The PageSeeder Admin user or <code>null</code> if it is not configured properly or could not login.
    * @throws APIException If an error occurs while trying to login the admin user.
    */
-  public static PSSession getAdmin() throws APIException {
+  public static @Nullable PSSession getAdmin() throws APIException {
     return getConfiguredSession(ADMIN_USER_PROPERTY);
   }
 
@@ -188,7 +190,7 @@ public final class AuthSessions {
    * @return The PageSeeder setup member or <code>null</code> if it is not configured properly or could not login.
    * @throws APIException If an error occurs while trying to login the setup user.
    */
-  public static PSMember getAdminMember() throws APIException {
+  public static @Nullable PSMember getAdminMember() throws APIException {
     PSUser user = AuthSessions.getConfiguredUser(ADMIN_USER_PROPERTY);
     return user != null? user.toMember() : null;
   }
@@ -206,7 +208,7 @@ public final class AuthSessions {
    * @return The PageSeeder setup user or <code>null</code> if it is not configured properly or could not login.
    * @throws APIException If an error occurs while trying to login the setup user.
    */
-  public static PSSession getSetup() throws APIException {
+  public static @Nullable PSSession getSetup() throws APIException {
     return AuthSessions.getConfiguredSession(SETUP_USER_PROPERTY);
   }
 
@@ -223,7 +225,7 @@ public final class AuthSessions {
    * @return The PageSeeder setup member or <code>null</code> if it is not configured properly or could not login.
    * @throws APIException If an error occurs while trying to login the setup user.
    */
-  public static PSMember getSetupMember() throws APIException {
+  public static @Nullable PSMember getSetupMember() throws APIException {
     PSUser user = AuthSessions.getConfiguredUser(SETUP_USER_PROPERTY);
     return user != null? user.toMember() : null;
   }
@@ -243,7 +245,7 @@ public final class AuthSessions {
    * @return The PageSeeder setup member or <code>null</code> if it is not configured properly or could not login.
    * @throws APIException If an error occurs while trying to login the setup user.
    */
-  public static PSSession getConfiguredSession(String property) throws APIException {
+  public static @Nullable PSSession getConfiguredSession(String property) throws APIException {
     return toSession(AuthSessions.getConfiguredUser(property));
   }
 
@@ -255,7 +257,7 @@ public final class AuthSessions {
    * @return <code>true</code> if the session is still valid;
    *         <code>false</code> otherwise.
    */
-  public static boolean hasValidSession(PSUser user) {
+  public static boolean hasValidSession(@Nullable PSUser user) {
     if (user == null) return false;
     return isValid(user.getSession());
   }
@@ -268,7 +270,7 @@ public final class AuthSessions {
    * @return <code>true</code> if the session is still valid;
    *         <code>false</code> otherwise.
    */
-  public static boolean isValid(PSSession session) {
+  public static boolean isValid(@Nullable PSSession session) {
     if (session == null) return false;
     int minutes = GlobalSettings.get("pageseeder.session.timeout", 60);
     long maxSessionAge = minutes * ONE_MINUTE_IN_MS;
@@ -282,7 +284,7 @@ public final class AuthSessions {
    *
    * @return the session of this user or <code>null</code> if the user is <code>null</code>.
    */
-  public static PSSession toSession(PSUser user) {
+  public static @Nullable PSSession toSession(@Nullable PSUser user) {
     return user != null? user.getSession() : null;
   }
 
@@ -293,7 +295,7 @@ public final class AuthSessions {
    *
    * @return the user as a member or <code>null</code> if the user is <code>null</code>.
    */
-  public static PSMember toMember(PSUser user) {
+  public static @Nullable PSMember toMember(@Nullable PSUser user) {
     return user != null? user.toMember() : null;
   }
 
@@ -311,7 +313,7 @@ public final class AuthSessions {
    *
    * @throws APIException Should an error occur while attempting login
    */
-  public static PSUser getConfiguredUser(String property) throws APIException {
+  public static @Nullable PSUser getConfiguredUser(String property) throws APIException {
     String username = GlobalSettings.get(property+".username");
     String password = GlobalSettings.get(property+".password");
 

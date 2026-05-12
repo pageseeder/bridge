@@ -17,6 +17,7 @@ package org.pageseeder.bridge.berlioz.auth.spi;
 
 import java.util.Iterator;
 
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.berlioz.auth.Authenticator;
 
 /**
@@ -42,7 +43,7 @@ public abstract class AuthProvider {
    *
    * @return The corresponding authenticator instance or <code>null</code>
    */
-  public abstract Authenticator<?> authenticatorForName(String name);
+  public abstract @Nullable Authenticator<?> authenticatorForName(String name);
 
   /**
    * Creates an iterator that iterates over the authenticators supported by this provider.

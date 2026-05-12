@@ -17,6 +17,8 @@ package org.pageseeder.bridge.berlioz.setup;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
+
+import org.jspecify.annotations.Nullable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
@@ -42,9 +44,9 @@ public final class UploadResources implements Action {
   /**
    * Projects the resources should be uploaded to.
    */
-  PSProject to;
+  @Nullable PSProject to;
 
-  public PSProject getTo() {
+  public @Nullable PSProject getTo() {
     return this.to;
   }
 

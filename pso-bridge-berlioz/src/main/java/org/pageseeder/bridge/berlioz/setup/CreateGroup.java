@@ -17,6 +17,7 @@ package org.pageseeder.bridge.berlioz.setup;
 
 import java.io.IOException;
 
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.control.GroupManager;
 import org.pageseeder.bridge.model.GroupOptions;
@@ -38,15 +39,15 @@ public final class CreateGroup implements Action {
   private enum Status {created, failed, skipped}
 
   /** The group to create */
-  PSGroup group = null;
+  @Nullable PSGroup group = null;
 
   /** The options to use to create the group */
-  GroupOptions options = null;
+  @Nullable GroupOptions options = null;
 
   public CreateGroup() {
   }
 
-  public PSGroup getGroup() {
+  public @Nullable PSGroup getGroup() {
     return this.group;
   }
 
@@ -54,7 +55,7 @@ public final class CreateGroup implements Action {
     this.group = group;
   }
 
-  public GroupOptions getOptions() {
+  public @Nullable GroupOptions getOptions() {
     return this.options;
   }
 

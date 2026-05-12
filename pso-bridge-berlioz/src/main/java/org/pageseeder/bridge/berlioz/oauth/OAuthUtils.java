@@ -17,6 +17,7 @@ package org.pageseeder.bridge.berlioz.oauth;
 
 import javax.servlet.http.HttpSession;
 
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSToken;
 import org.pageseeder.bridge.berlioz.auth.AuthSessions;
 import org.pageseeder.bridge.http.Method;
@@ -37,7 +38,7 @@ public final class OAuthUtils {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OAuthUtils.class);
 
-  public static PSMember retrieve(PSToken token) {
+  public static @Nullable PSMember retrieve(PSToken token) {
     PSMember member = null;
     try {
       Response response = Request.newService(Method.GET, "/self").using(token).response();
@@ -59,7 +60,7 @@ public final class OAuthUtils {
    *
    * @return the current OAuth user.
    */
-  public static OAuthUser getOAuthUserInSession(HttpSession session) {
+  public static @Nullable OAuthUser getOAuthUserInSession(HttpSession session) {
     Object o = session.getAttribute(AuthSessions.USER_ATTRIBUTE);
     if (o instanceof OAuthUser) {
       OAuthUser user = (OAuthUser)o;

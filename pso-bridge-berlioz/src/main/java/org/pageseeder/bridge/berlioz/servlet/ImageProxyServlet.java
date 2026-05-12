@@ -28,6 +28,8 @@ import java.nio.file.Path;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
+
+import org.jspecify.annotations.Nullable;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -59,7 +61,7 @@ public final class ImageProxyServlet extends HttpServlet implements Servlet {
   private static final long serialVersionUID = 1L;
 
   /** Folders where the images are cached */
-  private File cache = null;
+  private @Nullable File cache = null;
 
   @Override
   public void init(ServletConfig config) throws ServletException {
@@ -163,7 +165,7 @@ public final class ImageProxyServlet extends HttpServlet implements Servlet {
    *
    * @throws IOException If an error occurs while reading the file
    */
-  private ImageResource getFromPageSeeder(URL url) throws IOException {
+  private @Nullable ImageResource getFromPageSeeder(URL url) throws IOException {
 
     // Extract metadata
     URLConnection connection = url.openConnection();

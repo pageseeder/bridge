@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.xmlwriter.XMLWriter;
@@ -51,17 +52,17 @@ public final class PSUser implements User {
   /**
    * The Member's email.
    */
-  private final String _email;
+  private final @Nullable String _email;
 
   /**
    * The Member's first name.
    */
-  private final String _firstname;
+  private final @Nullable String _firstname;
 
   /**
    * The Member's surname.
    */
-  private final String _surname;
+  private final @Nullable String _surname;
 
   /**
    * The Member's username.
@@ -76,7 +77,7 @@ public final class PSUser implements User {
   /**
    * The Member's PageSeeder session.
    */
-  private PSSession _session = null;
+  private @Nullable PSSession _session = null;
 
   /**
    * Creates a new PageSeeder User.
@@ -105,21 +106,21 @@ public final class PSUser implements User {
   /**
    * @return the PageSeeder email for this user.
    */
-  public String getEmail() {
+  public @Nullable String getEmail() {
     return this._email;
   }
 
   /**
    * @return the PageSeeder first name for this user.
    */
-  public String getFirstname() {
+  public @Nullable String getFirstname() {
     return this._firstname;
   }
 
   /**
    * @return the PageSeeder surname for this user.
    */
-  public String getSurname() {
+  public @Nullable String getSurname() {
     return this._surname;
   }
 
@@ -165,7 +166,7 @@ public final class PSUser implements User {
    *
    * @return the last connected time stamp.
    */
-  public PSSession getSession() {
+  public @Nullable PSSession getSession() {
     return this._session;
   }
 
@@ -309,12 +310,12 @@ public final class PSUser implements User {
     /**
      * The PagerSeeder Member instance from login.
      */
-    private PSMember member;
+    private @Nullable PSMember member;
 
     /**
      * The PagerSeeder session
      */
-    private PSSession session;
+    private @Nullable PSSession session;
 
     /**
      * The roles of this user.

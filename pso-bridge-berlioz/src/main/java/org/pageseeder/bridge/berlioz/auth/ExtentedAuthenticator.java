@@ -18,6 +18,8 @@ package org.pageseeder.bridge.berlioz.auth;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.jspecify.annotations.Nullable;
 import javax.servlet.http.HttpSession;
 
 import org.pageseeder.bridge.APIException;
@@ -59,7 +61,7 @@ public final class ExtentedAuthenticator<T extends User> implements Authenticato
   /**
    *
    */
-  private UserBuilder<T> builder = null;
+  private @Nullable UserBuilder<T> builder = null;
 
   /**
    * Indicates whether this authenticator should perform a hard logout
@@ -155,7 +157,7 @@ public final class ExtentedAuthenticator<T extends User> implements Authenticato
    * @throws AuthException Should any error occur while connecting to the server.
    */
   @Override
-  public T login(String username, String password) throws AuthException {
+  public @Nullable T login(String username, String password) throws AuthException {
     T user = null;
     try {
       PSHTTPConnector connector = PSHTTPConnectors.listMembershipsForMember(username).using(username, password);

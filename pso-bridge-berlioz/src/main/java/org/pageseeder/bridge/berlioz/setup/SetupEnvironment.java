@@ -19,6 +19,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jspecify.annotations.Nullable;
+
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.berlioz.auth.AuthSessions;
@@ -47,38 +49,38 @@ public final class SetupEnvironment {
   /**
    * Projects defined in this environment.
    */
-  private final Map<String, PSProject> _projects = new HashMap<>();
+  private final Map<String, PSProject> projects = new HashMap<>();
 
   /**
    * Groups defined in this environment.
    */
-  private final Map<String, PSGroup> _groups = new HashMap<>();
+  private final Map<String, PSGroup> groups = new HashMap<>();
 
   /**
    * The root of where the setup files are located.
    */
-  private File root = null;
+  private @Nullable File root = null;
 
   /**
    * The setup user created by the {@link #init()} method.
    */
-  private PSUser user = null;
+  private @Nullable PSUser user = null;
 
   /**
    * Lazily loaded member corresponding to the setup user.
    */
-  private PSMember member = null;
+  private @Nullable PSMember member = null;
 
   /**
    * Lazily loaded group manager.
    */
-  private GroupManager groupManager = null;
+  private @Nullable GroupManager groupManager = null;
 
   public void setRoot(File f) {
     this.root = f;
   }
 
-  public File getRoot() {
+  public @Nullable File getRoot() {
     return this.root;
   }
 
@@ -148,7 +150,7 @@ public final class SetupEnvironment {
    * @param project The project to add or update.
    */
   public void putProject(PSProject project) {
-    this._projects.put(project.getName(), project);
+    this.projects.put(project.getName(), project);
   }
 
   /**
@@ -157,7 +159,7 @@ public final class SetupEnvironment {
    * @param group The group to add or update.
    */
   public void putGroup(PSGroup group) {
-    this._groups.put(group.getName(), group);
+    this.groups.put(group.getName(), group);
   }
 
   /**
@@ -166,8 +168,8 @@ public final class SetupEnvironment {
    * @param name The project name
    * @return The corresponding project instance or <code>null</code>
    */
-  public PSProject getProject(String name) {
-    return this._projects.get(name);
+  public @Nullable PSProject getProject(String name) {
+    return this.projects.get(name);
   }
 
   /**
@@ -176,7 +178,7 @@ public final class SetupEnvironment {
    * @param name The group name
    * @return The corresponding group instance or <code>null</code>
    */
-  public PSGroup getGroup(String name) {
-    return this._groups.get(name);
+  public @Nullable PSGroup getGroup(String name) {
+    return this.groups.get(name);
   }
 }

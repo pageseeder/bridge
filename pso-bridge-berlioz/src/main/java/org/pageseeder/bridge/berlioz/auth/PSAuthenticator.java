@@ -18,6 +18,8 @@ package org.pageseeder.bridge.berlioz.auth;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.jspecify.annotations.Nullable;
 import javax.servlet.http.HttpSession;
 
 import org.pageseeder.bridge.APIException;
@@ -86,7 +88,7 @@ public final class PSAuthenticator implements Authenticator<PSUser> {
    * configuration. However, it will be initialized as null. Only when request it will be set to default in case the
    * caller does not specify one.
    */
-  private PSConfig config = null;
+  private @Nullable PSConfig config = null;
   /**
    * Indicates whether this authenticator should perform a hard logout
    *
@@ -220,7 +222,7 @@ public final class PSAuthenticator implements Authenticator<PSUser> {
    * @throws AuthException Should any error occur while connecting to the server.
    */
   @Override
-  public PSUser login(String username, String password) throws AuthException {
+  public @Nullable PSUser login(String username, String password) throws AuthException {
     PSUser user = null;
     try {
       if (this.groupFilter == null) {
@@ -289,7 +291,7 @@ public final class PSAuthenticator implements Authenticator<PSUser> {
    *
    * @throws ContentException If an error occurs such as a connection exception occurs.
    */
-  private PSUser loginMemberOnly(String username, String password) throws ContentException {
+  private @Nullable PSUser loginMemberOnly(String username, String password) throws ContentException {
     PSUser user = null;
     String service = ServicePath.newPath("/self");
     UsernamePassword credentials = new UsernamePassword(username, password);
@@ -310,7 +312,7 @@ public final class PSAuthenticator implements Authenticator<PSUser> {
   /**
    *
    */
-  private PSUser loginWithMemberships(String username, String password) throws APIException {
+  private @Nullable PSUser loginWithMemberships(String username, String password) throws APIException {
     PSUser user = null;
     String service = ServicePath.newPath("/self/memberships");
     UsernamePassword credentials = new UsernamePassword(username, password);

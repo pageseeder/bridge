@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.berlioz.GlobalSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,8 +73,8 @@ public final class FileTreeWatcher {
   /** Maintains the status of this watcher. */
   private AtomicBoolean running;
 
-  private WatchService watchService;
-  private Thread watchThread;
+  private @Nullable WatchService watchService;
+  private @Nullable Thread watchThread;
 
   /** Maps Watch keys to the watched directory path. */
   private final Map<WatchKey,Path> _keys;

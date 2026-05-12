@@ -17,6 +17,8 @@ package org.pageseeder.bridge.berlioz.auth;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Must provide the login and logout mechanisms.
  *
@@ -65,7 +67,7 @@ public interface Authenticator<U extends User> {
    *
    * @throws AuthException Should an error occur while logging the user in.
    */
-  U login(String username, String password) throws AuthException;
+  @Nullable U login(String username, String password) throws AuthException;
 
   /**
    * Logs the specified user out.

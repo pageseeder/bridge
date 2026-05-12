@@ -5,4 +5,4 @@
  * Service provider interfaces for the authentication classes.
  */
 @org.jspecify.annotations.NullMarked
-package org.pageseeder.bridge.berlioz.auth.spi;
+package org.pageseeder.bridge.berlioz.app;

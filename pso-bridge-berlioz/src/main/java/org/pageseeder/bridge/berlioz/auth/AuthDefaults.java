@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.berlioz.auth.spi.AuthProvider;
 
 /**
@@ -43,7 +44,7 @@ public final class AuthDefaults extends AuthProvider {
   }
 
   @Override
-  public Authenticator<?> authenticatorForName(final String name) {
+  public @Nullable Authenticator<?> authenticatorForName(final String name) {
     if ("pageseeder".equals(name)) {
       return new PSAuthenticator();
     }

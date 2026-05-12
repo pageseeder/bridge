@@ -15,6 +15,8 @@
  */
 package org.pageseeder.bridge.berlioz.auth;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * An authorizer which only requires the user to be logged in.
  *
@@ -46,7 +48,7 @@ public final class LoggedInAuthorizer implements Authorizer {
    *         <code>UNAUTHORIZED</code> otherwise.
    */
   @Override
-  public AuthorizationResult isUserAuthorized(User user, String uri) {
+  public AuthorizationResult isUserAuthorized(@Nullable User user, String uri) {
     return user != null? AuthorizationResult.AUTHORIZED : AuthorizationResult.UNAUTHORIZED;
   }
 

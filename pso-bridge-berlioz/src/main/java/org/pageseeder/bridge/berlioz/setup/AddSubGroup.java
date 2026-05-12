@@ -18,6 +18,7 @@ package org.pageseeder.bridge.berlioz.setup;
 import java.io.IOException;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.control.GroupManager;
 import org.pageseeder.bridge.model.PSGroup;
@@ -37,15 +38,15 @@ public final class AddSubGroup implements Action {
   private enum Status {added, failed, skipped}
 
   /** The group to add as a subgroup */
-  PSGroup group = null;
+  @Nullable PSGroup group = null;
 
   /** The group the subgroup is added to */
-  PSGroup to = null;
+  @Nullable PSGroup to = null;
 
   public AddSubGroup() {
   }
 
-  public PSGroup getGroup() {
+  public @Nullable PSGroup getGroup() {
     return this.group;
   }
 
@@ -57,7 +58,7 @@ public final class AddSubGroup implements Action {
     this.to = to;
   }
 
-  public PSGroup getTo() {
+  public @Nullable PSGroup getTo() {
     return this.to;
   }
 

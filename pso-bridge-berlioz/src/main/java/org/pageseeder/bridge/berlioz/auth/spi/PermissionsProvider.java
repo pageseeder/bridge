@@ -15,6 +15,7 @@
  */
 package org.pageseeder.bridge.berlioz.auth.spi;
 
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.berlioz.auth.Authenticator;
 
 /**
@@ -30,6 +31,6 @@ public abstract class PermissionsProvider {
   /**
    * Returns a permission manager for the specified name.
    */
-  abstract Authenticator<?> authenticatorForName(String name);
+  abstract @Nullable Authenticator<?> authenticatorForName(String name);
 
 }

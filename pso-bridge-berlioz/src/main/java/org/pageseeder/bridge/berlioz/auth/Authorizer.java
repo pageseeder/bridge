@@ -15,6 +15,8 @@
  */
 package org.pageseeder.bridge.berlioz.auth;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Defines whether is allowed to access specific resources.
  *
@@ -34,6 +36,6 @@ public interface Authorizer {
    * @return <code>true</code> is the user can access the resource;
    *         <code>false</code> otherwise.
    */
-  AuthorizationResult isUserAuthorized(User user, String uri);
+  AuthorizationResult isUserAuthorized(@Nullable User user, String uri);
 
 }

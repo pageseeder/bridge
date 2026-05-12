@@ -17,6 +17,7 @@ package org.pageseeder.bridge.berlioz.setup;
 
 import java.io.IOException;
 
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.APIException;
 import org.pageseeder.bridge.control.GroupManager;
 import org.pageseeder.bridge.model.GroupOptions;
@@ -38,15 +39,15 @@ public final class CreateProject implements Action {
   private enum Status {created, failed, skipped}
 
   /** The project to create */
-  PSProject project = null;
+  @Nullable PSProject project = null;
 
   /** The group options for this project. */
-  GroupOptions options = null;
+  @Nullable GroupOptions options = null;
 
   public CreateProject() {
   }
 
-  public PSProject getProject() {
+  public @Nullable PSProject getProject() {
     return this.project;
   }
 
@@ -54,7 +55,7 @@ public final class CreateProject implements Action {
     this.project = project;
   }
 
-  public GroupOptions getOptions() {
+  public @Nullable GroupOptions getOptions() {
     return this.options;
   }
 

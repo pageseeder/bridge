@@ -13,8 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Provides classes handle authentication and authorization with a PageSeeder server.
- */
 @org.jspecify.annotations.NullMarked
-package org.pageseeder.bridge.berlioz.auth;
+package org.pageseeder.bridge.berlioz.config;

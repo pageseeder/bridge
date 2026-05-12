@@ -44,17 +44,17 @@ public final class OAuthUser implements User {
   /**
    * The Member's email.
    */
-  private final String _email;
+  private final @Nullable String _email;
 
   /**
    * The Member's first name.
    */
-  private final String _firstname;
+  private final @Nullable String _firstname;
 
   /**
    * The Member's surname.
    */
-  private final String _surname;
+  private final @Nullable String _surname;
 
   /**
    * The Member's username.
@@ -82,21 +82,21 @@ public final class OAuthUser implements User {
   /**
    * @return the PageSeeder email for this user.
    */
-  public String getEmail() {
+  public @Nullable String getEmail() {
     return this._email;
   }
 
   /**
    * @return the PageSeeder first name for this user.
    */
-  public String getFirstname() {
+  public @Nullable String getFirstname() {
     return this._firstname;
   }
 
   /**
    * @return the PageSeeder surname for this user.
    */
-  public String getSurname() {
+  public @Nullable String getSurname() {
     return this._surname;
   }
 

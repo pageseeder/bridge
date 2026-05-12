@@ -19,6 +19,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
+
+import org.jspecify.annotations.Nullable;
 import java.security.Key;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
@@ -65,11 +67,11 @@ public final class RememberMe {
    */
   private final static int DEFAULT_COOKIE_MAX_AGE_SECONDS = 3600*24*30;
 
-  private SecretKeySpec masterKey = null;
+  private @Nullable SecretKeySpec masterKey = null;
 
-  private SecretKeySpec commonKey = null;
+  private @Nullable SecretKeySpec commonKey = null;
 
-  private Path userkeysStore = null;
+  private @Nullable Path userkeysStore = null;
 
   private Map<String, SecretKeySpec> userkeys = new HashMap<>();
 
@@ -125,7 +127,7 @@ public final class RememberMe {
    *
    * @return The corresponding credentials.
    */
-  public Credentials getCredentials(Cookie cookie) {
+  public @Nullable Credentials getCredentials(@Nullable Cookie cookie) {
     if (cookie != null) {
      String value = cookie.getValue();
       int colon = value.indexOf(':');
@@ -159,7 +161,7 @@ public final class RememberMe {
    *
    * @return The remember me cookie or <code>null</code> if not found.
    */
-  public Cookie getCookie(Cookie[] cookies) {
+  public @Nullable Cookie getCookie(@Nullable Cookie[] cookies) {
     if (cookies == null || cookies.length == 0) return null;
     for (Cookie cookie : cookies) {
       if (this._cookieName.equals(cookie.getName())) return cookie;
@@ -174,7 +176,7 @@ public final class RememberMe {
    *
    * @return The corresponding cookie.
    */
-  public Cookie newCookie(Credentials credentials) {
+  public @Nullable Cookie newCookie(Credentials credentials) {
     Cookie cookie = null;
     try {
 

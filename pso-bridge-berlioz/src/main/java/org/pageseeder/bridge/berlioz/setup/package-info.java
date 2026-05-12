@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 /**
- * Classes to autatically setup PageSeeder - WILL EVENTUALLY BE INCLUDED IN THE BRIDGE!!
+ * Classes to automatically setup PageSeeder
  */
+@org.jspecify.annotations.NullMarked
 package org.pageseeder.bridge.berlioz.setup;

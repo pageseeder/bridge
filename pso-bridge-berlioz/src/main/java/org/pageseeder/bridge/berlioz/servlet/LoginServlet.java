@@ -24,6 +24,8 @@ import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+
+import org.jspecify.annotations.Nullable;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -72,7 +74,7 @@ public final class LoginServlet extends HttpServlet {
   /**
    * The URI of the login page.
    */
-  private String loginPage = null;
+  private @Nullable String loginPage = null;
 
   /**
    * The URI of the default target page.
@@ -228,7 +230,7 @@ public final class LoginServlet extends HttpServlet {
    *
    * @return the filtered target.
    */
-  private static String getTarget(HttpServletRequest req) {
+  private static @Nullable String getTarget(HttpServletRequest req) {
     HttpSession session = req.getSession();
     String target = null;
 
