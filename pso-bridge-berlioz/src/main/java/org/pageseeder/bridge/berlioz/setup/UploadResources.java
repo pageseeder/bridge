@@ -103,44 +103,44 @@ public final class UploadResources implements Action {
 
   private static class ResourceUploader extends SimpleFileVisitor<Path> {
 
-    private final Path _from;
+    private final Path from;
 
-    private final PSProject _project;
+    private final PSProject project;
 
-    private final GroupManager _groups;
+    private final GroupManager groupManager;
 
-    private final String _target;
+    private final String target;
 
-    private final XMLWriter _xml;
+    private final XMLWriter xml;
 
     public ResourceUploader(Path from, PSProject project, GroupManager groups, String target, XMLWriter xml) {
-      this._from = from;
-      this._project = project;
-      this._groups = groups;
-      this._target = target;
-      this._xml = xml;
+      this.from = from;
+      this.project = project;
+      this.groupManager = groups;
+      this.target = target;
+      this.xml = xml;
     }
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
       String mediatype = Files.probeContentType(file);
-      Path f = this._from.relativize(file);
-      String pspath = this._target+"/"+this._project.getName()+"/"+UploadResources.toString(f);
+      Path f = this.from.relativize(file);
+      String pspath = this.target +"/"+this.project.getName()+"/"+UploadResources.toString(f);
       Status status = Status.uploaded;
       try {
         String content = new String(Files.readAllBytes(file));
         PSResource resource = new PSResource(pspath, content);
-        this._groups.putResource(this._project, resource, true);
+        this.groupManager.putResource(this.project, resource, true);
       } catch (APIException ex) {
         status = Status.failed;
         // Nothing else we can do here
       } finally {
-        this._xml.openElement("upload-resource");
-        this._xml.attribute("path", pspath);
-        this._xml.attribute("mediatype", mediatype);
-        this._xml.attribute("to", this._project.getName());
-        this._xml.attribute("status", status.name());
-        this._xml.closeElement();
+        this.xml.openElement("upload-resource");
+        this.xml.attribute("path", pspath);
+        this.xml.attribute("mediatype", mediatype);
+        this.xml.attribute("to", this.project.getName());
+        this.xml.attribute("status", status.name());
+        this.xml.closeElement();
       }
       return FileVisitResult.CONTINUE;
     }
@@ -149,31 +149,31 @@ public final class UploadResources implements Action {
 
   private static class UploadSimulator extends SimpleFileVisitor<Path> {
 
-    private final Path _from;
+    private final Path from;
 
-    private final PSProject _project;
+    private final PSProject project;
 
-    private final String _target;
+    private final String target;
 
-    private final XMLWriter _xml;
+    private final XMLWriter xml;
 
     public UploadSimulator(Path from, PSProject project, String target, XMLWriter xml) {
-      this._from = from;
-      this._project = project;
-      this._target = target;
-      this._xml = xml;
+      this.from = from;
+      this.project = project;
+      this.target = target;
+      this.xml = xml;
     }
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
       String mediatype = Files.probeContentType(file);
-      Path f = this._from.relativize(file);
-      this._xml.openElement("upload-resource");
-      this._xml.attribute("path", this._target+"/"+this._project.getName()+"/"+UploadResources.toString(f));
-      this._xml.attribute("mediatype", mediatype);
-      this._xml.attribute("to", this._project.getName());
-      this._xml.attribute("status", Status.uploaded.name());
-      this._xml.closeElement();
+      Path f = this.from.relativize(file);
+      this.xml.openElement("upload-resource");
+      this.xml.attribute("path", this.target +"/"+this.project.getName()+"/"+UploadResources.toString(f));
+      this.xml.attribute("mediatype", mediatype);
+      this.xml.attribute("to", this.project.getName());
+      this.xml.attribute("status", Status.uploaded.name());
+      this.xml.closeElement();
       return FileVisitResult.CONTINUE;
     }
 
