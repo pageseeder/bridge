@@ -46,26 +46,26 @@ import javax.xml.bind.DatatypeConverter;
 public final class RememberMe {
 
   /** Required for IV generation */
-  private final static SecureRandom R = new SecureRandom();
+  private static final SecureRandom R = new SecureRandom();
 
   /** AES-128 GCM Mode authentication tag size (96 bits) */
-  private final static int TAG_LENGTH_BYTES = 12;
+  private static final int TAG_LENGTH_BYTES = 12;
 
   /** AES-128 GCM Mode initialization vector size (96 bits) */
-  private final static int IV_LENGTH_BYTES = 12;
+  private static final int IV_LENGTH_BYTES = 12;
 
   /** AES-128 GCM Mode key length (128 bits = 16 bytes) */
-  private final static int KEY_LENGTH_BYTES = 16;
+  private static final int KEY_LENGTH_BYTES = 16;
 
   /**
    * Default name of the remember me cookie.
    */
-  private final static String DEFAULT_COOKIE_NAME = "pid";
+  private static final String DEFAULT_COOKIE_NAME = "pid";
 
   /**
    * Default max age for the remember me cookie (in seconds) - 30 days.
    */
-  private final static int DEFAULT_COOKIE_MAX_AGE_SECONDS = 3600*24*30;
+  private static final int DEFAULT_COOKIE_MAX_AGE_SECONDS = 3600*24*30;
 
   private @Nullable SecretKeySpec masterKey = null;
 
@@ -78,19 +78,19 @@ public final class RememberMe {
   /**
    * The name to use for the cookie.
    */
-  private final String _cookieName;
+  private final String cookieName;
 
   /**
    * The max age for the cookie.
    */
-  private final int _cookieMaxAge;
+  private final int cookieMaxAge;
 
   /**
    * Create the new remember me function with the default configuration.
    */
   public RememberMe() {
-    this._cookieName = DEFAULT_COOKIE_NAME;
-    this._cookieMaxAge = DEFAULT_COOKIE_MAX_AGE_SECONDS;
+    this.cookieName = DEFAULT_COOKIE_NAME;
+    this.cookieMaxAge = DEFAULT_COOKIE_MAX_AGE_SECONDS;
   }
 
   /**
@@ -161,10 +161,10 @@ public final class RememberMe {
    *
    * @return The remember me cookie or <code>null</code> if not found.
    */
-  public @Nullable Cookie getCookie(@Nullable Cookie[] cookies) {
-    if (cookies == null || cookies.length == 0) return null;
+  public @Nullable Cookie getCookie(Cookie @Nullable [] cookies) {
+    if (cookies == null) return null;
     for (Cookie cookie : cookies) {
-      if (this._cookieName.equals(cookie.getName())) return cookie;
+      if (this.cookieName.equals(cookie.getName())) return cookie;
     }
     return null;
   }
@@ -194,10 +194,10 @@ public final class RememberMe {
       byte[] pass = encrypt(credentials.password().getBytes(), userKey);
 
       String value = toBase64URL(user)+":"+toBase64URL(pass);
-      cookie = new Cookie(this._cookieName, value);
+      cookie = new Cookie(this.cookieName, value);
       cookie.setHttpOnly(true);
       cookie.setSecure(true);
-      cookie.setMaxAge(this._cookieMaxAge);
+      cookie.setMaxAge(this.cookieMaxAge);
 
     } catch (IOException | GeneralSecurityException ex) {
       // TODO Auto-generated catch block
@@ -339,19 +339,19 @@ public final class RememberMe {
   }
 
   public static final class Credentials {
-    private final String _username;
-    private final String _password;
+    private final String username;
+    private final String password;
     public Credentials(String username, String password) {
-      this._username = username;
-      this._password = password;
+      this.username = username;
+      this.password = password;
     }
 
     public String username() {
-      return this._username;
+      return this.username;
     }
 
     public String password() {
-      return this._password;
+      return this.password;
     }
 
   }
