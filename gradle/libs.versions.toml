@@ -16,4 +16,4 @@ slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 xmlwriter = { module = "org.pageseeder.xmlwriter:pso-xmlwriter", version.ref = "xmlwriter" }
 
 [plugins]
-jreleaser = { id = "org.jreleaser", version = "1.18.0" }
+jreleaser = { id = "org.jreleaser", version = "1.21.0" }
