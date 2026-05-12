@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.berlioz.auth.AuthException;
 import org.pageseeder.bridge.berlioz.auth.AuthenticationResult;
 import org.pageseeder.bridge.berlioz.auth.Authenticator;
@@ -48,7 +49,7 @@ public final class RememberMeFilter implements Filter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RememberMeFilter.class);
 
-  private RememberMe rememberme = new RememberMe();
+  private final RememberMe rememberMe = new RememberMe();
 
   @Override
   public void init(FilterConfig config) throws ServletException {
@@ -57,7 +58,7 @@ public final class RememberMeFilter implements Filter {
       String path = context.getRealPath("/");
       Path root = new File(path).toPath();
       Path auth = root.resolve("WEB-INF/auth");
-      this.rememberme.init(auth);
+      this.rememberMe.init(auth);
     } catch (IOException | GeneralSecurityException ex) {
       throw new ServletException(ex);
     }
@@ -65,6 +66,7 @@ public final class RememberMeFilter implements Filter {
 
   @Override
   public void destroy() {
+    // Nothing to do
   }
 
   @Override
@@ -76,13 +78,13 @@ public final class RememberMeFilter implements Filter {
 
     Cookie[] cookies = req.getCookies();
     if (cookies != null) {
-      Cookie cookie = this.rememberme.getCookie(cookies);
+      Cookie cookie = this.rememberMe.getCookie(cookies);
       if (cookie != null) {
         HttpSession session = req.getSession();
 
         // Only check for stored credentials if no session
         if (session == null || session.getAttribute(AuthSessions.REQUEST_ATTRIBUTE) == null) {
-          Credentials credentials = this.rememberme.getCredentials(cookie);
+          Credentials credentials = this.rememberMe.getCredentials(cookie);
 
           // If some credentials are available try to login
           if (credentials != null) {
@@ -107,7 +109,6 @@ public final class RememberMeFilter implements Filter {
         String path = req.getServletPath();
         if ("/logout.html".equals(path)) {
           LOGGER.info("Removing cookie");
-//          cookie.setValue("");
           cookie.setMaxAge(0);
           res.addCookie(cookie);
         }
@@ -122,7 +123,7 @@ public final class RememberMeFilter implements Filter {
       String password = req.getParameter("password");
       if (username != null && password != null) {
         Credentials credentials = new Credentials(username, password);
-        Cookie cookie = this.rememberme.newCookie(credentials);
+        Cookie cookie = this.rememberMe.newCookie(credentials);
         LOGGER.info("Storing credentials in cookie for {}", credentials.username());
         res.addCookie(cookie);
       }
@@ -140,21 +141,21 @@ public final class RememberMeFilter implements Filter {
   private static final class ProxyRequest extends HttpServletRequestWrapper {
 
     /** The credentials to use for the authenticator. */
-    private final Credentials _credentials;
+    private final Credentials credentials;
 
     public ProxyRequest(HttpServletRequest original, Credentials credentials) {
       super(original);
-      this._credentials = credentials;
+      this.credentials = credentials;
     }
 
     @Override
-    public String getParameter(String name) {
+    public @Nullable String getParameter(String name) {
       String value = super.getParameter(name);
       if (value == null) {
         if ("username".equals(name)) {
-          value = this._credentials.username();
+          value = this.credentials.username();
         } else if ("password".equals(name)) {
-          value = this._credentials.password();
+          value = this.credentials.password();
         }
       }
       return value;

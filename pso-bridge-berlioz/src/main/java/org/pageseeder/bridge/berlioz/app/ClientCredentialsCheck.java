@@ -17,17 +17,10 @@ package org.pageseeder.bridge.berlioz.app;
 
 import org.pageseeder.berlioz.aeson.JSONWriter;
 import org.pageseeder.bridge.PSConfig;
-import org.pageseeder.bridge.PSCredentials;
-import org.pageseeder.bridge.http.Method;
-import org.pageseeder.bridge.http.Request;
-import org.pageseeder.bridge.http.Response;
-import org.pageseeder.bridge.http.Service;
 import org.pageseeder.bridge.model.PSMember;
-import org.pageseeder.bridge.net.UsernamePassword;
 import org.pageseeder.bridge.oauth.ClientCredentials;
 import org.pageseeder.bridge.oauth.TokenRequest;
 import org.pageseeder.bridge.oauth.TokenResponse;
-import org.pageseeder.bridge.xml.HandlerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -47,8 +40,8 @@ import java.util.Collections;
  *
  * @author Philip Rutherford
  *
+ * @version 0.12.0
  * @since 0.11.38
- * @version 0.11.38
  */
 public final class ClientCredentialsCheck implements AppAction {
 
@@ -65,9 +58,9 @@ public final class ClientCredentialsCheck implements AppAction {
     String secret = req.getParameter("setup-secret");
 
     // Checks
-    if (url == null || "".equals(url)) return JSONResponses.requiresParameter(this, json, "setup-url");
-    if (client == null || "".equals(client)) return JSONResponses.requiresParameter(this, json, "setup-client");
-    if (secret == null || "".equals(secret)) return JSONResponses.requiresParameter(this, json, "setup-secret");
+    if (url == null || url.isEmpty()) return JSONResponses.requiresParameter(this, json, "setup-url");
+    if (client == null || client.isEmpty()) return JSONResponses.requiresParameter(this, json, "setup-client");
+    if (secret == null || secret.isEmpty()) return JSONResponses.requiresParameter(this, json, "setup-secret");
 
     // Try the config
     PSConfig config = PSConfig.newInstance(url);

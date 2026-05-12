@@ -21,7 +21,6 @@ import org.pageseeder.bridge.PSCredentials;
 import org.pageseeder.bridge.http.Method;
 import org.pageseeder.bridge.http.Request;
 import org.pageseeder.bridge.model.PSGroup;
-import org.pageseeder.bridge.net.UsernamePassword;
 import org.pageseeder.bridge.oauth.ClientCredentials;
 import org.pageseeder.bridge.oauth.TokenRequest;
 import org.pageseeder.bridge.oauth.TokenResponse;
@@ -46,8 +45,8 @@ import java.util.Map;
  *
  * @author Philip Rutherford
  *
+ * @version 0.12.0
  * @since 0.11.38
- * @version 0.11.38
  */
 public final class ClientGroupCheck implements AppAction {
 
@@ -64,10 +63,10 @@ public final class ClientGroupCheck implements AppAction {
     String name = req.getParameter("setup-group");
 
     // Checks
-    if (url == null || "".equals(url)) return JSONResponses.requiresParameter(this, json, "setup-url");
-    if (client == null || "".equals(client)) return JSONResponses.requiresParameter(this, json, "setup-client");
-    if (secret == null || "".equals(secret)) return JSONResponses.requiresParameter(this, json, "setup-secret");
-    if (name == null || "".equals(name)) return JSONResponses.requiresParameter(this, json, "setup-group");
+    if (url == null || url.isEmpty()) return JSONResponses.requiresParameter(this, json, "setup-url");
+    if (client == null || client.isEmpty()) return JSONResponses.requiresParameter(this, json, "setup-client");
+    if (secret == null || secret.isEmpty()) return JSONResponses.requiresParameter(this, json, "setup-secret");
+    if (name == null || name.isEmpty()) return JSONResponses.requiresParameter(this, json, "setup-group");
 
     // Get OAuth token
     PSConfig config = PSConfig.newInstance(url);

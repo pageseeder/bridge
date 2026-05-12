@@ -39,38 +39,34 @@ import org.pageseeder.bridge.berlioz.auth.User;
  *
  * @author Christophe Lauret
  *
- * @version 0.1.0
+ * @version 0.12.0
  * @since 0.1.0
  */
 public final class SecurityFilter implements Filter {
 
   /**
    * Do nothing.
-   *
-   * {@inheritDoc}
    */
   @Override
   public void init(FilterConfig config) {
+    // Nothing to do
   }
 
   /**
    * Do nothing.
-   *
-   * {@inheritDoc}
    */
   @Override
   public void destroy() {
+    // Nothing to do
   }
 
   /**
    * Does the filtering.
-   *
-   * {@inheritDoc}
    */
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
      throws IOException, ServletException {
-    // Use HTTP specific requests.
+    // Use HTTP-specific requests.
     doHttpFilter((HttpServletRequest)req, (HttpServletResponse)res, chain);
   }
 

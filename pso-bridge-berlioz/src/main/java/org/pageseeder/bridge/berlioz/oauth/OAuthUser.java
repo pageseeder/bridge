@@ -75,7 +75,7 @@ public final class OAuthUser implements User {
   /**
    * @return The PageSeeder Member ID of this user.
    */
-  public final Long id() {
+  public Long id() {
     return this._id;
   }
 

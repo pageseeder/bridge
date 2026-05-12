@@ -52,13 +52,13 @@ import org.pageseeder.bridge.net.PSHTTPResourceType;
  *
  * @author Christophe Lauret
  *
- * @version 0.1.0
+ * @version 0.12.0
  * @since 0.1.0
  */
 public final class ImageProxyServlet extends HttpServlet implements Servlet {
 
   /** As per requirement */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   /** Folders where the images are cached */
   private @Nullable File cache = null;
@@ -104,7 +104,7 @@ public final class ImageProxyServlet extends HttpServlet implements Servlet {
         }
         if (document != null) {
           Long id = document.getId();
-          StringBuffer imageNewURIID = new StringBuffer();
+          StringBuilder imageNewURIID = new StringBuilder();
           imageNewURIID.append(File.separator);
           imageNewURIID.append(id);
           //get image format
@@ -175,7 +175,7 @@ public final class ImageProxyServlet extends HttpServlet implements Servlet {
 
     // Copy content into buffer
     BufferedInputStream in = null;
-    byte[] data = null;
+    byte[] data;
     try (InputStream raw = connection.getInputStream()) {
       if (raw == null)
         return new ImageResource(modified, length, media, new byte[]{});
@@ -212,46 +212,46 @@ public final class ImageProxyServlet extends HttpServlet implements Servlet {
    *
    * @author Christophe Lauret
    */
-  private final static class ImageResource {
-    private final long _modified;
-    private final int _length;
-    private final String _media;
-    private final byte[] _data;
+  private static final class ImageResource {
+    private final long modified;
+    private final int length;
+    private final String media;
+    private final byte[] data;
 
     /**
      * Sole constructor
      */
     public ImageResource(long modified, int length, String media, byte[] data) {
-      this._modified = modified;
-      this._length = length;
-      this._media = media;
-      this._data = data;
+      this.modified = modified;
+      this.length = length;
+      this.media = media;
+      this.data = data;
     }
 
     /** @return the last modified date */
-    public final long modified() {
-      return this._modified;
+    public long modified() {
+      return this.modified;
     }
 
     /** @return the length of resource */
-    public final int length() {
-      return this._length;
+    public int length() {
+      return this.length;
     }
 
     /** @return the media type */
-    public final String media() {
-      return this._media;
+    public String media() {
+      return this.media;
     }
 
     /** Write the data the output stream */
-    public final void writeTo(OutputStream out) throws IOException {
-      out.write(this._data);
+    public void writeTo(OutputStream out) throws IOException {
+      out.write(this.data);
     }
 
     /** Write the data the file */
-    public final void writeTo(File file) throws IOException {
+    public void writeTo(File file) throws IOException {
       Path target = file.toPath();
-      Files.write(target, this._data);// TODO check options
+      Files.write(target, this.data);// TODO check options
     }
 
   }

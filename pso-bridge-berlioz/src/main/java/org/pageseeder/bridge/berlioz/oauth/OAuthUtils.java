@@ -38,6 +38,10 @@ public final class OAuthUtils {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OAuthUtils.class);
 
+  private OAuthUtils() {
+    /* This utility class should not be instantiated */
+  }
+
   public static @Nullable PSMember retrieve(PSToken token) {
     PSMember member = null;
     try {

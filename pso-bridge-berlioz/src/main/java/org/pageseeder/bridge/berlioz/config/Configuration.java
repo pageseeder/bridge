@@ -77,12 +77,7 @@ public final class Configuration {
    * @return the default permission manager based on the configuration.
    */
   public static PermissionManager getPermissionManager() {
-    return new PermissionManager() {
-      @Override
-      public boolean hasPermission(User user, String permission) {
-        return false;
-      }
-    };
+    return (user, permission) -> false;
   }
 
   /**

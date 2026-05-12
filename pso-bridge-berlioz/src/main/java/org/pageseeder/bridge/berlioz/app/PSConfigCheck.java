@@ -49,7 +49,7 @@ public final class PSConfigCheck implements AppAction {
     String url = req.getParameter("setup-url");
 
     // Checks
-    if (url == null || "".equals(url)) return JSONResponses.requiresParameter(this, json, "setup-url");
+    if (url == null || url.isEmpty()) return JSONResponses.requiresParameter(this, json, "setup-url");
 
     Version version = PSConfig.newInstance(url).getVersion();
     if (version != null) {

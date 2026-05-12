@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.berlioz.util.IOUtils;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Christophe Lauret
  *
- * @version 0.1.0
+ * @version 0.12.0
  * @since 0.1.0
  */
 public final class PingServlet extends HttpServlet {
@@ -49,20 +50,20 @@ public final class PingServlet extends HttpServlet {
   /**
    * If the content type is specified.
    */
-  private String _contentType = null;
+  private @Nullable String contentType = null;
 
   /**
    * The corresponding data.
    */
-  private byte[] _data = null;
+  private byte @Nullable [] data = null;
 
   @Override
   public void init(ServletConfig config) {
     String content = config.getInitParameter("content-type");
     if ("image/png".equals(content)) {
-      this._contentType = content;
-      this._data = IOUtils.getResource(RESOURCE_URL);
-      if (this._data == null) {
+      this.contentType = content;
+      this.data = IOUtils.getResource(RESOURCE_URL);
+      if (this.data == null) {
         LoggerFactory.getLogger(PingServlet.class).warn("Unable to get resource "+RESOURCE_URL);
       }
     }
@@ -72,15 +73,15 @@ public final class PingServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
     res.setHeader("Cache-Control", "no-cache");
     // If the data is defined and found
-    if (this._data != null) {
+    if (this.data != null) {
 
       // Set the headers
-      res.setContentType(this._contentType);
-      res.setContentLength(this._data.length);
+      res.setContentType(this.contentType);
+      res.setContentLength(this.data.length);
 
       // Copy the data
       ServletOutputStream out = res.getOutputStream();
-      out.write(this._data);
+      out.write(this.data);
       out.close();
 
     } else {
