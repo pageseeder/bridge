@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +67,7 @@ public final class IOUtils {
    *
    * @return the corresponding byte array or <code>null</code> if not found or I/O error occurs.
    */
-  public static byte[] getResource(String name) {
+  public static byte @Nullable [] getResource(String name) {
     byte[] data = null;
     ClassLoader loader = IOUtils.class.getClassLoader();
     try (InputStream in = loader.getResourceAsStream(name)) {
