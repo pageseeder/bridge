@@ -2,6 +2,7 @@ plugins {
   id("java-library")
   id("maven-publish")
   alias(libs.plugins.jreleaser)
+  alias(libs.plugins.cyclonedx) apply false
 }
 
 val title: String by project
@@ -9,12 +10,20 @@ val gitName: String by project
 val website: String by project
 val globalVersion = file("version.txt").readText().trim()
 
-version = globalVersion
-group   = "org.pageseeder.bridge"
+allprojects {
+  group   = "org.pageseeder.bridge"
+  version = globalVersion
+}
 
 subprojects {
   apply(plugin = "java-library")
   apply(plugin = "maven-publish")
+  apply(plugin = "org.cyclonedx.bom")
+
+  tasks.withType<org.cyclonedx.gradle.CycloneDxTask>().configureEach {
+    setProperty("includeConfigs", listOf("runtimeClasspath"))
+    setProperty("outputFormat", "json")
+  }
 
   configure<JavaPluginExtension> {
     withJavadocJar()
@@ -36,6 +45,12 @@ subprojects {
         from(components["java"])
         // Optional but often useful to be explicit:
         artifactId = project.name
+
+        artifact(layout.buildDirectory.file("reports/bom.json")) {
+          builtBy(tasks.named("cyclonedxBom"))
+          classifier = "cyclonedx"
+          extension = "json"
+        }
 
         pom {
           name.set(title)
