@@ -21,3 +21,4 @@ buildNumber.properties
 /.devcontainer/devcontainer.json
 /CLAUDE.md
 /AGENTS.md
+/.claude/
