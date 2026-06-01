@@ -31,6 +31,10 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -68,7 +72,6 @@ public final class CachedResponse implements HttpResponse {
 
   @Override
   public long date() {
-    // TODO Auto-generated method stub
     return 0;
   }
 
@@ -79,7 +82,6 @@ public final class CachedResponse implements HttpResponse {
 
   @Override
   public long expires() {
-    // TODO Auto-generated method stub
     return 0;
   }
 
@@ -159,13 +161,11 @@ public final class CachedResponse implements HttpResponse {
 
   @Override
   public long modified() {
-    // TODO Auto-generated method stub
     return 0;
   }
 
   @Override
   public @Nullable PSSession session() {
-    // TODO Auto-generated method stub
     return null;
   }
 
@@ -250,14 +250,24 @@ public final class CachedResponse implements HttpResponse {
 
   @Override
   public void consumeXML(XMLWriter xml, Templates templates) throws ContentException {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException();
+    consumeXML(xml, templates, Map.of());
   }
 
   @Override
   public void consumeXML(XMLWriter xml, Templates templates, Map<String, String> parameters) throws ContentException {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException();
+    try {
+      StringWriter buffer = new StringWriter();
+      StreamSource source = new StreamSource(this.content.getInputStream());
+      source.setSystemId(this.content.url());
+      Transformer transformer = templates.newTransformer();
+      for (Map.Entry<String, String> p : parameters.entrySet()) {
+        transformer.setParameter(p.getKey(), p.getValue());
+      }
+      transformer.transform(source, new StreamResult(buffer));
+      xml.writeXML(buffer.toString());
+    } catch (TransformerException | IOException ex) {
+      throw new ContentException("Unable to transform XML", ex);
+    }
   }
 
   @Override
@@ -272,6 +282,7 @@ public final class CachedResponse implements HttpResponse {
 
   @Override
   public void close() {
+    // No external resources to release for a cached response
   }
 
   /**
@@ -329,9 +340,8 @@ public final class CachedResponse implements HttpResponse {
     factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
     factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false);
 
-    // Get character encoding is correct
     String charset = content.charset();
-    if (charset != null) {
+    if (charset == null) {
       charset = "utf-8";
     }
 
