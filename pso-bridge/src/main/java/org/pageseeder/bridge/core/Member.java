@@ -285,7 +285,7 @@ public final class Member implements Serializable, XMLWritable {
    *
    * @return a new member with the specified last login if the last login is different from that of the current member
    */
-  public Member lastLogin(@NonNull OffsetDateTime lastLogin ) {
+  public Member lastLogin(OffsetDateTime lastLogin ) {
     if (lastLogin.equals(this.lastLogin)) return this;
     return new Member(this.id, this.username, this.email, this.firstname, this.surname, this.status, this.locked, this.onVacation, this.attachments, lastLogin);
   }
