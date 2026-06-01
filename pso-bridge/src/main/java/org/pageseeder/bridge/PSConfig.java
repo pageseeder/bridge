@@ -15,7 +15,6 @@
  */
 package org.pageseeder.bridge;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.spi.ConfigProvider;
 
@@ -493,7 +492,7 @@ public final class PSConfig {
    */
   public static PSConfig newInstance(Properties p) {
     @SuppressWarnings("null")
-    @NonNull String prefix = p.getProperty("siteprefix", DEFAULT_PREFIX);
+    String prefix = p.getProperty("siteprefix", DEFAULT_PREFIX);
     try {
       URL website  = toBaseURL(p, "url", DEFAULT_WEBSITE.toString());
       URL api      = toBaseURL(p, "api-url", website.toString());

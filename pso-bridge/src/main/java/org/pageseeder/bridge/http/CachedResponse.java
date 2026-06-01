@@ -15,7 +15,6 @@
  */
 package org.pageseeder.bridge.http;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSSession;
 import org.pageseeder.bridge.xml.Handler;
@@ -117,7 +116,7 @@ public final class CachedResponse implements HttpResponse {
   }
 
   @Override
-  public @NonNull List<Header> headers() {
+  public List<Header> headers() {
     List<Header> headers = new ArrayList<>();
     headers.add(new Header("Content-Type", getContentType()));
     headers.add(new Header("Content-Length", Long.toString(length())));
@@ -208,7 +207,7 @@ public final class CachedResponse implements HttpResponse {
   }
 
   @Override
-  public @NonNull String consumeString() throws ContentException {
+  public String consumeString() throws ContentException {
     byte[] bytes = this.content.bytes();
     return new String(bytes, StandardCharsets.UTF_8);
   }
@@ -229,13 +228,13 @@ public final class CachedResponse implements HttpResponse {
   }
 
   @Override
-  public <T> @NonNull List<T> consumeList(Handler<T> handler) throws ContentException {
+  public <T> List<T> consumeList(Handler<T> handler) throws ContentException {
     consumeXML(handler);
     return handler.list();
   }
 
   @Override
-  public <T> @NonNull List<T> consumeList(XMLStreamHandler<T> handler) throws ContentException {
+  public <T> List<T> consumeList(XMLStreamHandler<T> handler) throws ContentException {
     try {
       return parseXMLStream(this.content, handler);
     } catch (IOException ex) {

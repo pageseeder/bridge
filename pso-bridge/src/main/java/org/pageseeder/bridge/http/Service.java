@@ -15,7 +15,6 @@
  */
 package org.pageseeder.bridge.http;
 
-import org.jspecify.annotations.NonNull;
 
 /**
  * A enumeration of all services in PageSeeder.
@@ -1642,7 +1641,7 @@ public enum Service {
    * @see ServicePath#toPath(Object...)
    */
   @SafeVarargs
-  public final String toPath(@NonNull Object... variables) {
+  public final String toPath(Object... variables) {
     return this.path.toPath(variables);
   }
 

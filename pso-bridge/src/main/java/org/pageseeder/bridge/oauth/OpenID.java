@@ -15,7 +15,6 @@
  */
 package org.pageseeder.bridge.oauth;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.model.PSMember;
 import org.pageseeder.bridge.util.Base64;
@@ -44,7 +43,7 @@ final class OpenID {
   protected static @Nullable PSMember parseIDToken(String idToken, byte[] key) {
     LOGGER.debug("Parsing JWT ID token");
     // [header].[payload].[signature]
-    @NonNull String[] segments = idToken.split("\\.");
+    String[] segments = idToken.split("\\.");
     if (segments.length != 3) {
       LOGGER.error("Invalid ID Token: {} segments found", segments.length);
       return null;
@@ -73,7 +72,7 @@ final class OpenID {
 
     // Check Payload
     try {
-      Map<@NonNull String, @NonNull String> payload = JSONParameter.parse(Base64.decodeURL(segments[1], StandardCharsets.UTF_8));
+      Map<String, String> payload = JSONParameter.parse(Base64.decodeURL(segments[1], StandardCharsets.UTF_8));
       String sub = payload.get("sub");
       if (sub != null) {
         Long id = Long.valueOf(sub);

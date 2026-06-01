@@ -15,7 +15,6 @@
  */
 package org.pageseeder.bridge.http;
 
-import org.jspecify.annotations.NonNull;
 
 /**
  *
@@ -112,7 +111,7 @@ public final class HttpClient {
    *
    * @return The corresponding request
    */
-  public HttpRequest newService(String template, @NonNull Object... variables) {
+  public HttpRequest newService(String template, Object... variables) {
     return enableGzip(new CacheableRequest(this.cache, ServicePath.newPath(template, variables)));
   }
 

@@ -15,7 +15,6 @@
  */
 package org.pageseeder.bridge.http;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSConfig;
 import org.pageseeder.bridge.PSCredentials;
@@ -127,7 +126,7 @@ public final class Request extends BasicRequest implements HttpRequest {
    * @param variables The variables to inject in the URL path.
    */
   @SafeVarargs
-  public Request(Method method, Service service, @NonNull Object... variables) {
+  public Request(Method method, Service service, Object... variables) {
     super(method, service, variables);
   }
 
@@ -153,7 +152,7 @@ public final class Request extends BasicRequest implements HttpRequest {
    *
    * @return The corresponding request
    */
-  public static Request newService(Method method, String template, @NonNull Object... variables) {
+  public static Request newService(Method method, String template, Object... variables) {
     return new Request(method, ServicePath.newPath(template, variables));
   }
 
@@ -430,7 +429,7 @@ public final class Request extends BasicRequest implements HttpRequest {
    * @return the corresponding response
    */
   @SafeVarargs
-  public static Response response(Method method, Service service, @NonNull Object... variables) {
+  public static Response response(Method method, Service service, Object... variables) {
     return new Request(method, service, variables).response();
   }
 

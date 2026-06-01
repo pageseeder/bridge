@@ -15,7 +15,6 @@
  */
 package org.pageseeder.bridge.http;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.pageseeder.bridge.PSCredentials;
 
@@ -169,7 +168,7 @@ public final class GenericSearch implements Serializable {
    * @return A new <code>GenericSearch</code> instance unless the current instance already has the same types.
    */
   @SafeVarargs
-  public final GenericSearch types(@NonNull Type... types) {
+  public final GenericSearch types(Type... types) {
     return types(Arrays.asList(types));
   }
 
@@ -206,7 +205,7 @@ public final class GenericSearch implements Serializable {
    * @param groups the groups to search in.
    */
   @SafeVarargs
-  public final GenericSearch groups(@NonNull String... groups) {
+  public final GenericSearch groups(String... groups) {
     List<String> list = copyOf(Arrays.asList(groups));
     return new GenericSearch(this.question, this.types, this.page, this.pageSize, list, this.facets, this.from, this.to, this.sortBy);
   }
