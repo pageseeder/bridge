@@ -24,6 +24,7 @@ import org.xml.sax.SAXParseException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Simplifies SAX parsing by providing basic state machine on top of default handler.
@@ -51,14 +52,14 @@ public abstract class BasicHandler<T> extends Handler<T> {
   /**
    * The list of objects that have been retrieved from the XML.
    */
-  private List<T> list = new ArrayList<>();
+  private final List<T> list = new ArrayList<>();
 
   /**
    * The ancestry of element in the context.
    *
    * <p>The first element is the ancestor and the last element is the current element.
    */
-  private List<String> ancestorOrSelf = new ArrayList<>();
+  private final List<String> ancestorOrSelf = new ArrayList<>();
 
   /**
    * The buffer when capturing text values from elements.
@@ -149,7 +150,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
   /**
    * Initialises the buffer to capture characters with {@link #characters(char[], int, int)}.
    *
-   * Use this in the {@link #startElement(String, Attributes)} method when the element starts.
+   * <p>Use this in the {@link #startElement(String, Attributes)} method when the element starts.
    */
   protected final void newBuffer() {
     this.buffer = new StringBuilder();
@@ -217,7 +218,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    * @throws NullPointerException if the item is <code>null</code>
    */
   protected final void add(T item) {
-    if (item == null) throw new NullPointerException("Cannot add null item to list");
+    Objects.requireNonNull(item, "Cannot add null item to list");
     this.list.add(item);
   }
 
