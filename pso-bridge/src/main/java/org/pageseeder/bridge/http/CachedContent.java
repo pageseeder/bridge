@@ -63,14 +63,14 @@ public final class CachedContent implements Serializable {
    */
   private final @Nullable String charset;
 
-  protected CachedContent(String url, byte[] bytes, String contentType, String etag) {
+  CachedContent(String url, byte[] bytes, String contentType, String etag) {
     this.url = url;
     this.bytes = bytes;
     this.etag = etag;
     this.mediaType = Objects.requireNonNull(Header.toMediaType(contentType));
-    // FIXME: should we use the default charset?
-    Charset charset = Header.toCharset(contentType);
-    this.charset = charset != null? charset.name() : null;
+    // Preserve an unspecified charset; callers decide their fallback when decoding text.
+    Charset headerCharset = Header.toCharset(contentType);
+    this.charset = headerCharset != null? headerCharset.name() : null;
   }
 
   public String url() {
@@ -97,7 +97,7 @@ public final class CachedContent implements Serializable {
     return this.etag;
   }
 
-  protected byte[] bytes() {
+  byte[] bytes() {
     return this.bytes;
   }
 
