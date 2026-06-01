@@ -15,7 +15,6 @@
  */
 package org.pageseeder.bridge.xml;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.xml.sax.Attributes;
 
