@@ -64,7 +64,7 @@ public final class ThreadManager extends Sessionful {
    */
   public @Nullable PSThreadStatus checkProgress(PSThreadStatus status) throws APIException {
     Objects.requireNonNull(status);
-    PSHTTPConnector connector = PSHTTPConnectors.checkThreadProgress(status).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.checkThreadProgress(status).using(this.credentials);
     PSThreadHandler handler = new PSThreadHandler();
     PSHTTPResponseInfo info = connector.get(handler);
     if (info.getCode() >= 400)

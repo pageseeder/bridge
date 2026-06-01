@@ -548,17 +548,17 @@ public final class PSComment implements PSEntity {
     /**
      * The name of the author (required) yes string
      */
-    private final @Nullable String _name;
+    private final @Nullable String name;
 
     /**
      * When the author is a member
      */
-    private final @Nullable PSMember _member;
+    private final @Nullable PSMember member;
 
     /**
      * The email of the author yes email
      */
-    private final @Nullable String _email;
+    private final @Nullable String email;
 
     /**
      * Set the author name and email for when the author is not a PageSeeder member.
@@ -567,9 +567,9 @@ public final class PSComment implements PSEntity {
      * @param email The email of the author
      */
     public Author(String name, @Nullable String email) {
-      this._name = name;
-      this._member = null;
-      this._email = email;
+      this.name = name;
+      this.member = null;
+      this.email = email;
     }
 
     /**
@@ -580,20 +580,20 @@ public final class PSComment implements PSEntity {
      * @param member the member.
      */
     public Author(PSMember member) {
-      this._member = member;
+      this.member = member;
       if (member.getFirstname() != null && member.getSurname() != null) {
-        this._name = String.join(" ", member.getFirstname(), member.getSurname());
+        this.name = String.join(" ", member.getFirstname(), member.getSurname());
       } else {
-        this._name = null;
+        this.name = null;
       }
-      this._email = member.getEmail();
+      this.email = member.getEmail();
     }
 
     /**
      * @return the member or <code>null</code> if the author is not specified or an external user.
      */
     public @Nullable PSMember member() {
-      return this._member;
+      return this.member;
     }
 
     /**
@@ -602,7 +602,7 @@ public final class PSComment implements PSEntity {
      * @return the email of the external user
      */
     public @Nullable String name() {
-      return this._name;
+      return this.name;
     }
 
     /**
@@ -611,7 +611,7 @@ public final class PSComment implements PSEntity {
      * @return the email of the external user
      */
     public @Nullable String email() {
-      return this._email;
+      return this.email;
     }
 
   }
@@ -627,19 +627,19 @@ public final class PSComment implements PSEntity {
     /**
      * The URI of the attachment.
      */
-    private final PSURI _uri;
+    private final PSURI uri;
 
     /**
      * The fragment the comment is attached to.
      */
-    private final @Nullable String _fragment;
+    private final @Nullable String fragment;
 
     /**
      * @param uri The URI to attach
      */
     public Attachment(PSURI uri) {
-      this._uri = uri;
-      this._fragment = null;
+      this.uri = uri;
+      this.fragment = null;
     }
 
     /**
@@ -647,22 +647,22 @@ public final class PSComment implements PSEntity {
      * @param fragment The fragment ID to attach it to.
      */
     public Attachment(PSURI uri, @Nullable String fragment) {
-      this._uri = uri;
-      this._fragment = fragment;
+      this.uri = uri;
+      this.fragment = fragment;
     }
 
     /**
      * @return the attached URI
      */
     public PSURI uri() {
-      return this._uri;
+      return this.uri;
     }
 
     /**
      * @return the fragment of the URI where the comment is attached
      */
     public @Nullable String fragment() {
-      return this._fragment;
+      return this.fragment;
     }
 
   }

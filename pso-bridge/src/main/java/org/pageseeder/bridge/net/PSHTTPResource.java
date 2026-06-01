@@ -402,7 +402,7 @@ public final class PSHTTPResource {
     /**
      * The parameters to send.
      */
-    private final Map<String, String> _parameters = new HashMap<>();
+    private final Map<String, String> parameters = new HashMap<>();
 
     /**
      * Creates a new builder for a PageSeeder resource.
@@ -480,7 +480,7 @@ public final class PSHTTPResource {
      * @return this builder.
      */
     public Builder addParameter(String name, String value) {
-      this._parameters.put(name, value);
+      this.parameters.put(name, value);
       return this;
     }
 
@@ -495,10 +495,10 @@ public final class PSHTTPResource {
       if (n == null) throw new IllegalStateException("Unable to build PSResource, name is not set.");
 
       Map<String, String> parameters;
-      if (this._parameters.isEmpty()) {
+      if (this.parameters.isEmpty()) {
         parameters = Map.of();
       } else {
-        parameters = new HashMap<>(this._parameters);
+        parameters = new HashMap<>(this.parameters);
       }
 
       if (this.config == null) {

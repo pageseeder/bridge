@@ -31,7 +31,7 @@ public abstract class ElementXMLStreamHandler<T> extends BasicXMLStreamHandler<T
   /**
    * The name of the element.
    */
-  protected final String _element;
+  protected final String element;
 
   /**
    * Creates a new handler for the specified element name.
@@ -39,14 +39,14 @@ public abstract class ElementXMLStreamHandler<T> extends BasicXMLStreamHandler<T
    * @param element The name of the element.
    */
   public ElementXMLStreamHandler(String element) {
-    this._element = element;
+    this.element = element;
   }
 
   /**
    * @return The name of the element
    */
   public String element() {
-    return this._element;
+    return this.element;
   }
 
   /**

@@ -37,7 +37,7 @@ public final class ProtectedRequest implements Serializable {
   /**
    * The protected URL
    */
-  private final String _url;
+  private final String url;
 
   /**
    * Creates a new protected request.
@@ -45,14 +45,14 @@ public final class ProtectedRequest implements Serializable {
    * @param url the protected URL to access.
    */
   public ProtectedRequest(String url) {
-    this._url =  url;
+    this.url =  url;
   }
 
   /**
    * @return The protected URL to access.
    */
   public String url() {
-    return this._url;
+    return this.url;
   }
 
   /**
@@ -60,7 +60,7 @@ public final class ProtectedRequest implements Serializable {
    */
   @Override
   public String toString() {
-    return this._url;
+    return this.url;
   }
 
   /**

@@ -87,7 +87,7 @@ public final class MultipartRequest extends BasicRequest {
   public MultipartRequest(String path) {
     super(Method.POST, path);
     this.boundary = newBoundary();
-    this._headers.add(new Header("Content-Type", "multipart/form-data; boundary=\"" + this.boundary + "\""));
+    this.headers.add(new Header("Content-Type", "multipart/form-data; boundary=\"" + this.boundary + "\""));
   }
 
   /**
@@ -98,7 +98,7 @@ public final class MultipartRequest extends BasicRequest {
   public MultipartRequest(Servlet servlet) {
     super(Method.POST, servlet);
     this.boundary = newBoundary();
-    this._headers.add(new Header("Content-Type", "multipart/form-data; boundary=\"" + this.boundary + "\""));
+    this.headers.add(new Header("Content-Type", "multipart/form-data; boundary=\"" + this.boundary + "\""));
   }
 
   // Setters (return Request)
@@ -407,7 +407,7 @@ public final class MultipartRequest extends BasicRequest {
     } catch (IOException ex) {
       return new Response(ex.getMessage());
     } finally {
-      LOGGER.info("{} [{}] -> {} in {}ms", toURLString(this.config, this._path), this._method, status, System.currentTimeMillis() -t);
+      LOGGER.info("{} [{}] -> {} in {}ms", toURLString(this.config, this.path), this.method, status, System.currentTimeMillis() -t);
     }
   }
 
@@ -435,7 +435,7 @@ public final class MultipartRequest extends BasicRequest {
     connection.setDefaultUseCaches(false);
 
     // Set the headers
-    for (Header h : this._headers) {
+    for (Header h : this.headers) {
       connection.addRequestProperty(h.name(), h.value());
     }
 
@@ -444,8 +444,8 @@ public final class MultipartRequest extends BasicRequest {
     DataOutputStream out = new DataOutputStream(connection.getOutputStream());
 
     // We serialize the HTTP parameters first
-//    if (!this._parameters.isEmpty()) {
-//      for (Parameter p : this._parameters) {
+//    if (!this.parameters.isEmpty()) {
+//      for (Parameter p : this.parameters) {
 //        addParameterPart(p.name(), p.value());
 //      }
 //    }
@@ -544,7 +544,7 @@ public final class MultipartRequest extends BasicRequest {
   public URL toURL() throws MalformedURLException {
     String url = toURLString();
     // We serialize the HTTP parameters first and put them on the query
-    if (!this._parameters.isEmpty()) {
+    if (!this.parameters.isEmpty()) {
       url = url+'?'+ encodeParameters();
     }
     return new URL(url);

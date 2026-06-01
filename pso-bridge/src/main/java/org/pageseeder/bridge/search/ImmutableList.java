@@ -28,14 +28,14 @@ import java.util.stream.Stream;
  */
 abstract class ImmutableList<E> implements Iterable<E> {
 
-  protected final List<E> _list;
+  protected final List<E> list;
 
   protected ImmutableList(List<E> list) {
-    this._list = list;
+    this.list = list;
   }
 
   public Stream<E> stream() {
-    return this._list.stream();
+    return this.list.stream();
   }
 
   /**
@@ -44,7 +44,7 @@ abstract class ImmutableList<E> implements Iterable<E> {
    * @return the number of elements in this list
    */
   public int size() {
-    return this._list.size();
+    return this.list.size();
   }
 
   /**
@@ -53,7 +53,7 @@ abstract class ImmutableList<E> implements Iterable<E> {
    * @return <code>true</code> if this list contains no elements
    */
   public boolean isEmpty() {
-    return this._list.isEmpty();
+    return this.list.isEmpty();
   }
 
   /**
@@ -65,7 +65,7 @@ abstract class ImmutableList<E> implements Iterable<E> {
    *         (<code>index &lt; 0 || index &gt;= size()</code>)
    */
   public E get(int index) {
-    return this._list.get(index);
+    return this.list.get(index);
   }
 
   /**
@@ -101,17 +101,17 @@ abstract class ImmutableList<E> implements Iterable<E> {
 
   @Override
   public void forEach(Consumer<? super E> action) {
-    this._list.forEach(action);
+    this.list.forEach(action);
   }
 
   @Override
   public Spliterator<E> spliterator() {
-    return this._list.spliterator();
+    return this.list.spliterator();
   }
 
   @Override
   public Iterator<E> iterator() {
-    return this._list.iterator();
+    return this.list.iterator();
   }
 
 }

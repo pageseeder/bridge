@@ -56,7 +56,7 @@ public final class PSMemberHandler extends PSEntityHandler<PSMember> {
     if ("member".equals(localName)) {
       PSMember m = this.current;
       if (m != null) {
-        this._items.add(m);
+        this.items.add(m);
         this.current = null;
       }
     }

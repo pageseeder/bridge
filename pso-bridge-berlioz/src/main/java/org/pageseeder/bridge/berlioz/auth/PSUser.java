@@ -47,37 +47,37 @@ public final class PSUser implements User {
   /**
    * The PagerSeeder Member ID.
    */
-  private final Long _id;
+  private final Long id;
 
   /**
    * The Member's email.
    */
-  private final @Nullable String _email;
+  private final @Nullable String email;
 
   /**
    * The Member's first name.
    */
-  private final @Nullable String _firstname;
+  private final @Nullable String firstname;
 
   /**
    * The Member's surname.
    */
-  private final @Nullable String _surname;
+  private final @Nullable String surname;
 
   /**
    * The Member's username.
    */
-  private final String _username;
+  private final String username;
 
   /**
    * The list of roles for this user - never expose the array publicly.
    */
-  private final String[] _roles;
+  private final String[] roles;
 
   /**
    * The Member's PageSeeder session.
    */
-  private @Nullable PSSession _session = null;
+  private @Nullable PSSession session = null;
 
   /**
    * Creates a new PageSeeder User.
@@ -87,41 +87,41 @@ public final class PSUser implements User {
    * @param roles   The list of roles for this user.
    */
   public PSUser(PSMember member, PSSession session, List<String> roles) {
-    this._id = member.getId();
-    this._email = member.getEmail();
-    this._firstname = member.getFirstname();
-    this._surname = member.getSurname();
-    this._username = member.getUsername();
-    this._session = session;
-    this._roles = roles.toArray(new String[]{});
+    this.id = member.getId();
+    this.email = member.getEmail();
+    this.firstname = member.getFirstname();
+    this.surname = member.getSurname();
+    this.username = member.getUsername();
+    this.session = session;
+    this.roles = roles.toArray(new String[]{});
   }
 
   /**
    * @return The PageSeeder Member ID of this user.
    */
   public final Long id() {
-    return this._id;
+    return this.id;
   }
 
   /**
    * @return the PageSeeder email for this user.
    */
   public @Nullable String getEmail() {
-    return this._email;
+    return this.email;
   }
 
   /**
    * @return the PageSeeder first name for this user.
    */
   public @Nullable String getFirstname() {
-    return this._firstname;
+    return this.firstname;
   }
 
   /**
    * @return the PageSeeder surname for this user.
    */
   public @Nullable String getSurname() {
-    return this._surname;
+    return this.surname;
   }
 
   /**
@@ -129,7 +129,7 @@ public final class PSUser implements User {
    */
   @Override
   public String getName() {
-    return this._username;
+    return this.username;
   }
 
   /**
@@ -140,8 +140,8 @@ public final class PSUser implements User {
    */
   @Override
   public boolean hasRole(String group) {
-    if (this._roles == null) return false;
-    for (String g : this._roles) {
+    if (this.roles == null) return false;
+    for (String g : this.roles) {
       if (g.equals(group)) return true;
     }
     return false;
@@ -151,14 +151,14 @@ public final class PSUser implements User {
    * @return the PageSeeder username for this user.
    */
   public String getUsername() {
-    return this._username;
+    return this.username;
   }
 
   /**
    * @return the ID of this user session in PageSeeder (changes after each login)
    */
   public String getJSessionId() {
-    return this._session.getJSessionId();
+    return this.session.getJSessionId();
   }
 
   /**
@@ -167,26 +167,26 @@ public final class PSUser implements User {
    * @return the last connected time stamp.
    */
   public @Nullable PSSession getSession() {
-    return this._session;
+    return this.session;
   }
 
   /**
    * @return the groups the user is a member of.
    */
   public List<String> listRoles() {
-    return Arrays.asList(this._roles);
+    return Arrays.asList(this.roles);
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((this._email == null) ? 0 : this._email.hashCode());
-    result = prime * result + ((this._firstname == null) ? 0 : this._firstname.hashCode());
-    result = prime * result + ((this._id == null) ? 0 : this._id.hashCode());
-    result = prime * result + Arrays.hashCode(this._roles);
-    result = prime * result + ((this._surname == null) ? 0 : this._surname.hashCode());
-    result = prime * result + ((this._username == null) ? 0 : this._username.hashCode());
+    result = prime * result + ((this.email == null) ? 0 : this.email.hashCode());
+    result = prime * result + ((this.firstname == null) ? 0 : this.firstname.hashCode());
+    result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
+    result = prime * result + Arrays.hashCode(this.roles);
+    result = prime * result + ((this.surname == null) ? 0 : this.surname.hashCode());
+    result = prime * result + ((this.username == null) ? 0 : this.username.hashCode());
     return result;
   }
 
@@ -196,22 +196,22 @@ public final class PSUser implements User {
     if (obj == null) return false;
     if (getClass() != obj.getClass()) return false;
     PSUser other = (PSUser)obj;
-    if (this._email == null) {
-      if (other._email != null) return false;
-    } else if (!this._email.equals(other._email)) return false;
-    if (this._firstname == null) {
-      if (other._firstname != null) return false;
-    } else if (!this._firstname.equals(other._firstname)) return false;
-    if (this._id == null) {
-      if (other._id != null) return false;
-    } else if (!this._id.equals(other._id)) return false;
-    if (!Arrays.equals(this._roles, other._roles)) return false;
-    if (this._surname == null) {
-      if (other._surname != null) return false;
-    } else if (!this._surname.equals(other._surname)) return false;
-    if (this._username == null) {
-      if (other._username != null) return false;
-    } else if (!this._username.equals(other._username)) return false;
+    if (this.email == null) {
+      if (other.email != null) return false;
+    } else if (!this.email.equals(other.email)) return false;
+    if (this.firstname == null) {
+      if (other.firstname != null) return false;
+    } else if (!this.firstname.equals(other.firstname)) return false;
+    if (this.id == null) {
+      if (other.id != null) return false;
+    } else if (!this.id.equals(other.id)) return false;
+    if (!Arrays.equals(this.roles, other.roles)) return false;
+    if (this.surname == null) {
+      if (other.surname != null) return false;
+    } else if (!this.surname.equals(other.surname)) return false;
+    if (this.username == null) {
+      if (other.username != null) return false;
+    } else if (!this.username.equals(other.username)) return false;
     return true;
   }
 
@@ -222,11 +222,11 @@ public final class PSUser implements User {
    */
   public final PSMember toMember() {
     PSMember m = new PSMember();
-    m.setId(this._id);
-    m.setFirstname(this._firstname);
-    m.setSurname(this._surname);
-    m.setUsername(this._username);
-    m.setEmail(this._email);
+    m.setId(this.id);
+    m.setFirstname(this.firstname);
+    m.setSurname(this.surname);
+    m.setUsername(this.username);
+    m.setEmail(this.email);
     return m;
   }
 
@@ -245,11 +245,11 @@ public final class PSUser implements User {
    *
    * <pre>{@code
    *  <user type="pageseeder">
-   *    <id>[member_id]</id>
-   *    <username>[member_username]</username>
-   *    <firstname>[member_firstname]</firstname>
-   *    <surname>[member_surname]</surname>
-   *    <email>[member_email]</email>
+   *    <id>[memberid]</id>
+   *    <username>[memberusername]</username>
+   *    <firstname>[memberfirstname]</firstname>
+   *    <surname>[membersurname]</surname>
+   *    <email>[memberemail]</email>
    *    <member-of groups="[group0],[group1]"/>
    *  </user>
    * }</pre>
@@ -260,23 +260,23 @@ public final class PSUser implements User {
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement("user");
     xml.attribute("type", "pageseeder");
-    xml.attribute("id", this._id.toString());
-    if (this._username != null) {
-      xml.element("username", this._username);
+    xml.attribute("id", this.id.toString());
+    if (this.username != null) {
+      xml.element("username", this.username);
     }
-    if (this._firstname != null) {
-      xml.element("firstname", this._firstname);
+    if (this.firstname != null) {
+      xml.element("firstname", this.firstname);
     }
-    if (this._surname != null) {
-      xml.element("surname", this._surname);
+    if (this.surname != null) {
+      xml.element("surname", this.surname);
     }
-    if (this._email != null) {
-      xml.element("email", this._email);
+    if (this.email != null) {
+      xml.element("email", this.email);
     }
-    if (this._roles != null) {
+    if (this.roles != null) {
 
       // old format
-      String[] roles = this._roles;
+      String[] roles = this.roles;
       xml.openElement("member-of");
       StringBuilder csv = new StringBuilder();
       for (String role : roles) {

@@ -39,36 +39,36 @@ public final class OAuthUser implements User {
   /**
    * The PagerSeeder Member ID.
    */
-  private final Long _id;
+  private final Long id;
 
   /**
    * The Member's email.
    */
-  private final @Nullable String _email;
+  private final @Nullable String email;
 
   /**
    * The Member's first name.
    */
-  private final @Nullable String _firstname;
+  private final @Nullable String firstname;
 
   /**
    * The Member's surname.
    */
-  private final @Nullable String _surname;
+  private final @Nullable String surname;
 
   /**
    * The Member's username.
    */
-  private final String _username;
+  private final String username;
 
   private PSToken token;
 
   public OAuthUser(PSMember member, PSToken token) {
-    this._id = member.getId();
-    this._firstname = member.getFirstname();
-    this._surname = member.getSurname();
-    this._email = member.getEmail();
-    this._username = member.getUsername();
+    this.id = member.getId();
+    this.firstname = member.getFirstname();
+    this.surname = member.getSurname();
+    this.email = member.getEmail();
+    this.username = member.getUsername();
     this.token = token;
   }
 
@@ -76,28 +76,28 @@ public final class OAuthUser implements User {
    * @return The PageSeeder Member ID of this user.
    */
   public Long id() {
-    return this._id;
+    return this.id;
   }
 
   /**
    * @return the PageSeeder email for this user.
    */
   public @Nullable String getEmail() {
-    return this._email;
+    return this.email;
   }
 
   /**
    * @return the PageSeeder first name for this user.
    */
   public @Nullable String getFirstname() {
-    return this._firstname;
+    return this.firstname;
   }
 
   /**
    * @return the PageSeeder surname for this user.
    */
   public @Nullable String getSurname() {
-    return this._surname;
+    return this.surname;
   }
 
   /**
@@ -105,14 +105,14 @@ public final class OAuthUser implements User {
    */
   @Override
   public String getName() {
-    return this._username;
+    return this.username;
   }
 
   /**
    * @return the PageSeeder username for this user.
    */
   public String getUsername() {
-    return this._username;
+    return this.username;
   }
 
   @Override
@@ -135,11 +135,11 @@ public final class OAuthUser implements User {
    */
   public final PSMember toMember() {
     PSMember m = new PSMember();
-    m.setId(this._id);
-    m.setFirstname(this._firstname);
-    m.setSurname(this._surname);
-    m.setUsername(this._username);
-    m.setEmail(this._email);
+    m.setId(this.id);
+    m.setFirstname(this.firstname);
+    m.setSurname(this.surname);
+    m.setUsername(this.username);
+    m.setEmail(this.email);
     return m;
   }
 
@@ -155,11 +155,11 @@ public final class OAuthUser implements User {
    *
    * <pre>{@code
    *  <user type="oauth">
-   *    <id>[member_id]</id>
-   *    <username>[member_username]</username>
-   *    <firstname>[member_firstname]</firstname>
-   *    <surname>[member_surname]</surname>
-   *    <email>[member_email]</email>
+   *    <id>[memberid]</id>
+   *    <username>[memberusername]</username>
+   *    <firstname>[memberfirstname]</firstname>
+   *    <surname>[membersurname]</surname>
+   *    <email>[memberemail]</email>
    *  </user>
    * }</pre>
    *
@@ -169,18 +169,18 @@ public final class OAuthUser implements User {
   public void toXML(XMLWriter xml) throws IOException {
     xml.openElement("user");
     xml.attribute("type", "oauth");
-    xml.attribute("id", this._id.toString());
-    if (this._username != null) {
-      xml.element("username", this._username);
+    xml.attribute("id", this.id.toString());
+    if (this.username != null) {
+      xml.element("username", this.username);
     }
-    if (this._firstname != null) {
-      xml.element("firstname", this._firstname);
+    if (this.firstname != null) {
+      xml.element("firstname", this.firstname);
     }
-    if (this._surname != null) {
-      xml.element("surname", this._surname);
+    if (this.surname != null) {
+      xml.element("surname", this.surname);
     }
-    if (this._email != null) {
-      xml.element("email", this._email);
+    if (this.email != null) {
+      xml.element("email", this.email);
     }
     xml.closeElement();
   }

@@ -61,7 +61,7 @@ public final class MemberManager extends Sessionful {
     String identifier = Objects.requireNonNull(username);
     PSMember member = cache.get(username);
     if (member == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getMember(identifier).using(this._credentials);
+      PSHTTPConnector connector = PSHTTPConnectors.getMember(identifier).using(this.credentials);
       PSMemberHandler handler = new PSMemberHandler();
       connector.get(handler);
       member = handler.get();
@@ -79,7 +79,7 @@ public final class MemberManager extends Sessionful {
    * @param options The options to create the member.
    */
   public void create(PSMember member, MemberOptions options) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createMember(member, options).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.createMember(member, options).using(this.credentials);
     PSMemberHandler handler = new PSMemberHandler(member);
     connector.post(handler);
     PSMember m = handler.get();
@@ -96,7 +96,7 @@ public final class MemberManager extends Sessionful {
    * @param password The member's password
    */
   public void create(PSMember member, MemberOptions options, String password) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createMember(member, options, password).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.createMember(member, options, password).using(this.credentials);
     PSMemberHandler handler = new PSMemberHandler(member);
     connector.post(handler);
     PSMember m = handler.get();
@@ -115,7 +115,7 @@ public final class MemberManager extends Sessionful {
   public @Nullable PSMember get(PSMember member) throws APIException {
     PSMember m = cache.get(Objects.requireNonNull(member));
     if (m == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getMember(member).using(this._credentials);
+      PSHTTPConnector connector = PSHTTPConnectors.getMember(member).using(this.credentials);
       PSMemberHandler handler = new PSMemberHandler(member);
       connector.get(handler);
       m = handler.get();
@@ -136,7 +136,7 @@ public final class MemberManager extends Sessionful {
   public boolean save(PSMember member) throws APIException {
     // TODO Verify
     // XXX Force email change set to true (requires Admin)
-    PSHTTPConnector connector = PSHTTPConnectors.patchMember(member, true).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.patchMember(member, true).using(this.credentials);
     PSMemberHandler handler = new PSMemberHandler(member);
     PSHTTPResponseInfo resp = connector.patch(handler);
     PSMember m = handler.get();
@@ -157,7 +157,7 @@ public final class MemberManager extends Sessionful {
    * @throws APIException If an error occurs while connecting.
    */
   public boolean resetSession() throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.resetSession().using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.resetSession().using(this.credentials);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
   }
@@ -172,7 +172,7 @@ public final class MemberManager extends Sessionful {
    * @throws APIException If an error occurs while connecting.
    */
   public boolean forceResetPassword(String member) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.forceResetPassword(member).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.forceResetPassword(member).using(this.credentials);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
   }
@@ -191,7 +191,7 @@ public final class MemberManager extends Sessionful {
    * @throws APIException If an error occurs while connecting or the group is not identifiable
    */
   public boolean forceResetPassword(PSGroup group, String member) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.forceResetPassword(group, member).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.forceResetPassword(group, member).using(this.credentials);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
   }
@@ -206,7 +206,7 @@ public final class MemberManager extends Sessionful {
    * @throws APIException If an error occurs while connecting.
    */
   public boolean resetPassword(String member) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.resetPassword(member).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.resetPassword(member).using(this.credentials);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
   }
@@ -225,7 +225,7 @@ public final class MemberManager extends Sessionful {
    * @throws APIException If an error occurs while connecting or the group is not identifiable
    */
   public boolean resetPassword(PSGroup group, String member) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.resetPassword(group, member).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.resetPassword(group, member).using(this.credentials);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
   }
@@ -241,7 +241,7 @@ public final class MemberManager extends Sessionful {
    * @throws APIException If an error occurs while connecting or the key is missing.
    */
   public boolean resetPassword(String member, PasswordResetOptions options) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.resetPassword(member, options).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.resetPassword(member, options).using(this.credentials);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
   }
@@ -261,7 +261,7 @@ public final class MemberManager extends Sessionful {
    * @throws APIException If an error occurs while connecting or the group is not identifiable or key is missing
    */
   public boolean resetPassword(PSGroup group, String member, PasswordResetOptions options) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.resetPassword(group, member, options).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.resetPassword(group, member, options).using(this.credentials);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
   }
@@ -278,7 +278,7 @@ public final class MemberManager extends Sessionful {
    * @throws APIException If an error occurs while connecting to PageSeeder.
    */
   public boolean logout() throws APIException {
-    return this._credentials instanceof PSSession && logout((PSSession) this._credentials);
+    return this.credentials instanceof PSSession && logout((PSSession) this.credentials);
   }
 
   /**
@@ -293,7 +293,7 @@ public final class MemberManager extends Sessionful {
    * @throws APIException If an error occurs while connecting to PageSeeder.
    */
   public boolean activate(String username) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.getActivate(username).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.getActivate(username).using(this.credentials);
     PSHTTPResponseInfo info = connector.post();
     return info.isSuccessful();
   }
@@ -350,7 +350,7 @@ public final class MemberManager extends Sessionful {
   @Deprecated
   public boolean confirmEmailChange(String username, String email, String key) throws APIException {
     PSHTTPConnector connector = new PSHTTPConnector(PSHTTPResourceType.SERVLET, "com.pageseeder.ChangeDetailsForm");
-    connector.using(this._credentials);
+    connector.using(this.credentials);
     connector.addParameter("login-username", username);
     connector.addParameter("username", username);
     connector.addParameter("email", email);

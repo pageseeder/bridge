@@ -58,7 +58,7 @@ public final class PSSearch extends Sessionful {
    * @throws APIException If an error occurs while connecting to PageSeeder.
    */
   public List<PSResult> find(PSPredicate predicate, PSGroup group) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, group).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, group).using(this.credentials);
     PSResultHandler handler = new PSResultHandler();
     connector.get(handler);
     return handler.listResults();
@@ -75,7 +75,7 @@ public final class PSSearch extends Sessionful {
    * @throws APIException If an error occurs while connecting to PageSeeder.
    */
   public List<PSResult> find(PSPredicate predicate, List<PSGroup> groups) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, groups).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.find(predicate, groups).using(this.credentials);
     PSResultHandler handler = new PSResultHandler();
     connector.get(handler);
     return handler.listResults();

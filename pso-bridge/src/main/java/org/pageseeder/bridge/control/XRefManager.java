@@ -61,7 +61,7 @@ public final class XRefManager extends Sessionful {
    * @return the list of XRefs found (never <code>null</code>)
    */
   public List<PSXRef> listXRefs(PSGroup group, PSURI uri) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.listXRefs(group, uri, null, true, false, null, 1, 1000).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.listXRefs(group, uri, null, true, false, null, 1, 1000).using(this.credentials);
     PSXRefHandler handler = new PSXRefHandler();
     connector.get(handler);
     List<PSXRef> xrefs = handler.listXRefs();
@@ -89,7 +89,7 @@ public final class XRefManager extends Sessionful {
   public List<PSXRef> listXRefs(PSGroup group, PSURI uri, List<PSXRef.Type> includetypes,
       boolean forward, boolean reverse, String version, int page, int pagesize) throws APIException {
     PSHTTPConnector connector = PSHTTPConnectors.listXRefs(group, uri, includetypes,
-        forward, reverse, version, page, pagesize).using(this._credentials);
+        forward, reverse, version, page, pagesize).using(this.credentials);
     PSXRefHandler handler = new PSXRefHandler();
     connector.get(handler);
     List<PSXRef> xrefs = handler.listXRefs();

@@ -37,7 +37,7 @@ abstract class PSEntityHandler<E extends PSEntity> extends DefaultHandler {
   /**
    * The list of entities processed by this handler.
    */
-  protected final List<E> _items = new ArrayList<>();
+  protected final List<E> items = new ArrayList<>();
 
   /**
    * The entity being currently processed.
@@ -74,15 +74,15 @@ abstract class PSEntityHandler<E extends PSEntity> extends DefaultHandler {
    * @return the list of group folders
    */
   public final List<E> list() {
-    return this._items;
+    return this.items;
   }
 
   /**
    * @return the list of group folders
    */
   public final @Nullable E get() {
-    int size = this._items.size();
-    return size > 0? this._items.get(size-1) : null;
+    int size = this.items.size();
+    return size > 0? this.items.get(size-1) : null;
   }
 
   /**

@@ -91,7 +91,7 @@ public final class GroupManager extends Sessionful {
       throws FailedPrecondition, APIException {
     Objects.requireNonNull(group, "Group must be specified");
     Objects.requireNonNull(creator, "Member must be specified");
-    PSHTTPConnector connector = PSHTTPConnectors.createGroup(group, creator, options).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.createGroup(group, creator, options).using(this.credentials);
     PSGroupHandler handler = new PSGroupHandler(group);
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getCode() >= 400) throw new APIException("Unable to create group '" + group.getName() + "': " + info.getMessage());
@@ -130,7 +130,7 @@ public final class GroupManager extends Sessionful {
       throws FailedPrecondition, APIException {
     Objects.requireNonNull(project, "Project must be specified");
     Objects.requireNonNull(creator, "Member must be specified");
-    PSHTTPConnector connector = PSHTTPConnectors.createProject(project, creator, options).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.createProject(project, creator, options).using(this.credentials);
     PSGroupHandler handler = new PSGroupHandler(project);
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getCode() >= 400) throw new APIException("Unable to create project '" + project.getName() + "': " + info.getMessage());
@@ -149,7 +149,7 @@ public final class GroupManager extends Sessionful {
   public void createGroupFolder(PSGroup group, String url)
       throws InvalidEntityException, APIException {
     if (!group.isValid()) throw new InvalidEntityException(PSGroup.class, group.checkValid());
-    PSHTTPConnector connector = PSHTTPConnectors.createGroupFolder(group, url).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.createGroupFolder(group, url).using(this.credentials);
     PSGroupFolderHandler handler = new PSGroupFolderHandler();
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getCode() >= 400) throw new APIException("Unable to create group folder '" + url + "': " + info.getMessage());
@@ -168,7 +168,7 @@ public final class GroupManager extends Sessionful {
    */
   public void createPersonalGroup(PSMember member) throws APIException {
     Objects.requireNonNull(member, "Member must be specified");
-    PSHTTPConnector connector = PSHTTPConnectors.createPersonalGroup(member).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.createPersonalGroup(member).using(this.credentials);
     PSGroup group = new PSGroup("member-" + member.getId() + "-home");
     PSGroupHandler handler = new PSGroupHandler(group);
     PSHTTPResponseInfo info = connector.post(handler);
@@ -197,7 +197,7 @@ public final class GroupManager extends Sessionful {
     Objects.requireNonNull(group, "Group must be specified");
     Objects.requireNonNull(editor, "Member must be specified");
     Objects.requireNonNull(newname, "New group name must be specified");
-    PSHTTPConnector connector = PSHTTPConnectors.renameGroup(group, editor, newname).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.renameGroup(group, editor, newname).using(this.credentials);
     PSThreadHandler handler = new PSThreadHandler();
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getCode() >= 400) throw new APIException("Unable to rename group '" + group.getName() + "': " + info.getMessage());
@@ -234,7 +234,7 @@ public final class GroupManager extends Sessionful {
   public @Nullable PSThreadStatus archiveGroup(PSGroup group, PSMember editor) throws FailedPrecondition, APIException {
     Objects.requireNonNull(group, "Group must be specified");
     Objects.requireNonNull(editor, "Member must be specified");
-    PSHTTPConnector connector = PSHTTPConnectors.archiveGroup(group, editor).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.archiveGroup(group, editor).using(this.credentials);
     PSThreadHandler handler = new PSThreadHandler();
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getCode() >= 400) throw new APIException("Unable to archive group '" + group.getName() + "': " + info.getMessage());
@@ -284,7 +284,7 @@ public final class GroupManager extends Sessionful {
   public void editGroup(PSGroup group, PSMember editor, @Nullable GroupOptions options) throws FailedPrecondition, APIException {
     Objects.requireNonNull(group, "Group must be specified");
     Objects.requireNonNull(editor, "Member must be specified");
-    PSHTTPConnector connector = PSHTTPConnectors.patchGroup(group, editor, options).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.patchGroup(group, editor, options).using(this.credentials);
     PSThreadHandler handler = new PSThreadHandler();
     PSHTTPResponseInfo info = connector.patch(handler);
     if (info.getCode() >= 400) throw new APIException("Unable to edit group '" + group.getName() + "': " + info.getMessage());
@@ -305,7 +305,7 @@ public final class GroupManager extends Sessionful {
   public @Nullable PSGroup get(String name) throws APIException {
     PSGroup group = cache.get(Objects.requireNonNull(name));
     if (group == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getGroup(name).using(this._credentials);
+      PSHTTPConnector connector = PSHTTPConnectors.getGroup(name).using(this.credentials);
       PSGroupHandler handler = new PSGroupHandler();
       connector.get(handler);
       group = handler.get();
@@ -345,7 +345,7 @@ public final class GroupManager extends Sessionful {
     Objects.requireNonNull(url, "URL must be specified");
     PSGroupFolder folder = folders.get(url);
     if (folder == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getGroupFolder(group, url).using(this._credentials);
+      PSHTTPConnector connector = PSHTTPConnectors.getGroupFolder(group, url).using(this.credentials);
       PSGroupFolderHandler handler = new PSGroupFolderHandler();
       PSHTTPResponseInfo info = connector.get(handler);
       // TODO We should simply return null
@@ -365,7 +365,7 @@ public final class GroupManager extends Sessionful {
    * @param subgroup The subgroup to add to the group.
    */
   public void addSubGroup(PSGroup group, PSGroup subgroup) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.addSubGroup(group, subgroup).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.addSubGroup(group, subgroup).using(this.credentials);
     PSHTTPResponseInfo info = connector.post();
     if (info.getCode() >= 400) throw new APIException("Unable to add subgroup '" + subgroup.getName() + "' to '" + group.getName() + "': " + info.getMessage());
   }
@@ -381,7 +381,7 @@ public final class GroupManager extends Sessionful {
    */
   public void addSubGroup(PSGroup group, PSGroup subgroup, PSNotification notification, PSRole role, boolean listed)
       throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.addSubGroup(group, subgroup, notification, role, listed).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.addSubGroup(group, subgroup, notification, role, listed).using(this.credentials);
     PSHTTPResponseInfo info = connector.post();
     if (info.getCode() >= 400) throw new APIException("Unable to add subgroup '" + subgroup.getName() + "' to '" + group.getName() + "': " + info.getMessage());
   }
@@ -393,7 +393,7 @@ public final class GroupManager extends Sessionful {
    * @param subgroup The subgroup to remove.
    */
   public void deleteSubGroup(PSGroup group, PSGroup subgroup) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.deleteSubGroup(group, subgroup).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.deleteSubGroup(group, subgroup).using(this.credentials);
     PSHTTPResponseInfo info = connector.post();
     if (info.getCode() >= 400) throw new APIException("Unable to remove subgroup '" + subgroup.getName() + "' from '" + group.getName() + "': " + info.getMessage());
   }
@@ -404,7 +404,7 @@ public final class GroupManager extends Sessionful {
    * @param group The group.
    */
   public List<PSGroup> listSubGroups(PSGroup group) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.listSubGroups(group).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.listSubGroups(group).using(this.credentials);
     PSGroupHandler handler = new PSGroupHandler();
     PSHTTPResponseInfo info = connector.get(handler);
     // TODO We should simply return null?
@@ -440,7 +440,7 @@ public final class GroupManager extends Sessionful {
    */
   public List<PSGroup> listProjectTree(PSMember member, String nameprefix, int max, boolean showGroup, boolean showAll) throws APIException {
     Objects.requireNonNull(member);
-    PSHTTPConnector connector = PSHTTPConnectors.listProjectsTree(member, nameprefix, max, showGroup, showAll).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.listProjectsTree(member, nameprefix, max, showGroup, showAll).using(this.credentials);
     PSGroupHandler handler = new PSGroupHandler();
     PSHTTPResponseInfo info = connector.get(handler);
     if (info.getCode() >= 400) throw new APIException("Unable to list groups for member '" + member.getId() + "': " + info.getMessage());
@@ -469,7 +469,7 @@ public final class GroupManager extends Sessionful {
    * @param includeAll  Whether to return all projects/groups for server (Administrator only)
    */
   public List<PSGroup> findGroups(PSMember member, String prefix, int max, boolean includeAll) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.findProjects(member, prefix, max, includeAll).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.findProjects(member, prefix, max, includeAll).using(this.credentials);
     PSGroupHandler handler = new PSGroupHandler();
     PSHTTPResponseInfo info = connector.get(handler);
     // TODO We should simply return null?
@@ -499,7 +499,7 @@ public final class GroupManager extends Sessionful {
    */
   public void putResource(PSProject project, PSResource resource, boolean overwrite)
       throws FailedPrecondition, APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.putResource(project, resource, overwrite).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.putResource(project, resource, overwrite).using(this.credentials);
     PSHTTPResponseInfo info = connector.put();
     if (info.getCode() >= 400) throw new APIException("Unable to put project resource on '" + project.getName() + "': " + info.getMessage());
   }

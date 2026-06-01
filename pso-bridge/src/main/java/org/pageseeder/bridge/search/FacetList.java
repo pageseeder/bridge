@@ -79,7 +79,7 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
    * @return A new <code>FacetList</code> instance including the specified facet.
    */
   public FacetList facet(String field, boolean flexible) {
-    List<Facet> facets = this._list;
+    List<Facet> facets = this.list;
     if (!facets.isEmpty()) facets = minus(facets, f -> f.field().equals(field));
     facets = plus(facets, new Facet(field, flexible));
     return new FacetList(facets, this.facetSize);
@@ -94,7 +94,7 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
    * @return A new <code>FacetList</code> instance including the specified facet.
    */
   public FacetList facet(Facet facet) {
-    List<Facet> facets = plus(this._list, facet);
+    List<Facet> facets = plus(this.list, facet);
     return new FacetList(facets, this.facetSize);
   }
 
@@ -105,7 +105,7 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
    */
   public FacetList facetSize(int facetSize) {
     if (facetSize == this.facetSize) return this;
-    return new FacetList(this._list, facetSize);
+    return new FacetList(this.list, facetSize);
   }
 
   /**
@@ -130,10 +130,10 @@ public class FacetList extends ImmutableList<Facet> implements Iterable<Facet> {
   public Map<String, String> toParameters(Map<String, String> parameters) {
     // Facets
     if (!isEmpty()) {
-      String facets = this._list.stream().filter(f -> !f.isFlexible()).map(Facet::field).collect(Collectors.joining(","));
+      String facets = this.list.stream().filter(f -> !f.isFlexible()).map(Facet::field).collect(Collectors.joining(","));
       if (!facets.isEmpty())
         parameters.put("facets", facets);
-      String flexible = this._list.stream().filter(Facet::isFlexible).map(Facet::field).collect(Collectors.joining(","));
+      String flexible = this.list.stream().filter(Facet::isFlexible).map(Facet::field).collect(Collectors.joining(","));
       if (!flexible.isEmpty())
         parameters.put("flexiblefacets", flexible);
     }

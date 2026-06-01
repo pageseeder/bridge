@@ -51,7 +51,7 @@ public class RangeFilterList extends ImmutableList<RangeFilter> implements Itera
    */
   public RangeFilterList filter(String field, Range range) {
     RangeFilter filter = new RangeFilter(field, range);
-    List<RangeFilter> ranges = this._list;
+    List<RangeFilter> ranges = this.list;
     if (!isEmpty()) ranges = minus(ranges, f -> f.field().equals(field));
     ranges = plus(ranges, filter);
     return new RangeFilterList(ranges);
@@ -156,7 +156,7 @@ public class RangeFilterList extends ImmutableList<RangeFilter> implements Itera
     // Filters and ranges
     if (!isEmpty()) {
       StringBuilder filters = new StringBuilder();
-      for (RangeFilter f : this._list) {
+      for (RangeFilter f : this.list) {
         if (filters.length() > 0) {
           filters.append(',');
         }

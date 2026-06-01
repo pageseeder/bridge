@@ -51,14 +51,14 @@ public final class PSGroupHandler extends PSEntityHandler<PSGroup> {
       // save parent project (for tree)
       PSGroup tmp = this.tempGroup;
       if (tmp != null) {
-        this._items.add(tmp);
+        this.items.add(tmp);
       }
       this.tempGroup = make(atts, this.current);
     } else if ("project".equals(localName)) {
       // save parent project (for tree)
       PSGroup tmp = this.tempGroup;
       if (tmp != null) {
-        this._items.add(tmp);
+        this.items.add(tmp);
       }
       this.tempGroup = PSEntityFactory.toProject(atts, this.current);
     }
@@ -69,7 +69,7 @@ public final class PSGroupHandler extends PSEntityHandler<PSGroup> {
     if ("group".equals(localName) || "project".equals(localName)) {
       PSGroup tmp = this.tempGroup;
       if (tmp != null) {
-        this._items.add(tmp);
+        this.items.add(tmp);
         this.tempGroup = null;
       }
     }

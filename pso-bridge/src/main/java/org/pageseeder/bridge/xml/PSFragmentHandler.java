@@ -43,7 +43,7 @@ public final class PSFragmentHandler extends DefaultHandler {
   /**
    * The containing uri
    */
-  private final PSURI _fraguri;
+  private final PSURI fragUri;
 
   /**
    * The current document being processed.
@@ -81,7 +81,7 @@ public final class PSFragmentHandler extends DefaultHandler {
    * @param document  the document containing the fragment
    */
   public PSFragmentHandler(PSDocument document) {
-    this._fraguri = document;
+    this.fragUri = document;
   }
 
   @Override
@@ -126,7 +126,7 @@ public final class PSFragmentHandler extends DefaultHandler {
       }
     } else if ("blockxref".equals(localName) && this.fragment instanceof XRefFragment) {
       XRefFragment f = (XRefFragment) this.fragment;
-      PSXRef xref = PSEntityFactory.toXRef(atts, this._fraguri, null);
+      PSXRef xref = PSEntityFactory.toXRef(atts, this.fragUri, null);
       if (f != null) {
         f.add(xref);
       }

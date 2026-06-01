@@ -65,7 +65,7 @@ public final class ExternalURIManager extends Sessionful {
    */
   public boolean create(PSExternalURI externaluri, PSGroup group, PSMember creator)
       throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createExternalURI(externaluri, group, creator).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.createExternalURI(externaluri, group, creator).using(this.credentials);
     PSExternalURIHandler handler = new PSExternalURIHandler(externaluri);
     PSHTTPResponseInfo info = connector.post(handler);
     return info.getStatus() == Status.SUCCESSFUL;
@@ -82,7 +82,7 @@ public final class ExternalURIManager extends Sessionful {
   public @Nullable PSExternalURI getExternalURI(long id, PSGroup group) throws APIException {
     PSExternalURI externaluri = cache.get(id);
     if (externaluri == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getURI(id, group).using(this._credentials);
+      PSHTTPConnector connector = PSHTTPConnectors.getURI(id, group).using(this.credentials);
       PSExternalURIHandler handler = new PSExternalURIHandler();
       connector.get(handler);
       externaluri = handler.getExternalURI();
@@ -104,7 +104,7 @@ public final class ExternalURIManager extends Sessionful {
   public @Nullable PSExternalURI getExternalURI(String url, PSGroup group) throws APIException {
     PSExternalURI externaluri = cache.get(url);
     if (externaluri == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group).using(this._credentials);
+      PSHTTPConnector connector = PSHTTPConnectors.getURI(url, group).using(this.credentials);
       PSExternalURIHandler handler = new PSExternalURIHandler();
       connector.get(handler);
       externaluri = handler.getExternalURI();

@@ -57,22 +57,22 @@ abstract class BasicRequest {
   /**
    * HTTP method
    */
-  protected final Method _method;
+  protected final Method method;
 
   /**
    * Path to the resources
    */
-  protected final String _path;
+  protected final String path;
 
   /**
    * List of parameters.
    */
-  protected final List<Parameter> _parameters = new ArrayList<>();
+  protected final List<Parameter> parameters = new ArrayList<>();
 
   /**
    * List of HTTP request headers.
    */
-  protected List<Header> _headers = new ArrayList<>();
+  protected List<Header> headers = new ArrayList<>();
 
   /**
    * Any credentials used when making the request.
@@ -96,16 +96,16 @@ abstract class BasicRequest {
    * @param path   The path
    */
   protected BasicRequest(Method method, String path) {
-    this._method = Objects.requireNonNull(method, "the HTTP method is required");
-    this._path = extractPath(path);
+    this.method = Objects.requireNonNull(method, "the HTTP method is required");
+    this.path = extractPath(path);
     String query = extractQuery(path);
     if (!query.isEmpty()) {
-      addQueryToParameters(query, this._parameters);
+      addQueryToParameters(query, this.parameters);
     }
     if (method == Method.PATCH) {
-      this._headers.add(HTTP_METHOD_OVERRIDE_PATCH);
+      this.headers.add(HTTP_METHOD_OVERRIDE_PATCH);
     }
-    this._headers.add(USER_AGENT);
+    this.headers.add(USER_AGENT);
   }
 
   /**
@@ -128,7 +128,7 @@ abstract class BasicRequest {
    */
   protected BasicRequest(Method method, Servlet servlet) {
     this(method, servlet.toPath());
-    this._parameters.add(XFORMAT);
+    this.parameters.add(XFORMAT);
   }
 
   // Setters (return Request)
@@ -158,7 +158,7 @@ abstract class BasicRequest {
    * @return This request.
    */
   public BasicRequest parameter(String name, String value) {
-    this._parameters.add(new Parameter(name, value));
+    this.parameters.add(new Parameter(name, value));
     return this;
   }
 
@@ -223,7 +223,7 @@ abstract class BasicRequest {
    * @return The path AFTER the site prefix.
    */
   public String path() {
-    return this._path;
+    return this.path;
   }
 
   /**
@@ -234,7 +234,7 @@ abstract class BasicRequest {
    * @return The value of the corresponding parameter or <code>null</code>
    */
   public @Nullable String header(String name) {
-    for (Header h : this._headers) {
+    for (Header h : this.headers) {
       if (h.name().equalsIgnoreCase(name)) return h.value();
     }
     return null;
@@ -248,7 +248,7 @@ abstract class BasicRequest {
    * @return The value of the corresponding parameter or <code>null</code>
    */
   public @Nullable String parameter(String name) {
-    for (Parameter p : this._parameters) {
+    for (Parameter p : this.parameters) {
       if (p.name().equals(name)) return p.value();
     }
     return null;
@@ -279,7 +279,7 @@ abstract class BasicRequest {
    */
   public String encodeParameters() {
     StringBuilder q = new StringBuilder();
-    for (Parameter p : this._parameters) {
+    for (Parameter p : this.parameters) {
       if (q.length() > 0) {
         q.append("&");
       }
@@ -315,7 +315,7 @@ abstract class BasicRequest {
     StringBuilder url = this.config.getAPIURLBuilder();
 
     // Path
-    url.append(this.config.getSitePrefix()).append(this._path);
+    url.append(this.config.getSitePrefix()).append(this.path);
 
     // If the session ID is available
     if (this.credentials instanceof PSSession) {
@@ -324,7 +324,7 @@ abstract class BasicRequest {
     }
 
     // Add the API version if necessary
-    if (!this._parameters.contains("v")) {
+    if (!this.parameters.contains("v")) {
       boolean strict = this.config.getServiceAPIStrict();
       Version api = this.config.getServiceAPIVersion();
       if (strict || api != null) {
@@ -335,12 +335,12 @@ abstract class BasicRequest {
         if (strict) {
           value.append(";strict");
         }
-        this._parameters.add(new Parameter("v", value.toString()));
+        this.parameters.add(new Parameter("v", value.toString()));
       }
     }
 
     // When not using the "application/x-www-form-urlencoded"
-    if (this._method != Method.POST && this._method != Method.PATCH && !this._parameters.isEmpty()) {
+    if (this.method != Method.POST && this.method != Method.PATCH && !this.parameters.isEmpty()) {
       url.append('?').append(encodeParameters());
     }
 
@@ -415,7 +415,7 @@ abstract class BasicRequest {
    */
   protected void setHeader(String name, String value) {
     removeHeader(name);
-    this._headers.add(new Header(name, value));
+    this.headers.add(new Header(name, value));
   }
 
   /**
@@ -426,7 +426,7 @@ abstract class BasicRequest {
    */
   protected void setHeader(String name, int value) {
     removeHeader(name);
-    this._headers.add(new Header(name, value));
+    this.headers.add(new Header(name, value));
   }
 
   /**
@@ -435,7 +435,7 @@ abstract class BasicRequest {
    * @param name the of the header to remove (not case sensitive)
    */
   protected void removeHeader(String name) {
-    for (Iterator<Header> i = this._headers.iterator(); i.hasNext();) {
+    for (Iterator<Header> i = this.headers.iterator(); i.hasNext();) {
       @SuppressWarnings("null")
       Header h = i.next();
       if (h.name().equalsIgnoreCase(name)) {
@@ -453,7 +453,7 @@ abstract class BasicRequest {
    * @return The header that was removed
    */
   protected @Nullable Header getHeader(String name) {
-    for (Header h : this._headers) {
+    for (Header h : this.headers) {
       if (h.name().equalsIgnoreCase(name)) return h;
     }
     return null;

@@ -328,7 +328,7 @@ public final class Request extends BasicRequest implements HttpRequest {
   public List<Header> headers() {
     // We recompute the header for the body content
     computeBodyContent();
-    return Collections.unmodifiableList(this._headers);
+    return Collections.unmodifiableList(this.headers);
   }
 
   // Execute
@@ -363,17 +363,17 @@ public final class Request extends BasicRequest implements HttpRequest {
       }
 
       // Tunnel PATCH through POST as HttpUrlConnection does not support PATCH
-      if (this._method == Method.PATCH) {
+      if (this.method == Method.PATCH) {
         connection.setRequestMethod("POST");
       } else {
-        connection.setRequestMethod(this._method.name());
+        connection.setRequestMethod(this.method.name());
       }
 
       // Compute the body content (this might set some headers so must be done BEFORE we send the headers)
       byte[] data = computeBodyContent();
 
       // Send the headers
-      for (Header h : this._headers) {
+      for (Header h : this.headers) {
         connection.addRequestProperty(h.name(), h.value());
       }
 
@@ -398,7 +398,7 @@ public final class Request extends BasicRequest implements HttpRequest {
     } catch (IOException ex) {
       return new Response(ex.getMessage());
     } finally {
-      LOGGER.info("{} [{}] -> {} in {}ms", toURLString(this.config, this._path), this._method, status, System.currentTimeMillis() -t);
+      LOGGER.info("{} [{}] -> {} in {}ms", toURLString(this.config, this.path), this.method, status, System.currentTimeMillis() -t);
     }
   }
 
@@ -446,14 +446,14 @@ public final class Request extends BasicRequest implements HttpRequest {
   private byte @Nullable[] computeBodyContent() {
     byte[] data = null;
     // Compute the data
-    if (this._method == Method.POST || this._method == Method.PATCH) {
+    if (this.method == Method.POST || this.method == Method.PATCH) {
       data = encodeParameters().getBytes(StandardCharsets.UTF_8);
-      this._headers.add(CONTENT_FORM_URLENCODED_UTF8);
+      this.headers.add(CONTENT_FORM_URLENCODED_UTF8);
     } else if (this.body != null) {
       data = this.body;
       if (getHeader("Content-Type") == null) {
         // XXX: Why assume utf-8 text, could be binary!! Content sniffing? Maybe we should display a warning
-        this._headers.add(CONTENT_TEXT_PLAIN_UTF8);
+        this.headers.add(CONTENT_TEXT_PLAIN_UTF8);
       }
     }
     // Set the "Content-Length" if we have some data

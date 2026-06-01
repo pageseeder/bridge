@@ -147,7 +147,7 @@ public final class PSMembershipHandler extends PSEntityHandler<PSMembership> {
         if (membership.getMember() == null && m != null) {
           membership.setMember(m);
         }
-        this._items.add(membership);
+        this.items.add(membership);
         this.current = null;
       }
     } else if ("field".equals(localName)) {

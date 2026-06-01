@@ -55,7 +55,7 @@ public class PSGroupFolderHandler extends PSEntityHandler<PSGroupFolder> {
     if ("groupfolder".equals(localName)) {
       PSGroupFolder gf = current();
       if (gf != null) {
-        this._items.add(gf);
+        this.items.add(gf);
         this.current = null;
       }
     }

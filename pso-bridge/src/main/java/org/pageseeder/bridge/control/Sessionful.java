@@ -35,7 +35,7 @@ abstract class Sessionful {
   /**
    * The user connecting to the server.
    */
-  protected final PSCredentials _credentials;
+  protected final PSCredentials credentials;
 
   /**
    * Create a new manager using the specified user session.
@@ -43,21 +43,21 @@ abstract class Sessionful {
    * @param credentials the user session using making the connections.
    */
   public Sessionful(PSCredentials credentials) {
-    this._credentials = credentials;
+    this.credentials = credentials;
   }
 
   /**
    * @return the session used by the class.
    */
   public @Nullable PSSession session() {
-    return (this._credentials instanceof PSSession)? (PSSession)this._credentials : null;
+    return (this.credentials instanceof PSSession)? (PSSession)this.credentials : null;
   }
 
   /**
    * @return the session used by the class.
    */
   public @Nullable PSToken token() {
-    return (this._credentials instanceof PSToken)? (PSToken)this._credentials : null;
+    return (this.credentials instanceof PSToken)? (PSToken)this.credentials : null;
   }
 
 }

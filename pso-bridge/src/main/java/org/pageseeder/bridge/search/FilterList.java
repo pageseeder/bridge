@@ -69,7 +69,7 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
    * @return A new <code>FilterList</code> instance including the specified filter.
    */
   public FilterList filter(String field, String value) {
-    List<Filter> filters = plus(this._list, new Filter(field, value));
+    List<Filter> filters = plus(this.list, new Filter(field, value));
     return new FilterList(filters);
   }
 
@@ -81,7 +81,7 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
    * @return A new <code>FilterList</code> instance including the specified filter.
    */
   public FilterList filter(Filter filter) {
-    List<Filter> filters = plus(this._list, filter);
+    List<Filter> filters = plus(this.list, filter);
     return new FilterList(filters);
   }
 
@@ -104,7 +104,7 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
    * @return The first filter the field must match; <code>null</code> if no filter is set for that field
    */
   public @Nullable Filter find(String field) {
-    for (Filter f : this._list)
+    for (Filter f : this.list)
       if (f.field().equals(field)) return f;
     return null;
   }
@@ -117,7 +117,7 @@ public class FilterList extends ImmutableList<Filter> implements Iterable<Filter
    * @return The list of filters applied to this field
    */
   public List<Filter> findAll(String field) {
-    return this._list.stream().filter(it -> it.field().equals(field)).collect(Collectors.toList());
+    return this.list.stream().filter(it -> it.field().equals(field)).collect(Collectors.toList());
   }
 
   /**

@@ -57,13 +57,13 @@ public class FieldList extends ImmutableList<String> implements Iterable<String>
    */
   public FieldList field(String field) {
     Objects.requireNonNull(field, "The field name must be specified");
-    List<String> fields = plus(this._list, field);
+    List<String> fields = plus(this.list, field);
     return new FieldList(fields);
   }
 
   @Override
   public String toString() {
-    return Search.join(this._list, ',');
+    return Search.join(this.list, ',');
   }
 
 }

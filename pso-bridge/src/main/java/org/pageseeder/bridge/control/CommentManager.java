@@ -151,7 +151,7 @@ public final class CommentManager extends Sessionful {
    * @throws APIException If an error occurs while creating the comment.
    */
   public boolean createComment(PSComment comment, PSMember creator, @Nullable PSNotify notify, List<PSGroup> groups) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, creator, notify, groups).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.createComment(comment, creator, notify, groups).using(this.credentials);
     PSCommentHandler handler = new PSCommentHandler(comment);
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getStatus() != Status.SUCCESSFUL) return false;
@@ -220,7 +220,7 @@ public final class CommentManager extends Sessionful {
    * @throws APIException If an error occurs while saving the comment.
    */
   public boolean save(PSComment comment, PSMember editor, PSNotify notify, List<PSGroup> groups) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.patchComment(comment, editor, notify, groups).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.patchComment(comment, editor, notify, groups).using(this.credentials);
     PSCommentHandler handler = new PSCommentHandler(comment);
     PSHTTPResponseInfo info = connector.patch(handler);
     if (info.getStatus() != Status.SUCCESSFUL) return false;
@@ -239,7 +239,7 @@ public final class CommentManager extends Sessionful {
    * @throws APIException If an error occurs while archiving the comment.
    */
   public boolean archiveComment(PSComment comment, PSMember member) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.archiveComment(comment, member).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.archiveComment(comment, member).using(this.credentials);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
   }
@@ -255,7 +255,7 @@ public final class CommentManager extends Sessionful {
    * @throws APIException If an error occurs while unarchiving the comment.
    */
   public boolean unarchiveComment(PSComment comment, PSMember member) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.unarchiveComment(comment, member).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.unarchiveComment(comment, member).using(this.credentials);
     PSHTTPResponseInfo info = connector.post();
     return info.getStatus() == Status.SUCCESSFUL;
   }
@@ -273,7 +273,7 @@ public final class CommentManager extends Sessionful {
    * @throws APIException If an error occurs while replying the comment.
    */
   public boolean replyToComment(PSComment comment, PSNotify notify, List<PSGroup> groups, long xlink) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.replyToComment(comment, notify, groups, xlink).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.replyToComment(comment, notify, groups, xlink).using(this.credentials);
     PSCommentHandler handler = new PSCommentHandler(comment);
     PSHTTPResponseInfo info = connector.post(handler);
     if (info.getStatus() != Status.SUCCESSFUL) return false;
@@ -294,7 +294,7 @@ public final class CommentManager extends Sessionful {
   public @Nullable PSComment getComment(long id, PSMember member) throws APIException {
     PSComment comment = cache.get(id);
     if (comment == null) {
-      PSHTTPConnector connector = PSHTTPConnectors.getComment(member, id).using(this._credentials);
+      PSHTTPConnector connector = PSHTTPConnectors.getComment(member, id).using(this.credentials);
       PSCommentHandler handler = new PSCommentHandler();
       connector.get(handler);
       comment = handler.getComment();
@@ -339,7 +339,7 @@ public final class CommentManager extends Sessionful {
    */
   public List<PSComment> findComments(PSMember member, PSGroup group, @Nullable String title,
       @Nullable String type, @Nullable List<String> statuses, @Nullable List<String> paths) throws APIException {
-    PSHTTPConnector connector = PSHTTPConnectors.findComments(member, group, title, type, statuses, paths).using(this._credentials);
+    PSHTTPConnector connector = PSHTTPConnectors.findComments(member, group, title, type, statuses, paths).using(this.credentials);
     PSCommentHandler handler = new PSCommentHandler();
     connector.get(handler);
     List<PSComment> comments = handler.listComments();
