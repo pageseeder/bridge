@@ -27,7 +27,7 @@ import org.pageseeder.bridge.PSToken;
  *
  * @author Christophe Lauret
  *
- * @version 0.10.2
+ * @version 0.12.0
  * @since 0.2.0
  */
 abstract class Sessionful {
@@ -42,13 +42,16 @@ abstract class Sessionful {
    *
    * @param credentials the user session using making the connections.
    */
-  public Sessionful(PSCredentials credentials) {
+  protected Sessionful(PSCredentials credentials) {
     this.credentials = credentials;
   }
 
   /**
    * @return the session used by the class.
+   *
+   * @deprecated Session are no longer supported, use tokens instead.
    */
+  @Deprecated(since = "0.13.0", forRemoval = true)
   public @Nullable PSSession session() {
     return (this.credentials instanceof PSSession)? (PSSession)this.credentials : null;
   }
