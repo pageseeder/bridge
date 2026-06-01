@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A cache for a PageSeeder entity backed by EHCache.
@@ -77,7 +78,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    */
   @Override
   @SuppressWarnings("unchecked")
-  public synchronized @Nullable E get(String key) {
+  public synchronized @Nullable E get(@Nullable String key) {
     if (key == null)
       return null;
     @Nullable E o = null;
@@ -111,7 +112,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    */
   @Override
   @SuppressWarnings("unchecked")
-  public synchronized @Nullable E get(Long id) {
+  public synchronized @Nullable E get(@Nullable Long id) {
     if (id == null)
       return null;
     E o = null;
@@ -136,7 +137,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
   @SuppressWarnings("unchecked")
-  public @Nullable E get(String attribute, String value) {
+  public @Nullable E get(String attribute, @Nullable String value) {
     if (value == null)
       return null;
     E o = null;
@@ -161,7 +162,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @return The list of matching element or <code>null</code> if the key or element is <code>null</code>
    */
   @SuppressWarnings("unchecked")
-  public @Nullable List<E> list(String attribute, String value) {
+  public @Nullable List<E> list(String attribute, @Nullable String value) {
     if (value == null)
       return null;
     Query query =  this.cache.createQuery();
@@ -184,7 +185,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
   @Override
-  public synchronized @Nullable Long getVersion(String key) {
+  public synchronized @Nullable Long getVersion(@Nullable String key) {
     if (key == null)
       return null;
     Element element = this.cache.get(key);
@@ -199,8 +200,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    */
   @Override
   public synchronized void put(final E value) {
-    if (value == null)
-      throw new NullPointerException("value");
+    Objects.requireNonNull(value);
     String key = value.getKey();
     if (key == null)
       throw new IllegalArgumentException("key");
@@ -214,7 +214,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    * @param key the key of the element to remove.
    */
   @Override
-  public synchronized void remove(String key) {
+  public synchronized void remove(@Nullable String key) {
     if (key == null)
       return;
     this.cache.remove(key);
@@ -241,7 +241,7 @@ final class EHEntityCache<E extends PSEntity> implements PSEntityCache<E> {
    *
    * @return A new cache wrapper instance.
    */
-  protected static synchronized <E extends PSEntity> PSEntityCache<E> newInstance(String name, String... keys) {
+  protected static synchronized <E extends PSEntity> PSEntityCache<E> newInstance(String name, @Nullable String... keys) {
     CacheManager man = manager;
     if (man == null) {
       man = CacheManager.create();

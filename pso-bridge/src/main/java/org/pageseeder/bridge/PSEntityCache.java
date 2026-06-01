@@ -42,7 +42,7 @@ public interface PSEntityCache<E extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the ID or element is <code>null</code>
    */
-  @Nullable E get(Long id);
+  @Nullable E get(@Nullable Long id);
 
   /**
    * Retrieve the object in the cache for the specified key.
@@ -51,7 +51,7 @@ public interface PSEntityCache<E extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  @Nullable E get(String key);
+  @Nullable E get(@Nullable String key);
 
   /**
    * Retrieve the object in the cache from an instance.
@@ -69,14 +69,14 @@ public interface PSEntityCache<E extends PSEntity> {
    *
    * @return The version of the element or <code>null</code> if the key or element is <code>null</code>
    */
-  @Nullable Long getVersion(String key);
+  @Nullable Long getVersion(@Nullable String key);
 
   /**
    * Removes the element.
    *
    * @param key the key of the element to remove.
    */
-  void remove(String key);
+  void remove(@Nullable String key);
 
   /**
    * Remove all cache entries.
