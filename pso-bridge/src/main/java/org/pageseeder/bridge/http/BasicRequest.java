@@ -37,6 +37,8 @@ import java.util.Objects;
  */
 abstract class BasicRequest {
 
+  private static final String AUTHORIZATION = "Authorization";
+
   /**
    * The "xformat=xml" parameter for servlets.
    */
@@ -168,7 +170,7 @@ abstract class BasicRequest {
    * <p>Only one set of credentials can be used a time, this method will replace
    * any credentials that may have been set priority.
    *
-   * <p>This method will automatically update the "Authorization" header field.
+   * <p>This method will automatically update the AUTHORIZATION header field.
    *
    * @param credentials The username/password, token or session to use as credentials
    *
@@ -179,12 +181,12 @@ abstract class BasicRequest {
     // Let's update the headers
     if (credentials instanceof PSToken) {
       // Use OAuth bearer token (PageSeeder 5.9+)
-      header("Authorization", "Bearer "+((PSToken) credentials).token());
+      header(AUTHORIZATION, "Bearer "+((PSToken) credentials).token());
     } else if (this.credentials instanceof UsernamePassword) {
       // Basic authorization (PageSeeder 5.6+)
-      header("Authorization", ((UsernamePassword) credentials).toBasicAuthorization());
+      header(AUTHORIZATION, ((UsernamePassword) credentials).toBasicAuthorization());
     } else {
-      removeHeader("Authorization");
+      removeHeader(AUTHORIZATION);
     }
     return this;
   }
@@ -324,7 +326,7 @@ abstract class BasicRequest {
     }
 
     // Add the API version if necessary
-    if (!this.parameters.contains("v")) {
+    if (parameter("v") == null) {
       boolean strict = this.config.getServiceAPIStrict();
       Version api = this.config.getServiceAPIVersion();
       if (strict || api != null) {
@@ -371,7 +373,7 @@ abstract class BasicRequest {
    * @return The "User-Agent" header string used by PageSeeder
    */
   public static String getUserAgentString() {
-    Package p = Package.getPackage("org.pageseeder.bridge");
+    Package p = BasicRequest.class.getPackage();
     String version = p != null ? Objects.toString(p.getImplementationVersion(), "SNAPSHOT") : "SNAPSHOT";
     String osName = System.getProperty("os.name");
     String osArch = System.getProperty("os.arch");
@@ -432,7 +434,7 @@ abstract class BasicRequest {
   /**
    * Removes the specified header.
    *
-   * @param name the of the header to remove (not case sensitive)
+   * @param name the of the header to remove (not case-sensitive)
    */
   protected void removeHeader(String name) {
     for (Iterator<Header> i = this.headers.iterator(); i.hasNext();) {
@@ -501,12 +503,9 @@ abstract class BasicRequest {
    */
   private static void addQueryToParameters(String query, List<Parameter> parameters) {
     String[] pair = query.split("&");
-    if (pair.length > 0) {
-      for (String p : pair) {
-        @SuppressWarnings("null")
-        Parameter param = Parameter.newParameter(p);
-        parameters.add(param);
-      }
+    for (String p : pair) {
+      Parameter param = Parameter.newParameter(p);
+      parameters.add(param);
     }
   }
 
