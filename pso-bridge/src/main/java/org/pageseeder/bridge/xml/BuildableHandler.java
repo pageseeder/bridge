@@ -31,7 +31,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @deprecated Use BasicHandler instead
  */
-@Deprecated
+@Deprecated(since = "0.11.7", forRemoval = true)
 public abstract class BuildableHandler<T, B> extends BasicHandler<T> {
 
   /**
@@ -39,18 +39,18 @@ public abstract class BuildableHandler<T, B> extends BasicHandler<T> {
    */
   private @Nullable B builder;
 
-  public BuildableHandler() {
+  protected BuildableHandler() {
     this.builder = null;
   }
 
-  public BuildableHandler(B builder) {
+  protected BuildableHandler(B builder) {
     this.builder = builder;
   }
 
   /**
    * Build a new item using the builder.
    *
-   * <p>If the builder can be reused for other item, the builder should be reset
+   * <p>If the builder can be reused for other items, the builder should be reset
    * after the item has been built.
    *
    * @param builder The name of the element.
@@ -82,7 +82,7 @@ public abstract class BuildableHandler<T, B> extends BasicHandler<T> {
    * <p>If the builder cannot be reused, use the {@link #newBuilder(Object)}
    */
   protected void addItem() {
-    @Nullable B b = this.builder;
+    B b = this.builder;
     if (b != null) {
       T item = build(b);
       add(item);
@@ -94,9 +94,9 @@ public abstract class BuildableHandler<T, B> extends BasicHandler<T> {
    *
    * <p>It returns the object created, so that we can write directly or
    * use chaining methods.
-   * <pre>
+   * <pre>{@code
    *   Builder builder = newBuilder(new Builder());
-   * </pre>
+   * }</pre>
    *
    * @param builder the builder to set as the current builder.
    *
