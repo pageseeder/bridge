@@ -15,7 +15,6 @@
  */
 package org.pageseeder.bridge.util;
 
-import org.jspecify.annotations.NonNull;
 import org.pageseeder.bridge.model.PSMember;
 
 import java.io.BufferedReader;
@@ -38,15 +37,18 @@ import java.security.SecureRandom;
  */
 public final class Sampler {
 
+  // The arrays are private static final in a final class, so the practical mutation risk is zero.
+  // Arrays also give slightly faster indexed random access which is the only operation performed on them.
+
   /**
    * A list of first names to use.
    */
-  private static @NonNull String[] firstNames = load("firstnames.txt");
+  private static final String[] FIRST_NAMES = load("firstnames.txt");
 
   /**
    * A list of last names to use.
    */
-  private static @NonNull String[] lastNames = load("lastnames.txt");
+  private static final String[] LAST_NAMES = load("lastnames.txt");
 
   /**
    * Random
@@ -64,7 +66,7 @@ public final class Sampler {
    * @param domain the email domain
    */
   public void setEmailDomain(String domain) {
-    if (domain.length() == 0) throw new IllegalArgumentException();
+    if (domain.isEmpty()) throw new IllegalArgumentException();
     this.emailDomain = domain;
   }
 
@@ -81,7 +83,7 @@ public final class Sampler {
    * @return A random first name.
    */
   public String nextFirstName() {
-    return firstNames[this.random.nextInt(firstNames.length)];
+    return FIRST_NAMES[this.random.nextInt(FIRST_NAMES.length)];
   }
 
   /**
@@ -90,7 +92,7 @@ public final class Sampler {
    * @return A random last name.
    */
   public String nextLastName() {
-    return lastNames[this.random.nextInt(lastNames.length)];
+    return LAST_NAMES[this.random.nextInt(LAST_NAMES.length)];
   }
 
   /**
@@ -174,7 +176,7 @@ public final class Sampler {
    *
    * @throws IllegalArgumentException If any error occurs.
    */
-  private static @NonNull String[] load(String filename) {
+  private static String[] load(String filename) {
     URL url = Sampler.class.getResource(filename);
     if (url == null)
       throw new IllegalArgumentException(filename);
