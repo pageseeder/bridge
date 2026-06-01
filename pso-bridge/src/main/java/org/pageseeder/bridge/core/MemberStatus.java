@@ -27,6 +27,7 @@ import java.io.Serializable;
  * @version 0.12.0
  * @since 0.12.0
  */
+@SuppressWarnings("java:S115") // Won't fix: already in use in public API
 public enum MemberStatus implements Serializable {
 
   /**
@@ -53,17 +54,17 @@ public enum MemberStatus implements Serializable {
   private static final long serialVersionUID = 1L;
 
   /** the attribute value of the status. */
-  private final String _attribute;
+  private final String attribute;
 
   MemberStatus(String attribute) {
-    this._attribute = attribute;
+    this.attribute = attribute;
   }
 
   /**
    * @return the attribute value of the status.
    */
   public String attribute() {
-    return this._attribute;
+    return this.attribute;
   }
 
   /**
@@ -71,7 +72,7 @@ public enum MemberStatus implements Serializable {
    */
   @Override
   public String toString() {
-    return this._attribute;
+    return this.attribute;
   }
 
   /**
@@ -82,7 +83,7 @@ public enum MemberStatus implements Serializable {
    */
   public static MemberStatus forAttribute(@Nullable String s) {
     for (MemberStatus st : values()) {
-      if (st._attribute.equalsIgnoreCase(s)) return st;
+      if (st.attribute.equalsIgnoreCase(s)) return st;
     }
     return unknown;
   }

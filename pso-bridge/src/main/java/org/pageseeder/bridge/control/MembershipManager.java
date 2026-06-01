@@ -44,6 +44,7 @@ public final class MembershipManager extends Sessionful {
   /**
    * The results of creating a membership operation.
    */
+  @SuppressWarnings("java:S115") // Won't fix: already in use in public API
   public enum MembershipResult {
 
     ok,
@@ -79,14 +80,14 @@ public final class MembershipManager extends Sessionful {
      */
     public static MembershipResult forResponse(PSHTTPResponseInfo info) {
       if (info.isSuccessful()) return ok;
-      final int _error;
+      final int error;
       try {
-        _error = Integer.parseInt(info.getErrorID(), 16);
+        error = Integer.parseInt(info.getErrorID(), 16);
       } catch (NumberFormatException ex) {
         // not a number, it is unknown then
         return MembershipResult.unknown;
       }
-      switch (_error) {
+      switch (error) {
       // 0x1001 If the username contains the character '@'.".
       case 0x1001:
         return invalid_username;

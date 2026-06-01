@@ -27,6 +27,7 @@ import java.io.Serializable;
  * @version 0.12.0
  * @since 0.12.0
  */
+@SuppressWarnings("java:S115") // Won't fix: already in use in public API
 public enum MembershipStatus implements Serializable {
 
   normal,
