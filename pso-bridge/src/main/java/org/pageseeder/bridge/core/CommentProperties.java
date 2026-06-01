@@ -30,7 +30,7 @@ import java.util.Map.Entry;
  * @author Christophe Lauret
  *
  * @version 0.12.0
- * @since 0.12.0
+ * @since 0.11.2
  */
 public final class CommentProperties implements Serializable, XMLWritable {
 
@@ -42,7 +42,7 @@ public final class CommentProperties implements Serializable, XMLWritable {
   /**
    * Ordered map of properties
    */
-  private Map<String, String> properties;
+  private final Map<String, String> properties;
 
   private CommentProperties() {
     this.properties = Map.of();
@@ -72,7 +72,7 @@ public final class CommentProperties implements Serializable, XMLWritable {
     String[] prp = properties.split("\\|");
     Map<String, String> map = new LinkedHashMap<>(prp.length);
     for (String p : prp) {
-      if (p.length() > 0) {
+      if (!p.isEmpty()) {
         int eq = p.indexOf('=');
         if (eq >= 0) {
           String name = p.substring(0, eq);
@@ -106,56 +106,5 @@ public final class CommentProperties implements Serializable, XMLWritable {
     }
     xml.closeElement();
   }
-
-  /*
-   *
-   *
-   toString() {
-     Map<String, String> props = this.properties;
-     if (props == null) return "";
-     StringBuilder s = new StringBuilder();
-     for (Map.Entry<String, String> p : props.entrySet()) {
-       if (s.length() > 0) {
-         s.append('|');
-       }
-       // TODO handle escaped pipes
-       s.append(p.getKey()).append('=').append(p.getValue());
-     }
-     return s.toString();
-   }
-   */
-
-  /*
-  /**
-   * @param properties the properties to set
-
-  public void setProperties(String properties) {
-    Map<String, String> p = new HashMap<>();
-    if (properties != null) {
-      for (String property: properties.split("(?<!\\|)\\|(?!\\|)")) {
-        property = property.replaceAll("\\|\\|", "\\|");
-        int eq = property.indexOf('=');
-        //There must be a name and a value
-        if (eq > 0) {
-          String name = property.substring(0, eq);
-          String value = property.substring(eq + 1);
-          if (!"label".equals(name)) {
-            p.put(name, value);
-          }
-        }
-        //Otherwise, just use the name without any value
-        else if (eq == -1 && !property.isEmpty()) {
-          if (!"label".equals(property)) {
-            p.put(property, "");
-          }
-        }
-      }
-    }
-    this.properties = p;
-  }
-
-   */
-
-
 
 }

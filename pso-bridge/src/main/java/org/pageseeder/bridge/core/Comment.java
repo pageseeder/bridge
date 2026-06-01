@@ -64,7 +64,6 @@ public final class Comment implements Serializable, XMLWritable {
 
   /** The type of the comment to further qualify the comment. */
   private final @Nullable String contentRole;
-  // TODO Consider using an enum for this
 
   private final @Nullable OffsetDateTime created;
 
