@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Christophe Lauret
- * @version 0.1.0
+ * @version 0.12.0
  */
 public abstract class PSAddressable implements Addressable, PSEntity {
 
@@ -121,7 +121,7 @@ public abstract class PSAddressable implements Addressable, PSEntity {
    * @param port   The port (or negative to use the default port).
    * @param path   The path to the resource.
    */
-  public PSAddressable(String scheme, String host, int port, String path) {
+  protected PSAddressable(String scheme, String host, int port, String path) {
     // We use the methods to ensure that the values are correctly checked
     this.scheme = scheme;
     this.host = host;

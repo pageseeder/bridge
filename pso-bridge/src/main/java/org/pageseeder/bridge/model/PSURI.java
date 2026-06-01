@@ -28,7 +28,7 @@ import java.util.*;
  * The common base class for folders and documents.
  *
  * @author Christophe Lauret
- * @version 0.2.1
+ * @version 0.12.0
  * @since 0.2.0
  */
 public abstract class PSURI extends PSAddressable {
@@ -68,7 +68,7 @@ public abstract class PSURI extends PSAddressable {
    * @param port   The port (or negative to use the default port).
    * @param path   The path to the resource.
    */
-  public PSURI(String scheme, String host, int port, String path) {
+  protected PSURI(String scheme, String host, int port, String path) {
     super(scheme, host, port, path);
   }
 
@@ -84,7 +84,7 @@ public abstract class PSURI extends PSAddressable {
    *
    * @throws IllegalArgumentException If the specified URL is invalid
    */
-  public PSURI(String url) {
+  protected PSURI(String url) {
     super(url);
   }
 

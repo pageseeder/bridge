@@ -46,6 +46,8 @@ import java.util.Objects;
  * @author Christophe Lauret
  *
  * @param <T> The type of object to retrieve form the SAX events
+ *
+ * @version 0.12.0
  */
 public abstract class BasicHandler<T> extends Handler<T> {
 
@@ -71,7 +73,7 @@ public abstract class BasicHandler<T> extends Handler<T> {
    */
   private @Nullable Locator locator = null;
 
-  public BasicHandler() {
+  protected BasicHandler() {
   }
 
   // Methods to implement

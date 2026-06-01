@@ -38,7 +38,7 @@ public abstract class ElementXMLStreamHandler<T> extends BasicXMLStreamHandler<T
    *
    * @param element The name of the element.
    */
-  public ElementXMLStreamHandler(String element) {
+  protected ElementXMLStreamHandler(String element) {
     this.element = element;
   }
 

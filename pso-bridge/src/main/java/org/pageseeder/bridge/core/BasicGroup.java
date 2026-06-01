@@ -62,7 +62,7 @@ public abstract class BasicGroup implements Serializable, XMLWritable {
   /**
    * Create a new group
    */
-  public BasicGroup(long id, GroupName name, String title, String description, String owner, GroupAccess access, boolean common, String relatedURL) {
+  protected BasicGroup(long id, GroupName name, String title, String description, String owner, GroupAccess access, boolean common, String relatedURL) {
     this.id = id;
     this.name = Objects.requireNonNull(name, "Group name is required");
     this.title = Objects.requireNonNull(title, "Group title is required");

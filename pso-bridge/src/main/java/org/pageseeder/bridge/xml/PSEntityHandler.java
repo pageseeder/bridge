@@ -29,7 +29,7 @@ import java.util.List;
  * @param <E> The PageSeeder entity this handler can produce.
  *
  * @author Christophe Lauret
- * @version 0.2.2
+ * @version 0.12.0
  * @since 0.2.2
  */
 abstract class PSEntityHandler<E extends PSEntity> extends DefaultHandler {
@@ -47,7 +47,7 @@ abstract class PSEntityHandler<E extends PSEntity> extends DefaultHandler {
   /**
    * Creates a new handler without setting an initial entity to update.
    */
-  public PSEntityHandler() {
+  protected PSEntityHandler() {
   }
 
   /**
@@ -55,7 +55,7 @@ abstract class PSEntityHandler<E extends PSEntity> extends DefaultHandler {
    *
    * @param entity The entity to modify from the XML returned.
    */
-  public PSEntityHandler(E entity) {
+  protected PSEntityHandler(E entity) {
     this.current = entity;
   }
 

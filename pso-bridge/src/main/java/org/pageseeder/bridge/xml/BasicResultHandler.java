@@ -88,7 +88,7 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
   /**
    * Creates a basic handler for result capturing every field.
    */
-  public BasicResultHandler() {
+  protected BasicResultHandler() {
     this.fields = List.of();
   }
 
@@ -106,7 +106,7 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
    *
    * @throws NullPointerException if fields is <code>null</code>.
    */
-  public BasicResultHandler(@NonNull String... fields) {
+  protected BasicResultHandler(@NonNull String... fields) {
     this.fields = Arrays.asList(fields);
   }
 
