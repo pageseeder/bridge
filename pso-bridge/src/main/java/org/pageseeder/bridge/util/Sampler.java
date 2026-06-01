@@ -26,7 +26,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.security.SecureRandom;
 
 /**
  * A simple class to generate sample data.
@@ -51,7 +51,7 @@ public final class Sampler {
   /**
    * Random
    */
-  private final Random random = new Random();
+  private final SecureRandom random = new SecureRandom();
 
   /**
    * domain to use when generating
@@ -114,7 +114,7 @@ public final class Sampler {
    * @return the random long between min (included) and max (excluded)
    */
   public long nextLong(long min, long max) {
-    return min + Math.round(Math.random()*(max-min));
+    return min + Math.round(this.random.nextDouble()*(max-min));
   }
 
   /**

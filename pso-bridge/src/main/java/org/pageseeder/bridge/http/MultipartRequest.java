@@ -29,7 +29,7 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ThreadLocalRandom;
+import java.security.SecureRandom;
 
 /**
  * Simple fluent class to define HTTP multipart requests to PageSeeder.
@@ -63,6 +63,8 @@ public final class MultipartRequest extends BasicRequest {
    * Byte for carriage return + line feed.
    */
   private static final byte[] CRLF = "\r\n".getBytes(StandardCharsets.UTF_8);
+
+  private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
   /**
    * The part boundary.
@@ -462,7 +464,7 @@ public final class MultipartRequest extends BasicRequest {
    * @return a new multipart boundary.
    */
   private static String newBoundary() {
-    long b = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE/36, Long.MAX_VALUE);
+    long b = SECURE_RANDOM.nextLong() & Long.MAX_VALUE;
     return Long.toString(b, 36);
   }
 
