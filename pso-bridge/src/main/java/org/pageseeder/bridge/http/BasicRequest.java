@@ -118,7 +118,7 @@ abstract class BasicRequest {
    * @param variables The variables to inject in the URL path.
    */
   @SafeVarargs
-  protected BasicRequest(Method method, Service service, @NonNull Object... variables) {
+  protected BasicRequest(Method method, Service service, Object... variables) {
     this(method, service.toPath(variables));
   }
 

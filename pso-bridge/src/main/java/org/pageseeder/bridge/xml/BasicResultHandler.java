@@ -106,7 +106,7 @@ public abstract class BasicResultHandler<T> extends BasicHandler<T> {
    *
    * @throws NullPointerException if fields is <code>null</code>.
    */
-  protected BasicResultHandler(@NonNull String... fields) {
+  protected BasicResultHandler(String... fields) {
     this.fields = Arrays.asList(fields);
   }
 
