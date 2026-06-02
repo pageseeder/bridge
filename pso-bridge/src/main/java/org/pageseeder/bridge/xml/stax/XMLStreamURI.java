@@ -45,7 +45,6 @@ public class XMLStreamURI extends ElementXMLStreamHandler<URI> implements XMLStr
     if (id == -1L) throw new MissingAttributeException("Missing URI ID");
     boolean isExternal = "true".equals(optionalAttribute(xml, "external"));
     boolean isFolder = "true".equals(optionalAttribute(xml, "folder")) || "folder".equals(optionalAttribute(xml, "mediatype"));
-    boolean isArchived = "true".equals(optionalAttribute(xml, "archived"));
 
     String scheme = attribute(xml, "scheme");
     String host = attribute(xml, "host");
@@ -58,7 +57,6 @@ public class XMLStreamURI extends ElementXMLStreamHandler<URI> implements XMLStr
     String mediatype = attribute(xml, "mediatype", "default");
     String modified = optionalAttribute(xml, "modified");
     String title = attribute(xml, "title", "");
-    long size = attribute(xml, "size", -1);
 
     URI uri = null;
     if (isExternal) {
