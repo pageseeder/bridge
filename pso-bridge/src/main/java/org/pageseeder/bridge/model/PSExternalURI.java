@@ -20,6 +20,7 @@ import org.pageseeder.bridge.PSEntity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Represents a PageSeeder URL.
@@ -77,13 +78,8 @@ public final class PSExternalURI extends PSURI implements PSEntity {
   public String getDisplayTitle() {
     String title = getTitle();
     if (title != null && !title.trim().isEmpty())
-      return title;   
-    try {
-      return URLDecoder.decode(getURL(), "utf-8");
-    } catch (UnsupportedEncodingException ex) {
-      // Should not happen
-    }
-    return "";
+      return title;
+    return URLDecoder.decode(getURL(), StandardCharsets.UTF_8);
   }
 
   /**
