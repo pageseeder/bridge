@@ -33,6 +33,7 @@ import java.util.Objects;
  */
 public final class MailOptions {
 
+  @SuppressWarnings("java:S115") // Won't fix: already in use in public API
   public enum Notify {
 
     /**
@@ -60,6 +61,7 @@ public final class MailOptions {
   /**
    * The email template to use.
    */
+  @SuppressWarnings("java:S115") // Won't fix: already in use in public API
   public enum Template {
 
     auto_responder,
@@ -92,7 +94,7 @@ public final class MailOptions {
     }
 
     /**
-     * @return the _template
+     * @return the template
      */
     public String template() {
       return this.template;
