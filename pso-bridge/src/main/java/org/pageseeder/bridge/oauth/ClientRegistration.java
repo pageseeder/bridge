@@ -46,7 +46,7 @@ public final class ClientRegistration {
   /**
    * Default scope with OpenID <code>"openid email profile"</code>.
    */
-  public static String DEFAULT_OPENID_SCOPE = "openid email profile";
+  public static final String DEFAULT_OPENID_SCOPE = "openid email profile";
 
   /**
    * Valid grant types that can be assigned to a client.
