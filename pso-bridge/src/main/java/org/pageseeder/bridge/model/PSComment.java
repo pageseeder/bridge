@@ -157,7 +157,7 @@ public final class PSComment implements PSEntity {
    */
   public boolean hasAttachments() {
     List<Attachment> a = this.attachments;
-    return a != null && a.size() > 0;
+    return a != null && !a.isEmpty();
   }
 
   /**
@@ -252,7 +252,7 @@ public final class PSComment implements PSEntity {
   public void setLabels(String labels) {
     this.labels = new ArrayList<>();
     for (String label : labels.split(",")) {
-      if (label.length() > 0) {
+      if (!label.isEmpty()) {
         this.labels.add(label);
       }
     }
@@ -676,13 +676,13 @@ public final class PSComment implements PSEntity {
     private static final long serialVersionUID = 1L;
 
     /** The group the comment is attached to. */
-    private final @Nullable PSGroup _group;
+    private final @Nullable PSGroup group;
 
     /** The URI the comment is attached to. */
-    private final @Nullable PSURI _uri;
+    private final @Nullable PSURI uri;
 
     /** The fragment (for a URI only) */
-    private final @Nullable String _fragment;
+    private final @Nullable String fragment;
 
     /**
      * Create a group context.
@@ -690,9 +690,9 @@ public final class PSComment implements PSEntity {
      * @param group The group to use as the context.
      */
     public Context(PSGroup group) {
-      this._group = group;
-      this._uri = null;
-      this._fragment = null;
+      this.group = group;
+      this.uri = null;
+      this.fragment = null;
     }
 
     /**
@@ -701,9 +701,9 @@ public final class PSComment implements PSEntity {
      * @param uri The uri to use as the context.
      */
     public Context(PSURI uri) {
-      this._group = null;
-      this._uri = uri;
-      this._fragment = null;
+      this.group = null;
+      this.uri = uri;
+      this.fragment = null;
     }
 
     /**
@@ -713,30 +713,30 @@ public final class PSComment implements PSEntity {
      * @param fragment The fragment of the URI to use as context
      */
     public Context(PSURI uri, @Nullable String fragment) {
-      this._group = null;
-      this._uri = uri;
-      this._fragment = fragment;
+      this.group = null;
+      this.uri = uri;
+      this.fragment = fragment;
     }
 
     /**
      * @return the group
      */
     public @Nullable PSGroup group() {
-      return this._group;
+      return this.group;
     }
 
     /**
      * @return the _uri
      */
     public @Nullable PSURI uri() {
-      return this._uri;
+      return this.uri;
     }
 
     /**
      * @return the fragment
      */
     public @Nullable String fragment() {
-      return this._fragment;
+      return this.fragment;
     }
   }
 

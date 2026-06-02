@@ -574,7 +574,7 @@ public final class PSConfig {
    */
   private static URL toBaseURL(Properties p, String property, String fallback) {
     String url = p.getProperty(property);
-    if (url != null && url.length() > 0) return toBaseURL(url);
+    if (url != null && !url.isEmpty()) return toBaseURL(url);
     return toBaseURL(fallback);
   }
 
