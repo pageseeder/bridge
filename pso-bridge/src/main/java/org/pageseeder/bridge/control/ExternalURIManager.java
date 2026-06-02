@@ -42,7 +42,7 @@ public final class ExternalURIManager extends Sessionful {
   /**
    * Where the documents are cached.
    */
-  private static volatile PSEntityCache<PSExternalURI> cache = EHEntityCache.newInstance("psexternaluris", "docid");
+  private static final PSEntityCache<PSExternalURI> cache = EHEntityCache.newInstance("psexternaluris", "docid");
 
 
   /**

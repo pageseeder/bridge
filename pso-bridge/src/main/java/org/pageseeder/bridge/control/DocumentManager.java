@@ -51,12 +51,12 @@ public final class DocumentManager extends Sessionful {
   /**
    * Where the documents are cached.
    */
-  private static volatile PSEntityCache<PSDocument> cache = EHEntityCache.newInstance("psdocuments", "docid");
+  private static final PSEntityCache<PSDocument> cache = EHEntityCache.newInstance("psdocuments", "docid");
 
   /**
    * Where the folders are cached.
    */
-  private static volatile PSEntityCache<PSFolder> folders = EHEntityCache.newInstance("psfolders", "docid");
+  private static final PSEntityCache<PSFolder> folders = EHEntityCache.newInstance("psfolders", "docid");
 
   /**
    * Creates a new manager for PageSeeder groups.

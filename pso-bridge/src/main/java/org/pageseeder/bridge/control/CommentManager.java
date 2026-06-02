@@ -46,7 +46,7 @@ public final class CommentManager extends Sessionful {
   /**
    * Where the comments are cached.
    */
-  private static volatile PSEntityCache<PSComment> cache = EHEntityCache.newInstance("pscomments");
+  private static final PSEntityCache<PSComment> cache = EHEntityCache.newInstance("pscomments");
 
   /**
    * Creates a new manager for PageSeeder comments.

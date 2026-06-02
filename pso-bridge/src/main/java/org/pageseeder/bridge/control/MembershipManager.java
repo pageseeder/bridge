@@ -131,7 +131,7 @@ public final class MembershipManager extends Sessionful {
   /**
    * Internal cache for memberships
    */
-  private static volatile PSEntityCache<PSMembership> cache = EHEntityCache.newInstance("psmemberships");
+  private static final PSEntityCache<PSMembership> cache = EHEntityCache.newInstance("psmemberships");
 
   /**
    * Creates a new manager for membership using the specified session.

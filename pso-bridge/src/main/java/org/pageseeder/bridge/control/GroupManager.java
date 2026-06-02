@@ -41,12 +41,12 @@ public final class GroupManager extends Sessionful {
   /**
    * Where the groups (and projects) are cached.
    */
-  private static volatile PSEntityCache<PSGroup> cache = EHEntityCache.newInstance("psgroups");
+  private static final PSEntityCache<PSGroup> cache = EHEntityCache.newInstance("psgroups");
 
   /**
    * Where the group folders are cached.
    */
-  private static volatile PSEntityCache<PSGroupFolder> folders = EHEntityCache.newInstance("psgroupfolders");
+  private static final PSEntityCache<PSGroupFolder> folders = EHEntityCache.newInstance("psgroupfolders");
 
   /**
    * Creates a new manager for PageSeeder groups.
