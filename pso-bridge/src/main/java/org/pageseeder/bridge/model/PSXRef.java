@@ -239,12 +239,6 @@ public final class PSXRef implements PSEntity {
   private List<String> labels = new ArrayList<>();
 
   /**
-   * Constructor
-   */
-  public PSXRef() {
-  }
-
-  /**
    * @return the id
    */
   @Override

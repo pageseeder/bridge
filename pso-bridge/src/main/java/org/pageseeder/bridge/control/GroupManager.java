@@ -51,10 +51,10 @@ public final class GroupManager extends Sessionful {
   /**
    * Creates a new manager for PageSeeder groups.
    *
-   * @param PSCredentials A valid session to connect to PageSeeder.
+   * @param credentials A valid session to connect to PageSeeder.
    */
-  public GroupManager(PSCredentials PSCredentials) {
-    super(PSCredentials);
+  public GroupManager(PSCredentials credentials) {
+    super(credentials);
   }
 
   /**

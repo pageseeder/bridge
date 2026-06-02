@@ -27,12 +27,6 @@ public class PropertiesFragmentHandler extends BasicHandler<PropertiesFragment> 
    */
   private @Nullable Property property = null;
 
-  /**
-   * Create a new fragment handler for document.
-   */
-  public PropertiesFragmentHandler() {
-  }
-
   @Override
   public void startElement(String element, Attributes atts) {
     if ("property".equals(element)) {

@@ -129,12 +129,6 @@ public final class MailOptions {
   private @Nullable List<String> attachments = null;
 
   /**
-   * Creates a new set of mail options.
-   */
-  public MailOptions() {
-  }
-
-  /**
    * @return the content
    */
   public @Nullable String getContent() {
