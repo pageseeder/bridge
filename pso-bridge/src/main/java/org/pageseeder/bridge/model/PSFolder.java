@@ -32,6 +32,9 @@ public final class PSFolder extends PSURI implements PSEntity {
   /** As per recommendation */
   private static final long serialVersionUID = 1L;
 
+  /** If true this folder is archived */
+  private boolean archived;
+
   /**
    * Construct a new folder from the specified URL.
    *
@@ -53,6 +56,22 @@ public final class PSFolder extends PSURI implements PSEntity {
    */
   public @Nullable String getFoldername() {
     return getFoldername(getPath());
+  }
+
+  /**
+   *
+   * @return
+   */
+  public boolean isArchived() {
+    return archived;
+  }
+
+  /**
+   *
+   * @param archived
+   */
+  public void setArchived(boolean archived) {
+    this.archived = archived;
   }
 
   /**

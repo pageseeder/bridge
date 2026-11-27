@@ -37,6 +37,9 @@ public final class PSDocument extends PSURI implements PSEntity {
   /** The document type (PSML only) */
   private String type = "default";
 
+  /** If true this folder is archived */
+  private boolean archived;
+
   /**
    * Construct a new document from the specified URL.
    *
@@ -103,6 +106,22 @@ public final class PSDocument extends PSURI implements PSEntity {
    */
   public void setType(String type) {
     this.type = type;
+  }
+
+  /**
+   *
+   * @return
+   */
+  public boolean isArchived() {
+    return archived;
+  }
+
+  /**
+   *
+   * @param archived
+   */
+  public void setArchived(boolean archived) {
+    this.archived = archived;
   }
 
   /**

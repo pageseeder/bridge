@@ -269,6 +269,7 @@ public final class PSEntityFactory {
     String mediatype = getOptionalString(atts, "mediatype");
     String created = getOptionalString(atts, "created");
     String modified = getOptionalString(atts, "modified");
+    boolean archived = "true".equalsIgnoreCase(getOptionalString(atts, "archived"));
 
     PSDocument d = document;
     if (d == null) {
@@ -296,6 +297,7 @@ public final class PSEntityFactory {
     } else {
       d.setModifiedDate(created);
     }
+    d.setArchived(archived);
     return d;
   }
 
@@ -408,6 +410,7 @@ public final class PSEntityFactory {
     String labels = getString(atts, "labels", "");
     String title = getOptionalString(atts, "title");
     String mediatype = getOptionalString(atts, "mediatype");
+    boolean archived = "true".equalsIgnoreCase(getOptionalString(atts, "archived"));
 
     PSFolder f = tryFolderCache(folder, id, path);
     f.setId(id);
@@ -416,6 +419,7 @@ public final class PSEntityFactory {
     f.setLabels(labels);
     f.setTitle(title);
     f.setMediaType(mediatype);
+    f.setArchived(archived);
     return f;
   }
 
